@@ -11,11 +11,11 @@
           <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-              <div class="col-sm-6"><h3 class="mb-0">Blank Page</h3></div>
+              <div class="col-sm-6"><h3 class="mb-0">Students</h3></div>
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
                   <li class="breadcrumb-item"><a href="#">Home</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Blank Page</li>
+                  <li class="breadcrumb-item active" aria-current="page">Students</li>
                 </ol>
               </div>
             </div>
@@ -28,11 +28,18 @@
           <div class="container-fluid">
             <!-- Info boxes -->
             <div class="row">
-            </div>
-            <!-- /.row -->
-            <!--begin::Row-->
-           
-               <table id="studentTable" class="display">
+
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Student List</h3>
+                  <div class="card-tools">
+                    <a href="students/new" class="btn btn-primary">Add Student</a>
+                  </div>
+                  <!-- /.card-tools -->
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <table id="studentTable" class="display">
                   <thead>
                       <tr>
                           <th>ID</th>
@@ -43,6 +50,18 @@
                       </tr>
                   </thead>
               </table>
+                </div>
+                <!-- /.card-body -->
+                
+                <!-- /.card-footer -->
+              </div>
+              <!-- /.card -->
+             
+            </div>
+            <!-- /.row -->
+            <!--begin::Row-->
+           
+
 
             <!--end::Row-->
             <!--begin::Row-->

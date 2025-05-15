@@ -4,6 +4,7 @@ namespace App\Libraries;
 
 use CodeIgniter\Model;
 // use App\Models\StudentModel;
+use CodeIgniter\Database\BaseBuilder;
 
 class datatable
 {
@@ -13,44 +14,44 @@ class datatable
         $this->request  = service('request');
         $this->response = service('response');
     }
-    public function generate(Model $model, array $searchableColumns = [])
+    public function generate(BaseBuilder $builder, string $primaryKey, array $searchable = [])
     {
-        $draw     = (int) $this->request->getPost('draw');
-        $start    = (int) $this->request->getPost('start');
-        $length   = (int) $this->request->getPost('length');
-        $search   = $this->request->getPost('search')['value'] ?? '';
+      $draw   = (int) $this->request->getPost('draw');
+        $start  = (int) $this->request->getPost('start');
+        $length = (int) $this->request->getPost('length');
+        $search = $this->request->getPost('search')['value'] ?? '';
 
         $order    = $this->request->getPost('order');
         $columns  = $this->request->getPost('columns');
         $colIndex = $order[0]['column'] ?? 0;
-        $colName  = $columns[$colIndex]['data'] ?? $model->primaryKey;
+        $colName  = $columns[$colIndex]['data'] ?? $primaryKey;
         $sortDir  = $order[0]['dir'] ?? 'asc';
 
-        // Total record count
-        $totalRecords = $model->countAll();
+        // Clone original builder for total count
+        $baseBuilder = clone $builder;
+        $totalRecords = $baseBuilder->countAllResults(false);
 
-        // Filtering
-        $builder = $model;
-        if (!empty($search) && !empty($searchableColumns)) {
-            $builder = $builder->groupStart();
-            foreach ($searchableColumns as $column) {
-                $builder = $builder->orLike($column, $search);
+        // Search filter
+        if (!empty($search) && !empty($searchable)) {
+            $builder->groupStart();
+            foreach ($searchable as $col) {
+                $builder->orLike($col, $search);
             }
-            $builder = $builder->groupEnd();
+            $builder->groupEnd();
         }
 
-        // Count after filtering
-        $filteredCount = (clone $builder)->countAllResults(false);
+        // Clone for filtered count
+        $filteredBuilder = clone $builder;
+        $filteredRecords = $filteredBuilder->countAllResults(false);
 
-        // Get data
-        $data = $builder->orderBy($colName, $sortDir)
-                        ->findAll($length, $start);
+        // Sorting and limiting
+        $builder->orderBy($colName, $sortDir);
+        $data = $builder->get($length, $start)->getResult();
 
-        // Return JSON
         return $this->response->setJSON([
             'draw'            => $draw,
             'recordsTotal'    => $totalRecords,
-            'recordsFiltered' => $filteredCount,
+            'recordsFiltered' => $filteredRecords,
             'data'            => $data,
         ]);
     }

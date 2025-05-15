@@ -9,9 +9,17 @@ class StudentModel extends Model
     // isi PostModel Class    
     protected $table      = 'students';
     protected $primaryKey = 'student_id';
-    protected $allowedFields = ['student_name'];
+    
+    protected $protectFields = false;
+
+    protected $useAutoIncrement = true;
+    protected $useTimestamps = true; 
+    protected $useSoftDeletes   = true;
 
     protected $validationRules = [
-        'student_name'        => 'required|min_length[10]',
+        'student_name'     => 'required',
+        'student_email'    => 'required|valid_email',
+        'student_username' => 'required|alpha_numeric',
     ];
+ 
 }

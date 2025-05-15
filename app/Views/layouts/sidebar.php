@@ -37,28 +37,107 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo base_url();?>student" class="nav-link">
+                <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-mortarboard"></i>
-
                   <p>
-                    Student Management
-                   
+                    Student Information System
+                    <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
                 </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="students" class="nav-link">
+                      <i class="nav-icon bi bi-people"></i>
+                      <p >
+                        Class
+                      </p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon bi bi-journals"></i>
+                      <p>
+                        Subject
+                      </p>
+                    </a>
+                  </li>
+                </ul>
               </li>
               <li class="nav-item">
-                <a href="<?php echo base_url();?>teacher" class="nav-link">
-                  <i class="nav-icon bi bi-person-badge"></i>
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-easel"></i>
                   <p>
-                    Teacher Management
+                    Academic
+                    <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
                 </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="students" class="nav-link">
+                      <i class="nav-icon bi bi-people"></i>
+                      <p >
+                        Class
+                      </p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon bi bi-journals"></i>
+                      <p>
+                        Subject
+                      </p>
+                    </a>
+                  </li>
+                </ul>
               </li>
-               <li class="nav-item">
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-person-gear"></i>
+                  <p>
+                    User
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="students" class="nav-link">
+                      <i class="nav-icon bi bi-people"></i>
+                      <p >
+                        Student
+                      </p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon bi bi-person-badge"></i>
+                      <p>
+                        Teacher
+                      </p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon bi bi-house"></i>
+                      <p>
+                        Parents
+                      </p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon bi bi-briefcase"></i>
+                      <p>
+                        Staff
+                      </p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-item">
                 <a href="<?php echo base_url();?>class" class="nav-link">
                   <i class="nav-icon bi bi-easel"></i>
                   <p>
-                    Class Management
+                    Parent Portal
                   </p>
                 </a>
               </li>
