@@ -17,6 +17,9 @@ $routes->post('/kelompok/data', 'kelompok::data');
 $routes->resource('guru');
 $routes->post('/guru/data', 'guru::data');
 
+$routes->resource('petakonsep');
+$routes->post('/petakonsep/data', 'petakonsep::data');
+
 $routes->resource('assignments');
 $routes->resource('students');
 $routes->post('/students/data', 'Students::data');

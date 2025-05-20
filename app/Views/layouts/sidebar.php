@@ -115,6 +115,41 @@
                   </li>
                 </ul>
               </li>
+               <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-easel"></i>
+                  <p>
+                    Modul Ajar
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="<?= base_url(); ?>petakonsep" class="nav-link">
+                      <i class="nav-icon bi bi-people"></i>
+                      <p >
+                        Peta Konsep
+                      </p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon bi bi-journals"></i>
+                      <p>
+                        Subjek
+                      </p>
+                    </a>
+                  </li>
+                   <li class="nav-item">
+                    <a href="<?= base_url(); ?>assignments" class="nav-link">
+                      <i class="nav-icon bi bi-journals"></i>
+                      <p>
+                        Assignment
+                      </p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
               <li class="nav-item">
                 <a href="<?php echo base_url();?>class" class="nav-link">
                   <i class="nav-icon bi bi-easel"></i>

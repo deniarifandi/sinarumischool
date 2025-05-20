@@ -40,46 +40,61 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-             
-           <?php if (session('errors')) : ?>
-              <div style="color:red;">
+               
+               <?php if (session('errors')) : ?>
+                <div style="color:red;">
                   <ul>
-                      <?php foreach (session('errors') as $error) : ?>
-                          <li><?= esc($error) ?></li>
-                      <?php endforeach; ?>
+                    <?php foreach (session('errors') as $error) : ?>
+                      <li><?= esc($error) ?></li>
+                    <?php endforeach; ?>
                   </ul>
-              </div>
-          <?php endif; ?>
+                </div>
+              <?php endif; ?>
 
-          <form action="<?= site_url($table) ?>" method="post">
-      <?= csrf_field() ?>
+              <form action="<?= site_url($table) ?>" method="post">
+                <?= csrf_field() ?>
 
-      <?php for ($i = 0; $i < count($field); $i++) :
-        $type = $field[$i][0];
-        $name = $field[$i][1];
-        $label = $fieldName[$i];
-        $oldValue = old($name);
-      ?>
-        <div class="mb-3">
-          <label class="form-label"><?= esc($label) ?></label>
-          <input type="<?= esc($type) ?>" class="form-control" name="<?= esc($name) ?>" value="<?= esc($oldValue) ?>">
+                <?php for ($i = 0; $i < count($field); $i++): ?>
+                  <div class="row mb-3">
+                    <label for="<?= $field[$i][1] ?>" class="col-sm-2 col-form-label"><?= $fieldName[$i] ?></label>
+                    <div class="col-sm-10">
+                      <?php
+                      $type = $field[$i][0];
+                      $name = $field[$i][1];
+                      $oldValue = old($name);
+                      ?>
+
+                      <?php if ($type === 'text' || $type === 'date' || $type === 'email'): ?>
+                        <input type="<?= $type ?>" class="form-control" id="<?= $name ?>" name="<?= $name ?>" value="<?= esc($oldValue) ?>" />
+
+                      <?php elseif ($type === 'select'): ?>
+                        <select class="form-control" id="<?= $name ?>" name="<?= $name ?>">
+                          <?php foreach ($fieldOption[$i] as $option): ?>
+                            <option value="<?= esc($option[0]) ?>" <?= ($oldValue === $option[0]) ? 'selected' : '' ?>>
+                              <?= esc($option[1]) ?>
+                            </option>
+                          <?php endforeach; ?>
+                        </select>
+
+                      <?php endif; ?>
+                    </div>
+                  </div>
+                <?php endfor; ?>
+
+                <a href="<?= site_url($table) ?>" class="btn btn-danger">Cancel</a>
+                <button type="submit" class="btn btn-success float-end">Submit</button>
+              </form>
+              
+              <!-- /.card-footer -->
+            </div>
+            <!-- /.card -->
+
+          </div>
+          <!-- /.row -->
+          <!--end::Container-->
         </div>
-      <?php endfor; ?>
-
-      <a href="<?= site_url($table) ?>" class="btn btn-secondary">Cancel</a>
-      <button type="submit" class="btn btn-success float-end">Submit</button>
-    </form>
-           
-          <!-- /.card-footer -->
-        </div>
-        <!-- /.card -->
-
-      </div>
-      <!-- /.row -->
-      <!--end::Container-->
-    </div>
-    <!--end::App Content-->
-  </main>
+        <!--end::App Content-->
+      </main>
 <!--end::App Main-->
 <!--begin::Footer-->
 

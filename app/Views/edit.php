@@ -38,26 +38,46 @@ echo view('layouts/sidebar.php');
               </div>
             <?php endif; ?>
 
-              <form action="<?= site_url($table . '/' . $data[$primaryKey]) ?>" method="post">
-                <?= csrf_field() ?>
-                <input type="hidden" name="_method" value="PUT">
+            <form action="<?= site_url($table . '/' . $data[$primaryKey]) ?>" method="post">
+              <?= csrf_field() ?>
+              <input type="hidden" name="_method" value="PUT">
 
-                <?php for ($i = 0; $i < count($field); $i++) :
-                  $type = $field[$i][0];
-                  $name = $field[$i][1];
-                  $label = $fieldName[$i];
-                  $value = old($name, $data[$name] ?? '');
-                ?>
-                  <div class="mb-3">
-                    <label class="form-label"><?= esc($label) ?></label>
-                    <input type="<?= esc($type) ?>" class="form-control" name="<?= esc($name) ?>" value="<?= esc($value) ?>">
+              <?php for ($i = 0; $i < count($field); $i++): ?>
+                <div class="row mb-3">
+                  <label for="<?= $field[$i][1] ?>" class="col-sm-2 col-form-label"><?= $fieldName[$i] ?></label>
+                  <div class="col-sm-10">
+                    <?php
+                    $type = $field[$i][0];
+                    $name = $field[$i][1];
+                    $value = old($name, $data[$name] ?? '');
+                    ?>
+
+                    <?php if ($type === 'text' || $type === 'date' || $type === 'email'): ?>
+                      <input 
+                      type="<?= $type ?>" 
+                      class="form-control" 
+                      id="<?= $name ?>" 
+                      name="<?= $name ?>" 
+                      value="<?= esc($value) ?>" />
+
+                    <?php elseif ($type === 'select'): ?>
+                      <select class="form-control" id="<?= $name ?>" name="<?= $name ?>">
+                        <?php foreach ($fieldOption[$i] as $option): ?>
+                          <option value="<?= esc($option[0]) ?>" <?= ($value == $option[0]) ? 'selected' : '' ?>>
+                            <?= esc($option[1]) ?>
+                          </option>
+                        <?php endforeach; ?>
+                      </select>
+
+                    <?php endif; ?>
                   </div>
-                <?php endfor; ?>
+                </div>
+              <?php endfor; ?>
 
-                <a href="<?= site_url($table) ?>" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary float-end">Update</button>
-              </form>
-         
+              <a href="<?= site_url($table) ?>" class="btn btn-danger">Cancel</a>
+              <button type="submit" class="btn btn-success float-end">Update</button>
+            </form>
+
           </div>
         </div>
       </div>

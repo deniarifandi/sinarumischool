@@ -51,7 +51,7 @@
                   <thead>
                       <tr>
                           <th>ID</th>
-                          <?php for ($i=0; $i < count($field); $i++) { 
+                          <?php for ($i=0; $i < count($fieldList); $i++) { 
                             ?><th><?= $fieldList[$i][1]; ?></th><?php 
                           } ?>
                           <th>action</th>

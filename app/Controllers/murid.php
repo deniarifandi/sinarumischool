@@ -15,12 +15,13 @@ class murid extends MyResourceController
     public $primaryKey = "murid_id";
     public $fieldList = [
         ['murid_nama','Nama Murid'], 
-        ['murid_kelompok','Kelompok']
+        ['judul','Kelas'],
+        ['deskripsi','Kelompok Usia']
     ];
 
     public $field = [
         ['text','murid_nama'], 
-        ['select','murid_kelompok'],
+        ['select','kelompok_id'],
 ];
 
 public $fieldName = [
@@ -30,7 +31,7 @@ public $fieldName = [
 
 public $fieldOption = [
   ['noOption'], 
-  [['0','BINTANG (3-4 TAHUN)'],['1','BULAN (4-5 TAHUN)'],['2','MATAHARI (5-6 TAHUN)']]
+  [['1','BINTANG (3-4 TAHUN)'],['2','BULAN (4-5 TAHUN)'],['3','MATAHARI (5-6 TAHUN)']]
 ];
 
     public $dataToShow = [];
@@ -44,12 +45,13 @@ public $fieldOption = [
 
     public function data(){
         $builder = Database::connect()->table($this->table)
-        ->select('murid.*');        
+        ->select('murid.* , kelompok.*')
+        ->join('kelompok','kelompok.kelompok_id = murid.kelompok_id');
 
         $datatable = new Datatable();
 
         return $datatable->generate($builder, 'murid.murid_id',[
-            'murid.murid_kelompok',
+            'murid.kelompok_id',
             'murid.murid_nama'
         ]);
     }
