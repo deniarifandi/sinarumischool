@@ -36,47 +36,21 @@
                   </p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi-mortarboard"></i>
-                  <p>
-                    Student Information System
-                    <i class="nav-arrow bi bi-chevron-right"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="students" class="nav-link">
-                      <i class="nav-icon bi bi-people"></i>
-                      <p >
-                        Class
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <i class="nav-icon bi bi-journals"></i>
-                      <p>
-                        Subject
-                      </p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
+              
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-easel"></i>
                   <p>
-                    Academic
+                    Akademik
                     <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="students" class="nav-link">
+                    <a href="<?= base_url(); ?>kelompok" class="nav-link">
                       <i class="nav-icon bi bi-people"></i>
                       <p >
-                        Class
+                        Kelompok / Kelas
                       </p>
                     </a>
                   </li>
@@ -84,7 +58,15 @@
                     <a href="#" class="nav-link">
                       <i class="nav-icon bi bi-journals"></i>
                       <p>
-                        Subject
+                        Subjek
+                      </p>
+                    </a>
+                  </li>
+                   <li class="nav-item">
+                    <a href="<?= base_url(); ?>assignments" class="nav-link">
+                      <i class="nav-icon bi bi-journals"></i>
+                      <p>
+                        Assignment
                       </p>
                     </a>
                   </li>
@@ -100,18 +82,18 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="students" class="nav-link">
+                    <a href="<?= base_url(); ?>murid" class="nav-link">
                       <i class="nav-icon bi bi-people"></i>
                       <p >
-                        Student
+                        Murid
                       </p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="guru" class="nav-link">
                       <i class="nav-icon bi bi-person-badge"></i>
                       <p>
-                        Teacher
+                        Guru
                       </p>
                     </a>
                   </li>

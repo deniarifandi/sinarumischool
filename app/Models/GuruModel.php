@@ -4,11 +4,11 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class StudentModel extends Model
+class GuruModel extends Model
 {
     // isi PostModel Class    
-    protected $table      = 'murid';
-    protected $primaryKey = 'murid_id';
+    protected $table      = 'guru';
+    protected $primaryKey = 'guru_id';
     
     protected $protectFields = false;
 

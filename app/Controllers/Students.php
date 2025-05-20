@@ -2,32 +2,72 @@
 
 namespace App\Controllers;
 
-use CodeIgniter\RESTful\ResourceController;
+
 use App\Models\StudentModel;
 use App\Libraries\datatable;
 use Config\Database;
 
-class Students extends ResourceController
+class Students extends MyResourceController
 {
 
-   // protected $modelName = 'App\Models\StudentModel';
-    protected $format    = 'json';
+    public $table = "students";
+    public $title = "Students";
+    public $primaryKey = "student_id";
 
-    public function index()
-    {   
-      
-        return view('/students/list');
-      
-    }    
+    //table
+    public $fieldListName = [
+        'student_name', 
+        'student_email', 
+        'student_username',
+        'student_password',
+        'student_gender'
+    ];
+    public $fieldList = [
+        'student_name', 
+        'student_email', 
+        'student_username',
+        'student_password',
+        'student_gender'
+    ];
 
-     public function new()
+    //create
+    public $field = [
+        'student_name', 
+        'student_email', 
+        'student_username',
+        'student_password',
+        'student_gender'
+    ];
+    public $fieldType = [
+        'text',
+        'email',
+        'text',
+        'password',
+        'drop'
+    ];
+    public $fieldName = [
+        'Student\'s Name', 
+        'Student\'s email', 
+        'Student\'s Username',
+        'Student\'s Password',
+        'Student\'s Gender'
+    ];
+    public $fieldOption = [
+        ["noOption"],
+        ["noOption"],
+        ["noOption"],
+        ["noOption"],
+        ["girl","boy"]
+    ];
+
+    public function __construct()
     {
-        // Show create user form
-        return view('students/create');
+        $this->model = new StudentModel();
+        $this->dataToShow = $this->prepareDataToShow();
     }
 
     public function data(){
-        $builder = Database::connect()->table('students')
+        $builder = Database::connect()->table($this->table)
         ->select('students.*, classes.class_name')
         ->join('classes', 'classes.class_id = students.student_id', 'left');
 
@@ -38,27 +78,6 @@ class Students extends ResourceController
             'students.student_email',
             'classes.class_name'
         ]);
-    }
-
-    public function create()
-    {
-        $model = new StudentModel();
-
-        $data = [
-            'student_name' => $this->request->getPost('student_name'),
-            'student_email' => $this->request->getPost('student_email'),
-            'student_username' => $this->request->getPost('student_username'),
-        ];
-
-         try {
-                if (!$model->insert($data)) {
-                    return redirect()->back()->withInput()->with('errors', $model->errors());
-                }
-
-                return "Insert successful!";
-            } catch (\Exception $e) {
-                return redirect()->back()->withInput()->with('errors', [$e->getMessage()]);
-            }
     }
 
 }

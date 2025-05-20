@@ -29,19 +29,21 @@
             <!-- Info boxes -->
             <div class="row">
               <div class="col-12 col-sm-6 col-md-3">
+                <a href="lessonplan">
                 <div class="info-box">
                   <span class="info-box-icon text-bg-primary shadow-sm">
-                    <i class="bi bi-gear-fill"></i>
+                    <i class="bi bi-journal-text"></i>
                   </span>
                   <div class="info-box-content">
-                    <span class="info-box-text">CPU Traffic</span>
+                    <span class="info-box-text">Modul Ajar</span>
                     <span class="info-box-number">
-                      10
-                      <small>%</small>
+                      
+                      <small>Total Lesson Plans: 237</small>
                     </span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
+                  </a>
                 <!-- /.info-box -->
               </div>
               <!-- /.col -->

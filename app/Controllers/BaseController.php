@@ -59,4 +59,19 @@ abstract class BaseController extends Controller
     public function baseDatatable(){
         echo "testing datatable";
     }
+
+    public function prepareDataToShow()
+    {
+        $this->dataToShow = [
+            'table'        => $this->table,
+            'title'        => $this->title,
+            'field'        => $this->field,
+            'fieldName'    => $this->fieldName,
+            'primaryKey'   => $this->primaryKey,
+            'fieldOption'  => $this->fieldOption,
+            'fieldType'    => $this->fieldType,
+            'fieldList'    => $this->fieldList,
+            'fieldListName'=> $this->fieldListName,
+        ];
+    }
 }

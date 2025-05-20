@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class StudentModel extends Model
+class MuridModel extends Model
 {
     // isi PostModel Class    
     protected $table      = 'murid';

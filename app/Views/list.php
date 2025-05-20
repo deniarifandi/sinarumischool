@@ -11,11 +11,11 @@
           <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-              <div class="col-sm-6"><h3 class="mb-0">Students</h3></div>
+              <div class="col-sm-6"><h3 class="mb-0"><?= $title ?></h3></div>
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
                   <li class="breadcrumb-item"><a href="#">Home</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Students</li>
+                  <li class="breadcrumb-item active" aria-current="page"><?= $title ?></li>
                 </ol>
               </div>
             </div>
@@ -31,21 +31,29 @@
 
               <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Student List</h3>
+                  <h3 class="card-title"><?= $title ?> list</h3>
                   <div class="card-tools">
-                    <a href="students/new" class="btn btn-primary">Add Student</a>
+                    <a href="<?= $table ?>/new" class="btn btn-primary">Tambah <?= $title ?></a>
                   </div>
                   <!-- /.card-tools -->
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                  <table id="studentTable" class="display">
+
+                    <?php if (session()->getFlashdata('success')): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?= session()->getFlashdata('success') ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+
+                  <table id="<?php $table ?>Table" class="display">
                   <thead>
                       <tr>
                           <th>ID</th>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>Password</th>
+                          <?php for ($i=0; $i < count($field); $i++) { 
+                            ?><th><?= $fieldList[$i][1]; ?></th><?php 
+                          } ?>
                           <th>action</th>
                       </tr>
                   </thead>
@@ -81,22 +89,33 @@
 
  <script>
     $(document).ready(function () {
-        $('#studentTable').DataTable({
+        $('#<?php $table ?>Table').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                url: "<?= base_url('students/data') ?>",
+                url: "<?= base_url($table.'/data') ?>",
                 type: "POST"
             },
             columns: [
-                { data: 'student_id' },
-                { data: 'student_name' },
-                { data: 'student_email' },
-                { data: 'student_password' },
+                { data: '<?= $primaryKey ?>' },
+                <?php 
+                  for($i=0; $i < count($fieldList); $i++){
+                    ?>
+                    { data: '<?= $fieldList[$i][0] ?>' },
+                    <?php
+                  }
+                ?>
                 { 
                  data: '',
                  render: (data,type,row) => {
-                   return `<a href='link_to_edit/${row.student_id}'>update</a>`;
+                   return `<a class="btn btn-warning btn-sm" href='<?= $table ?>/${row.<?= $primaryKey ?>}/edit'>Edit</a>
+                   <form action='<?= $table ?>/${row.<?= $primaryKey ?>}' method="post" style="display:inline" onsubmit="return confirm('Are you sure you want to delete this item?');">
+        <?= csrf_field() ?>
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+      </form>
+
+                 `;
                  }
               }
 

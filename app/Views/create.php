@@ -11,11 +11,11 @@
         <div class="container-fluid">
           <!--begin::Row-->
           <div class="row">
-            <div class="col-sm-6"><h3 class="mb-0">Students</h3></div>
+            <div class="col-sm-6"><h3 class="mb-0"><?php echo $title; ?></h3></div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-end">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Students</li>
+                <li class="breadcrumb-item active" aria-current="page"><?php echo $title; ?></li>
               </ol>
             </div>
           </div>
@@ -32,7 +32,7 @@
 
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Add Student</h3>
+                <h3 class="card-title">Add <?php echo $title; ?></h3>
                 <div class="card-tools">
                   <!-- <a href="" class="btn btn-primary">Add Student</a> -->
                 </div>
@@ -51,38 +51,25 @@
               </div>
           <?php endif; ?>
 
-            <form action="<?= site_url('students') ?>" method="post">
-              <?= csrf_field() ?>
-              <div class="row mb-3">
-                <label for="inputName" class="col-sm-2 col-form-label">Name</label>
-                <div class="col-sm-10">
-                  <input type="text" class="form-control" id="inputName" name="student_name" value="<?= old('student_name') ?>" />
-                </div>
-              </div>
+          <form action="<?= site_url($table) ?>" method="post">
+      <?= csrf_field() ?>
 
-              <div class="row mb-3">
-                <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
-                <div class="col-sm-10">
-                  <input type="email" class="form-control" name="student_email" id="inputEmail" value="<?= old('student_email') ?>" />
-                </div>
-              </div>
+      <?php for ($i = 0; $i < count($field); $i++) :
+        $type = $field[$i][0];
+        $name = $field[$i][1];
+        $label = $fieldName[$i];
+        $oldValue = old($name);
+      ?>
+        <div class="mb-3">
+          <label class="form-label"><?= esc($label) ?></label>
+          <input type="<?= esc($type) ?>" class="form-control" name="<?= esc($name) ?>" value="<?= esc($oldValue) ?>">
+        </div>
+      <?php endfor; ?>
 
-               <div class="row mb-3">
-                <label for="inputUsername" class="col-sm-2 col-form-label">Username</label>
-                <div class="col-sm-10">
-                  <input type="text" class="form-control" id="inputUsername" name="student_username" value="<?= old('student_username') ?>" />
-                </div>
-              </div>
-              
-              <a href="../students" class="btn btn-danger">Cancel</a>
-
-              <button type="submit" class="btn float-end btn-success">Submit</button>
-              
-
-            </div>
-            <!-- /.card-body -->
-            
-          </form>
+      <a href="<?= site_url($table) ?>" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-success float-end">Submit</button>
+    </form>
+           
           <!-- /.card-footer -->
         </div>
         <!-- /.card -->
