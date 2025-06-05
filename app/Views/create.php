@@ -51,7 +51,7 @@
                 </div>
               <?php endif; ?>
 
-              <form action="<?= site_url($table) ?>" method="post">
+             <form action="<?= site_url($table) ?>" method="post" enctype="multipart/form-data">
                 <?= csrf_field() ?>
 
                 <?php for ($i = 0; $i < count($field); $i++): ?>
@@ -64,7 +64,7 @@
                       $oldValue = old($name);
                       ?>
 
-                      <?php if ($type === 'text' || $type === 'date' || $type === 'email'): ?>
+                      <?php if (in_array($type, ['text', 'date', 'file', 'password', 'email'])): ?>
                         <input type="<?= $type ?>" class="form-control" id="<?= $name ?>" name="<?= $name ?>" value="<?= esc($oldValue) ?>" />
 
                       <?php elseif ($type === 'select'): ?>
@@ -75,7 +75,8 @@
                             </option>
                           <?php endforeach; ?>
                         </select>
-
+                        <?php elseif ($type === 'textarea'): ?>
+                          <textarea class="form-control" id="<?= $name ?>" name="<?= $name ?>"><?= esc($oldValue) ?></textarea>
                       <?php endif; ?>
                     </div>
                   </div>

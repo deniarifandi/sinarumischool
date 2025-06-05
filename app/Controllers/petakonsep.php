@@ -19,8 +19,8 @@ class petakonsep extends MyResourceController
     ];
 
     public $field = [
-        ['text','Judul Petakonsep'], 
-        ['file','URL'],
+        ['text','judul'], 
+        ['file','url'],
 ];
 
 public $fieldName = [
@@ -44,7 +44,8 @@ public $fieldOption = [
 
     public function data(){
         $builder = Database::connect()->table($this->table)
-        ->select('petakonsep.*');
+        ->select('petakonsep.*')
+        ->where('petakonsep.deleted_at',NULL);
 
         $datatable = new Datatable();
 

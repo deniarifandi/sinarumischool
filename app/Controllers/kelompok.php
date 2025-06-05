@@ -11,50 +11,51 @@ class kelompok extends MyResourceController
 {
 
     public $table = "kelompok";
-    public $title = "Kelompok";
+    public $title = "Class";
     public $primaryKey = "kelompok_id";
+    
     public $fieldList = [
-        ['judul','Nama Kelas'], 
-        ['deskripsi','Kelompok Usia']
+         ['judul', 'murid.nama'],
+         ['judul', 'kelompok.judul']       
     ];
 
-    public $field = [
+   public $field = [
         ['text','judul'], 
-        ['text','deskripsi'],
-];
-
-public $fieldName = [
-        'Nama Kelas', 
-        'Kelompok Usia'
+        ['text','description'],
     ];
 
-public $fieldOption = [
-  ['noOption'], 
-  ['noOption']
-];
+    public $fieldName = [
+        'Nama Kelas', 
+        'Description'
+    ];
+
+    public $fieldOption = [
+        ['noOption'], 
+        ['noOption']
+    ];
 
     public $dataToShow = [];
 
-
     public function __construct()
     {
+
         $this->model = new KelompokModel();
         $this->dataToShow = $this->prepareDataToShow();
     }
 
     public function data(){
-        $builder = Database::connect()->table('kelompok')
-            ->select('kelompok.*')
-            ->where('kelompok.deleted_at', null);       
-
-        // print_r($builder->get()->getResult());
+        $builder = Database::connect()->table($this->table)
+            ->select($this->table . '.*')
+            ->where($this->table . '.deleted_at', null);
 
         $datatable = new Datatable();
 
-        return $datatable->generate($builder, 'kelompok.kelompok_id',[
-            'kelompok.judul',
-            'kelompok.deskripsi'
-        ]);
+       $fieldColumns = [];
+        foreach ($this->field as $f) {
+            $fieldColumns[] = $this->table . '.' . $f[1]; // use only the field name, not type
+        }
+
+        return $datatable->generate($builder, $this->table . '.' . $this->primaryKey, $fieldColumns);
     }
 
 }

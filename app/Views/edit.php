@@ -38,44 +38,50 @@ echo view('layouts/sidebar.php');
               </div>
             <?php endif; ?>
 
-            <form action="<?= site_url($table . '/' . $data[$primaryKey]) ?>" method="post">
+            <form action="<?= site_url("$table/" . $data[$primaryKey]) ?>" method="post" enctype="multipart/form-data">
               <?= csrf_field() ?>
               <input type="hidden" name="_method" value="PUT">
 
-              <?php for ($i = 0; $i < count($field); $i++): ?>
+              <?php for ($i = 0; $i < count($field); $i++) :
+                $type = $field[$i][0];
+                $name = $field[$i][1];
+                $value = old($name, $data[$name] ?? '');
+                ?>
                 <div class="row mb-3">
-                  <label for="<?= $field[$i][1] ?>" class="col-sm-2 col-form-label"><?= $fieldName[$i] ?></label>
+                  <label for="<?= $name ?>" class="col-sm-2 col-form-label"><?= esc($fieldName[$i]) ?></label>
                   <div class="col-sm-10">
-                    <?php
-                    $type = $field[$i][0];
-                    $name = $field[$i][1];
-                    $value = old($name, $data[$name] ?? '');
-                    ?>
 
-                    <?php if ($type === 'text' || $type === 'date' || $type === 'email'): ?>
-                      <input 
-                      type="<?= $type ?>" 
-                      class="form-control" 
-                      id="<?= $name ?>" 
-                      name="<?= $name ?>" 
-                      value="<?= esc($value) ?>" />
+                    <?php if (in_array($type, ['text', 'date', 'email', 'password'])): ?>
+                      <input type="<?= $type ?>" class="form-control" id="<?= $name ?>" name="<?= $name ?>" value="<?= esc($value) ?>" />
+
+                    <?php elseif ($type === 'file'): ?>
+                      <?php if (!empty($value)): ?>
+                        <div class="mb-2">
+                          <img src="<?= base_url('uploads/' . $value) ?>" alt="Current File" style="max-height: 100px;">
+                        </div>
+                      <?php endif; ?>
+                      <input type="file" class="form-control" id="<?= $name ?>" name="<?= $name ?>" />
+
+                    <?php elseif ($type === 'textarea'): ?>
+                      <textarea class="form-control" id="<?= $name ?>" name="<?= $name ?>"><?= esc($value) ?></textarea>
 
                     <?php elseif ($type === 'select'): ?>
                       <select class="form-control" id="<?= $name ?>" name="<?= $name ?>">
                         <?php foreach ($fieldOption[$i] as $option): ?>
-                          <option value="<?= esc($option[0]) ?>" <?= ($value == $option[0]) ? 'selected' : '' ?>>
+                          <option value="<?= esc($option[0]) ?>" <?= $value == $option[0] ? 'selected' : '' ?>>
                             <?= esc($option[1]) ?>
                           </option>
-                        <?php endforeach; ?>
+                        <?php endforeach ?>
                       </select>
+                    <?php endif ?>
 
-                    <?php endif; ?>
                   </div>
                 </div>
-              <?php endfor; ?>
+              <?php endfor ?>
 
               <a href="<?= site_url($table) ?>" class="btn btn-danger">Cancel</a>
               <button type="submit" class="btn btn-success float-end">Update</button>
+
             </form>
 
           </div>

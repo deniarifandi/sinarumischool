@@ -16,29 +16,30 @@ class murid extends MyResourceController
     public $fieldList = [
         ['murid_nama','Nama Murid'], 
         ['judul','Kelas'],
-        ['deskripsi','Kelompok Usia']
+        ['deskripsi','Description']
     ];
 
     public $field = [
         ['text','murid_nama'], 
         ['select','kelompok_id'],
-];
-
-public $fieldName = [
-        'Nama Murid', 
-        'Kelompok'
     ];
 
-public $fieldOption = [
-  ['noOption'], 
-  [['1','BINTANG (3-4 TAHUN)'],['2','BULAN (4-5 TAHUN)'],['3','MATAHARI (5-6 TAHUN)']]
-];
+    public $fieldName = [
+            'Nama Murid', 
+            'Kelompok'
+        ];
+
+    public $fieldOption = [
+      ['noOption'], 
+      ['noOption']
+    ];
 
     public $dataToShow = [];
 
 
     public function __construct()
     {
+        $this->fieldOption[1] = $this->getdata('kelompok'); 
         $this->model = new MuridModel();
         $this->dataToShow = $this->prepareDataToShow();
     }
@@ -46,7 +47,8 @@ public $fieldOption = [
     public function data(){
         $builder = Database::connect()->table($this->table)
         ->select('murid.* , kelompok.*')
-        ->join('kelompok','kelompok.kelompok_id = murid.kelompok_id');
+        ->join('kelompok','kelompok.kelompok_id = murid.kelompok_id')
+        ->where('murid.deleted_at',NULL);;
 
         $datatable = new Datatable();
 

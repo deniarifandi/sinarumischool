@@ -49,13 +49,22 @@
                   <li class="nav-item">
                     <a href="<?= base_url(); ?>kelompok" class="nav-link">
                       <i class="nav-icon bi bi-people"></i>
-                      <p >
+                      <p>                       
                         Kelompok / Kelas
                       </p>
                     </a>
                   </li>
+                 
                   <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="<?= base_url(); ?>petakonsep" class="nav-link">
+                      <i class="nav-icon bi bi-people"></i>
+                      <p >
+                        Peta Konsep
+                      </p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="<?= base_url(); ?>subjek" class="nav-link">
                       <i class="nav-icon bi bi-journals"></i>
                       <p>
                         Subjek
@@ -63,13 +72,31 @@
                     </a>
                   </li>
                    <li class="nav-item">
-                    <a href="<?= base_url(); ?>assignments" class="nav-link">
+                    <a href="<?= base_url(); ?>tujuan" class="nav-link">
                       <i class="nav-icon bi bi-journals"></i>
                       <p>
-                        Assignment
+                        Tujuan
                       </p>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a href="<?= base_url(); ?>topik" class="nav-link">
+                      <i class="nav-icon bi bi-journals"></i>
+                      <p>
+                        Topik
+                      </p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="<?= base_url(); ?>subtopik" class="nav-link">
+                      <i class="nav-icon bi bi-journals"></i>
+                      <p>
+                        Sub-Topik
+                      </p>
+                    </a>
+                  </li>
+
+                 
                 </ul>
               </li>
               <li class="nav-item">
@@ -116,40 +143,16 @@
                 </ul>
               </li>
                <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="<?php echo base_url(); ?>modul" class="nav-link">
                   <i class="nav-icon bi bi-easel"></i>
                   <p>
                     Modul Ajar
                     <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
                 </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="<?= base_url(); ?>petakonsep" class="nav-link">
-                      <i class="nav-icon bi bi-people"></i>
-                      <p >
-                        Peta Konsep
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <i class="nav-icon bi bi-journals"></i>
-                      <p>
-                        Subjek
-                      </p>
-                    </a>
-                  </li>
-                   <li class="nav-item">
-                    <a href="<?= base_url(); ?>assignments" class="nav-link">
-                      <i class="nav-icon bi bi-journals"></i>
-                      <p>
-                        Assignment
-                      </p>
-                    </a>
-                  </li>
-                </ul>
+                
               </li>
+             
               <li class="nav-item">
                 <a href="<?php echo base_url();?>class" class="nav-link">
                   <i class="nav-icon bi bi-easel"></i>
@@ -158,6 +161,15 @@
                   </p>
                 </a>
               </li>
+              <li class="nav-item">
+                    <a href="<?= base_url(); ?>setting" class="nav-link">
+                      <i class="nav-icon bi bi-people"></i>
+                      <p>                       
+                        Setting
+                      </p>
+                    </a>
+                  </li>
+
            
               <li class="nav-header">EXAMPLES</li>
               <li class="nav-item">
