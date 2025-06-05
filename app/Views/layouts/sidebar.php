@@ -117,7 +117,7 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="guru" class="nav-link">
+                    <a href="<?= base_url(); ?>guru" class="nav-link">
                       <i class="nav-icon bi bi-person-badge"></i>
                       <p>
                         Guru

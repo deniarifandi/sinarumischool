@@ -4,6 +4,8 @@
 namespace App\Controllers;
 
 use CodeIgniter\RESTful\ResourceController;
+use Config\Database;
+use App\Libraries\datatable;
 
 class MyResourceController extends ResourceController
 {
@@ -142,5 +144,23 @@ public function getdata($table){
         // print_r($indexedOnly);
     
         return $indexedOnly;
+    }
+
+    public function data(){
+        $builder = Database::connect()->table($this->table);
+        $builder->select($this->table.'.*');
+        if (!empty($this->joinTable)) {
+            foreach ($this->joinTable as $join) {
+                    // $join[0] = join table name
+                    // $join[1] = join condition
+                $builder->select($join[0] . '.*');
+                $builder->join($join[0], $join[1],$join[2]);
+            }
+        }
+        $builder->where($this->table.'.deleted_at',NULL);;
+
+        $datatable = new Datatable();
+
+        return $datatable->generate($builder, $this->table.'.'.$this->primaryKey, $this->toSearch);
     }
 }

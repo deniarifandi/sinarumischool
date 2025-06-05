@@ -2,10 +2,7 @@
 
 namespace App\Controllers;
 
-//use CodeIgniter\RESTful\ResourceController;
 use App\Models\KelompokModel;
-use App\Libraries\datatable;
-use Config\Database;
 
 class kelompok extends MyResourceController
 {
@@ -15,47 +12,46 @@ class kelompok extends MyResourceController
     public $primaryKey = "kelompok_id";
     
     public $fieldList = [
-         ['judul', 'murid.nama'],
-         ['judul', 'kelompok.judul']       
+         ['kelompok_nama', 'Kelas'],
+         ['guru_nama','Class Teacher'],
+    ];
+
+    public $toSearch = 
+    [
+        'kelompok.kelompok_nama',
+        'guru.guru_nama'
+    ];
+
+    public $joinTable = [
+        ['guru', 'guru.guru_id = kelompok.guru_id','left']
     ];
 
    public $field = [
-        ['text','judul'], 
-        ['text','description'],
+        ['text','kelompok_nama'], 
+        ['select','guru_id'],
+        ['text','deskripsi'],
     ];
 
     public $fieldName = [
         'Nama Kelas', 
+        'Class Teacher',
         'Description'
     ];
 
     public $fieldOption = [
         ['noOption'], 
+        ['noOption'],
         ['noOption']
+
     ];
 
     public $dataToShow = [];
 
     public function __construct()
     {
-
+        $this->fieldOption[1] = $this->getdata('guru'); 
         $this->model = new KelompokModel();
         $this->dataToShow = $this->prepareDataToShow();
-    }
-
-    public function data(){
-        $builder = Database::connect()->table($this->table)
-            ->select($this->table . '.*')
-            ->where($this->table . '.deleted_at', null);
-
-        $datatable = new Datatable();
-
-       $fieldColumns = [];
-        foreach ($this->field as $f) {
-            $fieldColumns[] = $this->table . '.' . $f[1]; // use only the field name, not type
-        }
-
-        return $datatable->generate($builder, $this->table . '.' . $this->primaryKey, $fieldColumns);
     }
 
 }
