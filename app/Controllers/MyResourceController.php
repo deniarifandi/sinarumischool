@@ -49,7 +49,17 @@ class MyResourceController extends ResourceController
                 $input[$name] = $file->getClientName();
             }
         } else {
-            $input[$name] = $this->request->getPost($name);
+
+            if ($type == "password") {
+
+                // $name = password_hash($name, PASSWORD_DEFAULT);
+                $input[$name] = password_hash($this->request->getPost($name),PASSWORD_DEFAULT);
+                // echo $input[$name];
+                
+            }else{
+                $input[$name] = $this->request->getPost($name);    
+            }
+            
         }
     }
 
@@ -109,7 +119,17 @@ public function update($id = null)
                 $input[$name] = $record[$name];
             }
         } else {
-            $input[$name] = $this->request->getPost($name);
+            
+            if ($type == "password") {
+
+                // $name = password_hash($name, PASSWORD_DEFAULT);
+                $input[$name] = password_hash($this->request->getPost($name),PASSWORD_DEFAULT);
+                // echo $input[$name];
+                
+            }else{
+                $input[$name] = $this->request->getPost($name);    
+            }
+            
         }
     }
 

@@ -11,7 +11,8 @@
           <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-              <div class="col-sm-6"><h3 class="mb-0">Dashboard</h3></div>
+              <div class="col-sm-6"><h3 class="mb-0"><img src="<?php echo base_url() ?>assets/img/class.svg" style="max-width: 35px;"> Dashboard <?php echo $data->kelompok_nama ?> </h3></div>
+
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
                   <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -27,11 +28,12 @@
           <!--begin::Container-->
           <div class="container-fluid">
             <!-- Info boxes -->
+
             <div class="row">
               
               <!-- /.col -->
-              <div class="col-3 col-sm-3 col-md-3">
-                <a href="lessonplan">
+              <div class="col-md-3">
+                <a href="<?php echo base_url(); ?>absensi">
                 <div class="info-box">
                   <span class="info-box-icon text-bg-warning shadow-sm">
                     <i class="bi bi-person-check"></i>

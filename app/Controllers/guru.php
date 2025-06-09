@@ -14,18 +14,26 @@ class guru extends MyResourceController
     public $title = "guru";
     public $primaryKey = "guru_id";
     public $fieldList = [
-        ['guru_nama','Nama Guru']
+        ['guru_nama','Nama Guru'],
+        ['guru_username','Username'],
+        // ['guru_password','Password']
     ];
 
     public $field = [
-        ['text','guru_nama']
+        ['text','guru_nama'],
+        ['text','guru_username'],
+        ['password','guru_password']
 ];
 
 public $fieldName = [
-        'Nama Guru'
+        'Nama Guru',
+        'Username',
+        'Password'
     ];
 
 public $fieldOption = [
+  ['noOption'],
+  ['noOption'],
   ['noOption']
 ];
 
