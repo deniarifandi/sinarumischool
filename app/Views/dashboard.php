@@ -42,7 +42,7 @@
                     <span class="info-box-text">Absensi</span>
                     <span class="info-box-number">
                       
-                      <small>Not Submitted</small>
+                      <small>Student Absence List</small>
                     </span>
                   </div>
                   <!-- /.info-box-content -->
