@@ -60,6 +60,36 @@ class absensi extends BaseController
         return view('mli/editAbsensi', ['data' => $data]);
     }
 
+    public function delete($tanggal)
+    {
+          $user = session()->get('user_id');
+
+            $db = \Config\Database::connect();
+
+            // Step 1: Get murid_id under this teacher
+            $muridBuilder = $db->table('murid');
+            $muridBuilder->select('murid.murid_id');
+            $muridBuilder->join('kelompok', 'kelompok.kelompok_id = murid.kelompok_id');
+            $muridBuilder->where('kelompok.guru_id', $user);
+            $muridIDs = $muridBuilder->get()->getResultArray();
+
+            $muridIDList = array_column($muridIDs, 'murid_id');
+
+            if (!empty($muridIDList)) {
+                // Step 2: Delete from absensi where date and murid_id match
+                $absenBuilder = $db->table('absensi');
+                $absenBuilder->where('tanggal', $tanggal);
+                $absenBuilder->whereIn('murid_id', $muridIDList);
+                $absenBuilder->delete();
+
+                session()->setFlashdata('success', 'Student attendance on ' . date('j-M-Y', strtotime($tanggal)) . ' deleted.');
+            } else {
+                session()->setFlashdata('error', 'No students found for this teacher.');
+            }
+
+            return redirect()->to(site_url('absensi'));
+    }
+
   public function saveAbsensi()
 {
 

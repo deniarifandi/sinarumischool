@@ -56,7 +56,7 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th>ID</th>
+                      <th>No</th>
                       <th>Group</th>
                       <th>Tanggal</th>
                       <th>Action</th>
@@ -65,11 +65,16 @@
                   <tbody>
                     <?php for ($i = 0; $i < count($data); $i++) { ?>
                       <tr>
-                        <td><?= $data[$i]->murid_id ?></td>
+                        <td><?= $i+1 ?></td>
                         <td><?= $data[$i]->kelompok_nama ?></td>
                         <td><?= date('j-M-Y', strtotime($data[$i]->tanggal)) ?></td>
                         <td>
                           <a href="<?php echo base_url(); ?>absensi/edit/<?= $data[$i]->tanggal ?>" class="btn btn-warning btn-sm">Edit</a>
+                          <a href="<?php echo base_url(); ?>absensi/delete/<?= $data[$i]->tanggal ?>" 
+                             onclick="return confirm('Are you sure you want to delete attendance for <?= date('j-M-Y', strtotime($data[$i]->tanggal)) ?>?')" 
+                             class="btn btn-danger btn-sm">
+                             Delete
+                          </a>
                         </td>
                       </tr>
                     <?php } ?>

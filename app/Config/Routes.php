@@ -23,6 +23,9 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->get('absensi','absensi::index');
 	$routes->get('absensi/add','absensi::addAbsensi');
 	$routes->get('absensi/edit/(:segment)', 'absensi::editAbsensi/$1');
+
+	$routes->get('absensi/delete/(:segment)', 'absensi::delete/$1');
+
 	$routes->post('absensi','absensi::saveAbsensi');
 	$routes->post('/absensi/data', 'absensi::data');
 
