@@ -40,7 +40,7 @@ class guru extends MyResourceController
        public $field = [
         ['text','guru_nama'],
         ['text','guru_username'],
-        ['password','guru_password']
+        ['text','guru_password']
     ];
 
 

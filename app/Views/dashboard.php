@@ -55,8 +55,8 @@
                 <div class="col-md-3">
                 <a href="<?php echo base_url(); ?>kelompok">
                 <div class="info-box">
-                  <span class="info-box-icon text-bg-success shadow-sm">
-                    <i class="bi bi-person-lines-fill"></i>
+                  <span class="info-box-icon shadow-sm" style="background-color:#fd7e14!important">
+                    <i class="bi bi-person-lines-fill text-white"></i>
                   </span>
                   <div class="info-box-content">
                     <span class="info-box-text">Class</span>
@@ -92,7 +92,7 @@
                 <a href="<?php echo base_url(); ?>subjek">
                 <div class="info-box">
                   <span class="info-box-icon shadow-sm" style="background-color:#01ff70!important">
-                    <i class="bi bi-chat-dots"></i>
+                    <i class="bi bi-chat-dots text-dark"></i>
                   </span>
                   <div class="info-box-content">
                     <span class="info-box-text">Subject</span>
@@ -117,7 +117,7 @@
                 <a href="<?php echo base_url(); ?>absensi">
                 <div class="info-box">
                   <span class="info-box-icon text-bg-warning shadow-sm">
-                    <i class="bi bi-person-check"></i>
+                    <i class="bi bi-person-check text-dark"></i>
                   </span>
                   <div class="info-box-content">
                     <span class="info-box-text">Absensi</span>
@@ -143,7 +143,7 @@
                 <a href="<?php echo base_url(); ?>tujuan">
                 <div class="info-box">
                   <span class="info-box-icon shadow-sm" style="background-color:#3d9970!important">
-                    <i class="bi bi-chat-dots"></i>
+                    <i class="bi bi-chat-dots text-white"></i>
                   </span>
                   <div class="info-box-content">
                     <span class="info-box-text">Lesson Objective</span>

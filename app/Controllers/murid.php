@@ -45,8 +45,8 @@ class murid extends MyResourceController
     ];
 
     public $fieldName = [
-        'Nama Murid', 
-        'Kelompok'
+        'Student`s Name', 
+        'Class'
     ];
 
     public $fieldOption = [
