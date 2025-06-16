@@ -11,11 +11,11 @@ class guru extends MyResourceController
 {
 
     public $table = "guru";
-    public $title = "guru";
+    public $title = "Teacher";
     public $primaryKey = "guru_id";
 
     public $fieldList = [
-        ['guru_nama','Nama Guru'],
+        ['guru_nama','Teacher`s Name'],
         ['guru_username','Username']
         // ['guru_password','Password']
     ];
@@ -23,9 +23,7 @@ class guru extends MyResourceController
     public $selectList= [
             'guru.guru_id',
             'guru.guru_nama',
-            'guru.guru_username',
-            'kelompok.kelompok_nama',
-            'kelompok.kelompok_id'
+            'guru.guru_username'
         ];
 
     public $toSearch = 
@@ -36,7 +34,7 @@ class guru extends MyResourceController
 
      public $joinTable = [
         // ['kelompok', 'guru.guru_id = kelompok.guru_id','left']
-        ['kelompok', 'kelompok.guru_id = guru.guru_id','left']
+        // ['kelompok', 'kelompok.guru_id = guru.guru_id','left']
     ];
 
        public $field = [

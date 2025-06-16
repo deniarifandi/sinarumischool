@@ -24,10 +24,89 @@
           </div>
           <!--end::Container-->
         </div>
-        <br>
+        
         <div class="app-content">
           <!--begin::Container-->
           <div class="container-fluid">
+            <div>
+              <h4>School Management</h4>
+            </div>
+            <div class="row">
+              <!-- /.col -->
+              <div class="col-md-3">
+                <a href="<?php echo base_url(); ?>guru">
+                <div class="info-box">
+                  <span class="info-box-icon shadow-sm" style="background-color:#d81b60!important">
+                    <i class="bi bi-person-badge text-white"></i>
+                  </span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Teacher</span>
+                    <span class="info-box-number">
+                      
+                      <small>Teacher Manager</small>
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                  </a>
+                <!-- /.info-box -->
+              </div>
+              <!-- /.col -->
+                <div class="col-md-3">
+                <a href="<?php echo base_url(); ?>kelompok">
+                <div class="info-box">
+                  <span class="info-box-icon text-bg-success shadow-sm">
+                    <i class="bi bi-person-lines-fill"></i>
+                  </span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Class</span>
+                    <span class="info-box-number">
+                      
+                      <small>Class Manager</small>
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                  </a>
+                <!-- /.info-box -->
+              </div>
+              <div class="col-md-3">
+                <a href="<?php echo base_url(); ?>murid">
+                <div class="info-box">
+                  <span class="info-box-icon shadow-sm" style="background-color:#6610f2">
+                    <i class="bi bi-mortarboard text-white"></i>
+                  </span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Student</span>
+                    <span class="info-box-number">
+                      
+                      <small>Student Manager</small>
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                  </a>
+                <!-- /.info-box -->
+              </div>
+                <div class="col-md-3">
+                <a href="<?php echo base_url(); ?>subjek">
+                <div class="info-box">
+                  <span class="info-box-icon shadow-sm" style="background-color:#01ff70!important">
+                    <i class="bi bi-chat-dots"></i>
+                  </span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Subject</span>
+                    <span class="info-box-number">
+                      
+                      <small>Manage Subject</small>
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                  </a>
+                <!-- /.info-box -->
+              </div>
+            </div>
             <!-- Info boxes -->
             <div>
               <h4>Class Management</h4>
@@ -54,21 +133,23 @@
               </div>
               <!-- /.col -->
             </div>
-            <br>
+            
+            <div class="row">
             <div>
               <h4>Subject Management</h4>
             </div>
-            <div class="col-md-3">
-                <a href="<?php echo base_url(); ?>absensi">
+          
+              <div class="col-md-3">
+                <a href="<?php echo base_url(); ?>tujuan">
                 <div class="info-box">
-                  <span class="info-box-icon text-bg-danger shadow-sm">
+                  <span class="info-box-icon shadow-sm" style="background-color:#3d9970!important">
                     <i class="bi bi-chat-dots"></i>
                   </span>
                   <div class="info-box-content">
-                    <span class="info-box-text">ESL</span>
+                    <span class="info-box-text">Lesson Objective</span>
                     <span class="info-box-number">
                       
-                      <small>Manage Subject</small>
+                      <small>Manage LO</small>
                     </span>
                   </div>
                   <!-- /.info-box-content -->
@@ -76,6 +157,7 @@
                   </a>
                 <!-- /.info-box -->
               </div>
+            </div>
       
           </div>
           <!--end::Container-->

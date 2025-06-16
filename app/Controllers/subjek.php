@@ -13,6 +13,7 @@ class subjek extends MyResourceController
     public $table = "subjek";
     public $title = "Subject";
     public $primaryKey = "subjek_id";
+
     public $fieldList = [
         ['subjek_nama','Subject']
     ];
@@ -30,7 +31,7 @@ class subjek extends MyResourceController
 
     public $field = [
         ['text','subjek_nama'],
-        ['select','kelompok_id']
+        // ['select','kelompok_id']
 ];
 
 public $fieldName = [
@@ -53,16 +54,16 @@ public $fieldOption = [
         $this->dataToShow = $this->prepareDataToShow();
     }
 
-    public function data(){
-        $builder = Database::connect()->table($this->table)
-        ->select('subjek.*')
-        ->where('subjek.deleted_at',NULL);
+    // public function data(){
+    //     $builder = Database::connect()->table($this->table)
+    //     ->select('subjek.*')
+    //     ->where('subjek.deleted_at',NULL);
 
-        $datatable = new Datatable();
+    //     $datatable = new Datatable();
 
-        return $datatable->generate($builder, 'subjek.subjek_id',[
-            'subjek.subjek_nama'
-        ]);
-    }
+    //     return $datatable->generate($builder, 'subjek.subjek_id',[
+    //         'subjek.subjek_nama'
+    //     ]);
+    // }
 
 }

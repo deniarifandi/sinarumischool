@@ -13,9 +13,10 @@ class kelompok extends MyResourceController
     
     public $fieldList = [
          ['kelompok_nama', 'Class'],
-         ['guru_id','Guru'],
-         ['guru_nama','Class Teacher'],
+         // ['guru_id','Guru'],
          ['tingkat_nama','Grade'],
+         ['guru_nama','Class Teacher']
+         
     ];
 
 

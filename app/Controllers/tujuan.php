@@ -15,13 +15,15 @@ class tujuan extends MyResourceController
     public $primaryKey = "tujuan_id";
     public $fieldList = [
         ['subjek_nama','Subject'],
-        ['tujuan_nama','Objective']
-    ];
+        ['tujuan_nama','Objective'],
+        ['tingkat_nama','Grade']
 
+    ];
 
     public $selectList= [
             'tujuan.*',
-            'subjek.*'
+            'subjek.*',
+            'tingkat.tingkat_nama'
         ];
 
 

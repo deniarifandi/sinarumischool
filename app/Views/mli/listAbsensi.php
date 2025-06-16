@@ -53,7 +53,7 @@
               <br>
 
               <form action="<?php base_url(); ?>absensi" method="post">
-                <table class="table">
+                <table class="table" id="attendanceTable">
                   <thead>
                     <tr>
                       <th>No</th>
@@ -116,3 +116,14 @@
   <?php 
   echo view('layouts/footer.php');
 ?>
+
+<script>
+  $(document).ready(function() {
+    $('#attendanceTable').DataTable({
+      responsive: true,
+      columnDefs: [
+        { orderable: false, targets: 3 } // disable sorting on Action column
+      ]
+    });
+  });
+</script>

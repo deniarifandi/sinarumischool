@@ -41,7 +41,7 @@
                 <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-easel"></i>
                   <p>
-                    Akademik
+                    School Management
                     <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
                 </a>
@@ -111,7 +111,7 @@
                 <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-person-gear"></i>
                   <p>
-                    User
+                    User Management
                     <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
                 </a>
@@ -132,51 +132,37 @@
                       </p>
                     </a>
                   </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <i class="nav-icon bi bi-house"></i>
-                      <p>
-                        Parents
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <i class="nav-icon bi bi-briefcase"></i>
-                      <p>
-                        Staff
-                      </p>
-                    </a>
-                  </li>
+                 
+                 
                 </ul>
               </li>
-               <li class="nav-item">
+             <!--   <li class="nav-item">
                 <a href="<?php echo base_url(); ?>modul" class="nav-link">
                   <i class="nav-icon bi bi-easel"></i>
                   <p>
-                    Modul Ajar
+                    Lesson Plan
                     <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
                 </a>
                 
-              </li>
+              </li> -->
              
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a href="<?php echo base_url();?>class" class="nav-link">
                   <i class="nav-icon bi bi-easel"></i>
                   <p>
                     Parent Portal
                   </p>
                 </a>
-              </li>
-              <li class="nav-item">
+              </li> -->
+           <!--    <li class="nav-item">
                     <a href="<?= base_url(); ?>setting" class="nav-link">
                       <i class="nav-icon bi bi-people"></i>
                       <p>                       
                         Setting
                       </p>
                     </a>
-                  </li>
+                  </li> -->
 
            
              <!--  <li class="nav-header">Auth</li>
