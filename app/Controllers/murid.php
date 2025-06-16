@@ -8,16 +8,22 @@ class murid extends MyResourceController
 {
 
     public $table = "murid";
-    public $title = "Murid";
+    public $title = "Students";
     public $primaryKey = "murid_id";
 
     //List Parameter
     public $fieldList = [
-        ['murid_nama','Nama Murid'], 
-        ['kelompok_nama','Kelas'],
+        ['murid_nama','Student`s Name'], 
+        ['kelompok_nama','Class'],
         ['guru_nama','Class Teacher'],
         ['deskripsi','Description']
     ];
+
+      public $selectList= [
+            'murid.*',
+            'kelompok.*',
+            'guru.*'
+        ];
 
     public $toSearch = 
     [

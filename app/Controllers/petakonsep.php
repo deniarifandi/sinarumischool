@@ -18,6 +18,17 @@ class petakonsep extends MyResourceController
         ['url','URL']        
     ];
 
+
+    public $selectList= [
+            'petakonsep.*',
+        ];
+
+    public $toSearch = 
+    [
+        'guru.guru_nama'
+    ];
+
+
     public $field = [
         ['text','judul'], 
         ['file','url'],
@@ -42,16 +53,16 @@ public $fieldOption = [
         $this->dataToShow = $this->prepareDataToShow();
     }
 
-    public function data(){
-        $builder = Database::connect()->table($this->table)
-        ->select('petakonsep.*')
-        ->where('petakonsep.deleted_at',NULL);
+    // public function data(){
+    //     $builder = Database::connect()->table($this->table)
+    //     ->select('petakonsep.*')
+    //     ->where('petakonsep.deleted_at',NULL);
 
-        $datatable = new Datatable();
+    //     $datatable = new Datatable();
 
-        return $datatable->generate($builder, 'petakonsep.petakonsep_id',[
-            'petakonsep.judul'
-        ]);
-    }
+    //     return $datatable->generate($builder, 'petakonsep.petakonsep_id',[
+    //         'petakonsep.judul'
+    //     ]);
+    // }
 
 }

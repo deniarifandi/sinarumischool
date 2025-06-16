@@ -57,12 +57,13 @@
                   <form action="<?php echo base_url(); ?>absensi" method="post">
                     <input type="hidden" name="date" value="<?= $data['tanggal'] ?>">
 
-                  <table class="table">
+                  <table class="table table-bordered">
                     <thead>
                       <tr>
                         <th>Name</th>
                         <th>Group</th>
                         <th>Attendance</th>
+                        <th>Note</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -84,6 +85,10 @@
                               <input class="form-check-input" type="radio" name="attendance[<?= $i ?>]" value="3"  id="sick<?= $i ?>" <?= $row->status == 3 ? 'checked' : '' ?>> 
                               <label class="form-check-label" for="sick<?= $i ?>">Sick</label>
                             </div>
+                          
+                          </td>
+                          <td>
+                              <input class="form-control" type="text" id="keterangan[<?= $i ?>]" name="keterangan[<?= $i ?>]"  value="<?= $row->absensi_keterangan ?>">
                           </td>
                         </tr>
                       <?php endforeach; ?>

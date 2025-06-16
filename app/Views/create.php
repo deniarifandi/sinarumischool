@@ -69,12 +69,29 @@
 
                       <?php elseif ($type === 'select'): ?>
                         <select class="form-control" id="<?= $name ?>" name="<?= $name ?>">
+                           <option value="" >-Select-</option>
                           <?php foreach ($fieldOption[$i] as $option): ?>
                             <option value="<?= esc($option[0]) ?>" <?= ($oldValue === $option[0]) ? 'selected' : '' ?>>
                               <?= esc($option[1]) ?>
+
                             </option>
                           <?php endforeach; ?>
                         </select>
+              
+                        <?php elseif ($type === 'radio'): ?>
+                         <div class="row">
+                          <?php foreach ($fieldOption[$i] as $option): ?>
+                            <div class="form-check col-sm-4 mt-4">
+
+                              <input class="form-check-input" type="radio" name="<?= $name ?>" id="<?= $name . '_' . esc($option[0]) ?>" value="<?= esc($option[0]) ?>" <?= ($oldValue === $option[0]) ? 'checked' : '' ?>>
+                              <label class="form-check-label" for="<?= $name . '_' . esc($option[0]) ?>">
+                                <?= esc($option[1]) ?><br>
+                                  <img src="<?php echo base_url()."uploads/".$option[2]; ?>" style="max-width: 150px;">
+                              </label>
+
+                            </div>
+                          <?php endforeach; ?>
+                        </div>
                         <?php elseif ($type === 'textarea'): ?>
                           <textarea class="form-control" id="<?= $name ?>" name="<?= $name ?>"><?= esc($oldValue) ?></textarea>
                       <?php endif; ?>

@@ -73,7 +73,7 @@
   <body class="login-page bg-body-secondary" style="display: flex; justify-content: center; align-items: center; height: 100vh;  ">
     <div class="login-box" style="width: 600px;">
       <div class="login-logo">
-        <b>My Little Island School Portal</b><br> <h5>SinaRumi V.3</h5>
+        <b>My Little Island School Portal</b><br> <h5>SinaRumi v.3.0.0</h5>
       </div>
       <!-- /.login-logo -->
       <div class="card" style="width:360px; margin: 0 auto;">

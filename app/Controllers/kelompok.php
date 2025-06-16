@@ -12,9 +12,18 @@ class kelompok extends MyResourceController
     public $primaryKey = "kelompok_id";
     
     public $fieldList = [
-         ['kelompok_nama', 'Kelas'],
+         ['kelompok_nama', 'Class'],
+         ['guru_id','Guru'],
          ['guru_nama','Class Teacher'],
+         ['tingkat_nama','Grade'],
     ];
+
+
+    public $selectList= [
+            'kelompok.*',
+            'guru.*',
+            'tingkat.*'
+        ];
 
     public $toSearch = 
     [
@@ -23,26 +32,29 @@ class kelompok extends MyResourceController
     ];
 
     public $joinTable = [
-        ['guru', 'guru.guru_id = kelompok.guru_id','left']
+        ['guru', 'guru.guru_id = kelompok.guru_id','left'],
+        ['tingkat','kelompok.tingkat_id = tingkat.tingkat_id','left']
     ];
 
    public $field = [
         ['text','kelompok_nama'], 
         ['select','guru_id'],
         ['text','deskripsi'],
+        ['select','tingkat_id']
     ];
 
     public $fieldName = [
         'Nama Kelas', 
         'Class Teacher',
-        'Description'
+        'Description',
+        'Grade'
     ];
 
     public $fieldOption = [
         ['noOption'], 
         ['noOption'],
+        ['noOption'],
         ['noOption']
-
     ];
 
     public $dataToShow = [];
@@ -50,6 +62,7 @@ class kelompok extends MyResourceController
     public function __construct()
     {
         $this->fieldOption[1] = $this->getdata('guru'); 
+        $this->fieldOption[3] = $this->getdata('tingkat'); 
         $this->model = new KelompokModel();
         $this->dataToShow = $this->prepareDataToShow();
     }

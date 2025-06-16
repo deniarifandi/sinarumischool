@@ -56,7 +56,8 @@ class absensi extends BaseController
 
         $data['absensi'] = $builder->get()->getResult();
         $data['tanggal'] = $date;
-
+        // print_r($data);
+        // echo json_encode($data);
         return view('mli/editAbsensi', ['data' => $data]);
     }
 
@@ -99,6 +100,7 @@ class absensi extends BaseController
 
     $murid_ids = $this->request->getPost('murid_id');      // array of student IDs
     $attendances = $this->request->getPost('attendance');  // array of attendance statuses
+    $keterangans = $this->request->getPost('keterangan');
     $date = $this->request->getPost('date'); // or get from form input if needed
 
     for ($i = 0; $i < count($murid_ids); $i++) {
@@ -107,6 +109,7 @@ class absensi extends BaseController
             'murid_id' => $murid_ids[$i],
             'status'   => $attendances[$i], // 1 = present, 2 = absent, 3 = sick
             'tanggal'  => $date,
+            'absensi_keterangan' => $keterangans[$i]
         ];
 
         // Insert or update logic (optional: check if record exists for that date + murid)

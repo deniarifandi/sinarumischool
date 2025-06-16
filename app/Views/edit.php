@@ -67,13 +67,36 @@ echo view('layouts/sidebar.php');
 
                     <?php elseif ($type === 'select'): ?>
                       <select class="form-control" id="<?= $name ?>" name="<?= $name ?>">
+                         <option value="" >-Select-</option>
                         <?php foreach ($fieldOption[$i] as $option): ?>
                           <option value="<?= esc($option[0]) ?>" <?= $value == $option[0] ? 'selected' : '' ?>>
                             <?= esc($option[1]) ?>
                           </option>
                         <?php endforeach ?>
                       </select>
-                    <?php endif ?>
+                    <?php elseif ($type === 'radio'): ?>
+                      <div class="row">
+                        <?php foreach ($fieldOption[$i] as $option): ?>
+                          <div class="form-check col-sm-4 mt-4">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="<?= $name ?>"
+                              id="<?= $name . '_' . esc($option[0]) ?>"
+                              value="<?= esc($option[0]) ?>"
+                              <?= ($value == $option[0]) ? 'checked' : '' ?>
+                            >
+                            <label class="form-check-label" for="<?= $name . '_' . esc($option[0]) ?>">
+                              <?= esc($option[1]) ?><br>
+                              <?php if (!empty($option[2])): ?>
+                                <img src="<?= base_url('uploads/' . $option[2]) ?>" alt="<?= esc($option[1]) ?>" style="max-width: 150px;">
+                              <?php endif; ?>
+                            </label>
+                          </div>
+                        <?php endforeach; ?>
+                      </div>
+                    <?php endif; ?>
+                    
 
                   </div>
                 </div>

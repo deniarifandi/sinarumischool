@@ -14,6 +14,9 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 
 	$routes->get('/api/kelompok/getdata','tujuan::getdata');
 
+	$routes->resource('tingkat');
+	$routes->post('/tingkat/data', 'tingkat::data');
+
 	$routes->resource('kelompok');
 	$routes->post('/kelompok/data', 'kelompok::data');
 

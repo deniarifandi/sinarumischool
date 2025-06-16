@@ -11,24 +11,42 @@ class tujuan extends MyResourceController
 {
 
     public $table = "tujuan";
-    public $title = "Tujuan";
+    public $title = "Objective";
     public $primaryKey = "tujuan_id";
     public $fieldList = [
-        ['judul','Kelompok'], 
-        ['subjek_nama','Subjek'],
-        ['isi','Tujuan']
+        ['subjek_nama','Subject'],
+        ['tujuan_nama','Objective']
     ];
 
+
+    public $selectList= [
+            'tujuan.*',
+            'subjek.*'
+        ];
+
+
+    public $toSearch = 
+    [
+        'tingkat.tingkat_nama'
+    ];
+
+    public $joinTable = [
+        ['tingkat', 'tingkat.tingkat_id = tujuan.tingkat_id','left'],
+        ['subjek', 'subjek.subjek_id = tujuan.subjek_id','left'],
+    ];
+
+
+
     public $field = [
-        ['select','kelompok_id'], 
         ['select','subjek_id'],
-        ['text','isi'],
+        ['select','tingkat_id'], 
+        ['text','tujuan_nama'],
 ];
 
 public $fieldName = [
-        'Nama Kelompok', 
-        'Subjek',
-        'Tujuan'
+        'Subject',
+        'Grade', 
+        'Objective'
     ];
 
 public $fieldOption = [
@@ -51,28 +69,28 @@ public $fieldOption = [
 
     public function __construct()
     {
-        $this->fieldOption[0] = $this->getdata('kelompok'); 
-        $this->fieldOption[1] = $this->getdata('subjek'); 
+        $this->fieldOption[0] = $this->getdata('subjek'); 
+        $this->fieldOption[1] = $this->getdata('tingkat'); 
         $this->model = new TujuanModel();
         $this->dataToShow = $this->prepareDataToShow();
        
     }
 
-    public function data(){
-        $builder = Database::connect()->table($this->table)
-        ->select('tujuan.*, kelompok.*, subjek.*')
-        ->join('kelompok','kelompok.kelompok_id = tujuan.kelompok_id')
-        ->join('subjek','subjek.subjek_id = tujuan.subjek_id')
-        ->where('tujuan.deleted_at', null);
+    // public function data(){
+    //     $builder = Database::connect()->table($this->table)
+    //     ->select('tujuan.*, kelompok.*, subjek.*')
+    //     ->join('kelompok','kelompok.kelompok_id = tujuan.kelompok_id')
+    //     ->join('subjek','subjek.subjek_id = tujuan.subjek_id')
+    //     ->where('tujuan.deleted_at', null);
 
-        $datatable = new Datatable();
+    //     $datatable = new Datatable();
 
-        return $datatable->generate($builder, 'tujuan.tujuan_id',[
-            'tujuan.kelompok_id',
-            'tujuan.subjek_id',
-            'tujuan.isi'
-        ]);
-    }
+    //     return $datatable->generate($builder, 'tujuan.tujuan_id',[
+    //         'tujuan.kelompok_id',
+    //         'tujuan.subjek_id',
+    //         'tujuan.isi'
+    //     ]);
+    // }
 
      
 

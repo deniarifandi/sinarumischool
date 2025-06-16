@@ -9,6 +9,7 @@ use App\Libraries\datatable;
 
 class MyResourceController extends ResourceController
 {
+    
     protected function prepareDataToShow()
     {
         $dataToShow = [
@@ -18,11 +19,13 @@ class MyResourceController extends ResourceController
             'fieldName'    => $this->fieldName,
             'primaryKey'   => $this->primaryKey,
             'fieldOption'  => $this->fieldOption,
-            'fieldList'    => $this->fieldList
+            'fieldList'    => $this->fieldList,
+            'selectList'   => $this->selectList
         ];
 
         return $dataToShow;
     }
+
     public function index()
     {   
 
@@ -169,11 +172,13 @@ public function getdata($table){
     public function data(){
         $builder = Database::connect()->table($this->table);
         $builder->select($this->table.'.*');
+
+         $builder->select(implode(', ', $this->selectList));
         if (!empty($this->joinTable)) {
             foreach ($this->joinTable as $join) {
                     // $join[0] = join table name
                     // $join[1] = join condition
-                $builder->select($join[0] . '.*');
+                // $builder->select($join[0] . '.*');
                 $builder->join($join[0], $join[1],$join[2]);
             }
         }

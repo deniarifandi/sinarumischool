@@ -11,21 +11,35 @@ class subjek extends MyResourceController
 {
 
     public $table = "subjek";
-    public $title = "Subjek";
+    public $title = "Subject";
     public $primaryKey = "subjek_id";
     public $fieldList = [
-        ['subjek_nama','Nama Subjek']
+        ['subjek_nama','Subject']
     ];
 
+
+    public $selectList= [
+            'subjek.*'
+        ];
+
+    public $toSearch = 
+    [
+        'guru.guru_nama'
+    ];
+
+
     public $field = [
-        ['text','subjek_nama']
+        ['text','subjek_nama'],
+        ['select','kelompok_id']
 ];
 
 public $fieldName = [
-        'Nama Subjek'
+        'Subject',
+        'Grade'
     ];
 
 public $fieldOption = [
+  ['noOption'],
   ['noOption']
 ];
 
@@ -34,6 +48,7 @@ public $fieldOption = [
 
     public function __construct()
     {
+        $this->fieldOption[1] = $this->getdata('tingkat'); 
         $this->model = new SubjekModel();
         $this->dataToShow = $this->prepareDataToShow();
     }

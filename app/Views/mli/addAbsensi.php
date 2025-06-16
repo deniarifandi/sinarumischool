@@ -61,19 +61,20 @@
               <div class="card-body">
 
               
-                <table class="table">
+                <table class="table table-bordered">
                   <thead>
                     <tr>
                       <th>ID</th>
                       <th>Name</th>
                       <th>Group</th>
                       <th>Attendance</th>
+                      <th>Note</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php for ($i = 0; $i < count($data); $i++) { ?>
                       <tr>
-                        <td><?= $data[$i]->murid_id ?></td>
+                        <td ><?= $data[$i]->murid_id ?></td>
                         <td><?= $data[$i]->murid_nama ?></td>
                         <td><?= $data[$i]->kelompok_nama ?></td>
                         <td>
@@ -91,7 +92,13 @@
                               <input class="form-check-input" type="radio" name="attendance[<?= $i ?>]" id="sick<?= $i ?>" value="3">
                               <label class="form-check-label" for="sick<?= $i ?>">Sick</label>
                             </div>
+
+                            
                           </div>
+                            
+                        </td>
+                        <td>
+                          <input class="form-control" type="text" name="keterangan[]"  value="">
                         </td>
                       </tr>
                     <?php } ?>

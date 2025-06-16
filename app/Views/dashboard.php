@@ -24,13 +24,15 @@
           </div>
           <!--end::Container-->
         </div>
+        <br>
         <div class="app-content">
           <!--begin::Container-->
           <div class="container-fluid">
             <!-- Info boxes -->
-
+            <div>
+              <h4>Class Management</h4>
+            </div>
             <div class="row">
-              
               <!-- /.col -->
               <div class="col-md-3">
                 <a href="<?php echo base_url(); ?>absensi">
@@ -52,13 +54,29 @@
               </div>
               <!-- /.col -->
             </div>
-            <!-- /.row -->
-            <!--begin::Row-->
-           
-            <!--end::Row-->
-            <!--begin::Row-->
-           
-            <!--end::Row-->
+            <br>
+            <div>
+              <h4>Subject Management</h4>
+            </div>
+            <div class="col-md-3">
+                <a href="<?php echo base_url(); ?>absensi">
+                <div class="info-box">
+                  <span class="info-box-icon text-bg-danger shadow-sm">
+                    <i class="bi bi-chat-dots"></i>
+                  </span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">ESL</span>
+                    <span class="info-box-number">
+                      
+                      <small>Manage Subject</small>
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                  </a>
+                <!-- /.info-box -->
+              </div>
+      
           </div>
           <!--end::Container-->
         </div>
