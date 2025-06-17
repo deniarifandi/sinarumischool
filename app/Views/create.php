@@ -64,8 +64,13 @@
                       $oldValue = old($name);
                       ?>
 
-                      <?php if (in_array($type, ['text', 'date', 'file', 'password', 'email'])): ?>
+                      <?php if (in_array($type, ['text', 'date', 'file', 'email'])): ?>
+
                         <input type="<?= $type ?>" class="form-control" id="<?= $name ?>" name="<?= $name ?>" value="<?= esc($oldValue) ?>" />
+
+                      <?php elseif ($type === 'password'): ?>
+
+                        <input type="text" class="form-control" id="<?= $name ?>" name="<?= $name ?>" value="<?= esc($oldValue) ?>" />
 
                       <?php elseif ($type === 'select'): ?>
                         <select class="form-control" id="<?= $name ?>" name="<?= $name ?>">

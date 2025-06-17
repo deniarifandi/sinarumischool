@@ -53,7 +53,7 @@ class MyResourceController extends ResourceController
             }
         } else {
 
-            if ($type == "password") {
+            if ($name == "guru_password") {
 
                 // $name = password_hash($name, PASSWORD_DEFAULT);
                 $input[$name] = password_hash($this->request->getPost($name),PASSWORD_DEFAULT);
