@@ -23,7 +23,7 @@ class Kelompok extends MyResourceController
     public $selectList= [
             'Kelompok.*',
             'Guru.*',
-            'tingkat.*'
+            'Tingkat.*'
         ];
 
     public $toSearch = 
@@ -34,7 +34,7 @@ class Kelompok extends MyResourceController
 
     public $joinTable = [
         ['Guru', 'Guru.guru_id = Kelompok.guru_id','left'],
-        ['tingkat','Kelompok.tingkat_id = tingkat.tingkat_id','left']
+        ['Tingkat','Kelompok.tingkat_id = Tingkat.tingkat_id','left']
     ];
 
    public $field = [
@@ -63,7 +63,7 @@ class Kelompok extends MyResourceController
     public function __construct()
     {
         $this->fieldOption[1] = $this->getdata('Guru'); 
-        $this->fieldOption[3] = $this->getdata('tingkat'); 
+        $this->fieldOption[3] = $this->getdata('Tingkat'); 
         $this->model = new KelompokModel();
         $this->dataToShow = $this->prepareDataToShow();
     }
