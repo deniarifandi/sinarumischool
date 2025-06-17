@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class GuruModel extends Model
 {
     // isi PostModel Class    
-    protected $table      = 'guru';
+    protected $table      = 'Guru';
     protected $primaryKey = 'guru_id';
     
     protected $protectFields = false;
