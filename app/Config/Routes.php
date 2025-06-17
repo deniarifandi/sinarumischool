@@ -17,8 +17,8 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->resource('tingkat');
 	$routes->post('/tingkat/data', 'tingkat::data');
 
-	$routes->resource('kelompok');
-	$routes->post('/kelompok/data', 'kelompok::data');
+	$routes->resource('Kelompok');
+	$routes->post('/Kelompok/data', 'Kelompok::data');
 
 	$routes->resource('Guru');
 	$routes->post('/Guru/data', 'Guru::data');
