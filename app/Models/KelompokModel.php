@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class KelompokModel extends Model
 {
     // isi PostModel Class    
-    protected $table      = 'kelompok';
+    protected $table      = 'Kelompok';
     protected $primaryKey = 'kelompok_id';
     
     protected $protectFields = false;
