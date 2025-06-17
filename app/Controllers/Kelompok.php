@@ -33,7 +33,7 @@ class Kelompok extends MyResourceController
     ];
 
     public $joinTable = [
-        ['guru', 'Guru.guru_id = Kelompok.guru_id','left'],
+        ['Guru', 'Guru.guru_id = Kelompok.guru_id','left'],
         ['tingkat','Kelompok.tingkat_id = tingkat.tingkat_id','left']
     ];
 
