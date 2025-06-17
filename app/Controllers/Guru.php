@@ -10,7 +10,7 @@ use Config\Database;
 class Guru extends MyResourceController
 {
 
-    public $table = "guru";
+    public $table = "Guru";
     public $title = "Teacher";
     public $primaryKey = "guru_id";
 
