@@ -53,7 +53,7 @@
               </div>
               <!-- /.col -->
                 <div class="col-md-3">
-                <a href="<?php echo base_url(); ?>kelompok">
+                <a href="<?php echo base_url(); ?>Kelompok">
                 <div class="info-box">
                   <span class="info-box-icon shadow-sm" style="background-color:#fd7e14!important">
                     <i class="bi bi-person-lines-fill text-white"></i>
