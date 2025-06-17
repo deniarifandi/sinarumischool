@@ -21,14 +21,14 @@ class Guru extends MyResourceController
     ];
 
     public $selectList= [
-            'guru.guru_id',
-            'guru.guru_nama',
-            'guru.guru_username'
+            'Guru.guru_id',
+            'Guru.guru_nama',
+            'Guru.guru_username'
         ];
 
     public $toSearch = 
     [
-        'guru.guru_nama'
+        'Guru.guru_nama'
     ];
 
 
