@@ -7,7 +7,7 @@ use App\Models\KelompokModel;
 class Kelompok extends MyResourceController
 {
 
-    public $table = "kelompok";
+    public $table = "Kelompok";
     public $title = "Class";
     public $primaryKey = "kelompok_id";
     
@@ -21,20 +21,20 @@ class Kelompok extends MyResourceController
 
 
     public $selectList= [
-            'kelompok.*',
-            'guru.*',
+            'Kelompok.*',
+            'Guru.*',
             'tingkat.*'
         ];
 
     public $toSearch = 
     [
-        'kelompok.kelompok_nama',
-        'guru.guru_nama'
+        'Kelompok.kelompok_nama',
+        'Guru.guru_nama'
     ];
 
     public $joinTable = [
-        ['guru', 'guru.guru_id = kelompok.guru_id','left'],
-        ['tingkat','kelompok.tingkat_id = tingkat.tingkat_id','left']
+        ['guru', 'Guru.guru_id = Kelompok.guru_id','left'],
+        ['tingkat','Kelompok.tingkat_id = tingkat.tingkat_id','left']
     ];
 
    public $field = [
