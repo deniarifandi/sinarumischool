@@ -55,7 +55,7 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="<?= base_url(); ?>kelompok" class="nav-link">
+                    <a href="<?= base_url(); ?>Kelompok" class="nav-link">
                       <i class="nav-icon bi bi-people"></i>
                       <p>                       
                         Kelompok / Kelas
