@@ -7,7 +7,7 @@ use App\Models\TopikModel;
 use App\Libraries\datatable;
 use Config\Database;
 
-class topik extends MyResourceController
+class Topik extends MyResourceController
 {
 
     public $table = "topik";

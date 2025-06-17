@@ -7,7 +7,7 @@ use App\Models\SubtopikModel;
 use App\Libraries\datatable;
 use Config\Database;
 
-class subtopik extends MyResourceController
+class Subtopik extends MyResourceController
 {
 
     public $table = "subtopik";

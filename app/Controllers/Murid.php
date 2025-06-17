@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\MuridModel;
 
-class murid extends MyResourceController
+class Murid extends MyResourceController
 {
 
     public $table = "murid";

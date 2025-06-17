@@ -7,7 +7,7 @@ use App\Models\GuruModel;
 use App\Libraries\datatable;
 use Config\Database;
 
-class guru extends MyResourceController
+class Guru extends MyResourceController
 {
 
     public $table = "guru";

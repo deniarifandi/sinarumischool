@@ -3,24 +3,24 @@
 namespace App\Controllers;
 
 //use CodeIgniter\RESTful\ResourceController;
-use App\Models\SubjekModel;
+use App\Models\PetakonsepModel;
 use App\Libraries\datatable;
 use Config\Database;
 
-class subjek extends MyResourceController
+class Petakonsep extends MyResourceController
 {
 
-    public $table = "subjek";
-    public $title = "Subject";
-    public $primaryKey = "subjek_id";
-
+    public $table = "petakonsep";
+    public $title = "Petakonsep";
+    public $primaryKey = "petakonsep_id";
     public $fieldList = [
-        ['subjek_nama','Subject']
+        ['judul','Judul Petakonsep'], 
+        ['url','URL']        
     ];
 
 
     public $selectList= [
-            'subjek.*'
+            'petakonsep.*',
         ];
 
     public $toSearch = 
@@ -30,17 +30,17 @@ class subjek extends MyResourceController
 
 
     public $field = [
-        ['text','subjek_nama'],
-        // ['select','kelompok_id']
+        ['text','judul'], 
+        ['file','url'],
 ];
 
 public $fieldName = [
-        'Subject',
-        'Grade'
+        'judul', 
+        'url'
     ];
 
 public $fieldOption = [
-  ['noOption'],
+  ['noOption'], 
   ['noOption']
 ];
 
@@ -49,20 +49,19 @@ public $fieldOption = [
 
     public function __construct()
     {
-        $this->fieldOption[1] = $this->getdata('tingkat'); 
-        $this->model = new SubjekModel();
+        $this->model = new PetakonsepModel();
         $this->dataToShow = $this->prepareDataToShow();
     }
 
     // public function data(){
     //     $builder = Database::connect()->table($this->table)
-    //     ->select('subjek.*')
-    //     ->where('subjek.deleted_at',NULL);
+    //     ->select('petakonsep.*')
+    //     ->where('petakonsep.deleted_at',NULL);
 
     //     $datatable = new Datatable();
 
-    //     return $datatable->generate($builder, 'subjek.subjek_id',[
-    //         'subjek.subjek_nama'
+    //     return $datatable->generate($builder, 'petakonsep.petakonsep_id',[
+    //         'petakonsep.judul'
     //     ]);
     // }
 

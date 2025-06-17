@@ -7,7 +7,7 @@ use App\Models\TujuanModel;
 use App\Libraries\datatable;
 use Config\Database;
 
-class tujuan extends MyResourceController
+class Tujuan extends MyResourceController
 {
 
     public $table = "tujuan";

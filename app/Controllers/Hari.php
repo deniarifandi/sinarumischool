@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\HariModel;
 
-class hari extends MyResourceController
+class Hari extends MyResourceController
 {
 
     public $table = "hari";

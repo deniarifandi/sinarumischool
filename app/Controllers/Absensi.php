@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use Config\Database;
 
-class absensi extends BaseController
+class Absensi extends BaseController
 {
     
     public function __construct()

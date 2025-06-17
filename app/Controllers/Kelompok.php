@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\KelompokModel;
 
-class kelompok extends MyResourceController
+class Kelompok extends MyResourceController
 {
 
     public $table = "kelompok";

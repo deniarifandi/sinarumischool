@@ -7,7 +7,7 @@ use App\Models\TingkatModel;
 use App\Libraries\datatable;
 use Config\Database;
 
-class tingkat extends MyResourceController
+class Tingkat extends MyResourceController
 {
 
     public $table = "tingkat";
