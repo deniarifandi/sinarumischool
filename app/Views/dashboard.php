@@ -89,7 +89,7 @@
                 <!-- /.info-box -->
               </div>
                 <div class="col-md-3">
-                <a href="<?php echo base_url(); ?>subjek">
+                <a href="<?php echo base_url(); ?>Subjek">
                 <div class="info-box">
                   <span class="info-box-icon shadow-sm" style="background-color:#01ff70!important">
                     <i class="bi bi-chat-dots text-dark"></i>
