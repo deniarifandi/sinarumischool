@@ -71,7 +71,7 @@
                 <!-- /.info-box -->
               </div>
               <div class="col-md-3">
-                <a href="<?php echo base_url(); ?>murid">
+                <a href="<?php echo base_url(); ?>Murid">
                 <div class="info-box">
                   <span class="info-box-icon shadow-sm" style="background-color:#6610f2">
                     <i class="bi bi-mortarboard text-white"></i>

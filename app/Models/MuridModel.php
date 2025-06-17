@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class MuridModel extends Model
 {
     // isi PostModel Class    
-    protected $table      = 'murid';
+    protected $table      = 'Murid';
     protected $primaryKey = 'murid_id';
     
     protected $protectFields = false;

@@ -7,7 +7,7 @@ use App\Models\MuridModel;
 class Murid extends MyResourceController
 {
 
-    public $table = "murid";
+    public $table = "Murid";
     public $title = "Students";
     public $primaryKey = "murid_id";
 
@@ -20,21 +20,21 @@ class Murid extends MyResourceController
     ];
 
       public $selectList= [
-            'murid.*',
-            'kelompok.*',
-            'guru.*'
+            'Murid.*',
+            'Kelompok.*',
+            'Guru.*'
         ];
 
     public $toSearch = 
     [
-        'kelompok.kelompok_nama',
-        'murid.murid_nama',
-        'guru.guru_nama'
+        'Kelompok.kelompok_nama',
+        'Murid.murid_nama',
+        'Guru.guru_nama'
     ];
 
     public $joinTable = [
-        ['kelompok', 'murid.kelompok_id = kelompok.kelompok_id','left'],
-        ['guru', 'guru.guru_id = kelompok.guru_id','left']
+        ['Kelompok', 'Murid.kelompok_id = Kelompok.kelompok_id','left'],
+        ['Guru', 'Guru.guru_id = Kelompok.guru_id','left']
     ];
 
     //Insert & Update Parameter
@@ -58,7 +58,7 @@ class Murid extends MyResourceController
 
   public function __construct()
   {
-    $this->fieldOption[1] = $this->getdata('kelompok'); 
+    $this->fieldOption[1] = $this->getdata('Kelompok'); 
     $this->model = new MuridModel();
     $this->dataToShow = $this->prepareDataToShow();
 }
