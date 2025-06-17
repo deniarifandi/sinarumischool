@@ -20,8 +20,8 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->resource('kelompok');
 	$routes->post('/kelompok/data', 'kelompok::data');
 
-	$routes->resource('Guru');
-	$routes->post('/Guru/data', 'Guru::data');
+	$routes->resource('guru');
+	$routes->post('/guru/data', 'guru::data');
 
 	$routes->get('absensi','absensi::index');
 	$routes->get('absensi/add','absensi::addAbsensi');
