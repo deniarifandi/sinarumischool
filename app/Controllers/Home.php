@@ -16,7 +16,7 @@ class Home extends BaseController
 
         $builder = Database::connect()->table('Guru');
         $builder->select('Guru.*, Kelompok.*');
-        $builder->join('kelompok','Kelompok.guru_id = Guru.guru_id','left');
+        $builder->join('Kelompok','Kelompok.guru_id = Guru.guru_id','left');
         $builder->where('guru_username',$username);
 
         // print_r($builder->get()->getResult());
