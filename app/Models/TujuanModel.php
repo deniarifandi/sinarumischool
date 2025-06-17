@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class TujuanModel extends Model
 {
     // isi PostModel Class    
-    protected $table      = 'tujuan';
+    protected $table      = 'Tujuan';
     protected $primaryKey = 'tujuan_id';
     
     protected $protectFields = false;
