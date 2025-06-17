@@ -62,7 +62,7 @@ class Kelompok extends MyResourceController
 
     public function __construct()
     {
-        $this->fieldOption[1] = $this->getdata('guru'); 
+        $this->fieldOption[1] = $this->getdata('Guru'); 
         $this->fieldOption[3] = $this->getdata('tingkat'); 
         $this->model = new KelompokModel();
         $this->dataToShow = $this->prepareDataToShow();
