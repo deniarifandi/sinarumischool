@@ -9,8 +9,8 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->get('/', 'Home::index');
 	$routes->get('/blank', 'Home::blank');
 
-	$routes->resource('murid');
-	$routes->post('/murid/data', 'murid::data');
+	$routes->resource('Murid');
+	$routes->post('/Murid/data', 'Murid::data');
 
 	$routes->get('/api/kelompok/getdata','tujuan::getdata');
 
