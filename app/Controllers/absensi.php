@@ -15,12 +15,12 @@ class absensi extends BaseController
 
     public function index(){
         $user =  session()->get('user_id');
-        $builder = Database::connect()->table('murid');
-        $builder->select('absensi.*, murid.*, kelompok.*');
-        $builder->join('absensi','murid.murid_id = absensi.murid_id');
-        $builder->join('kelompok','kelompok.kelompok_id = murid.kelompok_id','left');
-        $builder->join('guru','guru.guru_id = kelompok.guru_id','left');
-        $builder->where('guru.guru_id',$user);
+        $builder = Database::connect()->table('Murid');
+        $builder->select('absensi.*, Murid.*, Kelompok.*');
+        $builder->join('absensi','Murid.murid_id = absensi.murid_id');
+        $builder->join('Kelompok','Kelompok.kelompok_id = Murid.kelompok_id','left');
+        $builder->join('Guru','Guru.guru_id = Kelompok.guru_id','left');
+        $builder->where('Guru.guru_id',$user);
         $builder->groupBy('tanggal');
         $builder->orderBy('tanggal','desc');
 
@@ -33,10 +33,10 @@ class absensi extends BaseController
     public function addAbsensi(){
         $user =  session()->get('user_id');
         $builder = Database::connect()->table('murid');
-        $builder->select('murid.*, kelompok.*');
-        $builder->join('kelompok','kelompok.kelompok_id = murid.kelompok_id','left');
-        $builder->join('guru','guru.guru_id = kelompok.guru_id','left');
-        $builder->where('guru.guru_id',$user);
+        $builder->select('Murid.*, Kelompok.*');
+        $builder->join('Kelompok','Kelompok.kelompok_id = Murid.kelompok_id','left');
+        $builder->join('Guru','Guru.guru_id = Kelompok.guru_id','left');
+        $builder->where('Guru.guru_id',$user);
         // print_r($builder->get()->getResult());
         $data = $builder->get()->getResult();
         return view('mli/addAbsensi',['data' => $data]);
@@ -49,12 +49,12 @@ class absensi extends BaseController
         $db = \Config\Database::connect();
         $builder = $db->table('absensi');
         
-         $builder->select('absensi.*, murid.*, kelompok.*');
-        $builder->join('murid', 'murid.murid_id = absensi.murid_id');
-        $builder->join('kelompok', 'kelompok.kelompok_id = murid.kelompok_id');
-        $builder->join('guru','guru.guru_id = kelompok.guru_id','left');
+         $builder->select('absensi.*, Murid.*, Kelompok.*');
+        $builder->join('Murid', 'Murid.murid_id = absensi.murid_id');
+        $builder->join('Kelompok', 'Kelompok.kelompok_id = Murid.kelompok_id');
+        $builder->join('Guru','Guru.guru_id = Kelompok.guru_id','left');
         $builder->where('tanggal', $date);
-        $builder->where('guru.guru_id',$user);
+        $builder->where('Guru.guru_id',$user);
 
         $data['absensi'] = $builder->get()->getResult();
         $data['tanggal'] = $date;
@@ -70,10 +70,10 @@ class absensi extends BaseController
             $db = \Config\Database::connect();
 
             // Step 1: Get murid_id under this teacher
-            $muridBuilder = $db->table('murid');
-            $muridBuilder->select('murid.murid_id');
-            $muridBuilder->join('kelompok', 'kelompok.kelompok_id = murid.kelompok_id');
-            $muridBuilder->where('kelompok.guru_id', $user);
+            $muridBuilder = $db->table('Murid');
+            $muridBuilder->select('Murid.murid_id');
+            $muridBuilder->join('Kelompok', 'Kelompok.kelompok_id = Murid.kelompok_id');
+            $muridBuilder->where('Kelompok.guru_id', $user);
             $muridIDs = $muridBuilder->get()->getResultArray();
 
             $muridIDList = array_column($muridIDs, 'murid_id');
