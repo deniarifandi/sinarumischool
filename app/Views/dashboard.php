@@ -140,7 +140,7 @@
             </div>
           
               <div class="col-md-3">
-                <a href="<?php echo base_url(); ?>tujuan">
+                <a href="<?php echo base_url(); ?>Tujuan">
                 <div class="info-box">
                   <span class="info-box-icon shadow-sm" style="background-color:#3d9970!important">
                     <i class="bi bi-chat-dots text-white"></i>

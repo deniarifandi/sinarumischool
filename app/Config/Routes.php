@@ -47,8 +47,8 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->resource('setting');
 	$routes->post('/setting/data', 'setting::data');
 
-	$routes->resource('tujuan');
-	$routes->post('/tujuan/data', 'tujuan::data');
+	$routes->resource('Tujuan');
+	$routes->post('/Tujuan/data', 'Tujuan::data');
 
 	$routes->resource('topik');
 	$routes->post('/topik/data', 'topik::data');

@@ -80,7 +80,7 @@
                     </a>
                   </li>
                    <li class="nav-item">
-                    <a href="<?= base_url(); ?>tujuan" class="nav-link">
+                    <a href="<?= base_url(); ?>Tujuan" class="nav-link">
                       <i class="nav-icon bi bi-journals"></i>
                       <p>
                         Tujuan
