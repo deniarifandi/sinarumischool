@@ -34,7 +34,7 @@
             <div class="row">
               <!-- /.col -->
               <div class="col-md-3">
-                <a href="<?php echo base_url(); ?>guru">
+                <a href="<?php echo base_url(); ?>Guru">
                 <div class="info-box">
                   <span class="info-box-icon shadow-sm" style="background-color:#d81b60!important">
                     <i class="bi bi-person-badge text-white"></i>
