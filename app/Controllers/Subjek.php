@@ -10,7 +10,7 @@ use Config\Database;
 class Subjek extends MyResourceController
 {
 
-    public $table = "subjek";
+    public $table = "Subjek";
     public $title = "Subject";
     public $primaryKey = "subjek_id";
 
@@ -20,12 +20,12 @@ class Subjek extends MyResourceController
 
 
     public $selectList= [
-            'subjek.*'
+            'Subjek.*'
         ];
 
     public $toSearch = 
     [
-        'guru.guru_nama'
+        'Guru.guru_nama'
     ];
 
 
@@ -49,21 +49,9 @@ public $fieldOption = [
 
     public function __construct()
     {
-        $this->fieldOption[1] = $this->getdata('tingkat'); 
+        $this->fieldOption[1] = $this->getdata('Tingkat'); 
         $this->model = new SubjekModel();
         $this->dataToShow = $this->prepareDataToShow();
     }
-
-    // public function data(){
-    //     $builder = Database::connect()->table($this->table)
-    //     ->select('subjek.*')
-    //     ->where('subjek.deleted_at',NULL);
-
-    //     $datatable = new Datatable();
-
-    //     return $datatable->generate($builder, 'subjek.subjek_id',[
-    //         'subjek.subjek_nama'
-    //     ]);
-    // }
 
 }

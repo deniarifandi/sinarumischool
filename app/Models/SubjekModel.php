@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class SubjekModel extends Model
 {
     // isi PostModel Class    
-    protected $table      = 'subjek';
+    protected $table      = 'Subjek';
     protected $primaryKey = 'subjek_id';
     
     protected $protectFields = false;

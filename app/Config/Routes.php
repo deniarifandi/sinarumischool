@@ -41,8 +41,8 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->resource('petakonsep');
 	$routes->post('/petakonsep/data', 'petakonsep::data');
 
-	$routes->resource('subjek');
-	$routes->post('/subjek/data', 'subjek::data');
+	$routes->resource('Subjek');
+	$routes->post('/Subjek/data', 'Subjek::data');
 
 	$routes->resource('setting');
 	$routes->post('/setting/data', 'setting::data');
