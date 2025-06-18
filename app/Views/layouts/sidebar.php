@@ -136,43 +136,37 @@
                  
                 </ul>
               </li>
-             <!--   <li class="nav-item">
-                <a href="<?php echo base_url(); ?>modul" class="nav-link">
-                  <i class="nav-icon bi bi-easel"></i>
+
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-file-earmark-text"></i>
                   <p>
-                    Lesson Plan
+                    Report
                     <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
                 </a>
-                
-              </li> -->
-             
-              <!-- <li class="nav-item">
-                <a href="<?php echo base_url();?>class" class="nav-link">
-                  <i class="nav-icon bi bi-easel"></i>
-                  <p>
-                    Parent Portal
-                  </p>
-                </a>
-              </li> -->
-           <!--    <li class="nav-item">
-                    <a href="<?= base_url(); ?>setting" class="nav-link">
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="<?= base_url(); ?>Guru/print" class="nav-link">
                       <i class="nav-icon bi bi-people"></i>
-                      <p>                       
-                        Setting
+                      <p >
+                        Print Teacher List
                       </p>
                     </a>
-                  </li> -->
-
-           
-             <!--  <li class="nav-header">Auth</li>
-              
-                      <li class="nav-item">
-                        <a href="<?php echo base_url(); ?>logout" class="nav-link">
-                         <i class="bi bi-box-arrow-right"></i>
-                          <p>Logout</p>
-                        </a>
-                      </li> -->
+                  </li>
+                  <li class="nav-item">
+                    <a href="<?= base_url(); ?>Guru" class="nav-link">
+                      <i class="nav-icon bi bi-person-badge"></i>
+                      <p>
+                        Guru
+                      </p>
+                    </a>
+                  </li>
+                 
+                 
+                </ul>
+              </li>
+          
               
             <!--end::Sidebar Menu-->
           </nav>

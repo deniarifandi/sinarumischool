@@ -56,11 +56,7 @@ public $fieldOption = [
   ['noOption']
 ];
 
-
-    
-
     public $dataToShow = [];
-
 
     public function __construct()
     {
@@ -68,18 +64,16 @@ public $fieldOption = [
         $this->dataToShow = $this->prepareDataToShow();
     }
 
-    // public function data(){
-    //     $builder = Database::connect()->table('guru')
-    //         ->select('guru.*')
-    //         ->where('guru.deleted_at', null);       
+    public function print(){
+        
+        $db = \Config\Database::connect();
+        $builder = $db->table('guru');
+        $builder->select('*');
+        $builder->where('deleted_at', null);
+        $query = $builder->get();
 
-    //     // print_r($builder->get()->getResult());
+        return view('/report/guru_print',['data' => $query->getResult()]);
 
-    //     $datatable = new Datatable();
-
-    //     return $datatable->generate($builder, 'guru.guru_id',[
-    //         'guru.guru_nama'
-    //     ]);
-    // }
+    }
 
 }
