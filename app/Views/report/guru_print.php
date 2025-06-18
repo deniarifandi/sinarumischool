@@ -21,7 +21,7 @@
 		<tbody>
 			
 			<?php
-				for ($i=0; $i < count($data); $i++) { 
+				for ($i=1; $i < count($data); $i++) { 
 					echo "<tr>";
 						echo "<td>".$data[$i]->guru_id."</td>";
 						echo "<td>".$data[$i]->guru_nama."</td>";
