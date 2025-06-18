@@ -12,7 +12,7 @@
 	<table class="table table-bordered">
 		<thead>
 			<tr>
-				<th>ID</th>
+				<th>Teacher's_id</th>
 				<th>Teacher's Name</th>
 				<th>Username</th>
 				<!-- <th>Password</th> -->
