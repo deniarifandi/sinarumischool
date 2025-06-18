@@ -20,7 +20,7 @@ class Tingkat extends MyResourceController
 
 
     public $selectList= [
-            $table.'.*',
+            'Tingkat.*',
         ];
 
     public $toSearch = 
