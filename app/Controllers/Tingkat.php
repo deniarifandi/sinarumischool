@@ -10,7 +10,7 @@ use Config\Database;
 class Tingkat extends MyResourceController
 {
 
-    public $table = "tingkat";
+    public $table = "Tingkat";
     public $title = "Grade";
     public $primaryKey = "tingkat_id";
     public $fieldList = [
@@ -25,7 +25,7 @@ class Tingkat extends MyResourceController
 
     public $toSearch = 
     [
-        'guru.guru_nama'
+        'Tingkat.*'
     ];
 
 
@@ -50,18 +50,18 @@ public $fieldOption = [
         $this->dataToShow = $this->prepareDataToShow();
     }
 
-    public function data(){
-        $builder = Database::connect()->table('tingkat')
-            ->select('tingkat.*')
-            ->where('tingkat.deleted_at', null);       
+    // public function data(){
+    //     $builder = Database::connect()->table('tingkat')
+    //         ->select('tingkat.*')
+    //         ->where('tingkat.deleted_at', null);       
 
-        // print_r($builder->get()->getResult());
+    //     // print_r($builder->get()->getResult());
 
-        $datatable = new Datatable();
+    //     $datatable = new Datatable();
 
-        return $datatable->generate($builder, 'tingkat.tingkat_id',[
-            'tingkat.tingkat_nama'
-        ]);
-    }
+    //     return $datatable->generate($builder, 'tingkat.tingkat_id',[
+    //         'tingkat.tingkat_nama'
+    //     ]);
+    // }
 
 }
