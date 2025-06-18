@@ -47,7 +47,7 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="<?= base_url(); ?>tingkat" class="nav-link">
+                    <a href="<?= base_url(); ?>Tingkat" class="nav-link">
                       <i class="nav-icon bi bi-gear"></i>
                       <p>                       
                         Tingkat
