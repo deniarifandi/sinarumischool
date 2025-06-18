@@ -52,7 +52,7 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->resource('Tujuan');
 	$routes->resource('topik');
 	$routes->resource('subtopik');
-	$routes->resource('tingkat');
+	$routes->resource('Tingkat');
 	$routes->resource('Kelompok');
 	$routes->resource('Guru');
 
