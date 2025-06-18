@@ -16,6 +16,7 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 
 	//Report
 	$routes->get('/Guru/print','Guru::print');
+	$routes->get('/Kelompok/print','Kelompok::print');
 
 	//Absensi
 	$routes->get('absensi','absensi::index');

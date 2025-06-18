@@ -155,10 +155,10 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="<?= base_url(); ?>Guru" class="nav-link">
+                    <a href="<?= base_url(); ?>Kelompok/print" class="nav-link">
                       <i class="nav-icon bi bi-person-badge"></i>
                       <p>
-                        Guru
+                        Print Class List
                       </p>
                     </a>
                   </li>

@@ -68,4 +68,18 @@ class Kelompok extends MyResourceController
         $this->dataToShow = $this->prepareDataToShow();
     }
 
+    public function print(){
+        
+        $db = \Config\Database::connect();
+        $builder = $db->table('Kelompok');
+        $builder->select('*');
+        $builder->join('Guru','Kelompok.guru_id = Guru.guru_id');
+        $builder->join('Tingkat','Tingkat.tingkat_id = Kelompok.tingkat_id');
+        $builder->where('Kelompok.deleted_at', null);
+        $query = $builder->get();
+
+        return view('/report/kelompok_print',['data' => $query->getResult()]);
+
+    }
+
 }
