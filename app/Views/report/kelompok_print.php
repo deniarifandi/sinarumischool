@@ -12,7 +12,7 @@
 	<table class="table table-bordered">
 		<thead>
 			<tr>
-				<th>Number</th>
+				<th>No.</th>
 				<th>Class Name</th>
 				<th>Grade</th>
 				<th>Class Teacher</th>
