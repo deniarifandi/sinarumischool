@@ -36,7 +36,7 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->post('/topik/data', 'topik::data');
 	$routes->post('/subtopik/data', 'subtopik::data');
 	$routes->post('/Murid/data', 'Murid::data');
-	$routes->post('/tingkat/data', 'tingkat::data');
+	$routes->post('/Tingkat/data', 'tingkat::data');
 	$routes->post('/Kelompok/data', 'Kelompok::data');
 	$routes->post('/Guru/data', 'Guru::data');
 
