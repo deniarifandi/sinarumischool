@@ -67,7 +67,7 @@ public $fieldOption = [
     public function print(){
         
         $db = \Config\Database::connect();
-        $builder = $db->table('guru');
+        $builder = $db->table('Guru');
         $builder->select('*');
         $builder->where('deleted_at', null);
         $query = $builder->get();
