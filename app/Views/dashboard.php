@@ -106,6 +106,24 @@
                   </a>
                 <!-- /.info-box -->
               </div>
+               <div class="col-md-3">
+                <a href="<?php echo base_url(); ?>Tipeaktifitas">
+                <div class="info-box">
+                  <span class="info-box-icon shadow-sm" style="background-color:#d568fb!important">
+                    <i class="bi bi-chat-dots text-dark"></i>
+                  </span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Activity Type</span>
+                    <span class="info-box-number">
+                      
+                      <small>Manage Activity</small>
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                  </a>
+                <!-- /.info-box -->
+              </div>
             </div>
             <!-- Info boxes -->
             <div>
@@ -138,7 +156,42 @@
             <div>
               <h4>Subject Management</h4>
             </div>
-          
+            <div class="col-md-3">
+                <a href="<?php echo base_url(); ?>Unit">
+                <div class="info-box">
+                  <span class="info-box-icon shadow-sm" style="background-color:#698cba!important">
+                    <i class="bi bi-chat-dots text-white"></i>
+                  </span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Chapter</span>
+                    <span class="info-box-number">
+                      
+                      <small>Manage Chapter</small>
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                  </a>
+                <!-- /.info-box -->
+              </div>
+              <div class="col-md-3">
+                <a href="<?php echo base_url(); ?>Subunit">
+                <div class="info-box">
+                  <span class="info-box-icon shadow-sm" style="background-color:#fb4647!important">
+                    <i class="bi bi-chat-dots text-dark"></i>
+                  </span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Sub-Chapter</span>
+                    <span class="info-box-number">
+                      
+                      <small>Manage Sub-Chapter</small>
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                  </a>
+                <!-- /.info-box -->
+              </div>
               <div class="col-md-3">
                 <a href="<?php echo base_url(); ?>Tujuan">
                 <div class="info-box">
@@ -147,6 +200,24 @@
                   </span>
                   <div class="info-box-content">
                     <span class="info-box-text">Lesson Objective</span>
+                    <span class="info-box-number">
+                      
+                      <small>Manage LO</small>
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                  </a>
+                <!-- /.info-box -->
+              </div>
+              <div class="col-md-3">
+                <a href="<?php echo base_url(); ?>Aktifitas">
+                <div class="info-box">
+                  <span class="info-box-icon shadow-sm" style="background-color:#4ecbf8!important">
+                    <i class="bi bi-person-walking text-dark"></i>
+                  </span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Daily Activity </span>
                     <span class="info-box-number">
                       
                       <small>Manage LO</small>

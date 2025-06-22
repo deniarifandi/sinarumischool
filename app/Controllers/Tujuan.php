@@ -14,41 +14,47 @@ class Tujuan extends MyResourceController
     public $title = "Objective";
     public $primaryKey = "tujuan_id";
     public $fieldList = [
-        ['subjek_nama','Subject'],
         ['tujuan_nama','Objective'],
-        ['tingkat_nama','Grade']
+    // ['tujuan_date','Date'],
+        ['subunit_nama','Sub-Chapter'],
+        ['unit_nama','Chapter']
 
     ];
 
     public $selectList= [
             'Tujuan.*',
-            'Subjek.*',
-            'Tingkat.tingkat_nama'
+            // 'Tingkat.tingkat_nama',
+            'Unit.*',
+            'Subunit.*'
         ];
 
 
     public $toSearch = 
     [
-        'Tingkat.tingkat_nama'
+        // 'Tingkat.tingkat_nama',
+        'Unit.unit_nama'
+
     ];
 
     public $joinTable = [
-        ['Tingkat', 'Tingkat.tingkat_id = Tujuan.tingkat_id','left'],
-        ['Subjek', 'Subjek.subjek_id = Tujuan.subjek_id','left'],
+        // ['Tingkat', 'Tingkat.tingkat_id = Tujuan.tingkat_id','left'],
+        ['Subunit','Subunit.subunit_id = Tujuan.subunit_id','left'],
+        ['Unit','Unit.unit_id = Subunit.unit_id','left']
     ];
 
 
 
     public $field = [
-        ['select','subjek_id'],
-        ['select','tingkat_id'], 
+        ['select','subunit_id'],
+        // ['date','tujuan_date'],
         ['text','tujuan_nama'],
+
 ];
 
 public $fieldName = [
-        'Subject',
-        'Grade', 
-        'Objective'
+        'Chapter',
+        'Objective',
+        // 'Date'
     ];
 
 public $fieldOption = [
@@ -71,8 +77,7 @@ public $fieldOption = [
 
     public function __construct()
     {
-        $this->fieldOption[0] = $this->getdata('Subjek'); 
-        $this->fieldOption[1] = $this->getdata('Tingkat'); 
+        $this->fieldOption[0] = $this->getdata('Subunit'); 
         $this->model = new TujuanModel();
         $this->dataToShow = $this->prepareDataToShow();
        

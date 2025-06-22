@@ -39,6 +39,11 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->post('/Tingkat/data', 'Tingkat::data');
 	$routes->post('/Kelompok/data', 'Kelompok::data');
 	$routes->post('/Guru/data', 'Guru::data');
+	$routes->post('/Unit/data', 'Unit::data');
+	$routes->post('/Subunit/data', 'Subunit::data');
+	$routes->post('/Aktifitas/data', 'Aktifitas::data');
+	$routes->post('/Tipeaktifitas/data', 'Tipeaktifitas::data');
+
 
 	//Resource
 	$routes->resource('Murid');
@@ -55,6 +60,10 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->resource('Tingkat');
 	$routes->resource('Kelompok');
 	$routes->resource('Guru');
+	$routes->resource('Unit');
+	$routes->resource('Subunit');
+	$routes->resource('Aktifitas');
+	$routes->resource('Tipeaktifitas');
 
 	$routes->get('/logout', 'Home::logout');
 });
