@@ -30,7 +30,7 @@
 							if ($currentGrade != $row->tingkat_id) {
 						    	echo '<tr>';
 							    	echo '<td colspan="3">';
-							        	echo "&nbsp;&nbsp;&nbsp;&nbsp;<strong>Grade {$row->tingkat_id}</strong><br>";
+							        	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Grade {$row->tingkat_id}</strong><br>";
 							        	$currentGrade = $row->tingkat_id;
 							      	echo '</td>';
 						      	echo '</tr>';
@@ -39,14 +39,17 @@
 						    if ($currentSubject != $row->subjek_nama) {
 						    	echo '<tr>';
 							    	echo '<td colspan="3">';
-							        	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{$row->subjek_nama}</strong><br>";
+							        	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{$row->subjek_nama}</strong><br>";
 							        	$currentSubject = $row->subjek_nama;
 							      	echo '</td>';
+							      	echo '<td colspan="2">';
+						    			echo "{$row->tingkat_id}<br>";
+						    		echo '</td>';
 						      	echo '</tr>';
 						    }	
 						    	echo '<tr>';
 							    	echo '<td>';
-						    			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- {$row->unit_nama}<br>";
+						    			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- {$row->unit_nama}<br>";
 						    		echo '</td>';
 						    		echo '<td>';
 						    			echo "{$row->tingkat_id}<br>";

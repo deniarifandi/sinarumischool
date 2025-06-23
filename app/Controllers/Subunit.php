@@ -10,7 +10,7 @@ use Config\Database;
 class Subunit extends MyResourceController
 {
 
-    public $table = "Unit";
+    public $table = "Subunit";
     public $title = "Sub-Chapter";
     public $primaryKey = "subunit_id";
     public $fieldList = [

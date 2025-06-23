@@ -17,24 +17,26 @@ class Unit extends MyResourceController
         ['subjek_nama','Subject'],
         ['tingkat_nama','Grade'],
         ['unit_nama','Chapter'],
-        ['jp','Hours'],
+        ['unit_jp','Hours'],
         // ['Unit_password','Password']
     ];
 
     public $selectList= [
             'Unit.*',
             'Subjek.*',
-            'Tingkat.*'
+            'Tingkat.*',
+            'Subunit.subunit_nama'
     ];
 
     public $joinTable = [
         ['Subjek', 'Unit.subjek_id = Subjek.subjek_id','left'],
-        ['Tingkat','Tingkat.tingkat_id = Unit.tingkat_id','left']
+        ['Tingkat','Tingkat.tingkat_id = Unit.tingkat_id','left'],
+        ['Subunit','Subunit.unit_id = Unit.unit_id','left']
     ];
 
     public $toSearch = 
     [
-        'Unit.*',
+        // 'Unit.*',
     ];
 
     public $where = [
@@ -47,7 +49,7 @@ class Unit extends MyResourceController
         ['select','subjek_id'],
         ['select','tingkat_id'],
         ['text','unit_nama'],
-        ['text','jp']
+        ['text','unit_jp']
 ];
 
 public $fieldName = [
@@ -99,7 +101,7 @@ public $fieldOption = [
         $builder->orderBy('Unit.tingkat_id');
         $builder->orderBy('Subjek.subjek_id');
         $builder->orderBy('Unit.unit_id');
-   
+
 
         // print_r($builder->get()->getResult());
         // ecsho json_encode($builder->get()->getResult());

@@ -10,11 +10,11 @@
 
 <div>
 	<br>
-	<table class="table table-bordered">
+	<table class="table table-bordered" style="font-size: 12px;">
 		<thead>
 			<tr>
 				<th>Primary Chapter List</th>
-				<th>Grade</th>
+		
 				<th>Teaching Hours</th>
 				<!-- <th>Password</th> -->
 			</tr>
@@ -24,36 +24,47 @@
 			<?php
 				$currentGrade = '';
 				$currentSubject = '';
+				$currentUnit = '';
 
 				foreach ($data as $row) {
 							
 							if ($currentGrade != $row->tingkat_id) {
 						    	echo '<tr>';
-							    	echo '<td colspan="3">';
-							        	echo "&nbsp;&nbsp;&nbsp;&nbsp;<strong>Grade {$row->tingkat_id}</strong><br>";
+							    	echo '<td colspan="2">';
+							        	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Grade {$row->tingkat_id}</strong><br>";
 							        	$currentGrade = $row->tingkat_id;
 							      	echo '</td>';
+
 						      	echo '</tr>';
 						      	$currentSubject = "";
 						    }
 						    if ($currentSubject != $row->subjek_nama) {
 						    	echo '<tr>';
-							    	echo '<td colspan="3">';
-							        	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{$row->subjek_nama}</strong><br>";
+							    	echo '<td colspan="2">';
+							        	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{$row->subjek_nama}</strong><br>";
 							        	$currentSubject = $row->subjek_nama;
 							      	echo '</td>';
+							    
+						      	echo '</tr>';
+						    }
+						    if ($currentUnit != $row->unit_nama) {
+						    	echo '<tr>';
+							    	echo '<td colspan="1">';
+							        	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>{$row->unit_nama}</i><br>";
+							        	$currentUnit = $row->unit_nama;
+							      	echo '</td>';
+							      	echo '<td>';
+						    			echo "{$row->unit_jp}<br>";
+						    		echo '</td>';
 						      	echo '</tr>';
 						    }	
+
 						    	echo '<tr>';
-							    	echo '<td>';
-						    			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- {$row->unit_nama}<br>";
+							    	echo '<td colspan="3">';
+						    			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- {$row->subunit_nama}<br>";
 						    		echo '</td>';
-						    		echo '<td>';
-						    			echo "{$row->tingkat_id}<br>";
-						    		echo '</td>';
-						    			echo '<td>';
-						    			echo "{$row->jp}<br>";
-						    		echo '</td>';
+						    		
+						    		
 				    			echo '</tr>';
 				}
 

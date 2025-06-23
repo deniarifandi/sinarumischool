@@ -9,7 +9,7 @@
 </div>
 
 <div>
-	<table class="table table-bordered">
+	<table class="table table-bordered" style="font-size: 12px">
 		<thead>
 			<tr>
 				<th>No.</th>
@@ -24,7 +24,7 @@
 			<?php
 				for ($i=0; $i < count($data); $i++) { 
 					echo "<tr>";
-						echo "<td>".$i+1."</td>";
+						echo "<td>".($i+1)."</td>";
 						echo "<td>".$data[$i]->kelompok_nama."</td>";
 						echo "<td>".$data[$i]->tingkat_nama."</td>";
 						echo "<td>".$data[$i]->guru_nama."</td>";

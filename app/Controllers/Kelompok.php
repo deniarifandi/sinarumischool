@@ -77,9 +77,10 @@ class Kelompok extends MyResourceController
         $db = \Config\Database::connect();
         $builder = $db->table('Kelompok');
         $builder->select('*');
-        $builder->join('Guru','Kelompok.guru_id = Guru.guru_id');
-        $builder->join('Tingkat','Tingkat.tingkat_id = Kelompok.tingkat_id');
+        $builder->join('Guru','Kelompok.guru_id = Guru.guru_id','left');
+        $builder->join('Tingkat','Tingkat.tingkat_id = Kelompok.tingkat_id','left');
         $builder->where('Kelompok.deleted_at', null);
+        $builder->orderBy('Kelompok.tingkat_id');
         $query = $builder->get();
 
         return view('/report/kelompok_print',['data' => $query->getResult()]);
