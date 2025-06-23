@@ -33,6 +33,10 @@ class modul extends MyResourceController
         'guru.guru_nama'
     ];
 
+     public $where = [
+      
+    ];
+
 
     public $fieldName = [
             'Guru', 

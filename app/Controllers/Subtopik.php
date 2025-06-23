@@ -29,6 +29,10 @@ public $fieldName = [
         'Sub-Topik'
     ];
 
+     public $where = [
+      
+    ];
+
 public $fieldOption = [
     ['noOption'],
     ['noOption'],

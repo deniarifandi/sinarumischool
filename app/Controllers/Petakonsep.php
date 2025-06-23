@@ -18,6 +18,10 @@ class Petakonsep extends MyResourceController
         ['url','URL']        
     ];
 
+     public $where = [
+      
+    ];
+
 
     public $selectList= [
             'petakonsep.*',

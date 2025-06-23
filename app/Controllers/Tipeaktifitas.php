@@ -27,6 +27,10 @@ class Tipeaktifitas extends MyResourceController
         'Tipeaktifitas.*',
     ];
 
+     public $where = [
+      
+    ];
+
 
     public $field = [
         ['text','tipeaktifitas_nama'],

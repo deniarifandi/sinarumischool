@@ -10,7 +10,7 @@ use Config\Database;
 class Subunit extends MyResourceController
 {
 
-    public $table = "Subunit";
+    public $table = "Unit";
     public $title = "Sub-Chapter";
     public $primaryKey = "subunit_id";
     public $fieldList = [
@@ -35,6 +35,10 @@ class Subunit extends MyResourceController
     public $toSearch = 
     [
         'Unit.*',
+    ];
+
+     public $where = [
+      
     ];
 
 
@@ -62,6 +66,36 @@ public $fieldOption = [
         $this->model = new SubunitModel();
         $this->fieldOption[0] = $this->getdata('Unit'); 
         $this->dataToShow = $this->prepareDataToShow();
+    }
+
+     public function print(){
+        
+       $builder = Database::connect()->table($this->table);
+        $builder->select($this->table.'.*');
+
+         $builder->select(implode(', ', $this->selectList));
+        if (!empty($this->joinTable)) {
+            foreach ($this->joinTable as $join) {
+                    // $join[0] = join table name
+                    // $join[1] = join condition
+                // $builder->select($join[0] . '.*');
+                $builder->join($join[0], $join[1],$join[2]);
+            }
+        }
+        $builder->where($this->table.'.deleted_at',NULL);;
+
+        foreach ($this->where as $key => $value) {
+            $builder->where($key, $value);
+        }
+        $builder->orderBy('Unit.tingkat_id');
+        $builder->orderBy('Subjek.subjek_id');
+        $builder->orderBy('Unit.unit_id');
+   
+
+        // print_r($builder->get()->getResult());
+        // ecsho json_encode($builder->get()->getResult());
+         return view('/report/unit_print',['data' => $builder->get()->getResult()]);
+
     }
 
 }

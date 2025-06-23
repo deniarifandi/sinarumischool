@@ -28,6 +28,10 @@ class Subjek extends MyResourceController
         'Guru.guru_nama'
     ];
 
+     public $where = [
+      
+    ];
+
 
     public $field = [
         ['text','subjek_nama'],

@@ -28,6 +28,9 @@ class Tujuan extends MyResourceController
             'Subunit.*'
         ];
 
+ public $where = [
+      
+    ];
 
     public $toSearch = 
     [

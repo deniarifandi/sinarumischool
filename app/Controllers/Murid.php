@@ -32,6 +32,10 @@ class Murid extends MyResourceController
         'Guru.guru_nama'
     ];
 
+     public $where = [
+      
+    ];
+
     public $joinTable = [
         ['Kelompok', 'Murid.kelompok_id = Kelompok.kelompok_id','left'],
         ['Guru', 'Guru.guru_id = Kelompok.guru_id','left']

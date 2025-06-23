@@ -20,7 +20,8 @@ class MyResourceController extends ResourceController
             'primaryKey'   => $this->primaryKey,
             'fieldOption'  => $this->fieldOption,
             'fieldList'    => $this->fieldList,
-            'selectList'   => $this->selectList
+            'selectList'   => $this->selectList,
+            'where'        => $this->where
         ];
 
         return $dataToShow;
@@ -183,6 +184,10 @@ public function getdata($table){
             }
         }
         $builder->where($this->table.'.deleted_at',NULL);;
+
+        foreach ($this->where as $key => $value) {
+            $builder->where($key, $value);
+        }
 
         $datatable = new Datatable();
 

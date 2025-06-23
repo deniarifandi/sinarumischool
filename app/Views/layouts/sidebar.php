@@ -162,6 +162,22 @@
                       </p>
                     </a>
                   </li>
+                   <li class="nav-item">
+                    <a href="<?= base_url(); ?>Unit/print" class="nav-link">
+                      <i class="nav-icon bi bi-journal-bookmark"></i>
+                      <p>
+                        Print Chapter List
+                      </p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="<?= base_url(); ?>Subunit/print" class="nav-link">
+                      <i class="nav-icon bi bi-journal-bookmark"></i>
+                      <p>
+                        Print Sub-Chapter List
+                      </p>
+                    </a>
+                  </li>
                  
                  
                 </ul>

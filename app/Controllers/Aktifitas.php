@@ -32,6 +32,10 @@ class Aktifitas extends MyResourceController
             'Subunit.*'
     ];
 
+     public $where = [
+      
+    ];
+
     public $joinTable = [
         ['Tujuan', 'Tujuan.tujuan_id = Aktifitas.tujuan_id','left'],
         ['Subunit','Subunit.subunit_id = Tujuan.subunit_id','left'],

@@ -28,6 +28,10 @@ class Tingkat extends MyResourceController
         'Tingkat.*'
     ];
 
+     public $where = [
+      
+    ];
+
 
     public $field = [
         ['text','tingkat_nama']

@@ -22,6 +22,10 @@ class Hari extends MyResourceController
         'guru.guru_nama'
     ];
 
+     public $where = [
+      
+    ];
+
 
    public $field = [
         ['text','kelompok_nama'], 
