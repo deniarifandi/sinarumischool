@@ -68,7 +68,7 @@
 							        	$currentSubunit = $row->subunit_nama;
 							      	echo '</td>';
 							      	echo '<td>';
-						    			// echo "&nbsp;&nbsp;{$row->subunit_jp}<br>";
+						    			echo "&nbsp;&nbsp;{$row->subunit_jp}<br>";
 						    		echo '</td>';
 						      	echo '</tr>';
 						    }
@@ -80,7 +80,7 @@
 							        	$currentObjective = $row->tujuan_nama;
 							      	echo '</td>';
 							      	echo '<td>';
-						    			echo "&nbsp;&nbsp;{$row->subunit_jp}<br>";
+						    			
 						    		echo '</td>';
 						      	echo '</tr>';
 						    }
