@@ -34,7 +34,7 @@ class Unit extends MyResourceController
         ['Subjek', 'Unit.subjek_id = Subjek.subjek_id','left'],
         ['Tingkat','Tingkat.tingkat_id = Unit.tingkat_id','left'],
         ['Subunit','Subunit.unit_id = Unit.unit_id','left'],
-        ['Tujuan','Tujuan.subunit_id = subunit.subunit_id','left'],
+        ['Tujuan','Tujuan.subunit_id = Subunit.subunit_id','left'],
         ['Aktifitas','Aktifitas.tujuan_id = Tujuan.tujuan_id','left']
         // ['Aktifitas','Aktifitas.tujuan_id']
     ];
