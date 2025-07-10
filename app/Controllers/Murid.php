@@ -14,6 +14,9 @@ class Murid extends MyResourceController
     //List Parameter
     public $fieldList = [
         ['murid_nama','Student`s Name'], 
+        ['murid_jk', 'Gender'],
+        ['murid_agama','Religion'],
+        ['nis','NIS'],
         ['kelompok_nama','Class'],
         ['guru_nama','Class Teacher'],
         ['deskripsi','Description']
@@ -29,7 +32,9 @@ class Murid extends MyResourceController
     [
         'Kelompok.kelompok_nama',
         'Murid.murid_nama',
-        'Guru.guru_nama'
+        'Guru.guru_nama',
+        'Murid.nis',
+        'Murid.murid_agama'
     ];
 
      public $where = [
@@ -46,11 +51,13 @@ class Murid extends MyResourceController
     public $field = [
         ['text','murid_nama'], 
         ['select','kelompok_id'],
+        ['text','nis']
     ];
 
     public $fieldName = [
         'Student`s Name', 
-        'Class'
+        'Class',
+        'NIS'
     ];
 
     public $fieldOption = [

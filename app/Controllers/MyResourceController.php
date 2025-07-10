@@ -9,7 +9,8 @@ use App\Libraries\datatable;
 
 class MyResourceController extends ResourceController
 {
-    public $order;
+    public $orderBy;
+    public $groupBy;
 
     protected function prepareDataToShow()
     {
@@ -23,7 +24,8 @@ class MyResourceController extends ResourceController
             'fieldList'    => $this->fieldList,
             'selectList'   => $this->selectList,
             'where'        => $this->where,
-            'order'        => $this->order
+            'order'        => $this->orderBy,
+            'group'        => $this->groupBy
         ];
 
         return $dataToShow;
@@ -191,6 +193,23 @@ public function getdata($table){
 
         foreach ($this->where as $key => $value) {
             $builder->where($key, $value);
+        }
+
+        if (!empty($this->orderBy)) {
+            if (is_array($this->orderBy)) {
+                // Handle multiple order conditions
+                foreach ($this->orderBy as $key => $value) {
+                    if (is_numeric($key) && is_array($value)) {
+                        $builder->orderBy($value[0], $value[1]); // [['name', 'ASC']]
+                    } else {
+                        $builder->orderBy($key, $value); // ['name' => 'ASC']
+                    }
+                }
+            } else {
+                // Assume it's a string like "name ASC"
+                [$column, $direction] = explode(' ', $this->orderBy);
+                $builder->orderBy($column, $direction);
+            }
         }
 
         $datatable = new Datatable();

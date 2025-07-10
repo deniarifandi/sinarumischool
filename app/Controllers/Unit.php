@@ -73,6 +73,9 @@ public $fieldOption = [
 
 ];
 
+// public $orderBy = ['Subjek.subjek_nama' => 'ASC'];
+// public $groupBy = '';
+
     public $dataToShow = [];
 
 
