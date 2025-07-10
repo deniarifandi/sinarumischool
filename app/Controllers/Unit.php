@@ -25,13 +25,18 @@ class Unit extends MyResourceController
             'Unit.*',
             'Subjek.*',
             'Tingkat.*',
-            'Subunit.subunit_nama'
+            'Subunit.subunit_nama',
+            'Subunit.subunit_jp',
+            'Tujuan.*'
     ];
 
     public $joinTable = [
         ['Subjek', 'Unit.subjek_id = Subjek.subjek_id','left'],
         ['Tingkat','Tingkat.tingkat_id = Unit.tingkat_id','left'],
-        ['Subunit','Subunit.unit_id = Unit.unit_id','left']
+        ['Subunit','Subunit.unit_id = Unit.unit_id','left'],
+        ['Tujuan','Tujuan.subunit_id = subunit.subunit_id','left'],
+        ['Aktifitas','Aktifitas.tujuan_id = Tujuan.tujuan_id','left']
+        // ['Aktifitas','Aktifitas.tujuan_id']
     ];
 
     public $toSearch = 
@@ -101,6 +106,7 @@ public $fieldOption = [
         $builder->orderBy('Unit.tingkat_id');
         $builder->orderBy('Subjek.subjek_id');
         $builder->orderBy('Unit.unit_id');
+        $builder->orderBy('Subunit.subunit_id');
 
 
         // print_r($builder->get()->getResult());

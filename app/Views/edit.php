@@ -51,9 +51,10 @@ echo view('layouts/sidebar.php');
                   <label for="<?= $name ?>" class="col-sm-2 col-form-label"><?= esc($fieldName[$i]) ?></label>
                   <div class="col-sm-10">
 
-                    <?php if (in_array($type, ['text', 'date', 'email', 'password'])): ?>
+                    <?php if (in_array($type, ['text', 'date', 'email'])): ?>
                       <input type="<?= $type ?>" class="form-control" id="<?= $name ?>" name="<?= $name ?>" value="<?= esc($value) ?>" />
-
+                    <?php elseif ($type === 'password'): ?>
+                      <input type="<?= $type ?>" class="form-control" id="<?= $name ?>" name="<?= $name ?>" value="unchanged" />
                     <?php elseif ($type === 'file'): ?>
                       <?php if (!empty($value)): ?>
                         <div class="mb-2">
@@ -62,10 +63,10 @@ echo view('layouts/sidebar.php');
                       <?php endif; ?>
                       <input type="file" class="form-control" id="<?= $name ?>" name="<?= $name ?>" />
 
-                    <?php elseif ($type === 'textarea'): ?>
-                      <textarea class="form-control" id="<?= $name ?>" name="<?= $name ?>"><?= esc($value) ?></textarea>
+                      <?php elseif ($type === 'textarea'): ?>
+                        <textarea class="form-control" id="<?= $name ?>" name="<?= $name ?>"><?= esc($value) ?></textarea>
 
-                    <?php elseif ($type === 'select'): ?>
+                      <?php elseif ($type === 'select'): ?>
                       <select class="form-control" id="<?= $name ?>" name="<?= $name ?>">
                          <option value="" >-Select-</option>
                         <?php foreach ($fieldOption[$i] as $option): ?>

@@ -16,7 +16,8 @@ class Subunit extends MyResourceController
     public $fieldList = [
         ['subjek_nama','Subject'],
         ['unit_nama','Chapter'],
-        ['subunit_nama','Sub-Chapter']
+        ['subunit_nama','Sub-Chapter'],
+        ['subunit_jp','Hours']
         // ['Unit_password','Password']
     ];
 
@@ -44,16 +45,18 @@ class Subunit extends MyResourceController
 
     public $field = [
         ['select','unit_id'],
-        ['text','subunit_nama']
+        ['text','subunit_nama'],
+        ['text','subunit_jp']
 ];
 
 public $fieldName = [
         'Chapter',
-        'Sub-Chapter'
-        
+        'Sub-Chapter',
+        'Hours'
     ];
 
 public $fieldOption = [
+        ['noOption'],
         ['noOption'],
         ['noOption']
 ];

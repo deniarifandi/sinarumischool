@@ -9,7 +9,8 @@ use App\Libraries\datatable;
 
 class MyResourceController extends ResourceController
 {
-    
+    public $order;
+
     protected function prepareDataToShow()
     {
         $dataToShow = [
@@ -21,7 +22,8 @@ class MyResourceController extends ResourceController
             'fieldOption'  => $this->fieldOption,
             'fieldList'    => $this->fieldList,
             'selectList'   => $this->selectList,
-            'where'        => $this->where
+            'where'        => $this->where,
+            'order'        => $this->order
         ];
 
         return $dataToShow;
@@ -126,9 +128,11 @@ public function update($id = null)
             
             if ($type == "password") {
 
-                // $name = password_hash($name, PASSWORD_DEFAULT);
-                $input[$name] = password_hash($this->request->getPost($name),PASSWORD_DEFAULT);
-                // echo $input[$name];
+                if ($this->request->getPost($name) != "unchanged") {
+                    $input[$name] = password_hash($this->request->getPost($name),PASSWORD_DEFAULT);
+                }
+                
+                
                 
             }else{
                 $input[$name] = $this->request->getPost($name);    

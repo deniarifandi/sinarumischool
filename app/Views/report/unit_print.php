@@ -25,6 +25,8 @@
 				$currentGrade = '';
 				$currentSubject = '';
 				$currentUnit = '';
+				$currentSubunit = '';
+				$currentObjective = '';
 
 				foreach ($data as $row) {
 							
@@ -54,18 +56,35 @@
 							        	$currentUnit = $row->unit_nama;
 							      	echo '</td>';
 							      	echo '<td>';
-						    			echo "{$row->unit_jp}<br>";
+						    			echo "<b>{$row->unit_jp}</b><br>";
 						    		echo '</td>';
 						      	echo '</tr>';
-						    }	
+						    }
 
+						    if ($currentSubunit != $row->subunit_nama) {
 						    	echo '<tr>';
-							    	echo '<td colspan="3">';
-						    			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- {$row->subunit_nama}<br>";
+							    	echo '<td colspan="1">';
+							        	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>- {$row->subunit_nama}</i><br>";
+							        	$currentSubunit = $row->subunit_nama;
+							      	echo '</td>';
+							      	echo '<td>';
+						    			// echo "&nbsp;&nbsp;{$row->subunit_jp}<br>";
 						    		echo '</td>';
-						    		
-						    		
-				    			echo '</tr>';
+						      	echo '</tr>';
+						    }
+
+						     if ($currentObjective != $row->tujuan_nama) {
+						    	echo '<tr>';
+							    	echo '<td colspan="1">';
+							        	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>* {$row->tujuan_nama}</i><br>";
+							        	$currentObjective = $row->tujuan_nama;
+							      	echo '</td>';
+							      	echo '<td>';
+						    			echo "&nbsp;&nbsp;{$row->subunit_jp}<br>";
+						    		echo '</td>';
+						      	echo '</tr>';
+						    }
+						    
 				}
 
 				// for ($i=0; $i < count($data); $i++) { 
