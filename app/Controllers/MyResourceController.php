@@ -178,7 +178,7 @@ public function getdata($table){
 
     public function data(){
         $builder = Database::connect()->table($this->table);
-        $builder->select($this->table.'.*');
+        // $builder->select($this->table.'.*');
 
          $builder->select(implode(', ', $this->selectList));
         if (!empty($this->joinTable)) {
@@ -210,6 +210,13 @@ public function getdata($table){
                 [$column, $direction] = explode(' ', $this->orderBy);
                 $builder->orderBy($column, $direction);
             }
+        }
+
+        if (!empty($this->groupBy)) {
+            
+                // string — can be one or more columns separated by commas
+                $builder->groupBy($this->groupBy);
+            
         }
 
         $datatable = new Datatable();

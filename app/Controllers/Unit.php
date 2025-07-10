@@ -22,12 +22,14 @@ class Unit extends MyResourceController
     ];
 
     public $selectList= [
-            'Unit.*',
-            'Subjek.*',
-            'Tingkat.*',
+            'Unit.unit_id',
+            'Unit.unit_nama',
+            'Unit.unit_jp',
+            'Subjek.subjek_nama',
+            'Tingkat.tingkat_nama',
             'Subunit.subunit_nama',
             'Subunit.subunit_jp',
-            'Tujuan.*'
+            'Tujuan.tujuan_nama'
     ];
 
     public $joinTable = [
@@ -74,7 +76,7 @@ public $fieldOption = [
 ];
 
 // public $orderBy = ['Subjek.subjek_nama' => 'ASC'];
-// public $groupBy = '';
+public $groupBy = 'Unit.unit_nama';
 
     public $dataToShow = [];
 
