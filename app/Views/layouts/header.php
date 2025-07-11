@@ -214,7 +214,7 @@
                 class="user-image rounded-circle shadow"
                 alt="User Image"
                 />
-                <span class="d-none d-md-inline"><?php echo session()->get('username'); ?></span>
+                <span class="d-none d-md-inline"><?php echo session()->get('nama'); ?></span>
               </a>
               <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <!--begin::User Image-->
@@ -225,7 +225,7 @@
                   alt="User Image"
                   />
                   <p>
-                   <?php echo session()->get('username'); ?>
+                   <?php echo session()->get('nama'); ?>
                     <small>Teacher since May. 2022</small>
                   </p>
                 </li>

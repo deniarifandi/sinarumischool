@@ -46,6 +46,7 @@ class Home extends BaseController
         if ($user && password_verify($password, $user['guru_password'])) {
             $session->set([
                 'user_id' => $user['guru_id'], 
+                'nama' => $user['guru_nama'], 
                 'username' => $user['guru_username'], 
                 'logged_in' => true]);
             return redirect()->to('/');
