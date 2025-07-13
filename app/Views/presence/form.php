@@ -179,28 +179,25 @@
     <script src="https://unpkg.com/html5-qrcode"></script>
 
     <script>
-  function startScanner() {
+   function startScanner() {
     const html5QrCode = new Html5Qrcode("reader");
 
     const qrCodeSuccessCallback = (decodedText, decodedResult) => {
       document.getElementById("qrResult").value = decodedText;
       html5QrCode.stop().then(() => {
-        document.getElementById("reader").innerHTML = ""; // clear camera preview
+        document.getElementById("reader").innerHTML = "";
       });
     };
 
     const config = { fps: 10, qrbox: 250 };
 
-    Html5Qrcode.getCameras().then(devices => {
-      if (devices && devices.length) {
-        html5QrCode.start(
-          devices[0].id,
-          config,
-          qrCodeSuccessCallback
-        );
-      }
-    }).catch(err => {
-      console.error("Camera error:", err);
+    html5QrCode.start(
+      { facingMode: { exact: "environment" } }, // 👈 Use back camera
+      config,
+      qrCodeSuccessCallback
+    ).catch(err => {
+      console.error("Camera start error:", err);
+      alert("Failed to access the back camera: " + err.message);
     });
   }
 </script>
