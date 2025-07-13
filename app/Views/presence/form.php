@@ -18,10 +18,11 @@
 <body>
 <div class="container">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-sm-12">
+      <!-- test -->
       <h2 style="text-align:center;">QR Code Scanner</h2>
-      <div id="reader"></div>
-      <div id="result">Scan a QR Code</div>
+      <div style="width:100%" id="reader"></div>
+      <div style="width:100%" id="result">Scan a QR Code</div>
     </div>
   </div>
 </div>
