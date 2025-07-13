@@ -89,8 +89,8 @@
             </div>  
             <div class="input-group mb-3">
               <input type="text" class="form-control" name="username" placeholder="Username" />
-              
-              <a class="btn btn-primary" onclick="startScanner()">Scan QR</a>
+
+              <a class="btn btn-primary" onclick="startQR()">Scan QR</a>
             </div>
             <div class="input-group text-center">
               <div class="" id="reader" style="width:200px; height:200px;"></div>
@@ -179,56 +179,28 @@
     <script src="https://unpkg.com/html5-qrcode"></script>
 
     <script>
-const readerId  = "reader";
-const qrBoxSize = 240;
-let html5Qr;    // keep reference to stop later
+    let html5Qr;
+    function startQR() {
+      const qrResult = document.getElementById("qrResult");
+      const reader = document.getElementById("reader");
+      if (!html5Qr) html5Qr = new Html5Qrcode("reader");
 
-// 1️⃣ Very lightweight “is this a handheld device?” test
-function isMobile() {
-  return ( /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
-            navigator.userAgent ) ) ||
-         ( window.matchMedia("(max-width: 767px)").matches );
-}
+      const config = { fps: 10, qrbox: 250 };
+      const facingMode = { facingMode: { exact: "environment" } };
 
-async function startScanner() {
-  if (!html5Qr) html5Qr = new Html5Qrcode(readerId);
-
-  // 2️⃣ Choose desired camera
-  const desiredFacing = isMobile() ? "environment"   // back on phone
-                                   : "user";         // front on laptop
-  const constraints  = { facingMode: { exact: desiredFacing } };
-  const config       = { fps: 12, qrbox: qrBoxSize };
-
-  // 3️⃣ Try the quick constraint first …
-  try {
-    await html5Qr.start(constraints, config, onScanSuccess);
-    return;
-  } catch (e) {
-    console.warn(`Exact ${desiredFacing} camera failed → fallback`, e);
-  }
-
-  // 4️⃣ Fallback: enumerate cameras and pick the first match
-  try {
-    const devices = await Html5Qrcode.getCameras();
-    if (!devices.length) throw new Error("No cameras found");
-
-    const pick = devices.find(d => 
-                  d.label.toLowerCase().includes(desiredFacing)) || devices[0];
-
-    await html5Qr.start(pick.id, config, onScanSuccess);
-  } catch (e) {
-    alert("Cannot start camera: " + e.message);
-  }
-}
-
-function onScanSuccess(decodedText) {
-  document.getElementById("qrResult").value = decodedText;
-  html5Qr.stop().then(() => 
-    document.getElementById(readerId).innerHTML = "");
-}
-
-document.getElementById("scanBtn").addEventListener("click", startScanner);
-</script>
+      html5Qr.start(
+        facingMode,
+        config,
+        decodedText => {
+          qrResult.value = decodedText;
+          html5Qr.stop().then(() => reader.innerHTML = "");
+        }
+      ).catch(err => {
+        console.error("Start failed:", err);
+        alert("Error: " + err.message);
+      });
+    }
+  </script>
 
     <!--end::OverlayScrollbars Configure-->
     <!--end::Script-->
