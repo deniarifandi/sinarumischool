@@ -3,52 +3,49 @@
 namespace App\Controllers;
 
 //use CodeIgniter\RESTful\ResourceController;
-use App\Models\GuruModel;
+use App\Models\PresensiModel;
 use App\Libraries\datatable;
 use Config\Database;
 
-class Guru extends MyResourceController
+class Presensi extends MyResourceController
 {
 
-    public $table = "Guru";
-    public $title = "Teacher";
+    public $table = "Presensi";
+    public $title = "Personel";
     public $primaryKey = "guru_id";
 
     public $fieldList = [
-        ['guru_nama','Teacher`s Name'],
-        ['guru_username','Username'],
+        ['guru_nama','Name'],
         ['divisi_nama','Divison'],
+        ['guru_jabatan','Position']
         // ['guru_password','Password']
     ];
 
     public $selectList= [
-            'Guru.guru_id',
-            'Guru.guru_nama',
-            'Guru.guru_username',
+            'Presensi.*',
             'Divisi.divisi_nama'
         ];
 
     public $toSearch = 
     [
-        'Guru.guru_nama',
+        'Presensi.guru_nama',
         'Divisi.divisi_nama'
     ];
 
-     public $where = [
-      'Divisi.divisi_id' => '1'
+    public $where = [
+      'Divisi.divisi_id !=' => '0'
     ];
 
 
      public $joinTable = [
-        ['Divisi','Divisi.divisi_id = Guru.divisi_id','left']
-        // ['kelompok', 'guru.guru_id = kelompok.guru_id','left']
-        // ['kelompok', 'kelompok.guru_id = guru.guru_id','left']
+        ['Divisi','Divisi.divisi_id = Presensi.divisi_id','left']
     ];
 
        public $field = [
         ['text','guru_nama'],
         ['select','divisi_id'],
         ['text','guru_username'],
+        ['text','guru_jabatan'],
         ['password','guru_password']
     ];
 
@@ -57,6 +54,7 @@ public $fieldName = [
         'Name',
         'Division',
         'Username',
+        'Jabatan',
         'Password'
     ];
 
@@ -72,7 +70,7 @@ public $fieldOption = [
 
     public function __construct()
     {
-        $this->model = new GuruModel();
+        $this->model = new PresensiModel();
         $this->fieldOption[1] = $this->getdata('Divisi'); 
         $this->dataToShow = $this->prepareDataToShow();
     }
@@ -80,14 +78,18 @@ public $fieldOption = [
     public function print(){
         
         $db = \Config\Database::connect();
-        $builder = $db->table('Guru');
+        $builder = $db->table('Presensi');
         $builder->select('*');
-        $builder->where('divisi_id', 1);
         $builder->where('deleted_at', null);
+
         $query = $builder->get();
-        // print_r($query->getResult());
+
         return view('/report/guru_print',['data' => $query->getResult()]);
 
+    }
+
+    public function showform(){
+        return view('/presence/form');
     }
 
 }

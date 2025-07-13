@@ -47,64 +47,33 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="<?= base_url(); ?>Tingkat" class="nav-link">
-                      <i class="nav-icon bi bi-gear"></i>
+                    <a href="<?= base_url(); ?>Divisi" class="nav-link">
+                      <i class="nav-icon bi bi-home"></i>
                       <p>                       
-                        Tingkat
+                        Division
                       </p>
                     </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="<?= base_url(); ?>Kelompok" class="nav-link">
-                      <i class="nav-icon bi bi-people"></i>
-                      <p>                       
-                        Kelompok / Kelas
-                      </p>
-                    </a>
-                  </li>
+                  </li>                 
+              
                  
                   <li class="nav-item">
-                    <a href="<?= base_url(); ?>petakonsep" class="nav-link">
-                      <i class="nav-icon bi bi-people"></i>
-                      <p >
-                        Peta Konsep
+                    <a href="<?= base_url(); ?>Presensi" class="nav-link">
+                      <i class="nav-icon bi bi-home"></i>
+                      <p>                       
+                        Presensi
                       </p>
                     </a>
-                  </li>
+                  </li>                 
+               
+                
                   <li class="nav-item">
-                    <a href="<?= base_url(); ?>subjek" class="nav-link">
-                      <i class="nav-icon bi bi-journals"></i>
-                      <p>
-                        Subjek
+                    <a href="<?= base_url(); ?>showform" class="nav-link">
+                      <i class="nav-icon bi "></i>
+                      <p>                       
+                        Form Presensi
                       </p>
                     </a>
-                  </li>
-                   <li class="nav-item">
-                    <a href="<?= base_url(); ?>Tujuan" class="nav-link">
-                      <i class="nav-icon bi bi-journals"></i>
-                      <p>
-                        Tujuan
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="<?= base_url(); ?>topik" class="nav-link">
-                      <i class="nav-icon bi bi-journals"></i>
-                      <p>
-                        Topik
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="<?= base_url(); ?>subtopik" class="nav-link">
-                      <i class="nav-icon bi bi-journals"></i>
-                      <p>
-                        Sub-Topik
-                      </p>
-                    </a>
-                  </li>
-
-                 
+                  </li>                 
                 </ul>
               </li>
               <li class="nav-item">

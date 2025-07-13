@@ -47,6 +47,9 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->resource('Subunit');
 	$routes->resource('Aktifitas');
 	$routes->resource('Tipeaktifitas');
+	$routes->resource('Divisi');
+
+	$routes->resource('Presensi');
 
 	$routes->get('/logout', 'Home::logout');
 });
@@ -69,7 +72,13 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->post('/Subunit/data', 'Subunit::data');
 	$routes->post('/Aktifitas/data', 'Aktifitas::data');
 	$routes->post('/Tipeaktifitas/data', 'Tipeaktifitas::data');
+	$routes->post('/Divisi/data', 'Divisi::data');
+
+	$routes->post('/Presensi/data', 'Presensi::data');
 
 $routes->get('login','Home::login');
 $routes->get('/login', 'Home::login');
 $routes->post('/auth/loginauth', 'Home::loginAuth');
+
+//presensi
+$routes->get('/showform','Presensi::showform');
