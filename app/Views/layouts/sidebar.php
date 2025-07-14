@@ -1,18 +1,17 @@
       <!--begin::Sidebar-->
-      <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <aside class="app-sidebar shadow" data-bs-theme="dark" style="background-color:#091642">
         <!--begin::Sidebar Brand-->
-        <div class="sidebar-brand">
+        <div class="sidebar-brand" style="height:7rem">
           <!--begin::Brand Link-->
           <a href="<?= base_url(); ?>" class="brand-link">
             <!--begin::Brand Image-->
             <img
-              src="<?php echo base_url(); ?>/assets/img/AdminLTELogo.png"
+              src="<?php echo base_url(); ?>/assets/img/logo.png"
               alt="AdminLTE Logo"
-              class="brand-image opacity-75 shadow"
+              class="brand-image shadow" style="max-height:65px; width: 65px; height: 65px;"
             />
-            <!--end::Brand Image-->
-            <!--begin::Brand Text-->
-            <span class="brand-text fw-light">Sinarumi v3.0</span>
+            <br>
+            <span class="brand-text fw-light" style="font-size:25px">Sinarumi v3.0</span>
             <!--end::Brand Text-->
           </a>
           <!--end::Brand Link-->
@@ -60,7 +59,7 @@
                     <a href="<?= base_url(); ?>Presensi" class="nav-link">
                       <i class="nav-icon bi bi-home"></i>
                       <p>                       
-                        Presensi
+                        Personel
                       </p>
                     </a>
                   </li>                 

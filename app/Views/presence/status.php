@@ -45,9 +45,9 @@
         <div class="col-sm-12">
           <!-- test -->
             <div class="form-control">
-            <a class="btn btn-warning mt-3 float-end" href="<?php echo base_url(); ?>showForm">Back</a><br><br>
+            <a class="btn btn-warning mt-3 float-end" href="<?php echo base_url(); ?>showform">Back</a><br><br>
             <h2 style="text-align:center;" class="mt-3">Attendance Check</h2>
-            <form method="POST" action="<?= base_url() ?>savePresensi">
+            <form method="POST" action="<?= base_url() ?>savepresensi">
             <h4 class="mt-3"><input class="form-control" name="nama" value="<?php echo $_GET['id'] ?>" readonly></h4>
               
               <select class="form-select mt-3" name="status" id="status">

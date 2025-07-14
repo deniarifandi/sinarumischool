@@ -18,13 +18,13 @@ class Presensi extends MyResourceController
         ['guru_nama','Name'],
         ['divisi_nama','Divison'],
         ['guru_jabatan','Position']
-        // ['guru_password','Password']
+// ['guru_password','Password']
     ];
 
     public $selectList= [
-            'Presensi.*',
-            'Divisi.divisi_nama'
-        ];
+        'Presensi.*',
+        'Divisi.divisi_nama'
+    ];
 
     public $toSearch = 
     [
@@ -33,15 +33,15 @@ class Presensi extends MyResourceController
     ];
 
     public $where = [
-      'Divisi.divisi_id !=' => '0'
+        'Divisi.divisi_id !=' => '0'
     ];
 
 
-     public $joinTable = [
+    public $joinTable = [
         ['Divisi','Divisi.divisi_id = Presensi.divisi_id','left']
     ];
 
-       public $field = [
+    public $field = [
         ['text','guru_nama'],
         ['select','divisi_id'],
         ['text','guru_username'],
@@ -50,7 +50,7 @@ class Presensi extends MyResourceController
     ];
 
 
-public $fieldName = [
+    public $fieldName = [
         'Name',
         'Division',
         'Username',
@@ -58,25 +58,28 @@ public $fieldName = [
         'Password'
     ];
 
-public $fieldOption = [
-  ['noOption'],
-  ['noOption'],
-  ['noOption'],
-  ['noOption'],
+    public $fieldOption = [
+        ['noOption'],
+        ['noOption'],
+        ['noOption'],
+        ['noOption'],
 
-];
+    ];
 
     public $dataToShow = [];
 
+    public $db;
+
     public function __construct()
-    {
+    {   
+        $this->db = \Config\Database::connect(); 
         $this->model = new PresensiModel();
         $this->fieldOption[1] = $this->getdata('Divisi'); 
         $this->dataToShow = $this->prepareDataToShow();
     }
 
     public function print(){
-        
+
         $db = \Config\Database::connect();
         $builder = $db->table('Presensi');
         $builder->select('*');
@@ -96,33 +99,52 @@ public $fieldOption = [
         return view('/presence/status');
     }
 
-    public function savePresensi(){
-       $db = \Config\Database::connect(); // Connect to the database
+    public function getGuruId(){
+        $this->db = \Config\Database::connect(); 
 
-// Get POST data
-$nama     = $_POST['nama'];
-$status   = $_POST['status'];
-$longitude = $_POST['longitude'];
-$latitude  = $_POST['latitude'];
-
-// Debug output
-echo "Status: $status<br>";
-echo "Longitude: $longitude<br>";
-echo "Latitude: $latitude<br>";
-echo "Nama: $nama<br>";
-
-// Build and run the query
-$builder = $db->table('Guru');
-$builder->select('*');
-$builder->where('guru_nama', $nama);
-$query = $builder->get();
-
-// Display the result
-$results = $query->getResult();
-echo "<pre>";
-print_r($results);
-echo "</pre>";
+        $nama     = trim($_POST['nama']);
+        $status   = $_POST['status'];
+        $today = date('Y-m-d');
+        $builder = $this->db->table('Guru');
+        $builder->select('Guru.*');
+        $builder->where('guru_nama', $nama);
+        $query = $builder->get();
+        $results = $query->getResult();
+        return $results[0]->guru_id;
     }
 
+    public function cekPresensi(){
+        $builder = $this->db->table('Presensidata');
+        $builder->select('Presensidata.*');
+        $builder->where('guru_id', $this->getGuruId());
+
+        $query = $builder->get();
+        $resultsPresensi = $query->getResult();
+
+        return count($resultsPresensi);
+    }
+
+    public function savePresensi(){
+
+        if ($this->cekPresensi() > 0) {
+            $result = "It looks like you’ve already submitted your data for today. No need to submit again, everything has been recorded successfully. Thank you for staying consistent!";
+            $code = 0;
+        }else{
+            
+            $data = [
+                'guru_id'          => $this->getGuruId(),
+                'longitude'        => $_POST['longitude'],
+                'latitude'         => $_POST['latitude'],
+            ];
+
+            $builder = $this->db->table('presensidata');
+            $builder->insert($data);
+
+            $result = "Your attendance has been successfully recorded for today. Thank you for checking in on time, we appreciate your punctuality and dedication.";
+            $code = 1;
+        }
+
+        echo view('/presence/result.php',['result' => $result,'code' => $code]);
+    }
 }
 

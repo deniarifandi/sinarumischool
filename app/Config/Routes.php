@@ -81,7 +81,7 @@ $routes->get('/login', 'Home::login');
 $routes->post('/auth/loginauth', 'Home::loginAuth');
 
 //presensi
-$routes->get('/showForm','Presensi::showForm');
-$routes->get('/showStatus','Presensi::showStatus');
-$routes->post('/savePresensi','Presensi::savePresensi');
+$routes->get('/showform','Presensi::showForm');
+$routes->get('/showstatus','Presensi::showStatus');
+$routes->post('/savepresensi','Presensi::savePresensi');
 

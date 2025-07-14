@@ -29,6 +29,47 @@
           <!--begin::Container-->
           <div class="container-fluid">
             <div>
+              <h4>Human Resource</h4>
+            </div>
+             <div class="row">
+              <!-- /.col -->
+              <div class="col-md-3">
+                <a href="<?php echo base_url(); ?>Presensi">
+                <div class="info-box">
+                  <span class="info-box-icon shadow-sm" style="background-color:#82adf3!important">
+                    <i class="bi bi-person-badge" style="color: #524f4f;"></i>
+                  </span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Personel</span>
+                    <span class="info-box-number">
+                      
+                      <small>Personel Manager</small>
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                  </a>
+                <!-- /.info-box -->
+              </div>
+               <div class="col-md-3">
+                <a href="<?php echo base_url(); ?>showform">
+                <div class="info-box">
+                  <span class="info-box-icon shadow-sm" style="background-color:#82adf3!important">
+                    <i class="bi  bi-journal-text" style="color: #524f4f;"></i>
+                  </span>
+                  <div class="info-box-content">
+                    <span class="info-box-text">Attendance Form</span>
+                    <span class="info-box-number">
+                      
+                    </span>
+                  </div>
+                  <!-- /.info-box-content -->
+                </div>
+                  </a>
+                <!-- /.info-box -->
+              </div>
+            </div>
+            <div>
               <h4>School Management</h4>
             </div>
             <div class="row">
@@ -36,8 +77,8 @@
               <div class="col-md-3">
                 <a href="<?php echo base_url(); ?>Guru">
                 <div class="info-box">
-                  <span class="info-box-icon shadow-sm" style="background-color:#d81b60!important">
-                    <i class="bi bi-person-badge text-white"></i>
+                  <span class="info-box-icon shadow-sm" style="background-color:#77cff7!important">
+                    <i class="bi bi-briefcase" style="color: #524f4f;"></i>
                   </span>
                   <div class="info-box-content">
                     <span class="info-box-text">Teacher</span>
@@ -55,8 +96,8 @@
                 <div class="col-md-3">
                 <a href="<?php echo base_url(); ?>Kelompok">
                 <div class="info-box">
-                  <span class="info-box-icon shadow-sm" style="background-color:#fd7e14!important">
-                    <i class="bi bi-person-lines-fill text-white"></i>
+                  <span class="info-box-icon shadow-sm" style="background-color:#fdfe9c!important">
+                    <i class="bi bi-people" style="color: #524f4f;"></i>
                   </span>
                   <div class="info-box-content">
                     <span class="info-box-text">Class</span>
@@ -73,8 +114,8 @@
               <div class="col-md-3">
                 <a href="<?php echo base_url(); ?>Murid">
                 <div class="info-box">
-                  <span class="info-box-icon shadow-sm" style="background-color:#6610f2">
-                    <i class="bi bi-mortarboard text-white"></i>
+                  <span class="info-box-icon shadow-sm" style="background-color:#c5f1dc">
+                    <i class="bi bi-mortarboard" style="color: #524f4f;"></i>
                   </span>
                   <div class="info-box-content">
                     <span class="info-box-text">Student</span>
@@ -91,8 +132,8 @@
                 <div class="col-md-3">
                 <a href="<?php echo base_url(); ?>Subjek">
                 <div class="info-box">
-                  <span class="info-box-icon shadow-sm" style="background-color:#01ff70!important">
-                    <i class="bi bi-chat-dots text-dark"></i>
+                  <span class="info-box-icon shadow-sm" style="background-color:#adfbcf!important">
+                    <i class="bi bi-folder" style="color: #524f4f;"></i>
                   </span>
                   <div class="info-box-content">
                     <span class="info-box-text">Subject</span>
@@ -109,8 +150,8 @@
                <div class="col-md-3">
                 <a href="<?php echo base_url(); ?>Tipeaktifitas">
                 <div class="info-box">
-                  <span class="info-box-icon shadow-sm" style="background-color:#d568fb!important">
-                    <i class="bi bi-chat-dots text-dark"></i>
+                  <span class="info-box-icon shadow-sm" style="background-color:#e9b5fb!important">
+                    <i class="bi bi-check-circle" style="color: #524f4f;"></i>
                   </span>
                   <div class="info-box-content">
                     <span class="info-box-text">Activity Type</span>
@@ -134,8 +175,8 @@
               <div class="col-md-3">
                 <a href="<?php echo base_url(); ?>absensi">
                 <div class="info-box">
-                  <span class="info-box-icon text-bg-warning shadow-sm">
-                    <i class="bi bi-person-check text-dark"></i>
+                  <span class="info-box-icon shadow-sm border" style="background-color:#ffc5e5">
+                    <i class="bi bi-person-check" style="color: #524f4f;"></i>
                   </span>
                   <div class="info-box-content">
                     <span class="info-box-text">Absensi</span>
@@ -159,8 +200,8 @@
             <div class="col-md-3">
                 <a href="<?php echo base_url(); ?>Unit">
                 <div class="info-box">
-                  <span class="info-box-icon shadow-sm" style="background-color:#698cba!important">
-                    <i class="bi bi-chat-dots text-white"></i>
+                  <span class="info-box-icon shadow-sm" style="background-color:#a9b9f1!important">
+                    <i class="bi bi-file-earmark-text" style="color: #524f4f;"></i>
                   </span>
                   <div class="info-box-content">
                     <span class="info-box-text">Chapter</span>
@@ -177,11 +218,11 @@
               <div class="col-md-3">
                 <a href="<?php echo base_url(); ?>Subunit">
                 <div class="info-box">
-                  <span class="info-box-icon shadow-sm" style="background-color:#fb4647!important">
-                    <i class="bi bi-chat-dots text-dark"></i>
+                  <span class="info-box-icon shadow-sm" style="background-color:#ffb8b8!important">
+                    <i class="bi bi-file-earmark-text" style="color: #524f4f;"></i>
                   </span>
                   <div class="info-box-content">
-                    <span class="info-box-text">Sub-Chapter</span>
+                    <span class="info-box-text" >Sub-Chapter</span>
                     <span class="info-box-number">
                       
                       <small>Manage Sub-Chapter</small>
@@ -195,8 +236,8 @@
               <div class="col-md-3">
                 <a href="<?php echo base_url(); ?>Tujuan">
                 <div class="info-box">
-                  <span class="info-box-icon shadow-sm" style="background-color:#3d9970!important">
-                    <i class="bi bi-chat-dots text-white"></i>
+                  <span class="info-box-icon shadow-sm" style="background-color:#6de9b2!important">
+                    <i class="bi bi-file-earmark-text" style="color: #524f4f;"></i>
                   </span>
                   <div class="info-box-content">
                     <span class="info-box-text">Lesson Objective</span>
@@ -213,8 +254,8 @@
               <div class="col-md-3">
                 <a href="<?php echo base_url(); ?>Aktifitas">
                 <div class="info-box">
-                  <span class="info-box-icon shadow-sm" style="background-color:#4ecbf8!important">
-                    <i class="bi bi-person-walking text-dark"></i>
+                  <span class="info-box-icon shadow-sm" style="background-color:#a2e4fb!important">
+                    <i class="bi bi-calendar-check" style="color: #524f4f;"></i>
                   </span>
                   <div class="info-box-content">
                     <span class="info-box-text">Daily Activity </span>

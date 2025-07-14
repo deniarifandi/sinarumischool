@@ -54,11 +54,11 @@
     />
   </head>
   
-  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary" >
     <!--begin::App Wrapper-->
     <div class="app-wrapper">
       <!--begin::Header-->
-      <nav class="app-header navbar navbar-expand bg-body">
+      <nav class="app-header navbar navbar-expand" style="background-color:#eaeae8">
         <!--begin::Container-->
         <div class="container-fluid">
           <!--begin::Start Navbar Links-->
