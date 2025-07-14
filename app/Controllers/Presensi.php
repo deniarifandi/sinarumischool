@@ -115,7 +115,12 @@ class Presensi extends MyResourceController
         }else{
             $result = "Staff Data not Found, contact Administrator";
             $code = 0;
-             echo view('/presence/result.php',['result' => $result,'code' => $code]);
+            $title = "Failed";
+             echo view('/presence/result.php',[
+                'result' => $result,
+                'code' => $code,
+                'title' => $title
+            ]);
         }
         
     }
@@ -136,6 +141,8 @@ class Presensi extends MyResourceController
         if ($this->cekPresensi() > 0) {
             $result = "It looks like you’ve already submitted your data for today. No need to submit again, everything has been recorded successfully. Thank you for staying consistent!";
             $code = 0;
+            $title = "Failed";
+            
         }else{
             
             $data = [
@@ -147,11 +154,16 @@ class Presensi extends MyResourceController
             $builder = $this->db->table('Presensidata');
             $builder->insert($data);
 
+              $title = "Success";
             $result = "Your attendance has been successfully recorded for today. Thank you for checking in on time, we appreciate your punctuality and dedication.";
             $code = 1;
         }
 
-        echo view('/presence/result.php',['result' => $result,'code' => $code]);
+        echo view('/presence/result.php',[
+                'result' => $result,
+                'code' => $code,
+                'title' => $title
+            ]);
     }
 }
 

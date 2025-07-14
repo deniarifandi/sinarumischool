@@ -51,12 +51,12 @@
                 <?php if ($code = 0): ?>
                 
                 <img src="<?php echo base_url(); ?>assets/img/tick.png" style="max-width: 100px;"><br><br>
-                <h4>Submission Accepted</h4><br>
+                <h4><?= $title ?></h4><br>
 
                 <?php else: ?>
 
                 <img src="<?php echo base_url(); ?>assets/img/cross.png" style="max-width: 100px;"><br><br>
-                <h4>You’ve already checked in.</h4><br>
+                <h4><?= $title ?></h4><br>
 
                 <?php endif ?>
                 
