@@ -48,7 +48,7 @@
             <div class="card" >
               <div class="card-body" style="padding-top: 50px; padding-bottom: 50px;">
 
-                <?php if ($code == 0): ?>
+                <?php if ($code == 1): ?>
                 
                 <img src="<?php echo base_url(); ?>assets/img/tick.PNG" style="max-width: 100px;"><br><br>
                 <h4><?= $title ?></h4><br>
