@@ -50,12 +50,12 @@
 
                 <?php if ($code = 0): ?>
                 
-                <img src="<?php echo base_url(); ?>assets/img/tick.png" style="max-width: 100px;"><br><br>
+                <img src="<?php echo base_url(); ?>assets/img/tick.PNG" style="max-width: 100px;"><br><br>
                 <h4><?= $title ?></h4><br>
 
                 <?php else: ?>
 
-                <img src="<?php echo base_url(); ?>assets/img/cross.png" style="max-width: 100px;"><br><br>
+                <img src="<?php echo base_url(); ?>assets/img/cross.PNG" style="max-width: 100px;"><br><br>
                 <h4><?= $title ?></h4><br>
 
                 <?php endif ?>
