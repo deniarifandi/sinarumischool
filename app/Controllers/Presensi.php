@@ -112,7 +112,7 @@ echo "Latitude: $latitude<br>";
 echo "Nama: $nama<br>";
 
 // Build and run the query
-$builder = $db->table('guru');
+$builder = $db->table('Guru');
 $builder->select('*');
 $builder->where('guru_nama', $nama);
 $query = $builder->get();
