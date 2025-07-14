@@ -88,7 +88,7 @@ public $fieldOption = [
 
     }
 
-    public function showform(){
+    public function showForm(){
         return view('/presence/form');
     }
 
