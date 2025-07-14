@@ -46,7 +46,7 @@
           <!-- test -->
             
             <div class="card" >
-              <div class="card-body" style="padding-top: 50px; padding-bottom: 50px;">
+              <div class="card-body" style="padding-top: 30px; padding-bottom: 50px;">
 
                 <?php if ($code == 1): ?>
                 
@@ -59,7 +59,7 @@
                 <h4><?= $title ?></h4><br>
 
                 <?php endif ?>
-                
+                <br>
                 <?= $result ?>
                 <a class="btn btn-success mt-3" href="<?php echo base_url(); ?>">Back to Home</a>
               </div>
