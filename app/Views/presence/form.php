@@ -49,6 +49,7 @@
   <script>
     function onScanSuccess(decodedText, decodedResult) {
       document.getElementById('result').innerText = `QR Code Data: ${decodedText}`;
+        window.location.href = `<?php echo base_url(); ?>showStatus?id=+${decodedText}`;
       html5QrcodeScanner.clear();
     }
 

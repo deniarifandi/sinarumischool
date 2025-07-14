@@ -92,4 +92,37 @@ public $fieldOption = [
         return view('/presence/form');
     }
 
+    public function showStatus(){
+        return view('/presence/status');
+    }
+
+    public function savePresensi(){
+       $db = \Config\Database::connect(); // Connect to the database
+
+// Get POST data
+$nama     = $_POST['nama'];
+$status   = $_POST['status'];
+$longitude = $_POST['longitude'];
+$latitude  = $_POST['latitude'];
+
+// Debug output
+echo "Status: $status<br>";
+echo "Longitude: $longitude<br>";
+echo "Latitude: $latitude<br>";
+echo "Nama: $nama<br>";
+
+// Build and run the query
+$builder = $db->table('guru');
+$builder->select('*');
+$builder->where('guru_nama', $nama);
+$query = $builder->get();
+
+// Display the result
+$results = $query->getResult();
+echo "<pre>";
+print_r($results);
+echo "</pre>";
+    }
+
 }
+
