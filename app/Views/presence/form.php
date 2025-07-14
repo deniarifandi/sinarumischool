@@ -7,14 +7,28 @@
     <title>Bootstrap demo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;  /* Vertical center */
+      align-items: center;      /* Horizontal center */
+      height: 100vh;            /* Full viewport height */
+      text-align: center;
+    }
+
     #reader {
       width: 300px;
-      margin: auto;
-    }
-    #result {
       margin-top: 20px;
+    }
+
+    #result {
+      margin-top: 10px;
       font-weight: bold;
-      text-align: center;
     }
   </style>
   </head>
@@ -23,7 +37,7 @@
       <div class="row">
         <div class="col-sm-12">
           <!-- test -->
-          <h2 style="text-align:center;">QR Code Scanner</h2>
+          <h2 style="text-align:center;">Attendance Check</h2>
           <div id="reader"></div>
           <div id="result">Scan a QR Code</div>
         </div>
