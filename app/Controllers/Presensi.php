@@ -144,7 +144,7 @@ class Presensi extends MyResourceController
                 'latitude'         => $_POST['latitude'],
             ];
 
-            $builder = $this->db->table('presensidata');
+            $builder = $this->db->table('Presensidata');
             $builder->insert($data);
 
             $result = "Your attendance has been successfully recorded for today. Thank you for checking in on time, we appreciate your punctuality and dedication.";
