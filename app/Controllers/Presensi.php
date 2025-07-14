@@ -110,7 +110,14 @@ class Presensi extends MyResourceController
         $builder->where('guru_nama', $nama);
         $query = $builder->get();
         $results = $query->getResult();
-        return $results[0]->guru_id;
+        if (count($result > 0)) {
+            return $results[0]->guru_id;
+        }else{
+            $result = "Staff Data not Found, contact Administrator";
+            $code = 0;
+             echo view('/presence/result.php',['result' => $result,'code' => $code]);
+        }
+        
     }
 
     public function cekPresensi(){

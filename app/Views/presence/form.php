@@ -36,7 +36,7 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
-<!-- test -->
+<div>back</div>
 <h2 style="text-align:center;">Attendance Check</h2>
 <div id="reader"></div>
 <div id="result">Scan a QR Code</div>
