@@ -67,7 +67,7 @@
     html5QrCode.start(
       cameraId,
       {
-        fps: 10,
+        fps: 100,
         qrbox: 250
       },
       onScanSuccess
