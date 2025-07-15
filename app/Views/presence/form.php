@@ -60,19 +60,20 @@
   const html5QrCode = new Html5Qrcode("reader");
 
   Html5Qrcode.getCameras().then(cameras => {
-    if (cameras && cameras.length) {
-      html5QrCode.start(
-        { facingMode: "environment" }, // back camera on mobile
-        {
-          fps: 60,    // Scans per second
-          qrbox: 350  // Size of the scan box
-        },
-        onScanSuccess
-      );
-    }
-  }).catch(err => {
-    console.error("Camera error: ", err);
-  });
+  if (cameras && cameras.length) {
+    // Use the last camera if "environment" fails
+    const cameraId = cameras.find(c => c.label.toLowerCase().includes('back'))?.id || cameras[0].id;
+
+    html5QrCode.start(
+      cameraId,
+      {
+        fps: 10,
+        qrbox: 250
+      },
+      onScanSuccess
+    );
+  }
+}); 
 </script>
 </body>
 </html>
