@@ -157,6 +157,9 @@ class Presensi extends MyResourceController
               $title = "Success";
             $result = "Your attendance has been successfully recorded for today. Thank you for checking in on time, we appreciate your punctuality and dedication.";
             $code = 1;
+
+            $this->sendConfirm(session()->get('nama'));
+            // echo ;
         }
 
         echo view('/presence/result.php',[
@@ -164,6 +167,60 @@ class Presensi extends MyResourceController
             'code' => $code,
             'title' => $title
         ]);
+    }
+
+    public function sendConfirm($nama){
+
+    $token = 'EAAcbbjv93u0BPPdS3swcVVVzBJwkrn2oLGZABP1JMZBnd7XQqyZCwE6Fa3kK1L6QFfU7WvhHXTDT32IgLY0HvFCxn0ZAZBtn1iexZAiiKkKa9y0Ve5vhJNXvpZCBNqwmHvkb9mQh7mmisCp7cnrL9KoukWGt2CrrDIajwfPkA6f8ZB8HIWm4MJ0IwEW9ZBmmGXTIjOQZDZD'; // Replace with your valid token
+    $phone_number_id = '718496908011318'; // From WhatsApp Business Account
+    $recipient_number = '081805173445'; // Use full international format
+
+    $url = "https://graph.facebook.com/v19.0/$phone_number_id/messages";
+
+    $data = [
+        "messaging_product" => "whatsapp",
+        "to" => $recipient_number,
+        "type" => "template",
+        "template" => [
+            "name" => "attendance_confirmation",
+            "language" => [
+                "code" => "en_US"
+            ],
+            "components" => [
+                [
+                    "type" => "body",
+                    "parameters" => [
+                        [ "type" => "text", "text" => "Attendance" ],
+                        [ "type" => "text", "text" => session()->get('nama') ],
+                        [ "type" => "text", "text" => "My Little Island School" ],
+                        [ "type" => "text", "text" => "15 July 2025" ]
+                    ]
+                ]
+            ]
+        ]
+    ];
+
+    $headers = [
+        "Authorization: Bearer $token",
+        "Content-Type: application/json"
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+
+    if (curl_errno($ch)) {
+        echo 'Curl error: ' . curl_error($ch);
+    } else {
+        echo "Response:\n$response";
+    }
+
+    curl_close($ch);
     }
 }
 
