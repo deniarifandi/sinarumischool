@@ -64,20 +64,20 @@
     // Use the last camera if "environment" fails
     const cameraId = cameras.find(c => c.label.toLowerCase().includes('back'))?.id || cameras[0].id;
 
-   html5QrCode.start(
-  { deviceId: backCam.id },
-  {
-    fps: 60,
-    qrbox: { width: 150, height: 150 },
-    aspectRatio: 1.0,
-    videoConstraints: {
-      width: { ideal: 1920 },
-      height: { ideal: 1080 },
-      facingMode: "environment"
-    }
-  },
-  onScanSuccess
-);
+    html5QrCode.start(
+      { facingMode: "environment" }, // or use a specific cameraId
+      {
+       fps: 15,
+        qrbox: { width: 180, height: 180 },
+        aspectRatio: 1.0,
+        videoConstraints: {
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          facingMode: "environment"
+        }
+      },
+      onScanSuccess
+    );
   }
 }); 
 </script>
