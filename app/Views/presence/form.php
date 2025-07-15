@@ -47,32 +47,32 @@
 
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <script>
- const resultElement = document.getElementById('result');
-
-function onScanSuccess(decodedText, decodedResult) {
-  resultElement.textContent = decodedText;
-  // You can also stop the scanner after a successful scan if needed
-  html5QrCode.stop();
-}
-
-// Create scanner instance
-const html5QrCode = new Html5Qrcode("reader");
-
-// Start camera
-Html5Qrcode.getCameras().then(cameras => {
-  if (cameras && cameras.length) {
-    html5QrCode.start(
-      { facingMode: "environment" }, // back camera on mobile
-      {
-        fps: 60,    // Scans per second
-        qrbox: 350  // Size of the scan box
-      },
-      onScanSuccess
-    );
+  function onScanSuccess(decodedText, decodedResult) {
+    document.getElementById('result').innerText = `QR Code Data: ${decodedText}`;
+    window.location.href = `<?php echo base_url(); ?>showstatus?id=+${decodedText}`;
+    html5QrcodeScanner.clear();
   }
-}).catch(err => {
-  console.error("Camera error: ", err);
-});
+
+  function onScanFailure(error) {
+// Handle scan error if needed
+  }
+
+  const html5QrCode = new Html5Qrcode("reader");
+
+  Html5Qrcode.getCameras().then(cameras => {
+    if (cameras && cameras.length) {
+      html5QrCode.start(
+        { facingMode: "environment" }, // back camera on mobile
+        {
+          fps: 60,    // Scans per second
+          qrbox: 350  // Size of the scan box
+        },
+        onScanSuccess
+      );
+    }
+  }).catch(err => {
+    console.error("Camera error: ", err);
+  });
 </script>
 </body>
 </html>
