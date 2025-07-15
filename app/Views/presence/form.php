@@ -65,10 +65,11 @@
     const cameraId = cameras.find(c => c.label.toLowerCase().includes('back'))?.id || cameras[0].id;
 
     html5QrCode.start(
-      cameraId,
+      { facingMode: "environment" }, // or use a specific cameraId
       {
         fps: 100,
-        qrbox: 250
+        qrbox: { width: 250, height: 250 }, // Small, centered box
+        aspectRatio: 1.0
       },
       onScanSuccess
     );
