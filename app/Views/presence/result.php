@@ -59,8 +59,9 @@
                 <h4><?= $title ?></h4><br>
 
                 <?php endif ?>
-                <br>
+
                 <?= $result ?>
+                <br>
                 <a class="btn btn-success mt-3" href="<?php echo base_url(); ?>">Back to Home</a>
               </div>
             </div>

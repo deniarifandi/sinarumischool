@@ -26,8 +26,6 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->get('absensi/edit/(:segment)', 'absensi::editAbsensi/$1');
 	$routes->get('absensi/delete/(:segment)', 'absensi::delete/$1');
 	
-	
-
 	//Resource
 	$routes->resource('Murid');
 	$routes->resource('assignments');
@@ -76,12 +74,12 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 
 	$routes->post('/Presensi/data', 'Presensi::data');
 
-$routes->get('login','Home::login');
-$routes->get('/login', 'Home::login');
-$routes->post('/auth/loginauth', 'Home::loginAuth');
+	$routes->get('login','Home::login');
+	$routes->get('/login', 'Home::login');
+	$routes->post('/auth/loginauth', 'Home::loginAuth');
 
-//presensi
-$routes->get('/showform','Presensi::showForm');
-$routes->get('/showstatus','Presensi::showStatus');
-$routes->post('/savepresensi','Presensi::savePresensi');
+	//presensi
+	$routes->get('/showform','Presensi::showForm');
+	$routes->get('/showstatus','Presensi::showStatus');
+	$routes->post('/savepresensi','Presensi::savePresensi');
 

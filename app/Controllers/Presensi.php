@@ -122,13 +122,13 @@ class Presensi extends MyResourceController
                 'title' => $title
             ]);
         }
-        
     }
 
     public function cekPresensi(){
         $builder = $this->db->table('Presensidata');
         $builder->select('Presensidata.*');
         $builder->where('guru_id', $this->getGuruId());
+        $builder->where('presensidata_tanggal', date("Y-m-d"));
 
         $query = $builder->get();
         $resultsPresensi = $query->getResult();
@@ -160,10 +160,10 @@ class Presensi extends MyResourceController
         }
 
         echo view('/presence/result.php',[
-                'result' => $result,
-                'code' => $code,
-                'title' => $title
-            ]);
+            'result' => $result,
+            'code' => $code,
+            'title' => $title
+        ]);
     }
 }
 

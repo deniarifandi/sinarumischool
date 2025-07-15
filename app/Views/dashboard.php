@@ -11,7 +11,9 @@
           <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-              <div class="col-sm-6"><h3 class="mb-0"><img src="<?php echo base_url() ?>assets/img/class.svg" style="max-width: 35px;"> Dashboard <?php echo $data->kelompok_nama ?> </h3></div>
+              <div class="col-sm-6"><h3 class="mb-0"><img src="<?php echo base_url() ?>assets/img/class.svg" style="max-width: 35px;"> Dashboard <?php echo $data->kelompok_nama ?> </h3>
+
+              </div>
 
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
@@ -19,6 +21,15 @@
                   <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
                 </ol>
               </div>
+
+                <?php if ($presence < 1): ?>
+                  <div class="alert alert-danger" role="alert">
+                  You haven’t submitted your attendance yet. <a href="<?php base_url() ?>showstatus?id=<?php echo $nama ?>">Click to submit now</a>
+                  </div>
+               
+                <?php endif ?>
+
+              
             </div>
             <!--end::Row-->
           </div>
@@ -54,7 +65,7 @@
                <div class="col-md-3">
                 <a href="<?php echo base_url(); ?>showform">
                 <div class="info-box">
-                  <span class="info-box-icon shadow-sm" style="background-color:#82adf3!important">
+                  <span class="info-box-icon shadow-sm" style="background-color: #edab86!important">
                     <i class="bi  bi-journal-text" style="color: #524f4f;"></i>
                   </span>
                   <div class="info-box-content">
