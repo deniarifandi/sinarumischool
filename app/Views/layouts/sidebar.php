@@ -56,7 +56,7 @@
               
                  
                   <li class="nav-item">
-                    <a href="<?= base_url(); ?>Presensi" class="nav-link">
+                    <a href="<?= base_url(); ?>Personel" class="nav-link">
                       <i class="nav-icon bi bi-home"></i>
                       <p>                       
                         Personel
