@@ -112,10 +112,10 @@ class Presensidata extends MyResourceController
     }
 
     public function cekPresensi(){
-        $builder = $this->db->table('Personeldata');
-        $builder->select('Personeldata.*');
+        $builder = $this->db->table('Presensidata');
+        $builder->select('Presensidata.*');
         $builder->where('guru_id', $this->getGuruId());
-        $builder->where('Personeldata_tanggal', date("Y-m-d"));
+        $builder->where('Presensidata_tanggal', date("Y-m-d"));
 
         $query = $builder->get();
         $resultsPersonel = $query->getResult();
