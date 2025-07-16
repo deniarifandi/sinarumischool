@@ -31,7 +31,8 @@ class absensi extends BaseController
     }
 
     public function addAbsensi(){
-        $user =  session()->get('user_id');
+        $user =  session()->get('guru_id');
+        // echo $user;
         $builder = Database::connect()->table('Murid');
         $builder->select('Murid.*, Kelompok.*');
         $builder->join('Kelompok','Kelompok.kelompok_id = Murid.kelompok_id','left');
