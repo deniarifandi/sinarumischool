@@ -37,7 +37,7 @@ class Murid extends MyResourceController
         'Murid.murid_agama'
     ];
 
-     public $where = [
+    public $where = [
       
     ];
 
@@ -69,6 +69,7 @@ class Murid extends MyResourceController
 
   public function __construct()
   {
+    // $this->where ='Guru.guru_id = '.session()->get('guru_id').' OR Guru.guru_id IS NULL';
     $this->fieldOption[1] = $this->getdata('Kelompok'); 
     $this->model = new MuridModel();
     $this->dataToShow = $this->prepareDataToShow();

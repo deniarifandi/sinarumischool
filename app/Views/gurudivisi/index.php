@@ -85,7 +85,7 @@ echo view('layouts/footer.php');
             processing: true,
             serverSide: true,
             ajax: {
-                url: "<?= base_url('Guru/data') ?>",
+                url: "<?= base_url('Personel/data') ?>",
                 type: "POST"
             },
             columns: [

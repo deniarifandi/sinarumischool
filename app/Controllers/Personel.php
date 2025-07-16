@@ -74,8 +74,10 @@ class Personel extends MyResourceController
     {   
         $this->db = \Config\Database::connect(); 
         $this->model = new PersonelModel();
-        $this->where = ['guru_id' => session()->get('guru_id')];
-        // $this->fieldOption[1] = $this->getdata('Divisi'); 
+        if (session()->get('guru_id')!= 0) {
+            $this->where = 'guru_id ='.session()->get('guru_id');    
+        }
+        
         $this->dataToShow = $this->prepareDataToShow();
     }
 
