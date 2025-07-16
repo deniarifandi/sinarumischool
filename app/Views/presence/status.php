@@ -54,6 +54,7 @@
                 <option value="1">Hadir</option>
                 <option value="2">Ijin</option>
                 <option value="3">Sakit</option>
+                <option value="4">WFA</option>
               </select>
               <div class="row">
                 <div class="col">

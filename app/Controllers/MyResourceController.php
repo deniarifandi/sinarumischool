@@ -191,8 +191,10 @@ public function getdata($table){
         }
         $builder->where($this->table.'.deleted_at',NULL);;
 
-        foreach ($this->where as $key => $value) {
-            $builder->where($key, $value);
+        if (session()->get('guru_id') != 0) {
+            foreach ($this->where as $key => $value) {
+                $builder->where($key, $value);
+            }
         }
 
         if (!empty($this->orderBy)) {

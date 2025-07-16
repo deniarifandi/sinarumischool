@@ -46,8 +46,12 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->resource('Aktifitas');
 	$routes->resource('Tipeaktifitas');
 	$routes->resource('Divisi');
+	$routes->resource('Jabatan');
 
-	$routes->resource('Presensi');
+	$routes->resource('Personel');
+	$routes->resource('Presensidata');
+
+	// $routes->resource('Gurudivisi');
 
 	$routes->get('/logout', 'Home::logout');
 });
@@ -71,15 +75,28 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->post('/Aktifitas/data', 'Aktifitas::data');
 	$routes->post('/Tipeaktifitas/data', 'Tipeaktifitas::data');
 	$routes->post('/Divisi/data', 'Divisi::data');
+	$routes->post('/Jabatan/data', 'Jabatan::data');
+	$routes->post('/Presensidata/data', 'Presensidata::data');
+	$routes->post('/Gurudivisi/data', 'Gurudivisi::data');
 
-	$routes->post('/Presensi/data', 'Presensi::data');
+	$routes->post('/Personel/data', 'Personel::data');
 
 	$routes->get('login','Home::login');
 	$routes->get('/login', 'Home::login');
 	$routes->post('/auth/loginauth', 'Home::loginAuth');
 
 	//presensi
-	$routes->get('/showform','Presensi::showForm');
-	$routes->get('/showstatus','Presensi::showStatus');
-	$routes->post('/savepresensi','Presensi::savePresensi');
+	$routes->get('/showform','Presensidata::showForm');
+	$routes->get('/showstatus','Presensidata::showStatus');
+	$routes->post('/savepresensi','Presensidata::savePresensi');
 
+	//custom
+	$routes->get('/Gurudivisi','Gurudivisi::index');
+	$routes->get('/Gurudivisi/(:any)/edit','Gurudivisi::edit/$1');
+	$routes->post('/Gurudivisi/submit','Gurudivisi::submit');
+	$routes->post('/Gurudivisi/toggle', 'Gurudivisi::toggle');
+
+	$routes->get('/Gurujabatan','Gurujabatan::index');
+	$routes->get('/Gurujabatan/(:any)/edit','Gurujabatan::edit/$1');
+	$routes->post('/Gurujabatan/submit','Gurujabatan::submit');
+	$routes->post('/Gurujabatan/toggle', 'Gurujabatan::toggle');

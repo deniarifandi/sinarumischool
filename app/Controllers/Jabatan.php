@@ -3,23 +3,23 @@
 namespace App\Controllers;
 
 //use CodeIgniter\RESTful\ResourceController;
-use App\Models\DivisiModel;
+use App\Models\JabatanModel;
 use App\Libraries\datatable;
 use Config\Database;
 
-class Divisi extends MyResourceController
+class Jabatan extends MyResourceController
 {
 
-    public $table = "Divisi";
-    public $title = "Divisi";
-    public $primaryKey = "divisi_id";
+    public $table = "Jabatan";
+    public $title = "Jabatan";
+    public $primaryKey = "jabatan_id";
     public $fieldList = [
-        ['divisi_nama','Division Name']
+        ['jabatan_nama','Jabatanon Name']
     ];
 
     public $selectList= [
-            'Divisi.divisi_id',
-            'Divisi.divisi_nama'
+            'Jabatan.jabatan_id',
+            'Jabatan.jabatan_nama'
     ];
 
     public $joinTable = [
@@ -27,7 +27,7 @@ class Divisi extends MyResourceController
 
     public $toSearch = 
     [
-        // 'Divisi.*',
+        // 'Jabatan.*',
     ];
 
     public $where = [
@@ -37,11 +37,11 @@ class Divisi extends MyResourceController
 
 
     public $field = [
-        ['text','divisi_nama']
+        ['text','jabatan_nama']
 ];
 
 public $fieldName = [
-        'Division Name'
+        'jabatan Name'
         
     ];
 
@@ -54,14 +54,14 @@ public $fieldOption = [
 ];
 
 // public $orderBy = ['Subjek.subjek_nama' => 'ASC'];
-public $groupBy = 'Divisi.divisi_nama';
+public $groupBy = 'Jabatan.jabatan_nama';
 
     public $dataToShow = [];
 
 
     public function __construct()
     {
-        $this->model = new DivisiModel();
+        $this->model = new JabatanModel();
         $this->dataToShow = $this->prepareDataToShow();
     }
 
