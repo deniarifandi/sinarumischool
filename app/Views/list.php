@@ -33,7 +33,9 @@
                 <div class="card-header">
                   <h3 class="card-title"><?= $title ?>s list</h3>
                   <div class="card-tools">
+                    
                     <a href="<?= $table ?>/new" class="btn btn-primary">Add <?= $title ?></a>
+
                   </div>
                   <!-- /.card-tools -->
                 </div>

@@ -40,12 +40,16 @@
 
       <!-- Section: Human Resource -->
       <div class="mb-3"><h4>📁 Human Resource</h4></div>
+
       <div class="row">
-        <?= card('Personel', 'Personel Manager', 'Personel', 'bi-person-badge', '#82adf3') ?>
-        <?= card('Division', 'Division Manager', 'Divisi', 'bi-diagram-3', '#b2dfdb') ?>
-        <?= card('Role', 'Role Manager', 'Jabatan', 'bi-shield-lock', '#fdd835') ?>
-        <?= card('Personel Division', '', 'Gurudivisi', 'bi-diagram-3', '#aed581') ?>
-        <?= card('Personel Role', '', 'Gurujabatan', 'bi-person-lines-fill', '#90caf9') ?>
+        <?php if (session()->get('guru_id') == 0): ?>
+          <?= card('Personel', 'Personel Manager', 'Personel', 'bi-person-badge', '#82adf3') ?>
+          <?= card('Division', 'Division Manager', 'Divisi', 'bi-diagram-3', '#b2dfdb') ?>
+          <?= card('Role', 'Role Manager', 'Jabatan', 'bi-shield-lock', '#fdd835') ?>
+          <?= card('Personel Division', '', 'Gurudivisi', 'bi-diagram-3', '#aed581') ?>
+          <?= card('Personel Role', '', 'Gurujabatan', 'bi-person-lines-fill', '#90caf9') ?>
+        <?php endif ?>
+        
         <?= card('Attendance Form', '', 'showform', 'bi-journal-text', '#edab86') ?>
         <?= card('Attendance List', '', 'Presensidata', 'bi-geo-alt', '#d6d9dd') ?>
       </div>
