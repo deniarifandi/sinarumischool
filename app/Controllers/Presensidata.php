@@ -125,7 +125,7 @@ class Presensidata extends MyResourceController
 
     public function savePresensi(){
 
-        if ($this->cekPersonel() > 0) {
+        if ($this->cekPresensi() > 0) {
             $result = "It looks like you’ve already submitted your data for today. No need to submit again, everything has been recorded successfully. Thank you for staying consistent!";
             $code = 0;
             $title = "Failed";
