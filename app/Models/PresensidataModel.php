@@ -14,7 +14,7 @@ class PresensidataModel extends Model
 
     protected $useAutoIncrement = true;
     protected $useTimestamps = true; 
-    protected $useSoftDeletes   = true;
+    protected $useSoftDeletes   = false;
 
     // protected $validationRules = [
     //     'student_name'     => 'required',

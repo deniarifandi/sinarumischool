@@ -33,9 +33,9 @@
                 <div class="card-header">
                   <h3 class="card-title"><?= $title ?>s list</h3>
                   <div class="card-tools">
-                    
-                    <a href="<?= $table ?>/new" class="btn btn-primary">Add <?= $title ?></a>
-
+                      <?php if ($table != "Presensidata"): ?>
+                        <a href="<?= $table ?>/new" class="btn btn-primary">Add <?= $title ?></a>    
+                      <?php endif ?>
                   </div>
                   <!-- /.card-tools -->
                 </div>
