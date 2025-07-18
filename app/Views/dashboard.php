@@ -60,6 +60,7 @@
         <?php endif ?>
       </div>
 
+      <?php if (session()->get('guru_id') == 0): ?>
       <!-- Section: School Management -->
       <div class="mt-5 mb-3"><h4>🏫 School Management</h4></div>
       <div class="row">
@@ -83,6 +84,7 @@
         <?= card('Lesson Objective', 'Manage LO', 'Tujuan', 'bi-flag', '#6de9b2') ?>
         <?= card('Daily Activity', 'Manage LO', 'Aktifitas', 'bi-calendar-check', '#a2e4fb') ?>
       </div>
+       <?php endif ?>
 
     </div>
   </div>
