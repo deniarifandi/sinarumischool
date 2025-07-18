@@ -60,7 +60,7 @@ class Gurujabatan extends BaseController
 
         $datatable = new Datatable();
 
-        return $datatable->generate($builder, "Guru.guru_id", $this->toSearch);
+        return $datatable->generate($builder, "Gurujabatan.gurujabatan_id", $this->toSearch);
     }
 
 

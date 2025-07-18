@@ -89,6 +89,8 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->get('/showform','Presensidata::showForm');
 	$routes->get('/showstatus','Presensidata::showStatus');
 	$routes->post('/savepresensi','Presensidata::savePresensi');
+	$routes->get('/presensidatafront','Presensidata::front');
+	$routes->get('/presensidatareport','Presensidata::report');
 
 	//custom
 	$routes->get('/Gurudivisi','Gurudivisi::index');

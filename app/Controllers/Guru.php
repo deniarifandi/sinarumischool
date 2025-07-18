@@ -74,7 +74,9 @@ public $fieldOption = [
     {
         $this->model = new GuruModel();
         // $this->fieldOption[1] = $this->getdata('Divisi'); 
-        $this->where = ['Guru.guru_id' => session()->get('guru_id')];
+        if (session()->get('guru_id') != 0) {
+            $this->where = ['Guru.guru_id' => session()->get('guru_id')];
+        }
         $this->dataToShow = $this->prepareDataToShow();
     }
 

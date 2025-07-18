@@ -8,7 +8,7 @@ class PresensidataModel extends Model
 {
     // isi PostModel Class    
     protected $table      = 'Presensidata';
-    protected $primaryKey = 'Presensidata_id';
+    protected $primaryKey = 'presensidata_id';
     
     protected $protectFields = false;
 

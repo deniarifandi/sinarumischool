@@ -48,10 +48,16 @@
           <?= card('Role', 'Role Manager', 'Jabatan', 'bi-shield-lock', '#fdd835') ?>
           <?= card('Personel Division', '', 'Gurudivisi', 'bi-diagram-3', '#aed581') ?>
           <?= card('Personel Role', '', 'Gurujabatan', 'bi-person-lines-fill', '#90caf9') ?>
+         
         <?php endif ?>
         
         <?= card('Attendance Form', '', 'showform', 'bi-journal-text', '#edab86') ?>
         <?= card('Attendance List', '', 'Presensidata', 'bi-geo-alt', '#d6d9dd') ?>
+
+        <?php if (session()->get('guru_id') == 0): ?>
+         
+        <?= card('Attendance Report', '', 'presensidatafront', 'bi-person-check', '#c3e6cb') ?>
+        <?php endif ?>
       </div>
 
       <!-- Section: School Management -->
