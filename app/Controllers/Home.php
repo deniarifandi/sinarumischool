@@ -67,8 +67,8 @@ class Home extends BaseController
                 'logged_in' => true]);
         
             $db = \Config\Database::connect(); 
-            $builder = $db->table('gurudivisi');
-            $builder->select('gurudivisi.*');
+            $builder = $db->table('Gurudivisi');
+            $builder->select('Gurudivisi.*');
             $builder->where('guru_id', $user['guru_id']);
             $query = $builder->get();
             $resultsDivisi = $query->getResult();
