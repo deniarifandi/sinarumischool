@@ -11,6 +11,7 @@
               class="brand-image shadow" style="max-height:65px; width: 65px; height: 65px;"
             />
             <br>
+            <span class="brand-text fw-light" style="font-size:25px">CBIS</span>
             <span class="brand-text fw-light" style="font-size:25px">Sinarumi v3.0</span>
             <!--end::Brand Text-->
           </a>

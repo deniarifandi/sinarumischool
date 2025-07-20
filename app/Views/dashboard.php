@@ -13,7 +13,7 @@
         <div class="col-sm-6">
           <h3 class="mb-0">
             <img src="<?= base_url() ?>assets/img/class.svg" style="max-width: 35px;"> 
-            Dashboard <?= $data->kelompok_nama ?>
+            Dashboard <?= $data->kelompok_nama ?> <?= session()->get('gurudivisi_id') ?>
           </h3>
         </div>
         <div class="col-sm-6">
@@ -62,6 +62,7 @@
 
       
       <!-- Section: School Management -->
+      <?php if (session()->get('guru_id') == 0 || session()->get('divisi_id') == 3 ): ?>
       <div class="mt-5 mb-3"><h4>🏫 School Management</h4></div>
       <div class="row">
         <?= card('Class', 'Class Manager', 'Kelompok', 'bi-people', '#fdfe9c') ?>
@@ -69,6 +70,7 @@
         <?= card('Subject', 'Manage Subject', 'Subjek', 'bi-folder', '#adfbcf') ?>
         <?= card('Activity Type', 'Manage Activity', 'Tipeaktifitas', 'bi-check-circle', '#e9b5fb') ?>
       </div>
+
 
       <!-- Section: Class Management -->
       <div class="mt-5 mb-3"><h4>🧑‍🏫 Class Management</h4></div>
@@ -84,6 +86,7 @@
         <?= card('Lesson Objective', 'Manage LO', 'Tujuan', 'bi-flag', '#6de9b2') ?>
         <?= card('Daily Activity', 'Manage LO', 'Aktifitas', 'bi-calendar-check', '#a2e4fb') ?>
       </div>
+       <?php endif ?>
       
 
     </div>

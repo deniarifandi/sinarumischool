@@ -65,6 +65,24 @@ class Home extends BaseController
                 'nama' => $user['guru_nama'], 
                 'username' => $user['guru_username'], 
                 'logged_in' => true]);
+        
+            $db = \Config\Database::connect(); 
+            $builder = $db->table('gurudivisi');
+            $builder->select('gurudivisi.*');
+            $builder->where('guru_id', $user['guru_id']);
+            $query = $builder->get();
+            $resultsDivisi = $query->getResult();
+            print_r($resultsDivisi);
+          
+          if (!empty($resultsDivisi) && isset($resultsDivisi[0]->divisi_id)) {
+
+                $this->session->set([
+                    'divisi_id' => $resultsDivisi[0]->divisi_id
+                ]);
+            }
+
+            // echo session()->get('gurudivisi_id');
+
             return redirect()->to('/');
         } else {
             return redirect()->back()->with('error', 'Invalid credentials');
