@@ -26,7 +26,7 @@ class Home extends BaseController
 
         $builder = Database::connect()->table('Guru');
         $builder->select('Guru.*,Kelompok.*');
-        $builder->join('Kelompok','Kelompok.guru_id = Guru.guru_id','inner');
+        $builder->join('Kelompok','Kelompok.guru_id = Guru.guru_id','left');
         $builder->where('Guru.guru_id',$guru_id);
 
         $presence = $this->cekPresensi();
