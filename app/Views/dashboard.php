@@ -13,7 +13,7 @@
         <div class="col-sm-6">
           <h3 class="mb-0">
             <img src="<?= base_url() ?>assets/img/class.svg" style="max-width: 35px;"> 
-            Dashboard <?= $data->kelompok_nama ?> <?= session()->get('gurudivisi_id') ?>
+            Dashboard <?= $data->kelompok_nama ?> 
           </h3>
         </div>
         <div class="col-sm-6">

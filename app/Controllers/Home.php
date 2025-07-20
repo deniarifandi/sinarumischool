@@ -25,14 +25,14 @@ class Home extends BaseController
         // echo $guru_id;
 
         $builder = Database::connect()->table('Guru');
-        $builder->select('Guru.*, Kelompok.*');
-        $builder->join('Kelompok','Kelompok.guru_id = Guru.guru_id','left');
-        $builder->where('guru_username',$username);
+        $builder->select('Guru.*,Kelompok.*');
+        $builder->join('Kelompok','Kelompok.guru_id = Guru.guru_id','inner');
+        $builder->where('Guru.guru_id',$guru_id);
 
         $presence = $this->cekPresensi();
 
         $data = $builder->get()->getResult();
-        // echo $presence;
+        // print_r($data);
         return view('dashboard.php',[
             'data' => $data[0], 
             'presence' => $presence,
