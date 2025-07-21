@@ -45,7 +45,7 @@ class absensi extends BaseController
 
     public function editAbsensi($date)
     {
-        $user =  session()->get('user_id');
+        $user =  session()->get('guru_id');
 
         $db = \Config\Database::connect();
         $builder = $db->table('absensi');
@@ -66,7 +66,7 @@ class absensi extends BaseController
 
     public function delete($tanggal)
     {
-          $user = session()->get('user_id');
+          $user = session()->get('guru_id');
 
             $db = \Config\Database::connect();
 
