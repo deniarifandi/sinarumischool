@@ -14,7 +14,7 @@ class absensi extends BaseController
     }
 
     public function index(){
-        $user =  session()->get('user_id');
+        $user =  session()->get('guru_id');
         $builder = Database::connect()->table('Murid');
         $builder->select('absensi.*, Murid.*, Kelompok.*');
         $builder->join('absensi','Murid.murid_id = absensi.murid_id');
