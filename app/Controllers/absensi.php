@@ -21,6 +21,7 @@ class absensi extends BaseController
         $builder->join('Kelompok','Kelompok.kelompok_id = Murid.kelompok_id','left');
         $builder->join('Guru','Guru.guru_id = Kelompok.guru_id','left');
         $builder->where('Guru.guru_id',$user);
+        
         $builder->groupBy('tanggal');
         $builder->orderBy('tanggal','desc');
 
