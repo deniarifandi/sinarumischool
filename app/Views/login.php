@@ -61,10 +61,10 @@
     body {
       margin: 0;
       padding: 0;
-      background-image: url('<?php echo base_url(); ?>assets/img/bg.png');
+      background-image: url('<?php echo base_url(); ?>assets/img/bg2.jpg');
       background-size: cover;
       background-repeat: no-repeat;
-      background-position: center;
+/*      background-position: center;*/
       height: 100vh;
     }
 
@@ -72,8 +72,10 @@
   <!--begin::Body-->
   <body class="login-page bg-body-secondary" style="display: flex; justify-content: center; align-items: center; height: 100vh;  ">
     <div class="login-box" style="width: 600px;">
-      <div class="login-logo">
-        <b>My Little Island School Portal</b><br> <h5>SinaRumi v.3.0.0</h5>
+      <div class="login-logo text-white">
+        <h1>CBIS</h1>
+        <h3>Computer Based Information System</h3>
+        <h5 style="font-size:13">SinaRumi v.3.0.0</h5>
       </div>
       <!-- /.login-logo -->
       <div class="card" style="width:360px; margin: 0 auto;">
