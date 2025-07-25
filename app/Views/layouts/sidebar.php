@@ -47,26 +47,7 @@
                   </p>
                 </a>
                 <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="<?= base_url(); ?>Divisi" class="nav-link">
-                      <i class="nav-icon bi bi-home"></i>
-                      <p>                       
-                        Division
-                      </p>
-                    </a>
-                  </li>                 
-              
-                 
-                  <li class="nav-item">
-                    <a href="<?= base_url(); ?>Personel" class="nav-link">
-                      <i class="nav-icon bi bi-home"></i>
-                      <p>                       
-                        Personel
-                      </p>
-                    </a>
-                  </li>                 
-               
-                
+                  
                   <li class="nav-item">
                     <a href="<?= base_url(); ?>showform" class="nav-link">
                       <i class="nav-icon bi "></i>
@@ -85,26 +66,7 @@
                     <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
                 </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="<?= base_url(); ?>Murid" class="nav-link">
-                      <i class="nav-icon bi bi-people"></i>
-                      <p >
-                        Murid
-                      </p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="<?= base_url(); ?>Guru" class="nav-link">
-                      <i class="nav-icon bi bi-person-badge"></i>
-                      <p>
-                        Guru
-                      </p>
-                    </a>
-                  </li>
-                 
-                 
-                </ul>
+             
               </li>
 
               <li class="nav-item">
@@ -116,7 +78,7 @@
                   </p>
                 </a>
                 <ul class="nav nav-treeview">
-                  <li class="nav-item">
+                  <!-- <li class="nav-item">
                     <a href="<?= base_url(); ?>Guru/print" class="nav-link">
                       <i class="nav-icon bi bi-people"></i>
                       <p >
@@ -139,7 +101,7 @@
                         Print Chapter List
                       </p>
                     </a>
-                  </li>
+                  </li> -->
                 <!--   <li class="nav-item">
                     <a href="<?= base_url(); ?>Subunit/print" class="nav-link">
                       <i class="nav-icon bi bi-journal-bookmark"></i>
