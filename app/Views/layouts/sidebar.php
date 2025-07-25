@@ -11,12 +11,13 @@
               class="brand-image shadow" style="max-height:65px; width: 65px; height: 65px;"
             />
             <br>
-            <span class="brand-text fw-light" style="font-size:25px">CBIS</span>
-            <span class="brand-text fw-light" style="font-size:25px">Sinarumi v3.0</span>
-            <!--end::Brand Text-->
+           
+            <span class="brand-text fw-light" style="font-size:25px">CBIS
+              <h6 style="font-size:18px">Sinarumi V.3.0</h6>
+            </span>
           </a>
-          <!--end::Brand Link-->
         </div>
+
         <!--end::Sidebar Brand-->
         <!--begin::Sidebar Wrapper-->
         <div class="sidebar-wrapper">
