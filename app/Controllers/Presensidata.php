@@ -227,8 +227,8 @@ d.divisi_nama,
 FROM Guru g
 JOIN Gurudivisi gd ON gd.guru_id = g.guru_id
 JOIN Divisi d ON d.divisi_id = gd.divisi_id
-JOIN Gurujabatan gj ON gj.guru_id = g.guru_id
-JOIN Jabatan j ON j.jabatan_id = gj.jabatan_id
+LEFT JOIN Gurujabatan gj ON gj.guru_id = g.guru_id
+LEFT JOIN Jabatan j ON j.jabatan_id = gj.jabatan_id
 LEFT JOIN Presensidata p 
 ON p.guru_id = g.guru_id 
 AND DATE(p.created_at) BETWEEN '$startDate' AND '$endDate'
