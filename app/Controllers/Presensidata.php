@@ -96,41 +96,39 @@ class Presensidata extends MyResourceController
     public function data(){
 
         $builder = Database::connect()->table($this->table);
-$builder->select("
-    Presensidata.*, 
-    Guru.guru_id as Guruguru_id, 
-    Guru.guru_nama, 
-    (
-        SELECT GROUP_CONCAT(DISTINCT Divisi.divisi_nama SEPARATOR ', ')
-        FROM Gurudivisi
-        JOIN Divisi ON Divisi.divisi_id = Gurudivisi.divisi_id
-        WHERE Gurudivisi.guru_id = Guru.guru_id
-    ) AS semua_divisi,
-    (
-        SELECT GROUP_CONCAT(DISTINCT Jabatan.jabatan_nama SEPARATOR ', ')
-        FROM Gurujabatan
-        JOIN Jabatan ON Jabatan.jabatan_id = Gurujabatan.jabatan_id
-        WHERE Gurujabatan.guru_id = Guru.guru_id
-    ) AS semua_jabatan,
-    Presensidata.longitude,
-    Presensidata.latitude,
-    DATE_FORMAT(Presensidata.created_at, '%d-%M-%Y') as date_formatted,
-    DATE_FORMAT(Presensidata.created_at, '%H:%i') as time_formatted
-");
-$builder->join('Guru','Presensidata.guru_id = Guru.guru_id');
+        $builder->select("
+            Presensidata.*, 
+            Guru.guru_id as Guruguru_id, 
+            Guru.guru_nama, 
+            (
+            SELECT GROUP_CONCAT(DISTINCT Divisi.divisi_nama SEPARATOR ', ')
+            FROM Gurudivisi
+            JOIN Divisi ON Divisi.divisi_id = Gurudivisi.divisi_id
+            WHERE Gurudivisi.guru_id = Guru.guru_id
+            ) AS semua_divisi,
+            (
+            SELECT GROUP_CONCAT(DISTINCT Jabatan.jabatan_nama SEPARATOR ', ')
+            FROM Gurujabatan
+            JOIN Jabatan ON Jabatan.jabatan_id = Gurujabatan.jabatan_id
+            WHERE Gurujabatan.guru_id = Guru.guru_id
+            ) AS semua_jabatan,
+            Presensidata.longitude,
+            Presensidata.latitude,
+            DATE_FORMAT(Presensidata.created_at, '%d-%M-%Y') as date_formatted,
+            DATE_FORMAT(Presensidata.created_at, '%H:%i') as time_formatted
+            ");
+        $builder->join('Guru','Presensidata.guru_id = Guru.guru_id');
 // remove Gurudivisi, Divisi, Gurujabatan, Jabatan joins here — handled in subqueries
 
 // Optional filter
-if (session()->get('guru_id') != 0) {
-    $builder->where('Guru.guru_id', session()->get('guru_id'));
-}
+        if (session()->get('guru_id') != 0) {
+            $builder->where('Guru.guru_id', session()->get('guru_id'));
+        }
 
-$datatable = new Datatable();
-return $datatable->generate($builder, 'Presensidata.'.$this->primaryKey, $this->toSearch);
+        $datatable = new Datatable();
+        return $datatable->generate($builder, 'Presensidata.'.$this->primaryKey, $this->toSearch);
 
     }
-
-    
 
     public function showForm(){
         return view('/presence/form');
@@ -172,6 +170,78 @@ return $datatable->generate($builder, 'Presensidata.'.$this->primaryKey, $this->
         // print_r($result);
         return view('/presence/front',['divisis' => $result,'start' => $startDateStr, 'end'=> $endDateStr]);
     }
+
+ public function excel()
+{
+    // Get inputs
+    $startDate = $this->request->getGet('start');
+    $endDate = $this->request->getGet('end');
+    $divisi_id = $this->request->getGet('division');
+
+    // Format dates
+    $startDateObj = new DateTime($startDate);
+    $endDateObj = new DateTime($endDate);
+    $startMonthName = $startDateObj->format('F');
+    $endMonthName = $endDateObj->format('F');
+
+    // Generate dynamic columns
+    $dates = [];
+    $columns = [];
+    $period = new \DatePeriod(
+        new \DateTime($startDate),
+        new \DateInterval('P1D'),
+        (new \DateTime($endDate))->modify('+1 day')
+    );
+
+    foreach ($period as $date) {
+        $label = $date->format('M d');
+        $dateString = $date->format('Y-m-d');
+        $dates[] = $label;
+        $columns[] = "
+            MAX(
+                CASE 
+                    WHEN DATE(p.created_at) = '$dateString' THEN p.status 
+                    ELSE NULL 
+                END
+            ) AS `$label`";
+    }
+
+    // Build query
+    $db = \Config\Database::connect();
+    $sql = "
+    SELECT 
+        g.guru_nama,
+        j.jabatan_nama,
+        d.divisi_nama,
+        " . implode(",\n", $columns) . "
+    FROM Guru g
+    JOIN Gurudivisi gd ON gd.guru_id = g.guru_id
+    JOIN Divisi d ON d.divisi_id = gd.divisi_id
+    LEFT JOIN Gurujabatan gj ON gj.guru_id = g.guru_id
+    LEFT JOIN Jabatan j ON j.jabatan_id = gj.jabatan_id
+    LEFT JOIN Presensidata p 
+        ON p.guru_id = g.guru_id 
+        AND DATE(p.created_at) BETWEEN '$startDate' AND '$endDate'
+    WHERE d.divisi_id = '$divisi_id'
+    GROUP BY g.guru_id
+    ORDER BY g.guru_nama
+    ";
+
+    $query = $db->query($sql);
+    $results = $query->getResult();
+
+    if (count($results) < 1) {
+        return view('presence/report'); // fallback
+    }
+
+    return view('presence/report_excel', [
+        'results' => $results,
+        'dates' => $dates,
+        'startMonth' => $startMonthName,
+        'endMonth' => $endMonthName,
+        'division' => $results[0]->divisi_nama,
+    ]);
+}
 
     public function report(){
        // Step 1: Define date range

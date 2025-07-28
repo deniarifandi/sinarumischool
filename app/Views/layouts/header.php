@@ -52,6 +52,7 @@
     integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0="
     crossorigin="anonymous"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   </head>
   
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary" >
