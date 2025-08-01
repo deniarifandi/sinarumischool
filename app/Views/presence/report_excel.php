@@ -5,8 +5,7 @@
 
 <button onclick="exportToExcel('tableRekap', 'Attendance_Report')">Export to Excel</button>
 
-<br>
-<br>
+<br><br>
 
 <table id="tableRekap" style="font-size:10px; width:100%; border-collapse: collapse;" border="1" cellpadding="5">
     <thead>
@@ -15,7 +14,12 @@
             <th>Jabatan</th>
             <th>Divisi</th>
             <?php foreach ($dates as $d): ?>
-                <th><?= $d ?></th>
+                <?php
+                    $dayOfWeek = date('w', strtotime($d));
+                    $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6);
+                    $style = $isWeekend ? 'style="color:red;"' : '';
+                ?>
+                <th <?= $style ?>><?= $d ?></th>
             <?php endforeach; ?>
             <th>Count Day</th>
             <th>Total</th>
@@ -36,8 +40,12 @@
                         $countDay++;
                         $total += 15000;
                     }
+
+                    $dayOfWeek = date('w', strtotime($d));
+                    $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6);
+                    $cellStyle = $isWeekend ? 'style="color:red; text-align:center;"' : 'style="text-align:center;"';
                 ?>
-                    <td style="text-align:center"><?= $status ?></td>
+                    <td <?= $cellStyle ?>><?= $status ?></td>
                 <?php endforeach; ?>
                 <td><?= $countDay ?></td>
                 <td><?= $total ?></td>

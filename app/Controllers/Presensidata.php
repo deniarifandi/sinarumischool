@@ -243,7 +243,78 @@ class Presensidata extends MyResourceController
     ]);
 }
 
-    public function report(){
+public function report(){
+     // Get inputs
+    $startDate = $this->request->getGet('start');
+    $endDate = $this->request->getGet('end');
+    $divisi_id = $this->request->getGet('division');
+
+    // Format dates
+    $startDateObj = new DateTime($startDate);
+    $endDateObj = new DateTime($endDate);
+    $startMonthName = $startDateObj->format('F');
+    $endMonthName = $endDateObj->format('F');
+
+    // Generate dynamic columns
+    $dates = [];
+    $columns = [];
+    $period = new \DatePeriod(
+        new \DateTime($startDate),
+        new \DateInterval('P1D'),
+        (new \DateTime($endDate))->modify('+1 day')
+    );
+
+    foreach ($period as $date) {
+        $label = $date->format('M d');
+        $dateString = $date->format('Y-m-d');
+        $dates[] = $label;
+        $columns[] = "
+            MAX(
+                CASE 
+                    WHEN DATE(p.created_at) = '$dateString' THEN p.status 
+                    ELSE NULL 
+                END
+            ) AS `$label`";
+    }
+
+    // Build query
+    $db = \Config\Database::connect();
+    $sql = "
+    SELECT 
+        g.guru_nama,
+        j.jabatan_nama,
+        d.divisi_nama,
+        " . implode(",\n", $columns) . "
+    FROM Guru g
+    JOIN Gurudivisi gd ON gd.guru_id = g.guru_id
+    JOIN Divisi d ON d.divisi_id = gd.divisi_id
+    LEFT JOIN Gurujabatan gj ON gj.guru_id = g.guru_id
+    LEFT JOIN Jabatan j ON j.jabatan_id = gj.jabatan_id
+    LEFT JOIN Presensidata p 
+        ON p.guru_id = g.guru_id 
+        AND DATE(p.created_at) BETWEEN '$startDate' AND '$endDate'
+    WHERE d.divisi_id = '$divisi_id'
+    GROUP BY g.guru_id
+    ORDER BY g.guru_nama
+    ";
+
+    $query = $db->query($sql);
+    $results = $query->getResult();
+
+    if (count($results) < 1) {
+        return view('presence/report'); // fallback
+    }
+
+    return view('presence/report', [
+        'results' => $results,
+        'dates' => $dates,
+        'startMonth' => $startMonthName,
+        'endMonth' => $endMonthName,
+        'division' => $results[0]->divisi_nama,
+    ]);
+}
+
+    public function report2(){
        // Step 1: Define date range
 
 

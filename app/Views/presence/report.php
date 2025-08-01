@@ -1,61 +1,72 @@
-    <?php 
-    echo view('layouts/header.php');
-    echo view('layouts/sidebar.php');
-    ?>
+<h2 style="text-align: center;">Monthly Attendance Report</h2>
+<h3 style="text-align: center;"><?= $startMonth ?> - <?= $endMonth ?></h3>
+<h4 style="margin-bottom:3px; text-align:right">Division: <?= $division ?></h4>
+<br>
 
-    <!--begin::App Main-->
-    <main class="app-main">
-      <!--begin::App Content Header-->
-      <div class="app-content-header">
-        <!--begin::Container-->
-        <div class="container-fluid">
-          <!--begin::Row-->
-          <div class="row">
-            <div class="col-sm-6"><h3 class="mb-0"></h3></div>
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-end">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page"></li>
-              </ol>
-            </div>
-          </div>
-          <!--end::Row-->
-        </div>
-        <!--end::Container-->
-      </div>
+<button onclick="exportToExcel('tableRekap', 'Attendance_Report')">Export to Excel</button>
 
-      <div class="app-content">
-        <!--begin::Container-->
-        <div class="container-fluid">
-          <!-- Info boxes -->
-          <div class="row">
+<br><br>
 
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Presence Data Not Found</h3>
-                <div class="card-tools">
-                  
-                </div>
-                <!-- /.card-tools -->
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-               
-              <h3>No data Found in the selected Filter</h3>
-              <a class="btn btn-sm btn-primary" href="<?php echo base_url(); ?>presensidatafront">Back</a>
-          
-              </div>
-            <!-- /.card -->
+<table id="tableRekap" style="font-size:10px; width:100%; border-collapse: collapse;" border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Nama</th>
+            <th>Jabatan</th>
+            <th>Divisi</th>
+            <?php foreach ($dates as $d): ?>
+                <?php
+                    $timestamp = strtotime($d);
+                    $dayName = date('D', $timestamp); // Short day name, e.g. Mon, Tue
+                    $dayOfWeek = date('w', $timestamp);
+                    $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6); // Sunday=0, Saturday=6
+                    $style = $isWeekend ? 'style="color:red;"' : '';
+                ?>
+                <th <?= $style ?>>
+                    <?= $d ?><br><?= $dayName ?>
+                </th>
+            <?php endforeach; ?>
+            <th>Count Day</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($results as $row): 
+            $countDay = 0;
+            $total = 0;
+        ?>
+            <tr>
+                <td><?= $row->guru_nama ?></td>
+                <td><?= $row->jabatan_nama ?></td>
+                <td><?= $row->divisi_nama ?></td>
+                <?php foreach ($dates as $d): 
+                    $status = $row->$d ?? '0';
+                    if ($status == 1) {
+                        $countDay++;
+                        $total += 15000;
+                    }
 
-          </div>
-          <!-- /.row -->
-          <!--end::Container-->
-        </div>
-        <!--end::App Content-->
-      </main>
-<!--end::App Main-->
-<!--begin::Footer-->
+                    $dayOfWeek = date('w', strtotime($d));
+                    $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6);
+                    $cellStyle = $isWeekend ? 'style="color:red; text-align:center;"' : 'style="text-align:center;"';
+                ?>
+                    <td <?= $cellStyle ?>><?= $status ?></td>
+                <?php endforeach; ?>
+                <td><?= $countDay ?></td>
+                <td><?= $total ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
 
-<?php 
-echo view('layouts/footer.php');
-?>
+
+<!-- SheetJS CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- Export function -->
+<script>
+function exportToExcel(tableID, filename = '') {
+    const table = document.getElementById(tableID);
+    const workbook = XLSX.utils.table_to_book(table, {sheet: "Sheet1"});
+    XLSX.writeFile(workbook, filename ? filename + ".xlsx" : "export.xlsx");
+}
+</script>
