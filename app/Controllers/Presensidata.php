@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 //use CodeIgniter\RESTful\ResourceController;
 use App\Models\PresensidataModel;
+use App\Models\GuruModel;
 use App\Libraries\datatable;
 use Config\Database;
 use \DateTime;
@@ -134,7 +135,24 @@ class Presensidata extends MyResourceController
         return view('/presence/form');
     }
 
+    public function getName(){
+
+        $id = $_GET['id'];
+        $guruModel = new GuruModel();
+
+        // Get Guru record by id
+        $guru = $guruModel->find($id);
+
+        print_r($guru['guru_nama']);
+        header("Location: ".base_url()."showstatus?id=".$guru['guru_nama']);
+        exit;
+//        return view('/presence/status');
+    }
+
     public function showStatus(){
+
+
+
         return view('/presence/status');
     }
 
