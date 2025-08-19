@@ -90,9 +90,16 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->get('/getname','Presensidata::getName');
 	$routes->get('/showstatus','Presensidata::showStatus');
 	$routes->post('/savepresensi','Presensidata::savePresensi');
+	
+	$routes->post('/savepresensidirect','Presensidata::savePresensiDirect');
+
 	$routes->get('/presensidatafront','Presensidata::front');
 	$routes->get('/presensidatareport','Presensidata::report');
 	$routes->get('/presensidataexcel','Presensidata::excel');
+
+	$routes->get('/showformscanner',function(){
+		 return view('presence/formscanner');
+	});
 
 	//custom
 	$routes->get('/Gurudivisi','Gurudivisi::index');

@@ -517,5 +517,53 @@ public function savePresensi(){
     ]);
 }
 
+public function savePresensiDirect(){
+    
+    $builder = $this->db->table('Presensidata');
+    $builder->select('Presensidata.*');
+    $builder->where('guru_id', $_POST['guru_id']);
+    $builder->where('Presensidata_tanggal', date("Y-m-d"));
+
+    $query = $builder->get();
+    $resultsPersonel = $query->getResult();
+
+  
+
+    if (count($resultsPersonel) > 0) {
+        session()->setFlashdata('success', 'Your attendance already recorded for today.');
+        // return redirect()->back();
+        return redirect()->to(base_url('showformscanner'));
+    }else{
+
+        $data = [
+            'guru_id'   => $_POST['guru_id'],
+            'longitude' => '',
+            'latitude'  => '',
+            'status'    => 1
+        ];
+
+        $builder = $this->db->table('Presensidata');
+
+        try {
+            $builder->insert($data);
+
+            if ($this->db->affectedRows() > 0) {
+                // ✅ Success
+                session()->setFlashdata('success', 'Your attendance has been successfully recorded.');
+            } else {
+                // ⚠ No rows affected
+                session()->setFlashdata('error', 'Attendance could not be recorded. Please try again.');
+            }
+        } catch (\Exception $e) {
+            // ❌ Database error
+            session()->setFlashdata('error', 'An error occurred: ' . $e->getMessage());
+        }
+
+        return redirect()->to(base_url('showformscanner'));
+        //return redirect()->back();
+    }
+    
+}
+
 }
 

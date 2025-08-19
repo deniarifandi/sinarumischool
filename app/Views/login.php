@@ -114,6 +114,8 @@
          
           <!-- /.social-auth-links -->
           <p class="mb-1"><a href="#" onclick="forgotPassword()">I forgot my password</a></p>
+          <p class="mb-1"><a href="<?= base_url(); ?>showform">QR scan</a>
+          <a href="<?= base_url(); ?>showformscanner">Scanner</a></p>
           <p class="mb-0">
            
           </p>
