@@ -518,14 +518,27 @@ public function savePresensi(){
 }
 
 public function savePresensiDirect(){
-    
-    $builder = $this->db->table('Presensidata');
-    $builder->select('Presensidata.*');
-    $builder->where('guru_id', $_POST['guru_id']);
-    $builder->where('Presensidata_tanggal', date("Y-m-d"));
+        $guru_id = (int) $this->request->getPost('guru_id');
 
-    $query = $builder->get();
-    $resultsPersonel = $query->getResult();
+        $builder = $this->db->table('Guru');
+        $builder->select('Guru.*');
+        $builder->where('guru_id', $guru_id);
+
+        $count = $builder->countAllResults();
+        if ($count == 0) {
+            session()->setFlashdata('error', 'Staff Data Not Found.');
+            return redirect()->to(base_url('showformscanner'));
+        }
+
+
+
+        $builder = $this->db->table('Presensidata');
+        $builder->select('Presensidata.*');
+        $builder->where('guru_id', $_POST['guru_id']);
+        $builder->where('Presensidata_tanggal', date("Y-m-d"));
+
+        $query = $builder->get();
+        $resultsPersonel = $query->getResult();
 
   
 
@@ -562,6 +575,71 @@ public function savePresensiDirect(){
         return redirect()->to(base_url('showformscanner'));
         //return redirect()->back();
     }
+    
+}
+
+public function storeAttendance($guru_id)
+{
+    $data = [
+        'guru_id'   => $guru_id,
+        'presensidata_tanggal'   => date('Y-m-d'),
+        'status'    => 'Hadir'
+    ];
+
+    $builder = $this->db->table('Guru');
+    $builder->select('Guru.*');
+    $builder->where('guru_id', $guru_id);
+
+    $count = $builder->countAllResults();
+    if ($count == 0) {
+       
+        return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Staff data Not Found.'
+            ]);
+    }
+
+     $builder = $this->db->table('Presensidata');
+        $builder->select('Presensidata.*');
+        $builder->where('guru_id', $guru_id);
+        $builder->where('Presensidata_tanggal', date("Y-m-d"));
+
+        $query = $builder->get();
+        $resultsPersonel = $query->getResult();
+
+    if (count($resultsPersonel) > 0) {
+         return $this->response->setJSON([
+                'status'  => 'success',
+                'message' => 'Your attendance already recorded for today. No need to submit again'
+            ]);
+    }else{
+        try {
+        $builder = $this->db->table('Presensidata');
+        $builder->insert($data);
+
+        if ($this->db->affectedRows() > 0) {
+            // ✅ Success
+            return $this->response->setJSON([
+                'status'  => 'success',
+                'message' => 'Your attendance has been successfully recorded.'
+            ]);
+        } else {
+            // ⚠ No rows affected
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Attendance could not be recorded. Please try again.'
+            ]);
+        }
+    } catch (\Exception $e) {
+        // ❌ Database error
+        return $this->response->setJSON([
+            'status'  => 'error',
+            'message' => 'An error occurred: ' . $e->getMessage()
+        ]);
+    }
+    }
+
+
     
 }
 
