@@ -112,4 +112,4 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->post('/Gurujabatan/submit','Gurujabatan::submit');
 	$routes->post('/Gurujabatan/toggle', 'Gurujabatan::toggle');
 
-	$routes->get('/api/storeattendance/(:any)','Presensidata::storeAttendance/$1');
+	$routes->post('/api/storeattendance/(:any)','Presensidata::storeAttendance/$1');
