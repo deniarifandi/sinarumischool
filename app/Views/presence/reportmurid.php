@@ -1,7 +1,6 @@
-<h2 style="text-align: center;">Laporan Absensi Murid Bulanan</h2>
-<h4 style="margin-bottom:3px; text-align:right">Kelompok: <?= $kelompok ?></h4>
-<br>
-
+<h2 style="text-align: center;">Student Monthly Attendance Report</h2>
+<h4 style="margin-bottom:3px; text-align:right">Class: <?= $kelompok ?></h4>
+<h4 style="margin-bottom:3px; text-align:right">Class Teacher: <?php echo session()->get('nama') ?></h4>
 <!-- <button onclick="exportToExcel('tableRekap', 'Attendance_Report')">Export to Excel</button> -->
 
 <br><br>
