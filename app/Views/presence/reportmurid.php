@@ -49,18 +49,14 @@
                     $cellStyle = $isWeekend ? 'style="color:red; text-align:center;"' : 'style="text-align:center;"';
                 ?>
                     <td <?= $cellStyle ?>><?php
-switch ($status) {
-    case 1:
-        echo "✔"; // centang
-        break;
-    case 2:
-        echo "A"; // symbol A
-        break;
-    case 3:
-        echo "S"; // sick
-        break;
-    default:
-        echo "-"; // default
+if ($status == 1) {
+    echo '<span style="color:green">✔</span>'; // centang hijau
+} elseif ($status == 2) {
+    echo '<span style="color:red">A</span>'; // A biru
+} elseif ($status == 3) {
+    echo '<span style="color:red">S</span>'; // sakit merah
+} else {
+    echo '<span style="color:gray">-</span>'; // default abu
 }
 ?></td>
                 <?php endforeach; ?>
