@@ -76,6 +76,7 @@
       <div class="mt-5 mb-3"><h4>🧑‍🏫 Class Management</h4></div>
       <div class="row">
         <?= card('Absensi', 'Student Absence List', 'absensi', 'bi-person-check', '#ffc5e5') ?>
+        <?= card('Student Report', 'Student Report', 'absensi/front', 'bi-person-check', '#c3e6cb') ?>
       </div>
 
       <!-- Section: Subject Management -->

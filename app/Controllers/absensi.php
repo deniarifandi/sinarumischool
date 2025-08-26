@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use Config\Database;
+use \DateTime;
 
 class absensi extends BaseController
 {
@@ -135,5 +136,104 @@ class absensi extends BaseController
      session()->setFlashdata('success', 'Student Attendance Filled');
     return redirect()->to(site_url('absensi'));
 }
+
+ public function front(){
+
+        $today = new DateTime();
+
+        // Get 21st of previous month
+        $startDate = (clone $today)->setDate(
+            $today->format('Y'),
+            $today->format('m'),
+            1
+        );
+
+        // Get 20th of *this* month
+       $endDate = (clone $today)->modify('last day of this month');
+
+        // Format for input date
+        $startDateStr = $startDate->format('Y-m-d');
+        $endDateStr = $endDate->format('Y-m-d');
+
+        
+
+        $this->db = \Config\Database::connect(); 
+        $builder = $this->db->table('Kelompok');
+        $builder->select('Kelompok.kelompok_id, Kelompok.kelompok_nama');
+        $builder->where('deleted_at',null);
+        $builder->orderBy('kelompok_nama');
+        $result = $builder->get()->getResult();
+
+        // print_r($result);
+        return view('/presence/front_murid',['kelompoks' => $result,'start' => $startDateStr, 'end'=> $endDateStr]);
+    }
+
+    public function result(){
+        // Get inputs
+    $startDate = $this->request->getGet('start');
+    $endDate = $this->request->getGet('end');
+    $kelompok_id = $this->request->getGet('kelompok');
+
+    // Format dates
+    $startDateObj = new DateTime($startDate);
+    $endDateObj = new DateTime($endDate);
+    $startMonthName = $startDateObj->format('F');
+    $endMonthName = $endDateObj->format('F');
+
+    // Generate dynamic columns
+    $dates = [];
+    $columns = [];
+    $period = new \DatePeriod(
+        new \DateTime($startDate),
+        new \DateInterval('P1D'),
+        (new \DateTime($endDate))->modify('+1 day')
+    );
+
+    foreach ($period as $date) {
+        $label = $date->format('M d');
+        $dateString = $date->format('Y-m-d');
+        $dates[] = $label;
+        $columns[] = "
+            MAX(
+                CASE 
+                    WHEN DATE(a.tanggal) = '$dateString' THEN a.status 
+                    ELSE NULL 
+                END
+            ) AS `$label`";
+    }
+
+    // Build query
+    $db = \Config\Database::connect();
+    $sql = "
+    SELECT 
+        m.murid_nama,
+        k.kelompok_nama,
+        a.tanggal,
+        " . implode(",\n", $columns) . "
+    FROM Murid m
+    LEFT JOIN Kelompok k ON k.kelompok_id = m.kelompok_id
+    LEFT JOIN absensi a ON m.murid_id = a.murid_id 
+        -- AND DATE(a.created_at) BETWEEN '$startDate' AND '$endDate'
+    WHERE k.kelompok_id = '$kelompok_id'
+    GROUP BY m.murid_id
+    ORDER BY m.murid_id
+    ";
+
+    $query = $db->query($sql);
+    $results = $query->getResult();
+    // print_r($results);
+
+    // if (count($results) < 1) {
+    //     //return view('presence/report'); // fallback
+    // }
+
+    return view('presence/reportmurid', [
+        'results' => $results,
+        'dates' => $dates,
+        'startMonth' => $startMonthName,
+        'endMonth' => $endMonthName,
+        'kelompok' => $results[0]->kelompok_nama,
+    ]);
+    }
 
 }

@@ -25,6 +25,9 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->get('absensi/add','absensi::addAbsensi');
 	$routes->get('absensi/edit/(:segment)', 'absensi::editAbsensi/$1');
 	$routes->get('absensi/delete/(:segment)', 'absensi::delete/$1');
+
+	$routes->get('absensi/front','absensi::front');
+	$routes->get('absensi/result','absensi::result');
 	
 	//Resource
 	$routes->resource('Murid');
