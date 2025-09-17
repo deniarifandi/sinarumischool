@@ -49,7 +49,26 @@
                     $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6);
                     $cellStyle = $isWeekend ? 'style="color:red; text-align:center;"' : 'style="text-align:center;"';
                 ?>
-                    <td <?= $cellStyle ?>><?= $status ?></td>
+                   <td <?= $cellStyle ?>>
+    <?php
+        switch ($status) {
+            case 1:
+                echo "✔"; // tick
+                break;
+            case 2:
+                echo "I";
+                break;
+            case 3:
+                echo "S";
+                break;
+            case 4:
+                echo "WFA";
+                break;
+            default:
+                echo $status; // fallback if not 1–4
+        }
+    ?>
+</td>
                 <?php endforeach; ?>
                 <td><?= $countDay ?></td>
                 <td><?= $total ?></td>
