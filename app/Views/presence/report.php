@@ -40,7 +40,7 @@
                 <td><?= $row->divisi_nama ?></td>
                 <?php foreach ($dates as $d): 
                     $status = $row->$d ?? '0';
-                    if ($status == 1) {
+                    if ($status == 1 || $status == 4) {
                         $countDay++;
                         $total += 15000;
                     }
