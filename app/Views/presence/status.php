@@ -50,7 +50,7 @@
             <form method="POST" action="<?= base_url() ?>savepresensi">
             <h4 class="mt-3"><input class="form-control" name="nama" value="<?php echo $_GET['id'] ?>" readonly></h4>
               
-              <select class="form-select mt-3" name="status" id="status">
+              <select class="form-select mt-3" name="status" id="status" required>
                 <option value="1">Hadir</option>
                 <option value="2">Ijin</option>
                 <option value="3">Sakit</option>
