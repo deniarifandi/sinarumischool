@@ -237,10 +237,11 @@ class Presensidata extends MyResourceController
     JOIN Divisi d ON d.divisi_id = gd.divisi_id
     LEFT JOIN Gurujabatan gj ON gj.guru_id = g.guru_id
     LEFT JOIN Jabatan j ON j.jabatan_id = gj.jabatan_id
-    LEFT JOIN Presensidata p 
-        ON p.guru_id = g.guru_id 
-        AND DATE(p.created_at) BETWEEN '$startDate' AND '$endDate'
-    WHERE d.divisi_id = '$divisi_id'
+LEFT JOIN Presensidata p 
+    ON p.guru_id = g.guru_id 
+    AND DATE(p.created_at) BETWEEN '$startDate' AND '$endDate'
+WHERE d.divisi_id = '$divisi_id'
+  AND g.deleted_at IS NULL
     GROUP BY g.guru_id
     ORDER BY g.guru_nama
     ";
@@ -312,6 +313,7 @@ public function report(){
         ON p.guru_id = g.guru_id 
         AND DATE(p.created_at) BETWEEN '$startDate' AND '$endDate'
     WHERE d.divisi_id = '$divisi_id'
+      AND g.deleted_at IS NULL
     GROUP BY g.guru_id
     ORDER BY g.guru_nama
     ";
