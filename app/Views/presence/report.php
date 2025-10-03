@@ -62,7 +62,7 @@
                 echo "S";
                 break;
             case 4:
-                echo "WFA";
+                 echo "✔"; // tick
                 break;
             default:
                 echo $status; // fallback if not 1–4
