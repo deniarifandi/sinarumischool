@@ -58,9 +58,15 @@
                         <th>Presensi id</th>
                         <th>Personel Name</th>
                         <th>Date</th>    
-                        <th>Time</th>    
+                        <th>Time</th> 
+                        <th>Long</th>   
+                        <th>Lat</th>
                         <th>Divisi</th>
                         <th>Jabatan</th>
+                        <th>Status</th>
+                         <?php if (session('role') == 100): ?>
+                        <th>Action</th>
+                      <?php endif ?>
                       </tr>
                   </thead>
               </table>
@@ -104,8 +110,30 @@ echo view('layouts/footer.php');
                 { data: 'guru_nama' },
                 { data: 'date_formatted' },
                 { data: 'time_formatted' },
+                { data: 'longitude'},
+                { data: 'latitude'},
                 { data: 'semua_divisi'},
-                { data: 'semua_jabatan'}
+                { data: 'semua_jabatan'},
+                 {
+                    data: 'status',
+                    render: function (data, type, row) {
+                      if (data == 1) return 'Hadir';
+                      if (data == 2) return 'Ijin';
+                      if (data == 3) return 'Sakit';
+                      return '-';
+                    }
+                  },
+
+                  <?php if (session('role') == 100): ?>
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `<a href="<?= base_url(); ?>presensidata/editstatus/${row.presensidata_id}" class="btn btn-sm btn-primary">Edit Status</a>`;
+                    },
+                    orderable: false,
+                    searchable: false
+                }
+              <?php endif ?>
 
             ]
         });

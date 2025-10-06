@@ -93,6 +93,9 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->get('/getname','Presensidata::getName');
 	$routes->get('/showstatus','Presensidata::showStatus');
 	$routes->post('/savepresensi','Presensidata::savePresensi');
+
+	$routes->get('/presensidata/editstatus/(:num)','Presensidata::editStatus/$1');
+	$routes->post('/presensidata/updatestatus', 'Presensidata::updateStatus');
 	
 	$routes->post('/savepresensidirect','Presensidata::savePresensiDirect');
 

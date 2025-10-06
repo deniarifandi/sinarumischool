@@ -485,6 +485,46 @@ public function cekPresensi(){
     return count($resultsPersonel);
 }
 
+public function editStatus($id = null){
+    $builder = $this->db->table('Presensidata');
+    $builder->where('presensidata_id', $id);
+    $query = $builder->get();
+    $result = $query->getRow();
+
+    if ($result) {
+        return view('presence/edit_status', ['data' => $result]);
+    } else {
+        return 'Data not found';
+    }
+}
+
+public function updateStatus()
+{
+    $id = $this->request->getPost('presensidata_id');
+    $status = $this->request->getPost('status');
+
+    // Validasi sederhana
+    if (!$id || !$status) {
+        return redirect()->back()->with('error', 'Invalid request.');
+    }
+
+    $builder = $this->db->table('Presensidata');
+    $builder->where('presensidata_id', $id);
+
+    // Update hanya kolom status dan updated_at
+    $update = $builder->update([
+        'status' => $status,
+        'updated_at' => date('Y-m-d H:i:s')
+    ]);
+
+    if ($update) {
+        return redirect()->to(base_url().'Presensidata')->with('success', 'Status updated successfully.');
+    } else {
+        return redirect()->back()->with('error', 'Failed to update status.');
+    }
+}
+
+
 public function savePresensi(){
 
     if ($this->cekPresensi() > 0) {
