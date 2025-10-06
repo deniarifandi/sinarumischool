@@ -54,7 +54,7 @@
                   <br><br>
                   <form action="<?php echo base_url() ;?>presensidatareport" method="get" enctype="multipart/form-data">
                   <label>Division</label>
-                  <select class="form-select" name="division" aria-label="Default select example">
+                  <select class="form-select" name="division" aria-label="Default select example" required>
                     <option selected>Select Division</option>
                     <?php 
                       foreach ($divisis as $divisi) {
