@@ -50,8 +50,7 @@
                   </ul>
                 </div>
               <?php endif; ?>
-                <?php echo session()->get('role'); ?>
-                  <?php echo session()->get('guru_id'); ?>
+            
                  <table id="guruTable" class="display">
                   <thead>
                       <tr>
@@ -65,9 +64,9 @@
                         <th>Divisi</th>
                         <th>Jabatan</th>
                         <th>Status</th>
-                         <?php if (session()->get('role') == 100): ?>
+                          <?php if (session()->get('guru_id') == 0): ?>
                         <th>Action</th>
-                      <?php endif ?>
+                        <?php endif ?>
                       </tr>
                   </thead>
               </table>
@@ -125,7 +124,7 @@ echo view('layouts/footer.php');
                     }
                   },
 
-                  <?php if (session()->get('role') == 100): ?>
+                    <?php if (session()->get('guru_id') == 0): ?>
                 {
                     data: null,
                     render: function (data, type, row) {
