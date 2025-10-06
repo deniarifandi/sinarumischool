@@ -51,6 +51,7 @@
                 </div>
               <?php endif; ?>
                 <?php echo session()->get('role'); ?>
+                  <?php echo session()->get('guru_id'); ?>
                  <table id="guruTable" class="display">
                   <thead>
                       <tr>
