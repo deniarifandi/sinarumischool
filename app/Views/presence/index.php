@@ -50,7 +50,7 @@
                   </ul>
                 </div>
               <?php endif; ?>
-
+                <?php echo session()->get('role'); ?>
                  <table id="guruTable" class="display">
                   <thead>
                       <tr>
