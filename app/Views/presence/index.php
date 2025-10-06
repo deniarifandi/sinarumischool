@@ -64,7 +64,7 @@
                         <th>Divisi</th>
                         <th>Jabatan</th>
                         <th>Status</th>
-                         <?php if (session('role') == 100): ?>
+                         <?php if (session()->get('role') == 100): ?>
                         <th>Action</th>
                       <?php endif ?>
                       </tr>
@@ -124,7 +124,7 @@ echo view('layouts/footer.php');
                     }
                   },
 
-                  <?php if (session('role') == 100): ?>
+                  <?php if (session()->get('role') == 100): ?>
                 {
                     data: null,
                     render: function (data, type, row) {
