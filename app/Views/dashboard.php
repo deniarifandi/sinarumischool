@@ -39,10 +39,10 @@
     <div class="container-fluid">
 
       <!-- Section: Human Resource -->
-      <div class="mb-3"><h4>📁 Human Resource</h4></div>
+      <div class="mb-3"><h4>📁 Human Resource </h4></div>
 
       <div class="row">
-        <?php if (session()->get('guru_id') == 0): ?>
+        <?php if (session()->get('role') == 100): ?>
           <?= card('Personel', 'Personel Manager', 'Personel', 'bi-person-badge', '#82adf3') ?>
           <?= card('Division', 'Division Manager', 'Divisi', 'bi-diagram-3', '#b2dfdb') ?>
           <?= card('Role', 'Role Manager', 'Jabatan', 'bi-shield-lock', '#fdd835') ?>
@@ -62,7 +62,11 @@
 
       
       <!-- Section: School Management -->
-      <?php if (session()->get('guru_id') == 0 || session()->get('divisi_id') == 3 ): ?>
+    <?php if (
+    (  session()->get('role') >= 100 
+    || in_array(session()->get('divisi_id'), [3, 7, 8]))
+    && !in_array(session()->get('role'), [188, 189, 190])
+): ?>
       <div class="mt-5 mb-3"><h4>🏫 School Management</h4></div>
       <div class="row">
         <?= card('Class', 'Class Manager', 'Kelompok', 'bi-people', '#fdfe9c') ?>
