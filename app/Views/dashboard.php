@@ -42,7 +42,7 @@
       <div class="mb-3"><h4>📁 Human Resource </h4></div>
 
       <div class="row">
-        <?php if (session()->get('role') == 100): ?>
+        <?php if (session()->get('guru_id') == 0): ?>
           <?= card('Personel', 'Personel Manager', 'Personel', 'bi-person-badge', '#82adf3') ?>
           <?= card('Division', 'Division Manager', 'Divisi', 'bi-diagram-3', '#b2dfdb') ?>
           <?= card('Role', 'Role Manager', 'Jabatan', 'bi-shield-lock', '#fdd835') ?>

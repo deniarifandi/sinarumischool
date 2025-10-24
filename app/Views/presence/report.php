@@ -16,22 +16,26 @@
             <?php foreach ($dates as $d): ?>
                 <?php
                     $timestamp = strtotime($d);
-                    $dayName = date('D', $timestamp); // Short day name, e.g. Mon, Tue
+                    $dayName = date('D', $timestamp);
                     $dayOfWeek = date('w', $timestamp);
-                    $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6); // Sunday=0, Saturday=6
+                    $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6);
                     $style = $isWeekend ? 'style="color:red;"' : '';
                 ?>
                 <th <?= $style ?>>
                     <?= $d ?><br><?= $dayName ?>
                 </th>
             <?php endforeach; ?>
-            <th>Count Day</th>
+            <th>Masuk</th>
+            <th>Izin</th>
+            <th>Sakit</th>
             <th>Total</th>
         </tr>
     </thead>
     <tbody>
         <?php foreach ($results as $row): 
-            $countDay = 0;
+            $countPresent = 0;
+            $countIzin = 0;
+            $countSakit = 0;
             $total = 0;
         ?>
             <tr>
@@ -40,43 +44,52 @@
                 <td><?= $row->divisi_nama ?></td>
                 <?php foreach ($dates as $d): 
                     $status = $row->$d ?? ' ';
-                    if ($status == 1 || $status == 4) {
-                        $countDay++;
-                        $total += 15000;
-                    }
-
                     $dayOfWeek = date('w', strtotime($d));
                     $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6);
                     $cellStyle = $isWeekend ? 'style="color:red; text-align:center;"' : 'style="text-align:center;"';
+
+                    // Count logic
+                    switch ($status) {
+                        case 1: // Present
+                        case 4: // Half day or another valid status
+                            $countPresent++;
+                            $total += 15000;
+                            break;
+                        case 2: // Izin
+                            $countIzin++;
+                            break;
+                        case 3: // Sakit
+                            $countSakit++;
+                            break;
+                    }
                 ?>
-                   <td <?= $cellStyle ?>>
-    <?php
-        switch ($status) {
-            case 1:
-                echo "✔"; // tick
-                break;
-            case 2:
-                echo "I";
-                break;
-            case 3:
-                echo "S";
-                break;
-            case 4:
-                 echo "✔"; // tick
-                break;
-            default:
-                echo $status; // fallback if not 1–4
-        }
-    ?>
-</td>
+                <td <?= $cellStyle ?>>
+                    <?php
+                        switch ($status) {
+                            case 1:
+                            case 4:
+                                echo "✔";
+                                break;
+                            case 2:
+                                echo "I";
+                                break;
+                            case 3:
+                                echo "S";
+                                break;
+                            default:
+                                echo "&nbsp;";
+                        }
+                    ?>
+                </td>
                 <?php endforeach; ?>
-                <td><?= $countDay ?></td>
-                <td><?= $total ?></td>
+                <td style="text-align:center;"><?= $countPresent ?></td>
+                <td style="text-align:center;"><?= $countIzin ?></td>
+                <td style="text-align:center;"><?= $countSakit ?></td>
+                <td style="text-align:right;"><?= number_format($total, 0, ',', '.') ?></td>
             </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
-
 
 <!-- SheetJS CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
