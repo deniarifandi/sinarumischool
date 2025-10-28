@@ -13,23 +13,29 @@
             <?php foreach ($dates as $d): ?>
                 <?php
                     $timestamp = strtotime($d);
-                    $dayName = date('D', $timestamp); // Short day name, e.g. Mon, Tue
+                    $dayName = date('D', $timestamp); // Mon, Tue, etc.
                     $dayOfWeek = date('w', $timestamp);
-                    $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6); // Sunday=0, Saturday=6
+                    $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6);
                     $style = $isWeekend ? 'style="color:red;"' : '';
                 ?>
                 <th <?= $style ?>>
                     <?= $d ?><br><?= $dayName ?>
                 </th>
             <?php endforeach; ?>
-            <th>Count Day</th>
-           
+            <th>Hadir</th>
+            <th>Sakit</th>
+            <th>Izin</th>
+            <th>Alpha</th>
+            
         </tr>
     </thead>
+
     <tbody>
         <?php foreach ($results as $row): 
-            $countDay = 0;
-            $total = 0;
+            $hadirCount = 0;
+            $sakitCount = 0;
+            $izinCount = 0;
+            $alphaCount = 0;
         ?>
             <tr>
                 <td><?= $row->murid_nama ?></td>
@@ -37,34 +43,43 @@
                 <?php foreach ($dates as $d): 
                     $status = $row->$d ?? '0';
 
-                    if ($status == 1) {
-                        $countDay++;
-                        $total += 15000;
-                    }
-
+                    // Count specific statuses
+                    if ($status == 1) $hadirCount++;
+                    if ($status == 2) $alphaCount++;
+                    if ($status == 3) $sakitCount++;
+                    if ($status == 4) $izinCount++;
 
                     $dayOfWeek = date('w', strtotime($d));
                     $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6);
                     $cellStyle = $isWeekend ? 'style="color:red; text-align:center;"' : 'style="text-align:center;"';
                 ?>
-                    <td <?= $cellStyle ?>><?php
-if ($status == 1) {
-    echo '<span style="color:green">✔</span>'; // centang hijau
-} elseif ($status == 2) {
-    echo '<span style="color:red">A</span>'; // A biru
-} elseif ($status == 3) {
-    echo '<span style="color:red">S</span>'; // sakit merah
-} else {
-    echo '<span style="color:gray">-</span>'; // default abu
-}
-?></td>
+                    <td <?= $cellStyle ?>>
+                        <?php
+                        if ($status == 1) {
+                            echo '<span style="color:green;">✔</span>'; // Hadir
+                        } elseif ($status == 2) {
+                            echo '<span style="color:red;">A</span>'; // Alpha
+                        } elseif ($status == 3) {
+                            echo '<span style="color:orange;">S</span>'; // Sakit
+                        } elseif ($status == 4) {
+                            echo '<span style="color:blue;">I</span>'; // Izin
+                        } else {
+                            echo '<span style="color:gray;">-</span>'; // Kosong
+                        }
+                        ?>
+                    </td>
                 <?php endforeach; ?>
-                <td><?= $countDay ?></td>
-               
+                
+                <td style="text-align:center; color:green;"><?= $hadirCount ?></td>
+                <td style="text-align:center; color:orange;"><?= $sakitCount ?></td>
+                <td style="text-align:center; color:blue;"><?= $izinCount ?></td>
+                <td style="text-align:center; color:red;"><?= $alphaCount ?></td>
+                
             </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
+
 
 
 <!-- SheetJS CDN -->
