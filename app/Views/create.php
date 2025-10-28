@@ -99,7 +99,9 @@
                         </div>
                         <?php elseif ($type === 'textarea'): ?>
                           <textarea class="form-control" id="<?= $name ?>" name="<?= $name ?>"><?= esc($oldValue) ?></textarea>
-                      <?php endif; ?>
+                        <?php elseif ($type === 'separator'): ?>
+                          <hr>
+                        <?php endif; ?>
                     </div>
                   </div>
                 <?php endfor; ?>

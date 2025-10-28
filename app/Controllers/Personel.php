@@ -50,6 +50,7 @@ class Personel extends MyResourceController
         ['select','kkb'],
         ['text','bpjskesehatan'],
         ['text','bpjsketenagakerjaan'],
+        ['separator','guru_jabatan'],
         ['text','placebirth'],
         ['date','datebirth'],
         ['select','gender'],
@@ -66,6 +67,7 @@ class Personel extends MyResourceController
         ['select','trainingdivisi'],
         ['select','trainingtrainer'],
         ['select','trainingmengetahui'],
+        ['separator','guru_jabatan'],
         ['text','kkbnomor'],
         ['date','kkbstart'],
         ['file','arsip']
@@ -79,6 +81,7 @@ class Personel extends MyResourceController
         'Masa KKB',
         'No. BPJS Kesehatan',
         'No. BPJS Ketenagakerjaan',
+        '-----PERSONAL-----',
         'Tempat Lahir',
         'Tanggal Lahir',
         'Gender',
@@ -95,6 +98,7 @@ class Personel extends MyResourceController
         'TRAINING - Divisi',
         'TRAINING - Trainer',
         'TRAINING - Mengetahui',
+         '-----KKB-----',
         'Nomor KKB',
         'Tanggal Mulai KKB',
         'Arsip Bertanda Tangan'
@@ -108,12 +112,14 @@ class Personel extends MyResourceController
         [['1 Tahun','1 Tahun'],['3 Tahun','3 Tahun'],['3 Tahun','3 Tahun'],['9 Tahun','9 Tahun'],],
         ['noOption'],
         ['noOption'],
+          ['noOption'],
         ['noOption'],
          ['noOption'],
          [['Male','Male'],['Female','Female'],],
          [['Moslem','Moslem'],['Christian','Christian'],['Catholic','Catholic'],['Hindu','Hindu'],['Buddha','Buddha'],],
          [['Single','Single'],['Married','Married'],],
          [['S3','S3'],['S2','S2'],['S1','S1'],['D4','D4'],['D3','D3'],['D2','D2'],['D1','D1'],['SMA Sederajat','SMA Sederajat'],['SMP Sederajat','SMP Sederajat'],['SD Sederajat','SD Sederajat'], ['TK Sederajat','TK Sederajat'],],
+         ['noOption'],
          ['noOption'],
          ['noOption'],
          ['noOption'],
@@ -137,9 +143,9 @@ class Personel extends MyResourceController
     {   
         $this->db = \Config\Database::connect(); 
         $this->model = new PersonelModel();
-         $this->fieldOption[18] = $this->getdata('Divisi'); 
-          $this->fieldOption[19] = $this->getdataguru('Guru'); 
-           $this->fieldOption[20] = $this->getdataguru('Guru'); 
+         $this->fieldOption[20] = $this->getdata('Divisi'); 
+          $this->fieldOption[21] = $this->getdataguru('Guru'); 
+           $this->fieldOption[22] = $this->getdataguru('Guru'); 
         if (session()->get('guru_id')!= 0) {
             $this->where = 'guru_id ='.session()->get('guru_id');    
         }

@@ -96,6 +96,8 @@ echo view('layouts/sidebar.php');
                           </div>
                         <?php endforeach; ?>
                       </div>
+                     <?php elseif ($type === 'separator'): ?>
+                          <hr>
                     <?php endif; ?>
                     
 
