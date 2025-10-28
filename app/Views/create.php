@@ -64,7 +64,7 @@
                       $oldValue = old($name);
                       ?>
 
-                      <?php if (in_array($type, ['text', 'date', 'file', 'email'])): ?>
+                      <?php if (in_array($type, ['text', 'date', 'file', 'email','number'])): ?>
 
                         <input type="<?= $type ?>" class="form-control" id="<?= $name ?>" name="<?= $name ?>" value="<?= esc($oldValue) ?>" />
 

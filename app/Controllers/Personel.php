@@ -16,9 +16,9 @@ class Personel extends MyResourceController
 
     public $fieldList = [
         ['guru_nama','Name'],
-        // ['divisi_nama','Divison'],
-        // ['guru_jabatan','Position']
-// ['guru_password','Password']
+        ['kkbnomor','No. Nomor'],
+        ['kkb','Masa KKB'],
+        ['kkbstart','Tanggal Mulai KKB'],
     ];
 
     public $selectList= [
@@ -46,23 +46,86 @@ class Personel extends MyResourceController
         // ['select','divisi_id'],
         ['text','guru_username'],
         // ['text','guru_jabatan'],
-        ['password','guru_password']
+        ['password','guru_password'],
+        ['select','kkb'],
+        ['text','bpjskesehatan'],
+        ['text','bpjsketenagakerjaan'],
+        ['text','placebirth'],
+        ['date','datebirth'],
+        ['select','gender'],
+        ['select','religion'],
+        ['select','marital'],
+        ['select','lasteducation'],
+        ['text','phone'],
+        ['text','address'],
+        ['file','filekk'],
+        ['file','filektp'],
+        ['separator','guru_jabatan'],
+        ['number','trainingperiod'],
+        ['date','trainingstart'],
+        ['select','trainingdivisi'],
+        ['select','trainingtrainer'],
+        ['select','trainingmengetahui'],
+        ['text','kkbnomor'],
+        ['date','kkbstart'],
+        ['file','arsip']
     ];
 
 
     public $fieldName = [
         'Name',
-        // 'Division',
         'Username',
-        // 'Jabatan',
-        'Password'
+        'Password',
+        'Masa KKB',
+        'No. BPJS Kesehatan',
+        'No. BPJS Ketenagakerjaan',
+        'Tempat Lahir',
+        'Tanggal Lahir',
+        'Gender',
+        'Agama',
+        'Status Pernikahan',
+        'Pendidikan Terakhir',
+        'HP',
+        'Alamat',
+        'File KK',
+        'File KTP',
+        '-----TRAINING-----',
+        'TRAINING - Periode (Dalam Bulan)',
+        'TRAINING - Tanggal Mulai',
+        'TRAINING - Divisi',
+        'TRAINING - Trainer',
+        'TRAINING - Mengetahui',
+        'Nomor KKB',
+        'Tanggal Mulai KKB',
+        'Arsip Bertanda Tangan'
+      
     ];
 
     public $fieldOption = [
         ['noOption'],
         ['noOption'],
         ['noOption'],
+        [['1 Tahun','1 Tahun'],['3 Tahun','3 Tahun'],['3 Tahun','3 Tahun'],['9 Tahun','9 Tahun'],],
         ['noOption'],
+        ['noOption'],
+        ['noOption'],
+         ['noOption'],
+         [['Male','Male'],['Female','Female'],],
+         [['Moslem','Moslem'],['Christian','Christian'],['Catholic','Catholic'],['Hindu','Hindu'],['Buddha','Buddha'],],
+         [['Single','Single'],['Married','Married'],],
+         [['S3','S3'],['S2','S2'],['S1','S1'],['D4','D4'],['D3','D3'],['D2','D2'],['D1','D1'],['SMA Sederajat','SMA Sederajat'],['SMP Sederajat','SMP Sederajat'],['SD Sederajat','SD Sederajat'], ['TK Sederajat','TK Sederajat'],],
+         ['noOption'],
+         ['noOption'],
+         ['noOption'],
+         ['noOption'],
+         ['noOption'],
+         ['noOption'],
+         ['noOption'],
+         ['noOption'],
+         ['noOption'],
+         ['noOption'],
+         ['noOption'],
+
 
     ];
 
@@ -74,11 +137,29 @@ class Personel extends MyResourceController
     {   
         $this->db = \Config\Database::connect(); 
         $this->model = new PersonelModel();
+         $this->fieldOption[18] = $this->getdata('Divisi'); 
+          $this->fieldOption[19] = $this->getdataguru('Guru'); 
+           $this->fieldOption[20] = $this->getdataguru('Guru'); 
         if (session()->get('guru_id')!= 0) {
             $this->where = 'guru_id ='.session()->get('guru_id');    
         }
         
         $this->dataToShow = $this->prepareDataToShow();
+    }
+
+    public function getdataguru($table){
+        $db = \Config\Database::connect();
+        $builder = $db->table($table);
+        $builder->select('*');
+        $builder->where('deleted_at', null);
+        $builder->orderBy('guru_nama','asc');
+        $query = $builder->get();
+        $result = $query->getResultArray();
+        $indexedOnly = array_map('array_values', $result);
+
+        // print_r($indexedOnly);
+    
+        return $indexedOnly;
     }
 
     public function print(){

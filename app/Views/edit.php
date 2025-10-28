@@ -51,7 +51,7 @@ echo view('layouts/sidebar.php');
                   <label for="<?= $name ?>" class="col-sm-2 col-form-label"><?= esc($fieldName[$i]) ?></label>
                   <div class="col-sm-10">
 
-                    <?php if (in_array($type, ['text', 'date', 'email'])): ?>
+                    <?php if (in_array($type, ['text', 'date', 'email','number'])): ?>
                       <input type="<?= $type ?>" class="form-control" id="<?= $name ?>" name="<?= $name ?>" value="<?= esc($value) ?>" />
                     <?php elseif ($type === 'password'): ?>
                       <input type="<?= $type ?>" class="form-control" id="<?= $name ?>" name="<?= $name ?>" value="unchanged" />
