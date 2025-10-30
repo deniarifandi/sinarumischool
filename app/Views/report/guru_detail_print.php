@@ -66,7 +66,7 @@
       
       <!-- <tr><th>ID</th><td><?= $guru->guru_id; ?></td></tr> -->
       <tr><th>Nama</th><td><?= $guru->guru_nama ?: '-'; ?></td></tr>
-      <tr><th>NIP</th><td><?= $guru->NIP ?: '-'; ?></td></tr>
+      <tr><th>NIP</th><td><?= $guru->nip ?: '-'; ?></td></tr>
       <tr><th>NIK</th><td><?= $guru->nik ?: '-'; ?></td></tr>
       <tr><th>No. Telepon</th><td><?= $guru->phone ?: '-'; ?></td></tr>
       <tr><th>Alamat</th><td><?= $guru->address ?: '-'; ?></td></tr>
