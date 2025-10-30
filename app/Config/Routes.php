@@ -19,7 +19,8 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->get('/Kelompok/print','Kelompok::print');
 	$routes->get('/Unit/print','Unit::print');
 	$routes->get('/Subunit/print','Subunit::print');
-
+	$routes->get('/Personel/print/(:num)', 'Personel::print/$1');
+	
 	//Absensi
 	$routes->get('absensi','absensi::index');
 	$routes->get('absensi/add','absensi::addAbsensi');
@@ -83,6 +84,7 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->post('/Gurudivisi/data', 'Gurudivisi::data');
 
 	$routes->post('/Personel/data', 'Personel::data');
+
 
 	$routes->get('login','Home::login');
 	$routes->get('/login', 'Home::login');

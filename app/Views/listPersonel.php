@@ -110,12 +110,14 @@
                 { 
                  data: '',
                  render: (data,type,row) => {
-                   return `<a class="btn btn-warning btn-sm" href='<?= $table ?>/${row.<?= $primaryKey ?>}/edit'>Edit</a>
+                   return `
+                   <a class="btn btn-primary btn-sm" href='<?= $table ?>/print/${row.<?= $primaryKey ?>}'>Print</a>
+                   <a class="btn btn-warning btn-sm" href='<?= $table ?>/${row.<?= $primaryKey ?>}/edit'>Edit</a>
                    <form action='<?= $table ?>/${row.<?= $primaryKey ?>}' method="post" style="display:inline" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                    <?= csrf_field() ?>
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                  </form>
+        <?= csrf_field() ?>
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+      </form>
 
                  `;
                  }

@@ -70,7 +70,8 @@ class Personel extends MyResourceController
         ['separator','guru_jabatan'],
         ['text','kkbnomor'],
         ['date','kkbstart'],
-        ['file','arsip']
+        ['file','arsip'],
+        ['file','pasfoto']
     ];
 
 
@@ -101,7 +102,8 @@ class Personel extends MyResourceController
          '-----KKB-----',
         'Nomor KKB',
         'Tanggal Mulai KKB',
-        'Arsip Bertanda Tangan'
+        'Arsip Bertanda Tangan',
+        'Pasfoto'
       
     ];
 
@@ -131,8 +133,8 @@ class Personel extends MyResourceController
          ['noOption'],
          ['noOption'],
          ['noOption'],
-
-
+         ['noOption'],
+         
     ];
 
     public $dataToShow = [];
@@ -153,6 +155,12 @@ class Personel extends MyResourceController
         $this->dataToShow = $this->prepareDataToShow();
     }
 
+    public function index()
+    {   
+
+        return view('/listPersonel', $this->dataToShow);
+    }   
+
     public function getdataguru($table){
         $db = \Config\Database::connect();
         $builder = $db->table($table);
@@ -168,16 +176,19 @@ class Personel extends MyResourceController
         return $indexedOnly;
     }
 
-    public function print(){
+    public function print($id){
 
         $db = \Config\Database::connect();
         $builder = $db->table('Personel');
         $builder->select('*');
         $builder->where('deleted_at', null);
+        $builder->where('guru_id', $id);
 
         $query = $builder->get();
 
-        return view('/report/guru_print',['data' => $query->getResult()]);
+        $result = $query->getResult();
+        // print_r($query->getResult());
+        return view('/report/guru_detail_print',['guru' => $result[0]]);
 
     }
 
