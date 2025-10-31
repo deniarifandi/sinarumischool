@@ -78,7 +78,7 @@
                   </p>
                 </a>
                 <ul class="nav nav-treeview">
-                  <!-- <li class="nav-item">
+                 <li class="nav-item">
                     <a href="<?= base_url(); ?>Guru/print" class="nav-link">
                       <i class="nav-icon bi bi-people"></i>
                       <p >
@@ -101,15 +101,15 @@
                         Print Chapter List
                       </p>
                     </a>
-                  </li> -->
-                <!--   <li class="nav-item">
+                  </li> 
+                <li class="nav-item">
                     <a href="<?= base_url(); ?>Subunit/print" class="nav-link">
                       <i class="nav-icon bi bi-journal-bookmark"></i>
                       <p>
                         Print Sub-Chapter List
                       </p>
                     </a>
-                  </li> -->
+                  </li> 
                  
                  
                 </ul>

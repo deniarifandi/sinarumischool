@@ -20,7 +20,8 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->get('/Unit/print','Unit::print');
 	$routes->get('/Subunit/print','Subunit::print');
 	$routes->get('/Personel/print/(:num)', 'Personel::print/$1');
-	
+	$routes->get('/Aktifitas/print', 'Aktifitas::print');
+
 	//Absensi
 	$routes->get('absensi','absensi::index');
 	$routes->get('absensi/add','absensi::addAbsensi');

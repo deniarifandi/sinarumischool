@@ -57,11 +57,17 @@
 
 <body>
   <div class="profile-card">
-    <h2>Profil Staff</h2>
+   
+  	<div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-light">
+	  <img src="<?= base_url() ?>/ykbm.jpg" alt="Left Logo" class="rounded-circle" style="width:60px; height:60px; object-fit:cover;">
+	  <h2 class="fw-bold mb-0 text-center flex-grow-1">Recruitment Data Form</h2>
+	  <img src="<?= base_url() ?>/ycpb.png" alt="Right Logo" class="rounded-circle" style="width:60px; height:60px; object-fit:cover;">
+	</div>
+
     <table class="table table-bordered">
 
         <tr>
-		  <th colspan="2" style="text-align:center; font-size:22px">Profil</th>
+		  <th colspan="2" style="text-align:center; font-size:22px">Identitas</th>
 		</tr>
       
       <!-- <tr><th>ID</th><td><?= $guru->guru_id; ?></td></tr> -->

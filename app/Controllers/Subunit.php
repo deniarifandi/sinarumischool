@@ -97,7 +97,7 @@ public $fieldOption = [
 
         // print_r($builder->get()->getResult());
         // ecsho json_encode($builder->get()->getResult());
-         return view('/report/unit_print',['data' => $builder->get()->getResult()]);
+         return view('/report/subunit_print',['data' => $builder->get()->getResult()]);
 
     }
 
