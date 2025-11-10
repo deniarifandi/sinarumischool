@@ -11,147 +11,171 @@ class Home extends BaseController
 
     public function __construct()
     {   
-       $this->session = session();
-    }
+     $this->session = session();
+ }
 
-    public function index()
-    {   
-        
-        $model = new GuruModel();
+ public function index()
+ {   
 
-        $username = $this->session->get('username');
-        $guru_nama = $this->session->get('nama');
-        $guru_id = $this->session->get('guru_id');
+    $model = new GuruModel();
+
+    $username = $this->session->get('username');
+    $guru_nama = $this->session->get('nama');
+    $guru_id = $this->session->get('guru_id');
         // echo $guru_id;
 
-        $builder = Database::connect()->table('Guru');
-        $builder->select('Guru.*,Kelompok.*');
-        $builder->join('Kelompok','Kelompok.guru_id = Guru.guru_id','left');
-        $builder->where('Guru.guru_id',$guru_id);
+    $builder = Database::connect()->table('Guru');
+    $builder->select('Guru.*,Kelompok.*');
+    $builder->join('Kelompok','Kelompok.guru_id = Guru.guru_id','left');
+    $builder->where('Guru.guru_id',$guru_id);
 
-        $presence = $this->cekPresensi();
+    $presence = $this->cekPresensi();
 
-        $data = $builder->get()->getResult();
-        // print_r($data);
-        return view('dashboard.php',[
-            'data' => $data[0], 
-            'presence' => $presence,
-            'nama' => $guru_nama
+    $data = $builder->get()->getResult();
+
+
+    $divisiList = session()->get('divisi_list') ?? [];  
+$divisiIds = array_column($divisiList, 'id'); 
+
+    $db = \Config\Database::connect();
+
+    $subjects = $db->table('Subjek')
+        ->whereIn('divisi_id', $divisiIds)
+        ->where('deleted_at', null)
+        ->get()
+        ->getResult();
+
+    return view('dashboard.php',[
+        'data' => $data[0], 
+        'presence' => $presence,
+        'nama' => $guru_nama
+    ]);
+}
+
+public function blank()
+{   
+    return view('blank.php');
+}
+
+public function login(){
+    return view('login.php');
+}
+
+public function loginAuth()
+{
+    $model = new GuruModel();
+
+    $username = $this->request->getPost('username');
+    $password = $this->request->getPost('password');
+
+    $user = $model->where('guru_username', $username)->first();
+
+    if ($user && password_verify($password, $user['guru_password'])) {
+
+        $this->session->set([
+            'guru_id' => $user['guru_id'], 
+            'guru_nama' => $user['guru_nama'], 
+            'guru_username' => $user['guru_username'], 
+            'guru_role' => $user['guru_role'],
+            'logged_in' => true
         ]);
-    }
-    
-    public function blank()
-    {   
-        return view('blank.php');
-    }
 
-    public function login(){
-        return view('login.php');
-    }
+        // load divisi
+        $db = \Config\Database::connect(); 
+        $builder = $db->table('Gurudivisi');   // make sure case is correct
+        $builder->join('Divisi','Divisi.divisi_id = Gurudivisi.divisi_id');
+        $builder->select('Gurudivisi.divisi_id, Divisi.divisi_nama');
+        $builder->where('guru_id', $user['guru_id']);
 
-    public function loginAuth()
-    {
-        
-        $model = new GuruModel();
+        // Fetch all divisions for the user
+        $resultsDivisi = $builder->get()->getResult();
 
-        $username = $this->request->getPost('username');
-        $password = $this->request->getPost('password');
-
-        $user = $model->where('guru_username', $username)->first();
-
-        if ($user && password_verify($password, $user['guru_password'])) {
-            $this->session->set([
-                'guru_id' => $user['guru_id'], 
-                'nama' => $user['guru_nama'], 
-                'username' => $user['guru_username'], 
-                'logged_in' => true]);
-        
-            $db = \Config\Database::connect(); 
-            $builder = $db->table('Gurudivisi');
-            $builder->select('Gurudivisi.*');
-            $builder->where('guru_id', $user['guru_id']);
-            $query = $builder->get();
-            $resultsDivisi = $query->getResult();
-            
-          
-          if (!empty($resultsDivisi) && isset($resultsDivisi[0]->divisi_id)) {
-
-                $this->session->set([
-                    'divisi_id' => $resultsDivisi[0]->divisi_id
-                ]);
+        if (!empty($resultsDivisi)) {
+            $divisiList = [];  
+            foreach ($resultsDivisi as $row) {
+                $divisiList[] = [
+                    'id' => $row->divisi_id,
+                    'nama' => $row->divisi_nama
+                ];
             }
 
-            // echo session()->get('gurudivisi_id');
-
-            return redirect()->to('/');
-        } else {
-            return redirect()->back()->with('error', 'Invalid credentials');
+            $this->session->set([
+                'divisi_list' => $divisiList
+            ]);
         }
-    }
 
-    public function getdata($table){
-        $db = \Config\Database::connect();
-        $builder = $db->table($table);
-        $builder->select('*');
-        $builder->where('deleted_at', null);
-        $query = $builder->get();
-        $result = $query->getResultArray();
-        $indexedOnly = array_map('array_values', $result);
+       // dd(session()->get());
+        return redirect()->to('/');
+
+    } else {
+        return redirect()->back()->with('error', 'Invalid credentials');
+    }
+}
+
+
+public function getdata($table){
+    $db = \Config\Database::connect();
+    $builder = $db->table($table);
+    $builder->select('*');
+    $builder->where('deleted_at', null);
+    $query = $builder->get();
+    $result = $query->getResultArray();
+    $indexedOnly = array_map('array_values', $result);
     
-        return $indexedOnly;
-    }
+    return $indexedOnly;
+}
 
-     public function cekPresensi(){
-        $db = \Config\Database::connect(); 
-        $session = session();
-        $guru_id = session()->get('guru_id');
+public function cekPresensi(){
+    $db = \Config\Database::connect(); 
+    $session = session();
+    $guru_id = session()->get('guru_id');
         // echo $guru_id;
-        $builder = $db->table('Presensidata');
-        $builder->select('Presensidata.*');
-        $builder->where('guru_id', $guru_id);
-        $builder->where('presensidata_tanggal', date("Y-m-d"));
+    $builder = $db->table('Presensidata');
+    $builder->select('Presensidata.*');
+    $builder->where('guru_id', $guru_id);
+    $builder->where('presensidata_tanggal', date("Y-m-d"));
 
-        $query = $builder->get();
-        $resultsPresensi = $query->getResult();
+    $query = $builder->get();
+    $resultsPresensi = $query->getResult();
         // print_r($resultsPresensi);
-        return count($resultsPresensi);
-    }
+    return count($resultsPresensi);
+}
 
-    public function logout()
-    {
-        session()->destroy();
-        return redirect()->to('/login');
-    }
+public function logout()
+{
+    session()->destroy();
+    return redirect()->to('/login');
+}
 
-    public function lupaabsen(){
+public function lupaabsen(){
 
-        $db = \Config\Database::connect();
-        $builder = $db->table('Personel');
-        $builder->select('guru_id,guru_nama');
-        $builder->where('deleted_at', null);
-        
-        $query = $builder->get();
-        $result = $query->getResultArray();
-        $indexedOnly = array_map('array_values', $result);
+    $db = \Config\Database::connect();
+    $builder = $db->table('Personel');
+    $builder->select('guru_id,guru_nama');
+    $builder->where('deleted_at', null);
 
-        
-        return view('presence/lupaabsen', ['guru' => $result]);
-    }
+    $query = $builder->get();
+    $result = $query->getResultArray();
+    $indexedOnly = array_map('array_values', $result);
 
-    public function cekPresensi2($guru_id,$tanggal){
-        $db = \Config\Database::connect();
-        $builder = $db->table('Presensidata');
-        $builder->select('Presensidata.*');
-        $builder->where('guru_id', $guru_id);
-        $builder->where('Presensidata_tanggal',$tanggal);
 
-        $query = $builder->get();
-        $resultsPersonel = $query->getResult();
+    return view('presence/lupaabsen', ['guru' => $result]);
+}
 
-        return count($resultsPersonel);
-    }
+public function cekPresensi2($guru_id,$tanggal){
+    $db = \Config\Database::connect();
+    $builder = $db->table('Presensidata');
+    $builder->select('Presensidata.*');
+    $builder->where('guru_id', $guru_id);
+    $builder->where('Presensidata_tanggal',$tanggal);
 
-   public function lupaabsenstore()
+    $query = $builder->get();
+    $resultsPersonel = $query->getResult();
+
+    return count($resultsPersonel);
+}
+
+public function lupaabsenstore()
 {
     $db = \Config\Database::connect();
     $builder = $db->table('Presensidata');
@@ -159,22 +183,22 @@ class Home extends BaseController
     $tanggal = $this->request->getPost('presensidata_tanggal');
     $datetime = $tanggal . ' 07:39:00';
 
-     $data = [
-            'guru_id' => $this->request->getPost('guru_id'),
-            'longitude' => $this->request->getPost('longitude'),
-            'latitude' => $this->request->getPost('latitude'),
-            'presensidata_tanggal' => $datetime,
-            'status' => $this->request->getPost('status'),
-            'created_at' => $datetime
-        ];
+    $data = [
+        'guru_id' => $this->request->getPost('guru_id'),
+        'longitude' => $this->request->getPost('longitude'),
+        'latitude' => $this->request->getPost('latitude'),
+        'presensidata_tanggal' => $datetime,
+        'status' => $this->request->getPost('status'),
+        'created_at' => $datetime
+    ];
 
-     if ($this->cekPresensi2($this->request->getPost('guru_id'),$tanggal) > 0) {
+    if ($this->cekPresensi2($this->request->getPost('guru_id'),$tanggal) > 0) {
         $result = "It looks like you’ve already submitted your data for today. No need to submit again, everything has been recorded successfully. Thank you for staying consistent!";
         $code = 1;
         $title = "Already Submit";
 
         session()->setFlashdata('success', $result);
-         return redirect()->to('/lupaabsen');
+        return redirect()->to('/lupaabsen');
 
     }else{
 
@@ -184,20 +208,20 @@ class Home extends BaseController
         $result = "Your attendance has been successfully recorded for today. Thank you for checking in on time, we appreciate your punctuality and dedication.";
         $code = 1;
 
-         try {
+        try {
         // Try inserting data
             if ($builder->insert($data)) {
                 session()->setFlashdata('success', $result);
-                 return redirect()->to('/lupaabsen');
+                return redirect()->to('/lupaabsen');
             } else {
                 session()->setFlashdata('error', 'Gagal menyimpan data presensi.');
-                 return redirect()->to('/lupaabsen');
+                return redirect()->to('/lupaabsen');
             }
 
         } catch (\Exception $e) {
             // Catch any database or runtime error
             session()->setFlashdata('error', 'Terjadi kesalahan: ' . $e->getMessage());
-             return redirect()->to('/lupaabsen');
+            return redirect()->to('/lupaabsen');
         }
 
         return redirect()->to('/lupaabsen');
@@ -205,6 +229,6 @@ class Home extends BaseController
     }
 
     
-   
+
 }
 }

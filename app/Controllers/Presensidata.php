@@ -94,42 +94,57 @@ class Presensidata extends MyResourceController
         return view('presence/index');
     }
 
-    public function data(){
+   public function data()
+{
+    $builder = Database::connect()->table($this->table);
 
-        $builder = Database::connect()->table($this->table);
-        $builder->select("
-            Presensidata.*, 
-            Guru.guru_id as Guruguru_id, 
-            Guru.guru_nama, 
-            (
+    $builder->select("
+        Presensidata.*, 
+        Guru.guru_id as Guruguru_id, 
+        Guru.guru_nama,
+
+        (
             SELECT GROUP_CONCAT(DISTINCT Divisi.divisi_nama SEPARATOR ', ')
             FROM Gurudivisi
             JOIN Divisi ON Divisi.divisi_id = Gurudivisi.divisi_id
             WHERE Gurudivisi.guru_id = Guru.guru_id
-            ) AS semua_divisi,
-            (
+        ) AS semua_divisi,
+
+        (
             SELECT GROUP_CONCAT(DISTINCT Jabatan.jabatan_nama SEPARATOR ', ')
             FROM Gurujabatan
             JOIN Jabatan ON Jabatan.jabatan_id = Gurujabatan.jabatan_id
             WHERE Gurujabatan.guru_id = Guru.guru_id
-            ) AS semua_jabatan,
-            Presensidata.longitude,
-            Presensidata.latitude,
-            DATE_FORMAT(Presensidata.created_at, '%d-%M-%Y') as date_formatted,
-            DATE_FORMAT(Presensidata.created_at, '%H:%i') as time_formatted
-            ");
-        $builder->join('Guru','Presensidata.guru_id = Guru.guru_id');
-// remove Gurudivisi, Divisi, Gurujabatan, Jabatan joins here — handled in subqueries
+        ) AS semua_jabatan,
 
-// Optional filter
-        if (session()->get('guru_id') != 0) {
-            $builder->where('Guru.guru_id', session()->get('guru_id'));
-        }
+        Presensidata.longitude,
+        Presensidata.latitude,
 
-        $datatable = new Datatable();
-        return $datatable->generate($builder, 'Presensidata.'.$this->primaryKey, $this->toSearch);
+        DATE_FORMAT(Presensidata.created_at, '%Y-%m-%d') AS date_raw,        -- ✅ real sortable date
+        DATE_FORMAT(Presensidata.created_at, '%d-%M-%Y') AS date_formatted, -- ✅ pretty date
+        DATE_FORMAT(Presensidata.created_at, '%H:%i') AS time_formatted
+    ");
 
+    $builder->join('Guru', 'Presensidata.guru_id = Guru.guru_id');
+
+    // Optional filter
+    if (session()->get('guru_id') != 0) {
+        $builder->where('Guru.guru_id', session()->get('guru_id'));
     }
+
+    // ✅ Optional: ORDER BY raw date DESC as backend fallback
+    $builder->orderBy('Presensidata.created_at', 'DESC');
+
+    // ✅ Pass extra fields into DataTables generator
+    $datatable = new Datatable();
+    return $datatable->generate(
+        $builder,
+        'Presensidata.' . $this->primaryKey,
+        $this->toSearch,
+        ['date_raw', 'date_formatted', 'time_formatted']  // ✅ ensure included
+    );
+}
+
 
     public function showForm(){
         return view('/presence/form');

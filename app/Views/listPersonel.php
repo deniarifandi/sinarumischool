@@ -1,6 +1,6 @@
     <?php 
       echo view('layouts/header.php');
-      echo view('layouts/sidebar.php');
+
     ?>
 
       <!--begin::App Main-->
