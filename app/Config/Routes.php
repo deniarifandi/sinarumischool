@@ -11,6 +11,9 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->get('/', 'Home::index');
 	$routes->get('/blank', 'Home::blank');
 
+	$routes->get('/lupaabsen','Home::lupaabsen');
+	$routes->post('/lupaabsen/store','Home::lupaabsenstore');
+
 	//API
 	$routes->get('/api/kelompok/getdata','tujuan::getdata');	
 

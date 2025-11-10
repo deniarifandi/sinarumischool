@@ -72,7 +72,7 @@ class Home extends BaseController
             $builder->where('guru_id', $user['guru_id']);
             $query = $builder->get();
             $resultsDivisi = $query->getResult();
-            print_r($resultsDivisi);
+            
           
           if (!empty($resultsDivisi) && isset($resultsDivisi[0]->divisi_id)) {
 
@@ -87,6 +87,18 @@ class Home extends BaseController
         } else {
             return redirect()->back()->with('error', 'Invalid credentials');
         }
+    }
+
+    public function getdata($table){
+        $db = \Config\Database::connect();
+        $builder = $db->table($table);
+        $builder->select('*');
+        $builder->where('deleted_at', null);
+        $query = $builder->get();
+        $result = $query->getResultArray();
+        $indexedOnly = array_map('array_values', $result);
+    
+        return $indexedOnly;
     }
 
      public function cekPresensi(){
@@ -110,4 +122,89 @@ class Home extends BaseController
         session()->destroy();
         return redirect()->to('/login');
     }
+
+    public function lupaabsen(){
+
+        $db = \Config\Database::connect();
+        $builder = $db->table('Personel');
+        $builder->select('guru_id,guru_nama');
+        $builder->where('deleted_at', null);
+        
+        $query = $builder->get();
+        $result = $query->getResultArray();
+        $indexedOnly = array_map('array_values', $result);
+
+        
+        return view('presence/lupaabsen', ['guru' => $result]);
+    }
+
+    public function cekPresensi2($guru_id,$tanggal){
+        $db = \Config\Database::connect();
+        $builder = $db->table('Presensidata');
+        $builder->select('Presensidata.*');
+        $builder->where('guru_id', $guru_id);
+        $builder->where('Presensidata_tanggal',$tanggal);
+
+        $query = $builder->get();
+        $resultsPersonel = $query->getResult();
+
+        return count($resultsPersonel);
+    }
+
+   public function lupaabsenstore()
+{
+    $db = \Config\Database::connect();
+    $builder = $db->table('Presensidata');
+
+    $tanggal = $this->request->getPost('presensidata_tanggal');
+    $datetime = $tanggal . ' 07:39:00';
+
+     $data = [
+            'guru_id' => $this->request->getPost('guru_id'),
+            'longitude' => $this->request->getPost('longitude'),
+            'latitude' => $this->request->getPost('latitude'),
+            'presensidata_tanggal' => $datetime,
+            'status' => $this->request->getPost('status'),
+            'created_at' => $datetime
+        ];
+
+     if ($this->cekPresensi2($this->request->getPost('guru_id'),$tanggal) > 0) {
+        $result = "It looks like you’ve already submitted your data for today. No need to submit again, everything has been recorded successfully. Thank you for staying consistent!";
+        $code = 1;
+        $title = "Already Submit";
+
+        session()->setFlashdata('success', $result);
+         return redirect()->to('/lupaabsen');
+
+    }else{
+
+        $builder = $db->table('Presensidata');
+
+        $title = "Success";
+        $result = "Your attendance has been successfully recorded for today. Thank you for checking in on time, we appreciate your punctuality and dedication.";
+        $code = 1;
+
+         try {
+        // Try inserting data
+            if ($builder->insert($data)) {
+                session()->setFlashdata('success', $result);
+                 return redirect()->to('/lupaabsen');
+            } else {
+                session()->setFlashdata('error', 'Gagal menyimpan data presensi.');
+                 return redirect()->to('/lupaabsen');
+            }
+
+        } catch (\Exception $e) {
+            // Catch any database or runtime error
+            session()->setFlashdata('error', 'Terjadi kesalahan: ' . $e->getMessage());
+             return redirect()->to('/lupaabsen');
+        }
+
+        return redirect()->to('/lupaabsen');
+
+    }
+
+    
+   
+}
 }
