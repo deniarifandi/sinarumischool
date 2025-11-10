@@ -28,7 +28,7 @@
             <th>Masuk</th>
             <th>Izin</th>
             <th>Sakit</th>
-            <th>Total</th>
+            <th>Total (Rp)</th>
         </tr>
     </thead>
     <tbody>
@@ -42,6 +42,7 @@
                 <td><?= $row->guru_nama ?></td>
                 <td><?= $row->jabatan_nama ?></td>
                 <td><?= $row->divisi_nama ?></td>
+
                 <?php foreach ($dates as $d): 
                     $status = $row->$d ?? ' ';
                     $dayOfWeek = date('w', strtotime($d));
@@ -50,15 +51,15 @@
 
                     // Count logic
                     switch ($status) {
-                        case 1: // Present
-                        case 4: // Half day or another valid status
+                        case 1:
+                        case 4:
                             $countPresent++;
                             $total += 15000;
                             break;
-                        case 2: // Izin
+                        case 2:
                             $countIzin++;
                             break;
-                        case 3: // Sakit
+                        case 3:
                             $countSakit++;
                             break;
                     }
@@ -67,25 +68,23 @@
                     <?php
                         switch ($status) {
                             case 1:
-                            case 4:
-                                echo "✔";
-                                break;
-                            case 2:
-                                echo "I";
-                                break;
-                            case 3:
-                                echo "S";
-                                break;
-                            default:
-                                echo "&nbsp;";
+                            case 4: echo "✔"; break;
+                            case 2: echo "I"; break;
+                            case 3: echo "S"; break;
+                            default: echo "&nbsp;";
                         }
                     ?>
                 </td>
                 <?php endforeach; ?>
+
                 <td style="text-align:center;"><?= $countPresent ?></td>
                 <td style="text-align:center;"><?= $countIzin ?></td>
                 <td style="text-align:center;"><?= $countSakit ?></td>
-                <td style="text-align:right;"><?= number_format($total, 0, ',', '.') ?></td>
+
+                <!-- ✅ DISPLAY formatted, ✅ STORE RAW for Excel -->
+                <td style="text-align:right;" data-x-num="<?= $total ?>">
+                    Rp <?= number_format($total, 0, ',', '.') ?>
+                </td>
             </tr>
         <?php endforeach; ?>
     </tbody>
@@ -94,11 +93,38 @@
 <!-- SheetJS CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-<!-- Export function -->
+<!-- ✅ Export to Excel with Rupiah formatting -->
 <script>
 function exportToExcel(tableID, filename = '') {
     const table = document.getElementById(tableID);
-    const workbook = XLSX.utils.table_to_book(table, {sheet: "Sheet1"});
+
+    // Convert table to workbook
+    const workbook = XLSX.utils.table_to_book(table, { sheet: "Sheet1", raw: false });
+    const sheet = workbook.Sheets["Sheet1"];
+
+    const range = XLSX.utils.decode_range(sheet['!ref']);
+
+    // Loop all cells to apply x-num override
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+            const cell_address = XLSX.utils.encode_cell({ r: R, c: C });
+            const cell = sheet[cell_address];
+            if (!cell) continue;
+
+            const htmlCell = table.rows[R]?.cells[C];
+            if (!htmlCell) continue;
+
+            const rawNum = htmlCell.getAttribute("data-x-num");
+            if (rawNum !== null) {
+                cell.v = Number(rawNum);   // numeric value
+                cell.t = "n";              // force number type
+                
+                // ✅ Apply Excel Rupiah format: "Rp 15.000"
+                cell.z = '"Rp" #,##0';
+            }
+        }
+    }
+
     XLSX.writeFile(workbook, filename ? filename + ".xlsx" : "export.xlsx");
 }
 </script>
