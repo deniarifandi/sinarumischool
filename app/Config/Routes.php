@@ -79,6 +79,7 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->post('/Kelompok/data', 'Kelompok::data');
 	$routes->post('/Guru/data', 'Guru::data');
 	$routes->post('/Unit/data', 'Unit::data');
+	$routes->post('/Unit/data_unit/(:num)', 'Unit::data_unit/$1');
 	$routes->post('/Subunit/data', 'Subunit::data');
 	$routes->post('/Aktifitas/data', 'Aktifitas::data');
 	$routes->post('/Tipeaktifitas/data', 'Tipeaktifitas::data');

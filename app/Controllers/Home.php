@@ -15,42 +15,99 @@ class Home extends BaseController
  }
 
  public function index()
- {   
+{
+    $db = \Config\Database::connect();
 
-    $model = new GuruModel();
-
-    $username = $this->session->get('username');
     $guru_nama = $this->session->get('nama');
-    $guru_id = $this->session->get('guru_id');
-        // echo $guru_id;
+    $guru_id   = $this->session->get('guru_id');
 
-    $builder = Database::connect()->table('Guru');
-    $builder->select('Guru.*,Kelompok.*');
-    $builder->join('Kelompok','Kelompok.guru_id = Guru.guru_id','left');
-    $builder->where('Guru.guru_id',$guru_id);
+    // 1. Guru profile
+    $guru = $db->table('Guru')
+        ->where('guru_id', $guru_id)
+        ->get()
+        ->getRowArray();
 
-    $presence = $this->cekPresensi();
+    if (!$guru) {
+        return redirect()->to('/login');
+    }
 
-    $data = $builder->get()->getResult();
+    // 2. Divisi list
+    $divisi = $db->table('Gurudivisi')
+        ->select('Divisi.divisi_id, Divisi.divisi_nama')
+        ->join('Divisi', 'Divisi.divisi_id = Gurudivisi.divisi_id')
+        ->where('Gurudivisi.guru_id', $guru_id)
+        ->get()
+        ->getResultArray();
+
+    $divisiIds = array_column($divisi, 'divisi_id');
+
+    // 3. Subjects for those divisi
+    $allSubjects = [];
+    if (!empty($divisiIds)) {
+        $allSubjects = $db->table('Subjek')
+            ->select('subjek_id, subjek_nama, divisi_id')
+            ->whereIn('divisi_id', $divisiIds)
+            ->where('deleted_at', null)
+            ->orderBy('subjek_nama', 'ASC')
+            ->get()
+            ->getResultArray();
+    }
+
+    // 4. Group subjects by divisi
+    $subjectsByDivisi = [];
+    foreach ($allSubjects as $s) {
+        $subjectsByDivisi[$s['divisi_id']][] = $s;
+    }
+
+    // 5. Kelompok
+    $kelompok = $db->table('Kelompok')
+        ->select('kelompok_id, kelompok_nama, deskripsi, tingkat_id')
+        ->where('guru_id', $guru_id)
+        ->get()
+        ->getResultArray();
+
+    // 6. Presence check (if you use it)
+    $presence = $db->table('Presensidata')
+        ->where('guru_id', $guru_id)
+        ->where('DATE(presensidata_tanggal)', date('Y-m-d'))
+        ->countAllResults();
+
+    // 7. Load the dashboard
+    return view('dashboard.php', [
+        'guru'        => $guru,
+        'divisi'      => $divisi,
+        'subjects'    => $subjectsByDivisi, // grouped!
+        'kelompok'    => $kelompok,
+        'presence'    => $presence,
+        'nama'        => $guru_nama
+    ]);
+}
 
 
-    $divisiList = session()->get('divisi_list') ?? [];  
-$divisiIds = array_column($divisiList, 'id'); 
+public function school()
+{
+    $divisiId = $this->request->getGet('divisi');
 
     $db = \Config\Database::connect();
 
-    $subjects = $db->table('Subjek')
-        ->whereIn('divisi_id', $divisiIds)
+    $subjects = $db->table('subjek')
+        ->where('divisi_id', $divisiId)
         ->where('deleted_at', null)
+        ->orderBy('subjek_nama', 'ASC')
         ->get()
         ->getResult();
 
-    return view('dashboard.php',[
-        'data' => $data[0], 
-        'presence' => $presence,
-        'nama' => $guru_nama
+    $div = $db->table('Divisi')
+        ->where('id', $divisiId)
+        ->get()
+        ->getRowArray();
+
+    return view('school_page', [
+        'subjects' => $subjects,
+        'div' => $div
     ]);
 }
+
 
 public function blank()
 {   

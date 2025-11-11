@@ -15,17 +15,21 @@ class Subjek extends MyResourceController
     public $primaryKey = "subjek_id";
 
     public $fieldList = [
+        ['divisi_nama','Nama Divisi'],
         ['subjek_nama','Subject']
+        
     ];
 
 
     public $selectList= [
-            'Subjek.*'
+            'Subjek.*',
+            'Divisi.divisi_nama'
+
         ];
 
     public $toSearch = 
     [
-        'Guru.guru_nama'
+        'Guru.subjek_nama'
     ];
 
      public $where = [
@@ -47,6 +51,10 @@ public $fieldOption = [
   ['noOption'],
   ['noOption']
 ];
+
+ public $joinTable = [
+        ['Divisi','Divisi.divisi_id = Subjek.divisi_id','left'],
+    ];
 
     public $dataToShow = [];
 

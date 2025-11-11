@@ -86,8 +86,15 @@ public $groupBy = 'Unit.unit_nama';
         $this->model = new UnitModel();
         $this->fieldOption[0] = $this->getdata('Subjek'); 
         $this->fieldOption[1] = $this->getdata('Tingkat'); 
+      
         $this->dataToShow = $this->prepareDataToShow();
     }
+
+    public function index()
+    {   
+
+        return view('/unit/list', $this->dataToShow);
+    }    
 
      public function print(){
         
@@ -97,12 +104,10 @@ public $groupBy = 'Unit.unit_nama';
          $builder->select(implode(', ', $this->selectList));
         if (!empty($this->joinTable)) {
             foreach ($this->joinTable as $join) {
-                    // $join[0] = join table name
-                    // $join[1] = join condition
-                // $builder->select($join[0] . '.*');
                 $builder->join($join[0], $join[1],$join[2]);
             }
         }
+        // $builder->where($this->table.'.subjek_id',$_GET['subject']);
         $builder->where($this->table.'.deleted_at',NULL);;
 
         foreach ($this->where as $key => $value) {
@@ -118,6 +123,54 @@ public $groupBy = 'Unit.unit_nama';
         // ecsho json_encode($builder->get()->getResult());
          return view('/report/unit_print',['data' => $builder->get()->getResult()]);
 
+    }
+
+    public function data_unit($subjek_id){
+        $builder = Database::connect()->table($this->table);
+        // $builder->select($this->table.'.*');
+
+         $builder->select(implode(', ', $this->selectList));
+        if (!empty($this->joinTable)) {
+            foreach ($this->joinTable as $join) {
+                    // $join[0] = join table name
+                    // $join[1] = join condition
+                // $builder->select($join[0] . '.*');
+                $builder->join($join[0], $join[1],$join[2]);
+            }
+        }
+        $builder->where($this->table.'.deleted_at',NULL);;
+
+        
+        $builder->where($this->table.'.subjek_id',$subjek_id);
+           
+
+        if (!empty($this->orderBy)) {
+            if (is_array($this->orderBy)) {
+                // Handle multiple order conditions
+                foreach ($this->orderBy as $key => $value) {
+                    if (is_numeric($key) && is_array($value)) {
+                        $builder->orderBy($value[0], $value[1]); // [['name', 'ASC']]
+                    } else {
+                        $builder->orderBy($key, $value); // ['name' => 'ASC']
+                    }
+                }
+            } else {
+                // Assume it's a string like "name ASC"
+                [$column, $direction] = explode(' ', $this->orderBy);
+                $builder->orderBy($column, $direction);
+            }
+        }
+
+        if (!empty($this->groupBy)) {
+            
+                // string — can be one or more columns separated by commas
+                $builder->groupBy($this->groupBy);
+            
+        }
+
+        $datatable = new Datatable();
+
+        return $datatable->generate($builder, $this->table.'.'.$this->primaryKey, $this->toSearch);
     }
 
 }
