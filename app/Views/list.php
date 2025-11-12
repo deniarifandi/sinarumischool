@@ -35,7 +35,7 @@
                   <table id="<?php $table ?>Table" class="display">
                   <thead>
                       <tr>
-                          <th>ID</th>
+                         
                           <?php for ($i=0; $i < count($fieldList); $i++) { 
                             ?><th><?= $fieldList[$i][1]; ?></th><?php 
                           } ?>
@@ -82,7 +82,7 @@
                 type: "POST"
             },
             columns: [
-                { data: '<?= $primaryKey ?>' },
+                
                 <?php 
                   for($i=0; $i < count($fieldList); $i++){
                     ?>

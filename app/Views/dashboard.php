@@ -181,7 +181,7 @@ function canAccessDivisi($list, $allowed) {
           <?= card(
               $short,
               $s['subjek_nama'],
-              'Unit?divisi=' . $div['divisi_id'] . '&subjek_id=' . $s['subjek_id'],
+              'dashboardsubjek?divisi=' . $div['divisi_id'] . '&subjek_id=' . $s['subjek_id'],
               'bi-file-earmark-text',
               '#ffb8b8'
           ) ?>

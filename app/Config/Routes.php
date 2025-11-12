@@ -9,6 +9,9 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 
 	//home
 	$routes->get('/', 'Home::index');
+
+	$routes->get('/dashboardsubjek','Home::dashboardsubjek');
+
 	$routes->get('/blank', 'Home::blank');
 
 	$routes->get('/lupaabsen','Home::lupaabsen');
@@ -34,6 +37,8 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->get('absensi/front','absensi::front');
 	$routes->get('absensi/result','absensi::result');
 	
+
+
 	//Resource
 	$routes->resource('Murid');
 	$routes->resource('assignments');
@@ -126,3 +131,6 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 	$routes->post('/Gurujabatan/toggle', 'Gurujabatan::toggle');
 
 	$routes->post('/api/storeattendance/(:any)','Presensidata::storeAttendance/$1');
+
+	//UNIT REVOLUTION
+	$routes->get('/unit','UnitController::index');

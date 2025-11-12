@@ -14,7 +14,7 @@ class Unit extends MyResourceController
     public $title = "Chapter";
     public $primaryKey = "unit_id";
     public $fieldList = [
-        ['subjek_nama','Subject'],
+
         ['tingkat_nama','Grade'],
         ['unit_nama','Chapter'],
         ['unit_jp','Hours'],
@@ -53,16 +53,16 @@ class Unit extends MyResourceController
 
 
     public $field = [
-        ['select','subjek_id'],
+       
         ['select','tingkat_id'],
         ['text','unit_nama'],
         ['text','unit_jp']
 ];
 
 public $fieldName = [
-        'Subject',
+      
         'Grade',
-        'Chapter',
+        'Chapter Name',
         'Hours'
         
     ];
@@ -84,8 +84,8 @@ public $groupBy = 'Unit.unit_nama';
     public function __construct()
     {
         $this->model = new UnitModel();
-        $this->fieldOption[0] = $this->getdata('Subjek'); 
-        $this->fieldOption[1] = $this->getdata('Tingkat'); 
+        
+        $this->fieldOption[0] = $this->getdata('Tingkat'); 
       
         $this->dataToShow = $this->prepareDataToShow();
     }
@@ -171,6 +171,12 @@ public $groupBy = 'Unit.unit_nama';
         $datatable = new Datatable();
 
         return $datatable->generate($builder, $this->table.'.'.$this->primaryKey, $this->toSearch);
+    }
+
+     public function new()
+    {
+        
+        return view('/unit/create', $this->dataToShow);
     }
 
 }

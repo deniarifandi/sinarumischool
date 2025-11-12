@@ -101,18 +101,30 @@ function canAccessDivisi($list, $allowed) {
   }
 </style>
 
-<main class="app-main">
+<style>
+.subject-badge {
+  background: linear-gradient(135deg, #007bff, #00bcd4);
+  color: white;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  display: inline-block;
+  margin-left: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
+}
+.subject-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+.badge-missing {
+  background: #ccc;
+  color: #333;
+}
+</style>
 
-  <div class="container-fluid">
-    <div class="row">
-      <?php if ($presence < 1): ?>
-      <div class="alert alert-danger" role="alert">
-        You haven’t submitted your attendance yet. 
-        <a href="<?= base_url() ?>showstatus?id=<?= $nama ?>">Click to submit now</a>
-      </div>
-      <?php endif; ?>
-    </div>
-  </div>
+<main class="app-main">
 
   <div class="app-content">
     <div class="container-fluid">
@@ -120,86 +132,44 @@ function canAccessDivisi($list, $allowed) {
       <!-- HR BLOCK -->
       <div class="hr-section-block">
 
-        <div class="section-title-main">📁 Human Resource</div>
+        <?php 
+        $subjekId = $_GET['subjek_id'] ?? null;
+          $subjeknya = null;
+
+          if ($subjekId && !empty($subjek)) {
+              foreach ($subjek as $divisi_id => $subjekList) {
+                  foreach ($subjekList as $s) {
+                      if ($s['subjek_id'] == $subjekId) {
+                          $subjeknya = $s['subjek_nama'];
+                          break 2; // stop both loops once found
+                      }
+                  }
+              }
+          }
+
+
+        ?>
+        <div class="section-title-main">
+          Subject Menu :
+          <?php if ($subjeknya): ?>
+            <span class="subject-badge"><?= esc($subjeknya) ?></span>
+          <?php else: ?>
+            <span class="subject-badge badge-missing">Not Found</span>
+          <?php endif; ?>
+        </div>
+
 
         <div class="row gap-10">
+<?= card('Chapter', 'Manage academic units', 'unit?divisi='.$_GET['divisi'].'&subjek_id='.$_GET['subjek_id'], 'bi-building', '#82adf3') ?>
+<?= card('Sub-Chapter', 'Organize learning subunits', 'Subunit', 'bi-diagram-3', '#b2dfdb') ?>
+<?= card('Objective', 'Set and track learning goals', 'Tujuan', 'bi-bullseye', '#fdd835') ?>
+<?= card('Journal', 'View and record daily reflections', 'Aktifitas', 'bi-journal-bookmark', '#aed581') ?>
 
-          <?php if ($guruId == 0): ?>
-            <?= card('Personel', 'Personel Manager', 'Personel', 'bi-person-badge', '#82adf3') ?>
-            <?= card('Division List', 'Division Manager', 'Divisi', 'bi-diagram-3', '#b2dfdb') ?>
-            <?= card('Role List', 'Role Manager', 'Jabatan', 'bi-shield-lock', '#fdd835') ?>
-            <?= card('Personel Division', '', 'Gurudivisi', 'bi-diagram-3', '#aed581') ?>
-            <?= card('Personel Role', '', 'Gurujabatan', 'bi-person-lines-fill', '#90caf9') ?>
-            <?= card('Injector', '', 'lupaabsen', 'bi-clock-history', '#d6d9dd') ?>
-          <?php endif; ?>
-
-          <?= card('Attendance Form', '', 'showform', 'bi-journal-text', '#edab86') ?>
-          <?= card('Attendance List', '', 'Presensidata', 'bi-geo-alt', '#d6d9dd') ?>
-
-          <?php if ($guruId == 0): ?>
-            <?= card('Attendance Report', '', 'presensidatafront', 'bi-person-check', '#c3e6cb') ?>
-          <?php endif; ?>
 
         </div>
       </div>
 
       <!-- DIVISION BLOCKS -->
-      <?php foreach ($divisiList as $div): ?>
-
-      <div class="section-block">
-
-        <div class="section-title-main">
-          🏫 School <?= $div['divisi_nama'] ?> (ID: <?= $div['divsi_id'] ?? $div['divisi_id'] ?>)
-        </div>
-
-        <div class="row gap-10 mb-3">
-          <?= card('School Dashboard', 'Overview', 'school/dashboard?divisi=' . $div['divisi_id'], 'bi-building-check', '#ffe8b3') ?>
-          <?= card('Schedule', 'View Schedule', 'school/schedule?divisi=' . $div['divisi_id'], 'bi-calendar-event', '#d9f3ff') ?>
-        </div>
-
-        <div class="subsection-title">🧑‍🏫 Class Management</div>
-
-        <div class="row gap-10">
-          <?= card('Class', 'Class Manager', 'Kelompok?divisi=' . $div['divisi_id'], 'bi-people', '#fdfe9c') ?>
-          <?= card('Student', 'Student Manager', 'Murid?divisi=' . $div['divisi_id'], 'bi-mortarboard', '#c5f1dc') ?>
-          <?= card('Activity Type', 'Manage Activity', 'Tipeaktifitas?divisi=' . $div['divisi_id'], 'bi-check-circle', '#e9b5fb') ?>
-        </div>
-
-        <div class="subsection-title">📖 Subject Management</div>
-
-        <div class="row gap-10">
-
-        <?php foreach ($subjects[$div['divisi_id']] ?? [] as $s): ?>
-
-          <?php 
-            $short = $s['subjek_nama'];
-            if (strlen($short) > 12) {
-                $short = explode(' ', $short)[0];
-            }
-          ?>
-
-          <?= card(
-              $short,
-              $s['subjek_nama'],
-              'Unit?divisi=' . $div['divisi_id'] . '&subjek_id=' . $s['subjek_id'],
-              'bi-file-earmark-text',
-              '#ffb8b8'
-          ) ?>
-
-        <?php endforeach; ?>
-
-        </div>
-
-      </div>
-
-      <?php endforeach; ?>
-
-      <div class="section-block">
-        <div class="section-title-main">Account</div>
-        <div class="row gap-10 mb-3">
-          <?= card('Logout', '', 'logout', 'bi-box-arrow-right', '#ffe8b3') ?>
-        </div>
-      </div>
 
     </div>
   </div>

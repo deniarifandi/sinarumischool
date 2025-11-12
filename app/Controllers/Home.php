@@ -83,6 +83,73 @@ class Home extends BaseController
     ]);
 }
 
+public function dashboardsubjek(){
+      $db = \Config\Database::connect();
+
+    $guru_nama = $this->session->get('nama');
+    $guru_id   = $this->session->get('guru_id');
+
+    // 1. Guru profile
+    $guru = $db->table('Guru')
+        ->where('guru_id', $guru_id)
+        ->get()
+        ->getRowArray();
+
+    if (!$guru) {
+        return redirect()->to('/login');
+    }
+
+    // 2. Divisi list
+    $divisi = $db->table('Gurudivisi')
+        ->select('Divisi.divisi_id, Divisi.divisi_nama')
+        ->join('Divisi', 'Divisi.divisi_id = Gurudivisi.divisi_id')
+        ->where('Gurudivisi.guru_id', $guru_id)
+        ->get()
+        ->getResultArray();
+
+    $divisiIds = array_column($divisi, 'divisi_id');
+
+    // 3. Subjects for those divisi
+    $allSubjects = [];
+    if (!empty($divisiIds)) {
+        $allSubjects = $db->table('Subjek')
+            ->select('subjek_id, subjek_nama, divisi_id')
+            ->whereIn('divisi_id', $divisiIds)
+            ->where('deleted_at', null)
+            ->orderBy('subjek_nama', 'ASC')
+            ->get()
+            ->getResultArray();
+    }
+
+    // 4. Group subjects by divisi
+    $subjectsByDivisi = [];
+    foreach ($allSubjects as $s) {
+        $subjectsByDivisi[$s['divisi_id']][] = $s;
+    }
+
+    // 5. Kelompok
+    $kelompok = $db->table('Kelompok')
+        ->select('kelompok_id, kelompok_nama, deskripsi, tingkat_id')
+        ->where('guru_id', $guru_id)
+        ->get()
+        ->getResultArray();
+
+    // 6. Presence check (if you use it)
+    $presence = $db->table('Presensidata')
+        ->where('guru_id', $guru_id)
+        ->where('DATE(presensidata_tanggal)', date('Y-m-d'))
+        ->countAllResults();
+
+     return view('dashboardsubjek.php', [
+        'guru'        => $guru,
+        'divisi'      => $divisi,
+        'subjek'      => $subjectsByDivisi, // grouped!
+        'kelompok'    => $kelompok,
+        'presence'    => $presence,
+        'nama'        => $guru_nama
+    ]);
+}
+
 
 public function school()
 {

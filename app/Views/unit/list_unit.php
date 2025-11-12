@@ -14,11 +14,11 @@
 
               <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title"><?= $title ?>s list</h3>
+                  <h3 class="card-title">List Subject</h3>
                   <div class="card-tools">
-                      <?php if ($table != "Presensidata"): ?>
-                        <a href="<?= $table ?>/new" class="btn btn-primary">Add <?= $title ?></a>    
-                      <?php endif ?>
+                     
+                        <a href="unit/new?subjek_id=<?= $_GET['subjek_id']?>" class="btn btn-primary">Add <?= $title ?></a>    
+                  
                   </div>
                   <!-- /.card-tools -->
                 </div>
@@ -35,7 +35,7 @@
                   <table id="<?php $table ?>Table" class="display">
                   <thead>
                       <tr>
-                          <th>ID</th>
+                        
                           <?php for ($i=0; $i < count($fieldList); $i++) { 
                             ?><th><?= $fieldList[$i][1]; ?></th><?php 
                           } ?>
@@ -82,7 +82,7 @@
                 type: "POST"
             },
             columns: [
-                { data: '<?= $primaryKey ?>' },
+               
                 <?php 
                   for($i=0; $i < count($fieldList); $i++){
                     ?>
