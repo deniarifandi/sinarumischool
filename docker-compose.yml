@@ -1,0 +1,28 @@
+services:
+  web:
+    build: .
+    container_name: sinarumischool
+    ports:
+      - "8084:80"              # use different port to avoid conflict
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    networks:
+      - ci4_network            # connect to the same external network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: sinarumischooladmin
+    restart: always
+    environment:
+      PMA_HOST: ci4_db         # use existing MySQL container name
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8085:80"              # use different port
+    networks:
+      - ci4_network
+
+networks:
+  ci4_network:
+    external: true

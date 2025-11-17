@@ -1,3 +1,17 @@
+
+<form action="<?= base_url() ?>auth/login" method="post">
+    <input type="username" name="username" placeholder="username" required><br>
+    <input type="password" name="password" placeholder="Password" required><br>
+    <button type="submit">Login</button>
+
+    <?php if(session()->getFlashdata('error')): ?>
+      <div style="color:red"><?= session()->getFlashdata('error') ?></div>
+    <?php endif ?>
+</form>
+
+
+<?php exit(); ?>
+
 <!doctype html>
 <html lang="en">
   <!--begin::Head-->
