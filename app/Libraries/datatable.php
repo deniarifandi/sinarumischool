@@ -21,16 +21,16 @@ class Datatable
      * Generate DataTables JSON response
      */
     public function generate(
-        BaseBuilder $builder,
-        string $primaryKey,
-        array $searchable = [],
-        array $orderable = []
+    BaseBuilder $builder,
+    string $primaryKey,
+    array $searchable = [],
+    array $orderable = []
     ) {
-        // Request params
         $draw   = (int) $this->request->getPost('draw');
         $start  = (int) $this->request->getPost('start');
         $length = (int) $this->request->getPost('length');
-        $search = $this->request->getPost('search.value');
+        $searchData = $this->request->getPost('search');
+        $search = $searchData['value'] ?? null;
 
         $order  = $this->request->getPost('order')[0] ?? null;
         $cols   = $this->request->getPost('columns') ?? [];
@@ -38,32 +38,41 @@ class Datatable
         /* ============================
            TOTAL RECORDS
         ============================ */
-        $totalRecords = (clone $builder)->countAllResults();
+        $totalBuilder  = clone $builder;
+        $totalRecords  = $totalBuilder->countAllResults(false);
 
         /* ============================
            SEARCH
         ============================ */
-        if ($search && $searchable) {
+        if ($search && !empty($searchable)) {
             $builder->groupStart();
             foreach ($searchable as $col) {
-                $builder->orLike($col, $search);
+                if ($col !== null && $col !== '') {
+                    $builder->orLike($col, $search);
+                }
             }
             $builder->groupEnd();
         }
 
+
         /* ============================
            FILTERED RECORDS
         ============================ */
-        $filteredRecords = (clone $builder)->countAllResults();
+        $filteredBuilder  = clone $builder;
+        $filteredRecords  = $filteredBuilder->countAllResults(false);
 
         /* ============================
            ORDERING (SAFE)
         ============================ */
         if ($order && isset($cols[$order['column']]['data'])) {
             $column = $cols[$order['column']]['data'];
+            $dir    = strtolower($order['dir'] ?? 'asc');
 
             if (in_array($column, $orderable, true)) {
-                $builder->orderBy($column, $order['dir'] === 'desc' ? 'DESC' : 'ASC');
+                $builder->orderBy(
+                    $column,
+                    $dir === 'desc' ? 'DESC' : 'ASC'
+                );
             }
         } else {
             $builder->orderBy($primaryKey, 'ASC');
@@ -72,7 +81,7 @@ class Datatable
         /* ============================
            PAGINATION
         ============================ */
-        if ($length !== -1) {
+        if ($length > 0) {
             $builder->limit($length, $start);
         }
 
@@ -85,4 +94,5 @@ class Datatable
             'data'            => $data,
         ]);
     }
+
 }

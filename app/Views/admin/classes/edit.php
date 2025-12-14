@@ -1,23 +1,81 @@
-<h2>Edit Class</h2>
+<?= $this->extend('layout/main') ?>
 
-<form action="<?= base_url('admin/classes/update/'.$class['id']) ?>" method="post">
+<?= $this->section('content') ?>
 
-    Division:<br>
-    <select name="division_id" required>
-        <?php foreach ($divisions as $d): ?>
-            <option value="<?= $d['id'] ?>"
-                <?= $d['id'] == $class['division_id'] ? 'selected' : '' ?>>
-                <?= $d['division_name'] ?>
-            </option>
-        <?php endforeach ?>
-    </select>
-    <br><br>
+<div class="card">
+    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+        <div class="bg-gradient-dark shadow-dark border-radius-lg pt-3 pb-3">
+            <h6 class="text-white text-capitalize ps-3 mb-0">
+                Edit Class
+            </h6>
+        </div>
+    </div>
 
-    Class Name:<br>
-    <input type="text" name="class_name" value="<?= $class['class_name'] ?>" required><br>
+    <div class="card-body">
 
-    Description:<br>
-    <textarea name="description"><?= $class['description'] ?></textarea><br><br>
+        <!-- ERROR -->
+        <?php if (session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?= session()->getFlashdata('error') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php endif; ?>
 
-    <button type="submit">Update</button>
-</form>
+        <form action="<?= base_url('admin/classes/update/' . $class['id']) ?>" method="post">
+            <?= csrf_field() ?>
+
+            <div class="row">
+
+                <!-- Division -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Division</label>
+                    <select name="division_id" class="form-select" required>
+                        <?php foreach ($divisions as $d): ?>
+                            <option value="<?= $d['id'] ?>"
+                                <?= $d['id'] == old('division_id', $class['division_id']) ? 'selected' : '' ?>>
+                                <?= esc($d['division_name']) ?>
+                            </option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
+
+                <!-- Class Name -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Class Name</label>
+                    <input
+                        type="text"
+                        name="class_name"
+                        class="form-control"
+                        value="<?= old('class_name', $class['class_name']) ?>"
+                        required
+                    >
+                </div>
+
+                <!-- Description -->
+                <div class="col-12 mb-4">
+                    <label class="form-label fw-bold">Description</label>
+                    <textarea
+                        name="description"
+                        class="form-control"
+                        rows="3"
+                    ><?= old('description', $class['description']) ?></textarea>
+                </div>
+
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="d-flex justify-content-end gap-2">
+                <a href="<?= base_url('admin/classes') ?>" class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    Update Class
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<?= $this->endSection() ?>

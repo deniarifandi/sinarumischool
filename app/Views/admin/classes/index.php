@@ -4,7 +4,7 @@
 
 <div class="card">
     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-        <div class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
+        <div class="bg-gradient-dark shadow-dark border-radius-lg pt-3 pb-3 d-flex justify-content-between align-items-center">
             <h6 class="text-white text-capitalize ps-3 mb-0">Class Management</h6>
             <a href="<?= base_url('admin/classes/create') ?>"
                class="btn btn-sm btn-outline-light me-3">
@@ -14,6 +14,15 @@
     </div>
 
     <div class="card-body">
+
+        <!-- FLASH ERROR -->
+        <?php if (session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?= session()->getFlashdata('error') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php endif; ?>
+
         <div class="table-responsive">
             <table id="classTable" class="table table-sm table-hover align-items-center">
                 <thead>
@@ -25,6 +34,7 @@
                 </thead>
             </table>
         </div>
+
     </div>
 </div>
 
@@ -46,7 +56,10 @@ $(function () {
         },
         ajax: {
             url: "<?= base_url('admin/classes/datatable') ?>",
-            type: "POST"
+            type: "POST",
+            data: function (d) {
+                d['<?= csrf_token() ?>'] = '<?= csrf_hash() ?>';
+            }
         },
         columns: [
             { data: 'class_name' },
@@ -59,6 +72,7 @@ $(function () {
                     return `
                         <a href="<?= base_url('admin/classes/edit') ?>/${data}"
                            class="btn btn-sm btn-primary">Edit</a>
+                        |
                         <a href="<?= base_url('admin/classes/delete') ?>/${data}"
                            class="btn btn-sm btn-danger"
                            onclick="return confirm('Delete this class?')">

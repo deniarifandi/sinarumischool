@@ -2,7 +2,10 @@
 
 namespace App\Controllers\Admin;
 
+
 use App\Controllers\BaseController;
+use \App\Libraries\Datatable;
+use DB;
 
 class User extends BaseController
 {
@@ -75,34 +78,57 @@ class User extends BaseController
 
     public function update($id)
     {
+        if (session('role') !== 'admin') {
+            throw new \CodeIgniter\Exceptions\PageForbiddenException();
+        }
+
+        if (!$this->validate([
+            'name'     => 'required|min_length[3]',
+            'username' => "required|min_length[4]|is_unique[users.username,id,{$id}]",
+            'role'     => 'required|in_list[admin,guru,siswa]',
+        ])) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
         $db = \Config\Database::connect();
 
         $data = [
-            'name'  => $this->request->getPost('name'),
+            'name'     => $this->request->getPost('name'),
             'username' => $this->request->getPost('username'),
-            'role'  => $this->request->getPost('role'),
+            'role'     => $this->request->getPost('role'),
         ];
 
-        if ($this->request->getPost('password')) {
-            $data['password'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
+        if ($this->request->getPost('new_password')) {
+            $data['password'] = password_hash(
+                $this->request->getPost('new_password'),
+                PASSWORD_DEFAULT
+            );
         }
-
-        $db->table('users')->where('id', $id)->update($data);
-
-        // Reset & update divisions
-        $db->table('user_divisions')->where('user_id', $id)->delete();
 
         $divisions = $this->request->getPost('divisions') ?? [];
 
+        $db->transStart();
+
+        $db->table('users')->where('id', $id)->update($data);
+
+        $db->table('user_divisions')->where('user_id', $id)->delete();
+
         foreach ($divisions as $div) {
             $db->table('user_divisions')->insert([
-                'user_id' => $id,
+                'user_id'     => $id,
                 'division_id' => $div
             ]);
         }
 
-        return redirect()->to('/admin/users');
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+           return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        return redirect()->to(base_url().'admin/users')->with('success', 'User updated successfully');
     }
+
 
     public function delete($id)
     {
@@ -117,19 +143,23 @@ class User extends BaseController
 
     //datatable
 
-    public function datatable()
+   public function datatable()
     {
         $db = \Config\Database::connect();
 
         $builder = $db->table('users')
-            ->select('id, username, name, nip, kkb, kkbnomor'); // NEVER select password
+            ->select('id, username, name, nip, kkb, kkbnomor')
+            ->where('deleted_at', null);
 
-        return (new \App\Libraries\Datatable())->generate(
+        return (new Datatable())->generate(
             $builder,
             'id',
-            ['username', 'name', 'nip', 'kkb', 'kkbnomor'], // searchable
-            ['username', 'name', 'nip', 'kkb', 'kkbnomor']  // orderable
+            ['username', 'name', 'nip', 'kkb', 'kkbnomor'],
+            ['username', 'name', 'nip', 'kkb', 'kkbnomor']
         );
     }
+
+   
+
 
 }
