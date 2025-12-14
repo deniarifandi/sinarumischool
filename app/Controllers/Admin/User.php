@@ -113,4 +113,23 @@ class User extends BaseController
 
         return redirect()->to('/admin/users');
     }
+
+
+    //datatable
+
+    public function datatable()
+    {
+        $db = \Config\Database::connect();
+
+        $builder = $db->table('users')
+            ->select('id, username, name, nip, kkb, kkbnomor'); // NEVER select password
+
+        return (new \App\Libraries\Datatable())->generate(
+            $builder,
+            'id',
+            ['username', 'name', 'nip', 'kkb', 'kkbnomor'], // searchable
+            ['username', 'name', 'nip', 'kkb', 'kkbnomor']  // orderable
+        );
+    }
+
 }

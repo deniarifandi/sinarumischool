@@ -2,37 +2,48 @@
 
 namespace App\Libraries;
 
-use CodeIgniter\Model;
-// use App\Models\StudentModel;
 use CodeIgniter\Database\BaseBuilder;
+use CodeIgniter\HTTP\RequestInterface;
+use CodeIgniter\HTTP\ResponseInterface;
 
-class datatable
+class Datatable
 {
+    protected RequestInterface $request;
+    protected ResponseInterface $response;
 
-	 public function __construct()
+    public function __construct()
     {
         $this->request  = service('request');
         $this->response = service('response');
     }
-    public function generate(BaseBuilder $builder, string $primaryKey, array $searchable = [])
-    {
-      $draw   = (int) $this->request->getPost('draw');
+
+    /**
+     * Generate DataTables JSON response
+     */
+    public function generate(
+        BaseBuilder $builder,
+        string $primaryKey,
+        array $searchable = [],
+        array $orderable = []
+    ) {
+        // Request params
+        $draw   = (int) $this->request->getPost('draw');
         $start  = (int) $this->request->getPost('start');
         $length = (int) $this->request->getPost('length');
-        $search = $this->request->getPost('search')['value'] ?? '';
+        $search = $this->request->getPost('search.value');
 
-        $order    = $this->request->getPost('order');
-        $columns  = $this->request->getPost('columns');
-        $colIndex = $order[0]['column'] ?? 0;
-        $colName  = $columns[$colIndex]['data'] ?? $primaryKey;
-        $sortDir  = $order[0]['dir'] ?? 'asc';
+        $order  = $this->request->getPost('order')[0] ?? null;
+        $cols   = $this->request->getPost('columns') ?? [];
 
-        // Clone original builder for total count
-        $baseBuilder = clone $builder;
-        $totalRecords = $baseBuilder->countAllResults(false);
+        /* ============================
+           TOTAL RECORDS
+        ============================ */
+        $totalRecords = (clone $builder)->countAllResults();
 
-        // Search filter
-        if (!empty($search) && !empty($searchable)) {
+        /* ============================
+           SEARCH
+        ============================ */
+        if ($search && $searchable) {
             $builder->groupStart();
             foreach ($searchable as $col) {
                 $builder->orLike($col, $search);
@@ -40,13 +51,32 @@ class datatable
             $builder->groupEnd();
         }
 
-        // Clone for filtered count
-        $filteredBuilder = clone $builder;
-        $filteredRecords = $filteredBuilder->countAllResults(false);
+        /* ============================
+           FILTERED RECORDS
+        ============================ */
+        $filteredRecords = (clone $builder)->countAllResults();
 
-        // Sorting and limiting
-        $builder->orderBy($colName, $sortDir);
-        $data = $builder->get($length, $start)->getResult();
+        /* ============================
+           ORDERING (SAFE)
+        ============================ */
+        if ($order && isset($cols[$order['column']]['data'])) {
+            $column = $cols[$order['column']]['data'];
+
+            if (in_array($column, $orderable, true)) {
+                $builder->orderBy($column, $order['dir'] === 'desc' ? 'DESC' : 'ASC');
+            }
+        } else {
+            $builder->orderBy($primaryKey, 'ASC');
+        }
+
+        /* ============================
+           PAGINATION
+        ============================ */
+        if ($length !== -1) {
+            $builder->limit($length, $start);
+        }
+
+        $data = $builder->get()->getResultArray();
 
         return $this->response->setJSON([
             'draw'            => $draw,

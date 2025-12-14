@@ -107,4 +107,19 @@ class Classes extends BaseController
 
         return redirect()->to(base_url('admin/classes'));
     }
+
+    public function datatable()
+{
+    $db = \Config\Database::connect();
+
+    $builder = $db->table('classes')
+        ->select('id, class_name, description');
+
+    return (new \App\Libraries\Datatable())->generate(
+        $builder,
+        'id',
+        ['class_name', 'description'], // searchable
+        ['class_name', 'description']  // orderable
+    );
+}
 }

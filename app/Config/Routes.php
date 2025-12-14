@@ -175,6 +175,8 @@ use CodeIgniter\Router\RouteCollection;
 	    $routes->get('users/delete/(:num)', 'Admin\User::delete/$1');
 	});
 
+	$routes->post('admin/users/datatable', 'Admin\User::datatable');
+
 	// Student Management
 	$routes->group('admin', ['filter' => 'role:admin'], function($routes){
 	    $routes->get('students', 'Admin\Students::index');
@@ -196,6 +198,8 @@ use CodeIgniter\Router\RouteCollection;
 	    $routes->get('classes/delete/(:num)', 'Admin\Classes::delete/$1');
 
 	});
+
+	$routes->post('admin/classes/datatable', 'Admin\Classes::datatable');
 
 $routes->group('admin', ['filter' => 'role:admin,guru'], function($routes){
 
