@@ -9,7 +9,7 @@ class Students extends BaseController
     public function index()
     {
         $db = \Config\Database::connect();
-        $division = session()->get('active_division');
+        $division = session()->get('divisions');
 
         // Ambil semua siswa dalam division aktif
         $students = $db->table('students')
@@ -26,7 +26,7 @@ class Students extends BaseController
     public function create()
     {
         $db = \Config\Database::connect();
-        $division = session()->get('active_division');
+        $division = session()->get('divisions');
 
         // Ambil kelas berdasarkan divisi aktif
         $classes = $db->table('classes')
@@ -61,13 +61,13 @@ class Students extends BaseController
     public function edit($id)
     {
         $db = \Config\Database::connect();
-        $division = session()->get('active_division');
+        $division = session()->get('divisions');
 
         $student = $db->table('students')->where('id', $id)->get()->getRowArray();
 
-        // Ambil kelas dalam division aktif
+        // Ambil kelas dalam division terdaftar
         $classes = $db->table('classes')
-            ->where('division_id', $division)
+            ->whereIn('division_id', $division)
             ->get()
             ->getResultArray();
 

@@ -250,12 +250,12 @@
               </a>
             </li>
             <li class="nav-item px-3 d-flex align-items-center">
-              <a href="javascript:;" class="nav-link text-body p-0">
+              <a href="javascript:;" class="nav-link d-flex align-items-center text-body font-weight-bold px-0">
                 <i class="material-symbols-rounded fixed-plugin-button-nav">settings</i>
               </a>
             </li>
             <li class="nav-item dropdown pe-3 d-flex align-items-center">
-              <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+              <a href="javascript:;" class="nnav-link d-flex align-items-center text-body font-weight-bold px-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="material-symbols-rounded">notifications</i>
               </a>
               <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
@@ -327,11 +327,16 @@
                 </li>
               </ul>
             </li>
-            <li class="nav-item d-flex align-items-center">
-              <a href="<?= base_url();?>pages/sign-in.html" class="nav-link text-body font-weight-bold px-0">
-                <i class="material-symbols-rounded">account_circle</i>
-              </a>
+            <li class="nav-item">
+             <a href="<?= base_url(); ?>pages/sign-in.html"
+               class="nav-link d-flex align-items-center text-body font-weight-bold px-0">
+               
+              <i class="material-symbols-rounded me-2">account_circle</i>
+              <span><?= session()->get('name') ?></span>
+
+             </a>
             </li>
+
           </ul>
         </div>
       </div>

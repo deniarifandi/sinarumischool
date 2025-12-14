@@ -8,20 +8,7 @@ class Classes extends BaseController
 {
     public function index()
     {
-        $db = \Config\Database::connect();
-
-        // All accessible divisions of the user
-        $divisions = session()->get('divisions');
-
-        $classes = $db->table('classes')
-            ->whereIn('division_id', $divisions)
-            ->orderBy('id', 'DESC')
-            ->get()
-            ->getResultArray();
-
-        return view('admin/classes/index', [
-            'classes' => $classes
-        ]);
+        return view('admin/classes/index');
     }
 
     public function create()
@@ -112,8 +99,10 @@ class Classes extends BaseController
 {
     $db = \Config\Database::connect();
 
+    $divisions = session()->get('divisions');
     $builder = $db->table('classes')
-        ->select('id, class_name, description');
+        ->select('id, class_name, description')
+        ->whereIn('division_id',$divisions);
 
     return (new \App\Libraries\Datatable())->generate(
         $builder,
