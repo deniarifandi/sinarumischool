@@ -29,11 +29,11 @@ class Classes extends BaseController
         $db = \Config\Database::connect();
 
         $allowedDivisions = session()->get('divisions');
-        // $activeDivision   = session()->get('active_division');
+        $activeDivision   = session()->get('active_division');
 
         // dropdown hanya berisi division yang user punya
         $divisions = $db->table('divisions')
-            // ->whereIn('id', $allowedDivisions)
+            ->whereIn('id', $allowedDivisions)
             ->get()
             ->getResultArray();
 
