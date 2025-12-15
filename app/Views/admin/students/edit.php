@@ -53,10 +53,10 @@
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-bold">Gender</label>
                     <select name="gender" class="form-select" required>
-                        <option value="M" <?= old('gender', $student['gender']) === 'M' ? 'selected' : '' ?>>
+                        <option value="L" <?= old('gender', $student['gender']) === 'L' ? 'selected' : '' ?>>
                             Male
                         </option>
-                        <option value="F" <?= old('gender', $student['gender']) === 'F' ? 'selected' : '' ?>>
+                        <option value="P" <?= old('gender', $student['gender']) === 'P' ? 'selected' : '' ?>>
                             Female
                         </option>
                     </select>

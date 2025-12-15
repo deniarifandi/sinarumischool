@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Libraries\Datatable;
 
 class Students extends BaseController
 {
@@ -15,7 +16,7 @@ class Students extends BaseController
         $students = $db->table('students')
             ->select('students.*, classes.class_name')
             ->join('classes', 'classes.id = students.class_id', 'left')
-            ->where('students.division_id', $division)
+            // ->where('students.division_id', $division)
             ->orderBy('students.id', 'DESC')
             ->get()
             ->getResultArray();
@@ -102,4 +103,24 @@ class Students extends BaseController
 
         return redirect()->to(base_url('admin/students'));
     }
+
+      public function datatable()
+    {
+        $db = \Config\Database::connect();
+
+        $divisions = session()->get('divisions') ?? [];
+
+        $builder = $db->table('students')
+            ->select('students.id, students.student_code, students.name, students.gender, students.birthdate, classes.class_name')
+            ->join('classes', 'classes.id = students.class_id', 'left');
+            //->whereIn('students.division_id', $divisions);
+
+        return (new Datatable())->generate(
+            $builder,
+            'students.id',
+            ['student_code', 'name', 'gender', 'class_name', 'birthdate'], // searchable
+            ['student_code', 'name', 'class_name', 'birthdate']           // orderable
+        );
+    }
+
 }

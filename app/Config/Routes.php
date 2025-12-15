@@ -187,6 +187,8 @@ use CodeIgniter\Router\RouteCollection;
 	    $routes->get('students/delete/(:num)', 'Admin\Students::delete/$1');
 	});
 
+	$routes->post('admin/students/datatable', 'Admin\Students::datatable');
+
 	// Class Management
 	$routes->group('admin', ['filter' => 'role:admin'], function($routes){
 
@@ -211,9 +213,10 @@ $routes->group('admin', ['filter' => 'role:admin,guru'], function($routes){
     $routes->post('subjects/update/(:num)', 'Admin\Subjects::update/$1');
     $routes->get('subjects/delete/(:num)', 'Admin\Subjects::delete/$1');
 
-
 });
 
+
+	$routes->post('admin/subjects/datatable', 'Admin\Subjects::datatable');
 
 $routes->group('admin', ['filter' => 'role:admin,guru'], function($routes){
 
@@ -243,6 +246,9 @@ $routes->group('admin', ['filter' => 'role:admin,guru'], function($routes){
 	$routes->get('objectives/delete/(:num)', 'Admin\Objectives::delete/$1');
    
 });
+
+$routes->post('admin/chapters/datatable/(:num)', 'Admin\Chapters::datatable/$1');
+$routes->post('admin/subchapters/datatable/(:num)', 'Admin\Subchapters::datatable/$1');
 
 // Teaching Journal
 $routes->group('journal', ['filter' => 'role:admin,guru'], function($routes){

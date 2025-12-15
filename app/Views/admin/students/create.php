@@ -20,7 +20,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="<?= base_url('admin/students/store') ?>" method="post">
+        <form id="mainForm" action="<?= base_url('admin/students/store') ?>" method="post">
             <?= csrf_field() ?>
 
             <div class="row">
@@ -54,8 +54,8 @@
                     <label class="form-label fw-bold">Gender</label>
                     <select name="gender" class="form-select" required>
                         <option value="">-- Select Gender --</option>
-                        <option value="M" <?= old('gender') === 'M' ? 'selected' : '' ?>>Male</option>
-                        <option value="F" <?= old('gender') === 'F' ? 'selected' : '' ?>>Female</option>
+                        <option value="L" <?= old('gender') === 'L' ? 'selected' : '' ?>>Male</option>
+                        <option value="P" <?= old('gender') === 'P' ? 'selected' : '' ?>>Female</option>
                     </select>
                 </div>
 
@@ -102,7 +102,7 @@
                 <a href="<?= base_url('admin/students') ?>" class="btn btn-outline-secondary">
                     Cancel
                 </a>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" id="submitBtn" class="btn btn-primary">
                     Save Student
                 </button>
             </div>
@@ -113,3 +113,13 @@
 </div>
 
 <?= $this->endSection() ?>
+
+<?= $this->section('script'); ?>
+    <script>
+    document.getElementById('mainForm').addEventListener('submit', function () {
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = 'Saving...';
+    });
+    </script>
+<?= $this->endSection();

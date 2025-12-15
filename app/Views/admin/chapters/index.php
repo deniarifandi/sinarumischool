@@ -1,30 +1,118 @@
-<h2>Chapters for Subject: <?= $subject['subject_name'] ?></h2>
+<?= $this->extend('layout/main') ?>
 
-<a href="<?= base_url('admin/chapters/create/'.$subject['id']) ?>">+ Add Chapter</a><br><br>
+<?= $this->section('content') ?>
 
-<table border="1" cellpadding="8">
-    <tr>
-        <th>Order</th>
-        <th>Code</th>
-        <th>Chapter</th>
-        <th>Description</th>
-        <th>Actions</th>
-        <th>Sub-Chapters</th>
-    </tr>
+<div class="card">
+    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+        <div class="bg-gradient-dark shadow-dark border-radius-lg pt-3 pb-3 d-flex justify-content-between align-items-center">
+            <h6 class="text-white text-capitalize ps-3 mb-0">
+                Chapters – <?= esc($subject['subject_name']) ?>
+            </h6>
+            <a href="<?= base_url('admin/chapters/create/' . $subject['id']) ?>"
+               class="btn btn-sm btn-outline-light me-3">
+                + Add Chapter
+            </a>
+        </div>
+    </div>
 
-    <?php foreach ($chapters as $c): ?>
-    <tr>
-        <td><?= $c['order_number'] ?></td>
-        <td><?= $c['chapter_code'] ?></td>
-        <td><?= $c['chapter_name'] ?></td>
-        <td><?= $c['description'] ?></td>
-        <td>
-            <a href="<?= base_url('admin/chapters/edit/'.$c['id']) ?>">Edit</a> |
-            <a href="<?= base_url('admin/chapters/delete/'.$c['id']) ?>" onclick="return confirm('Delete chapter?')">Delete</a>
-        </td>
-        <td>
-            <a href="<?= base_url('admin/subchapters/'.$c['id']) ?>">Sub-Chapters</a>
-        </td>
-    </tr>
-    <?php endforeach ?>
-</table>
+    <div class="card-body">
+
+        <!-- FLASH SUCCESS -->
+        <?php if (session()->getFlashdata('success')): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?= session()->getFlashdata('success') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php endif; ?>
+
+        <!-- FLASH ERROR -->
+        <?php if (session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?= session()->getFlashdata('error') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php endif; ?>
+
+        <div class="table-responsive">
+            <table id="chapterTable" class="table table-sm table-hover align-items-center">
+                <thead>
+                    <tr>
+                        <th width="70">Order</th>
+                        <th width="120">Code</th>
+                        <th>Chapter</th>
+                        <th>Description</th>
+                        <th width="140">Action</th>
+                        <th width="130">Sub-Chapters</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<?= $this->endSection() ?>
+
+<?= $this->section('script') ?>
+
+<script>
+$(function () {
+    $('#chapterTable').DataTable({
+        processing: true,
+        serverSide: true,
+        pagingType: 'simple',
+        order: [[0, 'asc']],
+        language: {
+            paginate: {
+                previous: '<i class="material-symbols-rounded">chevron_left</i>',
+                next: '<i class="material-symbols-rounded">chevron_right</i>'
+            }
+        },
+        ajax: {
+            url: "<?= base_url('admin/chapters/datatable/' . $subject['id']) ?>",
+            type: "POST",
+            data: function (d) {
+                d['<?= csrf_token() ?>'] = '<?= csrf_hash() ?>';
+            }
+        },
+        columns: [
+            { data: 'order_number' },
+            { data: 'chapter_code' },
+            { data: 'chapter_name' },
+            { data: 'description' },
+            {
+                data: 'id',
+                orderable: false,
+                searchable: false,
+                render: function (data) {
+                    return `
+                        <a href="<?= base_url('admin/chapters/edit') ?>/${data}"
+                           class="btn btn-sm btn-primary">Edit</a>
+                        |
+                        <a href="<?= base_url('admin/chapters/delete') ?>/${data}"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Delete chapter?')">
+                           Delete
+                        </a>
+                    `;
+                }
+            },
+            {
+                data: 'id',
+                orderable: false,
+                searchable: false,
+                render: function (data) {
+                    return `
+                        <a href="<?= base_url('admin/subchapters') ?>/${data}"
+                           class="btn btn-sm btn-info">
+                           Open
+                        </a>
+                    `;
+                }
+            }
+        ]
+    });
+});
+</script>
+
+<?= $this->endSection() ?>
