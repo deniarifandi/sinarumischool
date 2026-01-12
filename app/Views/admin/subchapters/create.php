@@ -1,20 +1,97 @@
-<h2>Add Sub-Chapter</h2>
+<?= $this->extend('layout/main') ?>
 
-<form action="<?= base_url('admin/subchapters/store') ?>" method="post">
+<?= $this->section('content') ?>
 
-    <input type="hidden" name="chapter_id" value="<?= $chapter_id ?>">
+<div class="card">
+    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+        <div class="bg-gradient-dark shadow-dark border-radius-lg pt-3 pb-3">
+            <h6 class="text-white ps-3 mb-0">
+                Add Sub-Chapter
+                <span class="opacity-7 fw-normal">
+                    / <?= esc($chapter['chapter_name']) ?>
+                </span>
+            </h6>
+        </div>
+    </div>
 
-    Order Number:<br>
-    <input type="number" name="order_number"><br>
+    <div class="card-body">
 
-    Sub-Chapter Code:<br>
-    <input type="text" name="sub_code"><br>
+        <?php if (session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?= session()->getFlashdata('error') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php endif; ?>
 
-    Sub-Chapter Name:<br>
-    <input type="text" name="sub_name" required><br>
+        <form action="<?= base_url('admin/subchapters/store') ?>" method="post">
+            <?= csrf_field() ?>
 
-    Description:<br>
-    <textarea name="description"></textarea><br><br>
+            <input type="hidden" name="chapter_id" value="<?= $chapter['id'] ?>">
 
-    <button type="submit">Save</button>
-</form>
+            <div class="row">
+
+                <!-- Order Number -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Order Number</label>
+                    <input
+                        type="number"
+                        name="order_number"
+                        class="form-control"
+                        value="<?= old('order_number') ?>"
+                        min="1"
+                    >
+                </div>
+
+                <!-- Sub-Chapter Code -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Sub-Chapter Code</label>
+                    <input
+                        type="text"
+                        name="sub_code"
+                        class="form-control"
+                        value="<?= old('sub_code') ?>"
+                    >
+                </div>
+
+                <!-- Sub-Chapter Name -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Sub-Chapter Name</label>
+                    
+                    <input
+                        type="text"
+                        name="sub_name"
+                        class="form-control"
+                        value="<?= old('sub_name') ?>"
+                        required
+                    >
+                </div>
+
+                <!-- Description -->
+                <div class="col-12 mb-4">
+                    <label class="form-label fw-bold">Description</label>
+                    <textarea
+                        name="description"
+                        class="form-control"
+                        rows="3"
+                    ><?= old('description') ?></textarea>
+                </div>
+
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="d-flex justify-content-end gap-2">
+                <a href="<?= base_url('admin/subchapters/' . $chapter['id']) ?>"
+                   class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    Save Sub-Chapter
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<?= $this->endSection() ?>

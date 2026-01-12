@@ -39,22 +39,51 @@
         <form action="<?= base_url('admin/chapters/update/' . $chapter['id']) ?>" method="post">
             <?= csrf_field() ?>
 
+            <?php
+$selectedGrade = old('grade', $chapter['grade']);
+?>
+
             <div class="row">
 
                 <!-- Order Number -->
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Order Number</label>
-                    <input
-                        type="number"
-                        name="order_number"
-                        class="form-control"
-                        value="<?= old('order_number', $chapter['order_number']) ?>"
-                        min="1"
-                    >
-                </div>
+               <div class="col-md-4 mb-3">
+                <label class="form-label fw-bold">Grade</label>
+                <select name="grade" class="form-select" required>
+                    <option value="">-- Select Grade --</option>
+
+                    <optgroup label="PGK">
+                        <option value="PG-1" <?= $selectedGrade === 'PG-1' ? 'selected' : '' ?>>PG-1</option>
+                        <option value="PG-2" <?= $selectedGrade === 'PG-2' ? 'selected' : '' ?>>PG-2</option>
+                        <option value="K-1"  <?= $selectedGrade === 'K-1'  ? 'selected' : '' ?>>K-1</option>
+                        <option value="K-2"  <?= $selectedGrade === 'K-2'  ? 'selected' : '' ?>>K-2</option>
+                    </optgroup>
+
+                    <optgroup label="PRIMARY">
+                        <option value="P1" <?= $selectedGrade === 'P1' ? 'selected' : '' ?>>P1</option>
+                        <option value="P2" <?= $selectedGrade === 'P2' ? 'selected' : '' ?>>P2</option>
+                        <option value="P3" <?= $selectedGrade === 'P3' ? 'selected' : '' ?>>P3</option>
+                        <option value="P4" <?= $selectedGrade === 'P4' ? 'selected' : '' ?>>P4</option>
+                        <option value="P5" <?= $selectedGrade === 'P5' ? 'selected' : '' ?>>P5</option>
+                        <option value="P6" <?= $selectedGrade === 'P6' ? 'selected' : '' ?>>P6</option>
+                    </optgroup>
+
+                    <optgroup label="SECONDARY">
+                        <option value="SECONDARY 7" <?= $selectedGrade === 'SECONDARY 7' ? 'selected' : '' ?>>SECONDARY 7</option>
+                        <option value="SECONDARY 8" <?= $selectedGrade === 'SECONDARY 8' ? 'selected' : '' ?>>SECONDARY 8</option>
+                        <option value="SECONDARY 9" <?= $selectedGrade === 'SECONDARY 9' ? 'selected' : '' ?>>SECONDARY 9</option>
+                    </optgroup>
+
+                    <optgroup label="COLLEGE">
+                        <option value="COLLEGE 10" <?= $selectedGrade === 'COLLEGE 10' ? 'selected' : '' ?>>COLLEGE 10</option>
+                        <option value="COLLEGE 11" <?= $selectedGrade === 'COLLEGE 11' ? 'selected' : '' ?>>COLLEGE 11</option>
+                        <option value="COLLEGE 12" <?= $selectedGrade === 'COLLEGE 12' ? 'selected' : '' ?>>COLLEGE 12</option>
+                    </optgroup>
+                </select>
+            </div>
+
 
                 <!-- Chapter Code -->
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label class="form-label fw-bold">Chapter Code</label>
                     <input
                         type="text"
@@ -65,7 +94,7 @@
                 </div>
 
                 <!-- Chapter Name -->
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label class="form-label fw-bold">Chapter Name</label>
                     <input
                         type="text"
@@ -73,6 +102,15 @@
                         class="form-control"
                         value="<?= old('chapter_name', $chapter['chapter_name']) ?>"
                         required
+                    >
+                </div>
+                  <div class="col-md-2 mb-3">
+                    <label class="form-label fw-bold">Teaching Hours</label>
+                    <input
+                        type="text"
+                        name="jp"
+                        class="form-control"
+                       value="<?= old('jp', $chapter['jp']) ?>"
                     >
                 </div>
 

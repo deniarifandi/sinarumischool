@@ -31,7 +31,7 @@ class Students extends BaseController
 
         // Ambil kelas berdasarkan divisi aktif
         $classes = $db->table('classes')
-            ->where('division_id', $division)
+            ->whereIn('division_id', $division)
             ->get()
             ->getResultArray();
 

@@ -1,26 +1,100 @@
-<h2>Division Management</h2>
+<?= $this->extend('layout/main') ?>
 
-<a href="<?= base_url('admin/divisions/create') ?>">+ Add Division</a><br><br>
+<?= $this->section('content') ?>
 
-<?php if(session()->getFlashdata('error')): ?>
-    <div style="color:red"><?= session()->getFlashdata('error') ?></div>
-<?php endif; ?>
+<div class="card">
+    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+        <div class="bg-gradient-dark shadow-dark border-radius-lg pt-3 pb-3 d-flex justify-content-between align-items-center">
+            <h6 class="text-white ps-3 mb-0">
+                Division Management
+            </h6>
 
-<table border="1" cellpadding="8">
-    <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Actions</th>
-    </tr>
+            <a href="<?= base_url('admin/divisions/create') ?>"
+               class="btn btn-sm btn-outline-light me-3">
+                + Add Division
+            </a>
+        </div>
+    </div>
 
-    <?php foreach ($divisions as $d): ?>
-    <tr>
-        <td><?= $d['division_name'] ?></td>
-        <td><?= $d['description'] ?></td>
-        <td>
-            <a href="<?= base_url('admin/divisions/edit/'.$d['id']) ?>">Edit</a> |
-            <a href="<?= base_url('admin/divisions/delete/'.$d['id']) ?>" onclick="return confirm('Delete division?')">Delete</a>
-        </td>
-    </tr>
-    <?php endforeach ?>
-</table>
+    <div class="card-body">
+
+        <!-- FLASH SUCCESS -->
+        <?php if (session()->getFlashdata('success')): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?= session()->getFlashdata('success') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php endif; ?>
+
+        <!-- FLASH ERROR -->
+        <?php if (session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?= session()->getFlashdata('error') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php endif; ?>
+
+        <div class="table-responsive">
+            <table id="divisionTable" class="table table-sm table-hover align-items-center">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th width="140">Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<?= $this->endSection() ?>
+
+<?= $this->section('script') ?>
+
+<script>
+$(function () {
+    $('#divisionTable').DataTable({
+        processing: true,
+        serverSide: true,
+      //  pagingType: 'simple',
+        language: {
+            paginate: {
+                previous: '<i class="material-symbols-rounded">chevron_left</i>',
+                next: '<i class="material-symbols-rounded">chevron_right</i>'
+            }
+        },
+        ajax: {
+            url: "<?= base_url('admin/divisions/datatable') ?>",
+            type: "POST",
+            data: function (d) {
+                d['<?= csrf_token() ?>'] = '<?= csrf_hash() ?>';
+            }
+        },
+        columns: [
+            { data: 'division_name' },
+            { data: 'description' },
+            {
+                data: 'id',
+                orderable: false,
+                searchable: false,
+                render: function (data) {
+                    return `
+                        <a href="<?= base_url('admin/divisions/edit') ?>/${data}"
+                           class="btn btn-sm btn-primary">Edit</a>
+                        |
+                        <a href="<?= base_url('admin/divisions/delete') ?>/${data}"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Delete division?')">
+                           Delete
+                        </a>
+                    `;
+                }
+            }
+        ]
+    });
+});
+</script>
+
+<?= $this->endSection() ?>

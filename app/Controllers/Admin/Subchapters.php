@@ -35,7 +35,7 @@ class Subchapters extends BaseController
         $db = \Config\Database::connect();
         $divisions = session()->get('divisions') ?? [];
 
-        // Validate chapter access
+        // Validate access
         $allowed = $db->table('chapters')
             ->join('subjects', 'subjects.id = chapters.subject_id')
             ->where('chapters.id', $chapter_id)
@@ -120,10 +120,7 @@ class Subchapters extends BaseController
         $db = \Config\Database::connect();
         $divisions = session()->get('divisions') ?? [];
 
-        $sub = $db->table('sub_chapters')
-            ->where('sub_chapters.id', $id)
-            ->get()
-            ->getRowArray();
+        $sub = $db->table('sub_chapters')->where('id', $id)->get()->getRowArray();
 
         if (!$sub) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException();

@@ -32,19 +32,46 @@
             <div class="row">
 
                 <!-- Order Number -->
+               
+
                 <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Order Number</label>
-                    <input
-                        type="number"
-                        name="order_number"
-                        class="form-control"
-                        value="<?= old('order_number') ?>"
-                        min="1"
-                    >
+                    <label class="form-label fw-bold">Grade</label>
+                    <select name="grade" class="form-select" required>
+                        <option value="">-- Select Grade --</option>
+
+                        <optgroup label="PGK">
+                            <option value="PG-1">PG-1</option>
+                            <option value="PG-2">PG-2</option>
+                            <option value="K-1">K-1</option>
+                            <option value="K-2">K-2</option>
+                        </optgroup>
+
+                        <optgroup label="PRIMARY">
+                            <option value="P1">P1</option>
+                            <option value="P2">P2</option>
+                            <option value="P3">P3</option>
+                            <option value="P4">P4</option>
+                            <option value="P5">P5</option>
+                            <option value="P6">P6</option>
+                        </optgroup>
+
+                        <optgroup label="SECONDARY">
+                            <option value="SECONDARY 7">SECONDARY 7</option>
+                            <option value="SECONDARY 8">SECONDARY 8</option>
+                            <option value="SECONDARY 9">SECONDARY 9</option>
+                        </optgroup>
+
+                        <optgroup label="COLLEGE">
+                            <option value="COLLEGE 10">COLLEGE 10</option>
+                            <option value="COLLEGE 11">COLLEGE 11</option>
+                            <option value="COLLEGE 12">COLLEGE 12</option>
+                        </optgroup>
+                    </select>
                 </div>
 
+
                 <!-- Chapter Code -->
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label class="form-label fw-bold">Chapter Code</label>
                     <input
                         type="text"
@@ -55,7 +82,7 @@
                 </div>
 
                 <!-- Chapter Name -->
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label class="form-label fw-bold">Chapter Name</label>
                     <input
                         type="text"
@@ -63,6 +90,16 @@
                         class="form-control"
                         value="<?= old('chapter_name') ?>"
                         required
+                    >
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <label class="form-label fw-bold">Teaching Hours</label>
+                    <input
+                        type="text"
+                        name="jp"
+                        class="form-control"
+                        value="<?= old('jp') ?>"
                     >
                 </div>
 

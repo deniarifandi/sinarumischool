@@ -164,6 +164,7 @@ use CodeIgniter\Router\RouteCollection;
 
 	});
 
+	$routes->post('admin/divisions/datatable', 'Admin\Divisions::datatable');
 
 	//USER MANAGEMENT
 	$routes->group('admin', ['filter' => 'role:admin'], function($routes){
@@ -249,6 +250,7 @@ $routes->group('admin', ['filter' => 'role:admin,guru'], function($routes){
 
 $routes->post('admin/chapters/datatable/(:num)', 'Admin\Chapters::datatable/$1');
 $routes->post('admin/subchapters/datatable/(:num)', 'Admin\Subchapters::datatable/$1');
+$routes->post('admin/objectives/datatable/(:num)', 'Admin\Objectives::datatable/$1');
 
 // Teaching Journal
 $routes->group('journal', ['filter' => 'role:admin,guru'], function($routes){
@@ -264,9 +266,15 @@ $routes->group('journal', ['filter' => 'role:admin,guru'], function($routes){
 
 });
 
+$routes->post('journal/datatable', 'Journal::datatable');
+
     $routes->get('ajax/chapters/(:num)', 'Ajax::getChapters/$1');
 	$routes->get('ajax/subchapters/(:num)', 'Ajax::getSubchapters/$1');
 	$routes->get('ajax/objectives/(:num)', 'Ajax::getObjectives/$1');
+
+	$routes->get('journal/get-chapters', 'Journal::getChapters');
+	$routes->get('journal/get-subchapters', 'Journal::getSubchapters');
+
 
 	// Gradebook
 $routes->group('gradebook', ['filter' => 'role:admin,guru'], function($routes){
@@ -277,4 +285,5 @@ $routes->group('gradebook', ['filter' => 'role:admin,guru'], function($routes){
 
 	$routes->get('ajax/students/(:num)', 'Ajax::getStudents/$1');
 
+	$routes->get('admin/report','Admin\Report::index');
 	

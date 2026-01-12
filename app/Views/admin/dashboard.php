@@ -74,6 +74,15 @@
             </a>
         </div>
 
+         <div class="col-xl-3 col-sm-6 mb-4">
+            <a href="<?= base_url('admin/report') ?>" class="text-decoration-none">
+                <div class="card card-hover text-center p-4">
+                    <i class="material-symbols-rounded fs-1 text-dark mb-2">grading</i>
+                    <h6 class="text-dark">Teaching Journal Repont</h6>
+                </div>
+            </a>
+        </div>
+
         <!-- Gradebook -->
         <div class="col-xl-3 col-sm-6 mb-4">
             <a href="<?= base_url('gradebook') ?>" class="text-decoration-none">

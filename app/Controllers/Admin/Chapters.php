@@ -44,7 +44,7 @@ class Chapters extends BaseController
         }
 
         $builder = $db->table('chapters')
-            ->select('id, chapter_code, chapter_name, description, order_number')
+            ->select('id, chapter_code,grade,chapter_name, description, order_number, jp')
             ->where('subject_id', $subject_id)
             ->orderBy('order_number', 'ASC');
 
@@ -97,9 +97,11 @@ class Chapters extends BaseController
         $data = [
             'subject_id'   => $subject_id,
             'chapter_code' => $this->request->getPost('chapter_code'),
+            'grade'        => $this->request->getPost('grade'),
             'chapter_name' => $this->request->getPost('chapter_name'),
             'description'  => $this->request->getPost('description'),
             'order_number' => $this->request->getPost('order_number'),
+            'jp' => $this->request->getPost('jp'),
         ];
 
         $db->table('chapters')->insert($data);
@@ -165,6 +167,8 @@ class Chapters extends BaseController
             'chapter_name' => $this->request->getPost('chapter_name'),
             'description'  => $this->request->getPost('description'),
             'order_number' => $this->request->getPost('order_number'),
+            'grade' => $this->request->getPost('grade'),
+            'jp' => $this->request->getPost('jp'),
         ];
 
         $db->table('chapters')->where('id', $id)->update($data);

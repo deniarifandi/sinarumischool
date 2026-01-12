@@ -37,9 +37,10 @@
             <table id="chapterTable" class="table table-sm table-hover align-items-center">
                 <thead>
                     <tr>
-                        <th width="70">Order</th>
                         <th width="120">Code</th>
+                        <th width="70">Grade</th>
                         <th>Chapter</th>
+                        <th>JP</th>
                         <th>Description</th>
                         <th width="140">Action</th>
                         <th width="130">Sub-Chapters</th>
@@ -76,9 +77,10 @@ $(function () {
             }
         },
         columns: [
-            { data: 'order_number' },
             { data: 'chapter_code' },
+            { data: 'grade' },
             { data: 'chapter_name' },
+            { data: 'jp' },
             { data: 'description' },
             {
                 data: 'id',
