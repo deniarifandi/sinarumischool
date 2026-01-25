@@ -165,7 +165,7 @@
             border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: 40px;
-            width: 420px;
+            width: 100%;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
         }
