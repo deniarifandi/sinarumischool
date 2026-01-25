@@ -324,6 +324,40 @@ body::before{
   .profile-layout{grid-template-columns:1fr;}
 }
 
+
+/*CALENDAR HANDLE PHONE*/
+
+@media (max-width: 768px){
+  .calendar-day-cell{ height: 44px; }
+  .day-wrapper{
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+  .day-number{ font-size: .75rem; }
+}
+
+@media (max-width: 768px){
+  .card-header{ padding: 1rem !important; }
+  .calendar-table th{
+    font-size: .55rem;
+    padding-bottom: 10px;
+  }
+}
+
+.table-responsive{
+  overflow-x: auto;
+}
+.calendar-table{
+  min-width: 300px;
+}
+
+@media (max-width: 360px){
+  .day-number{ font-size: .7rem; }
+  .status-dot{ width:4px; height:4px; }
+}
+
+
 </style>
 
 </head>

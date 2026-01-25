@@ -33,13 +33,13 @@ $stats = array_count_values($attendance);
                     <?= date('F', $currentDate) ?>
                     <span class="text-muted fw-light"><?= $year ?></span>
                 </h4>
-                <p class="text-muted small mb-0">Monthly Attendance Overview</p>
+                <p class="text-muted small mb-0">Monthly Attendance</p>
             </div>
             <div class="btn-group shadow-sm border rounded-pill overflow-hidden">
                 <a href="<?= base_url("presence/full_report/$prevYear/$prevMonth") ?>" class="btn btn-white border-0">
                    <i class="bi bi-chevron-left text-muted"></i>
                 </a>
-                <a href="<?= base_url("presence/full_report/".date('Y/m')) ?>" class="btn btn-white border-0 px-3 small fw-bold">
+                <a href="<?= base_url("presence/full_report/".date('Y/m')) ?>" class="btn btn-white text-sm border-0 px-1 small fw-bold">
                     Current
                 </a>
                 <a href="<?= base_url("presence/full_report/$nextYear/$nextMonth") ?>" class="btn btn-white border-0">
