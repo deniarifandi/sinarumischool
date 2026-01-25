@@ -152,6 +152,11 @@
 
         /* === MOBILE === */
         @media (max-width: 992px){
+            body::before {
+                content: "";
+                position: absolute;
+            }
+
             .login-wrapper{
                 flex-direction:column;
             }
@@ -167,7 +172,7 @@
             padding: 40px;
             width: 100%;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
+            }
         }
     </style>
 </head>
