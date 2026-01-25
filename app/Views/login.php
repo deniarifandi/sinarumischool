@@ -195,7 +195,7 @@
                 <label class="form-label small text-secondary">Identification</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-person"></i></span>
-                    <input type="text" name="username" class="bg-white form-control" placeholder="Username" required>
+                    <input type="text" name="username" class="text-dark bg-white form-control" placeholder="Username" required>
                 </div>
             </div>
 
@@ -203,7 +203,7 @@
                 <label class="form-label small text-secondary">Security Key</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
-                    <input type="password" name="password" class="bg-white form-control" placeholder="Password" required>
+                    <input type="password" name="password" class="text-dark bg-white form-control" placeholder="Password" required>
                 </div>
             </div>
 
