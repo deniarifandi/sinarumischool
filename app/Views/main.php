@@ -41,7 +41,7 @@ body::before{
   opacity:0.1;
   pointer-events:none;
   z-index:-1;
-  padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
+
 }
 
 .app{display:flex;height:100vh}
@@ -87,6 +87,7 @@ body::before{
   flex:1;
   padding:30px;
   overflow:auto;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
 }
 
 .topbar{
