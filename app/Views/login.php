@@ -31,7 +31,6 @@
             radial-gradient(circle at top left, #0f172a, #1e293b);
             overflow: hidden;
             color: #ffffff;
-            padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
         }
 
         body::before {
@@ -153,9 +152,18 @@
 
         /* === MOBILE === */
         @media (max-width: 992px){
-            body{
-                height: 80vh;
-                margin-top: 0px;
+                 body::before {
+                content: "";
+                position: absolute;
+                width: 300px;
+                height: 300px;
+                background: var(--accent-color);
+                filter: blur(150px);
+                border-radius: 50%;
+                z-index: -1;
+                top: 10%;
+                right: 10%;
+                opacity: 0.2;
             }
 
             .login-wrapper{
