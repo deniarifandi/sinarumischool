@@ -152,6 +152,11 @@
 
         /* === MOBILE === */
         @media (max-width: 992px){
+
+                body{
+                    height: 95vh;
+                }
+
                 body::before {
                 content: "";
                 position: absolute;
