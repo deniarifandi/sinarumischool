@@ -31,6 +31,7 @@
             radial-gradient(circle at top left, #0f172a, #1e293b);
             overflow: hidden;
             color: #ffffff;
+            padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
         }
 
         body::before {
