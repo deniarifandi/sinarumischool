@@ -153,7 +153,7 @@
         /* === MOBILE === */
         @media (max-width: 992px){
             body{
-                height: 100vh;
+                height: 80vh;
                 margin-top: 0px;
             }
 
