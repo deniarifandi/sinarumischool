@@ -2,36 +2,38 @@
 
 namespace App\Controllers;
 
+use App\Models\PresenceModel;
+
 class Presence extends BaseController
 {
- 
+
+    public $start;
+    public $end;
+    public $db;
+    public $presence;
+
+     public function __construct()
+    {   
+        $this->db = \Config\Database::connect();
+        $this->presence = new PresenceModel();
+    }
 
     public function index()
-{
-    $db = \Config\Database::connect();
-    $start = date('Y-m-d 00:00:00');
-    $end   = date('Y-m-d 23:59:59');
-
-    $presence = $db->table('presensidata')
-        ->where('guru_id', session('id'))
-        ->where('created_at >=', $start)
-        ->where('created_at <=', $end)
-        ->get()
-        ->getResultArray();
-
-        // print_r($presence);
-        // exit();
+    {
+    
+        $checkedToday = $this->presence->presence_check(session('id'));
+        //$presence = $this->presence_check();
 
     // pagination manual
     $perPage = 5;
     $page    = max(1, (int) ($this->request->getGet('page') ?? 1));
     $offset  = ($page - 1) * $perPage;
 
-    $total = $db->table('presensidata')
+    $total = $this->db->table('presensidata')
         ->where('guru_id', session('id'))
         ->countAllResults();
 
-    $history = $db->table('presensidata')
+    $history = $this->db->table('presensidata')
         ->where('guru_id', session('id'))
         ->orderBy('presensidata_tanggal', 'DESC')
         ->limit($perPage, $offset)
@@ -41,7 +43,7 @@ class Presence extends BaseController
     $totalPages = (int) ceil($total / $perPage);
 
     return view('presence/index', [
-        'presence'   => $presence,
+        'presence'   => $checkedToday,
         'history'    => $history,
         'page'       => $page,
         'totalPages' => $totalPages
@@ -51,12 +53,12 @@ class Presence extends BaseController
 
    public function checkIn()
 {
-    $db = \Config\Database::connect();
+    $this->db = \Config\Database::connect();
     $userId = session('id');
     $today  = date('Y-m-d');
 
     // blok double submit
-    $exists = $db->table('presensidata')
+    $exists = $this->db->table('presensidata')
         ->where('guru_id', $userId)
         ->where('DATE(presensidata_tanggal)', $today)
         ->countAllResults();
@@ -73,7 +75,7 @@ class Presence extends BaseController
         return redirect()->back()->with('error','Invalid status');
     }
 
-    $db->table('presensidata')->insert([
+    $this->db->table('presensidata')->insert([
         'guru_id' => $userId,
         'longitude' => $this->request->getPost('longitude'),
         'latitude' => $this->request->getPost('latitude'),
@@ -88,7 +90,7 @@ class Presence extends BaseController
 
 public function full_report($year = null, $month = null)
 {
-    $db = \Config\Database::connect();
+    $this->db = \Config\Database::connect();
 
     $year  = $year  ?? date('Y');
     $month = $month ?? date('m');
@@ -101,7 +103,7 @@ public function full_report($year = null, $month = null)
     $start = date('Y-m-01', $current);
     $end   = date('Y-m-t', $current);
 
-    $rows = $db->table('presensidata')
+    $rows = $this->db->table('presensidata')
         ->select('DATE(presensidata_tanggal) as tgl, status')
         ->where('guru_id', session('id'))
         ->where('presensidata_tanggal >=', $start)

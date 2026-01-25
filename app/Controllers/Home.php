@@ -2,15 +2,22 @@
 
 namespace App\Controllers;
 
+use App\Models\PresenceModel;
+
 class Home extends BaseController
 {
-    public function index(): string
-    {
-        return view('dashboard');
+
+    public function __construct()
+    {    
+        $this->presence = new PresenceModel();
     }
 
-    public function presence_check(){
-
+    public function index(): string
+    {   
+        $checkedToday = $this->presence->presence_check(session('id'));
+        // print_r($checkedToday);
+        // exit();
+        return view('dashboard',['checkedToday' => $checkedToday]);
     }
    
  }

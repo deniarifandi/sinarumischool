@@ -1,7 +1,11 @@
 <?= $this->extend('main') ?>
 <?= $this->section('content') ?>
 
-<div class="glass-card">
+  <div class="glass-card">
+        You haven’t submitted your attendance yet. <a href="<?= base_url() ?>presence" class="btn btn-sm btn-primary">Click to submit now</a>
+  </div>
+
+  <div class="glass-card">
     <h5 class="mb-4">Personal Management</h5>
     <div class="action-grid">
         <a href="<?= base_url() ?>profile" class="action-btn"><i class="bi bi-person"></i><span>Profile</span></a>
