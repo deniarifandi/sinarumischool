@@ -154,6 +154,7 @@
         @media (max-width: 992px){
             body{
                 height: 100vh;
+                margin-top: 0px;
             }
 
             .login-wrapper{
