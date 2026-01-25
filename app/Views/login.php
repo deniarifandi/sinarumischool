@@ -152,9 +152,8 @@
 
         /* === MOBILE === */
         @media (max-width: 992px){
-            body::before {
-                content: "";
-                position: absolute;
+            body{
+                height: 100vh;
             }
 
             .login-wrapper{
