@@ -152,7 +152,7 @@
 
         /* === MOBILE === */
         @media (max-width: 992px){
-                 body::before {
+                body::before {
                 content: "";
                 position: absolute;
                 width: 300px;
@@ -162,6 +162,7 @@
                 border-radius: 50%;
                 z-index: -1;
                 top: 10%;
+                bottom: 10%;
                 right: 10%;
                 opacity: 0.2;
             }
