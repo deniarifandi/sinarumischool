@@ -12,6 +12,12 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
+  html, body {
+    overscroll-behavior-y: contain;
+  }
+</style>
+
+<style>
 :root{
   --glass-bg: rgba(255,255,255,0.07);
   --glass-border: rgba(255,255,255,0.125);
@@ -87,6 +93,7 @@ body::before{
 .main{
   flex:1;
   padding:30px;
+  min-height: 100vh;
   /*overflow:auto;*/
   overflow:visible;
   padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
