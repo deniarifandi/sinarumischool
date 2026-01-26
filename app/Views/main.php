@@ -32,7 +32,7 @@
 body{
   font-family:'Plus Jakarta Sans',sans-serif;
   margin:0;
-  height:100vh;
+  
   background: radial-gradient(circle at top left,#0f172a,#1e293b);
   
     overflow:auto;
@@ -51,7 +51,7 @@ body::before{
 
 }
 
-.app{display:flex;height:100vh}
+.app{display:flex}
 
 /* sidebar */
 .sidebar{
@@ -93,7 +93,7 @@ body::before{
 .main{
   flex:1;
   padding:30px;
-  min-height: 100vh;
+  
   /*overflow:auto;*/
   overflow:visible;
   padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
@@ -202,7 +202,7 @@ body::before{
     position: fixed;
     top: 0;
     left: 0;
-    height: 100vh;
+    
     width: 240px;
     transform: translateX(-100%);
     z-index: 1050;
