@@ -369,7 +369,7 @@ body::before{
 
 </head>
 
-<body >
+<body style=" overscroll-behavior-y: none;">
   <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
 <div class="app">
