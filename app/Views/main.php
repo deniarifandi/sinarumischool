@@ -49,7 +49,7 @@ body::before{
 
 }
 
-.app{display:flex}
+.app{display:flex;height:150vh}
 
 /* sidebar */
 .sidebar{
@@ -58,6 +58,7 @@ body::before{
   backdrop-filter:blur(20px);
   border-right:1px solid var(--glass-border);
   padding:15px;
+  height: 150vh;
   transition:.3s;
 }
 
