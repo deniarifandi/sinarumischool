@@ -62,7 +62,7 @@
     <?php endif; ?>
 </div>
 
-<div class="glass-card p-4" style="display:none">
+<div class="glass-card p-4" style="">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h6 class="mb-0 fw-bold text-secondary text-uppercase" style="letter-spacing: 1px;">
             Recent History

@@ -344,7 +344,12 @@ body::before{
       <h5 class="mb-0">Dashboard</h5>
     </div>
 
-    <?= $this->renderSection('content') ?>
+    <div class="container">
+      <div class="row">
+        <?= $this->renderSection('content') ?> 
+      </div>  
+    </div>
+    
   </main>
 </div>
 
