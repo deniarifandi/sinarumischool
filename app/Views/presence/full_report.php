@@ -1,6 +1,14 @@
 <?= $this->extend('./main') ?>
 <?= $this->section('content') ?>
 
+<style>
+  /* =======================
+   TABLE / CALENDAR
+======================= */
+.table-responsive{overflow-x:auto;}
+.calendar-table{min-width:300px;}
+</style>
+
 <?php
 $currentDate = strtotime("$year-$month-01");
 $prevDate    = strtotime("-1 month", $currentDate);

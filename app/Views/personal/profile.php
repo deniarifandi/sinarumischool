@@ -1,6 +1,114 @@
 <?= $this->extend('./main') ?>
 <?= $this->section('content') ?>
 
+<style>
+  /* =======================
+   PROFILE
+======================= */
+.profile-layout{
+  display:grid;
+  grid-template-columns:280px 1fr;
+  gap:25px;
+}
+
+.profile-glass{
+  background:var(--glass-bg);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border);
+  border-radius:24px;
+  padding:28px;
+  text-align:center;
+}
+
+.profile-avatar-wrap{
+  position:relative;
+  width:110px;
+  height:110px;
+  margin:auto;
+}
+
+.profile-avatar{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid var(--accent-color);
+}
+
+.status-dot{
+  position:absolute;
+  bottom:6px;
+  right:6px;
+  width:14px;
+  height:14px;
+  background:#22c55e;
+  border-radius:50%;
+  border:2px solid #0f172a;
+}
+
+.section-title{
+  font-size:.75rem;
+  letter-spacing:1px;
+  color:#94a3b8;
+  text-transform:uppercase;
+  margin-bottom:12px;
+}
+
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
+
+.info-item{
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--glass-border);
+  border-radius:14px;
+  padding:6px 14px;
+  font-size:.8rem;
+}
+
+.info-item span{
+  display:block;
+  font-size:.6rem;
+  color:#94a3b8;
+  text-transform:uppercase;
+}
+
+/* =======================
+   DOC GRID
+======================= */
+.doc-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:15px;
+}
+
+.doc-card{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid var(--glass-border);
+  color:#cbd5f5;
+  text-decoration:none;
+}
+
+.doc-card:hover{
+  border-color:var(--accent-color);
+  color:#fff;
+}
+</style>
+
+<style>
+  @media (max-width:768px){
+
+  .profile-layout{grid-template-columns:1fr;}
+}
+</style>
+
 <?php
 function safe_url($path, $fallback = 'avatar/default.png'){
   return $path ? base_url($path) : base_url($fallback);
