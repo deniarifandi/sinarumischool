@@ -31,7 +31,7 @@ body{
   font-family:'Plus Jakarta Sans',sans-serif;
   background:radial-gradient(circle at top left,#0f172a,#1e293b);
   color:#fff;
-  overflow-y:auto;
+  /*overflow-y:auto;*/
 }
 
 /* ================= APP ================= */
