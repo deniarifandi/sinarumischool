@@ -23,7 +23,7 @@ $statusMap = [
 $stats = array_count_values($attendance ?? []);
 ?>
 
-<div class="attendance-card card border-0 shadow-sm">
+<div class="attendance-card card border-0 shadow-sm " style="margin-bottom: 50px">
 
   <div class="card-header bg-white border-0 p-4">
     <div class="d-flex justify-content-between align-items-center">
