@@ -28,7 +28,8 @@ body{
   margin:0;
   height:100vh;
   background: radial-gradient(circle at top left,#0f172a,#1e293b);
-  overflow:hidden;
+  
+    overflow:auto;
   color:#fff;
 }
 
@@ -86,7 +87,8 @@ body::before{
 .main{
   flex:1;
   padding:30px;
-  overflow:auto;
+  /*overflow:auto;*/
+  overflow:visible;
   padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
 }
 
