@@ -1,9 +1,12 @@
 <?= $this->extend('main') ?>
 <?= $this->section('content') ?>
 
-  <div class="glass-card">
+  <?php if (count($checkedToday) <= 0): ?>
+    <div class="glass-card">
         You haven’t submitted your attendance yet. <a href="<?= base_url() ?>presence" class="btn btn-sm btn-primary">Click to submit now</a>
-  </div>
+  </div>  
+  <?php endif ?>
+  
 
   <div class="glass-card">
     <h5 class="mb-4">Personal Management</h5>
