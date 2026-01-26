@@ -72,12 +72,17 @@ body::before{
 ======================= */
 .sidebar{
   width:var(--sidebar-width);
-  height:100vh;
+/*  height:100vh;*/
   background:var(--glass-bg);
   backdrop-filter:blur(20px);
   border-right:1px solid var(--glass-border);
   padding:15px;
-  transition:.3s;
+  transition: width .3s;
+}
+
+.content{
+   flex: 1;
+  transition: margin-left .3s;
 }
 
 .sidebar.collapsed{width:var(--sidebar-collapsed);}
@@ -208,6 +213,7 @@ body::before{
     left:0;
     transform:translateX(-100%);
     z-index:1050;
+    height: 100vh;
   }
   .sidebar.active{transform:translateX(0);}
   .sidebar.collapsed{width:var(--sidebar-width);}
@@ -233,20 +239,21 @@ body::before{
     <a href="<?= base_url('') ?>"><i class="bi bi-speedometer2"></i><span class="text">Dashboard</span></a>
     <a href="<?= base_url('logout') ?>"><i class="bi bi-box-arrow-right"></i><span class="text">Logout</span></a>
   </aside>
-
-  <main class="main">
-    <div class="topbar">
-      <button class="toggle-btn" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
-      <h5 class="mb-0">Dashboard</h5>
+<div class="content" id="content">
+    <div class="row">
+      <main class="main">
+        <div class="topbar">
+          <button class="toggle-btn" onclick="toggleSidebar()">
+            <i class="bi bi-list"></i>
+          </button>
+          <h5 class="mb-0">Dashboard</h5>
+        </div>
+        <?= $this->renderSection('content') ?>
+      </main>
     </div>
+  </div>
 
-    <div class="container">
-      <div class="row">
-        <?= $this->renderSection('content') ?> 
-      </div>  
-    </div>
-    
-  </main>
+
 </div>
 
 <script>

@@ -11,15 +11,6 @@
   gap:25px;
 }
 
-.profile-glass{
-  background:var(--glass-bg);
-  backdrop-filter:blur(20px);
-  border:1px solid var(--glass-border);
-  border-radius:24px;
-  padding:28px;
-  text-align:center;
-}
-
 .profile-avatar-wrap{
   position:relative;
   width:110px;
@@ -121,7 +112,7 @@ function val($v){
 <div class="profile-layout">
 
   <!-- LEFT -->
-  <div class="profile-glass text-center">
+  <div class="glass-card text-center">
 
     <div class="profile-avatar-wrap">
       <img src="<?= safe_url($user['pasfoto']) ?>" class="profile-avatar" alt="Avatar">
