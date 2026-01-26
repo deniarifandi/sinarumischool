@@ -30,7 +30,7 @@
 body{
   font-family:'Plus Jakarta Sans',sans-serif;
   margin:0;
-  height:100vh;
+  /*height:100vh;*/
   background: radial-gradient(circle at top left,#0f172a,#1e293b);
   
     overflow:auto;
@@ -49,7 +49,7 @@ body::before{
 
 }
 
-.app{display:flex;height:100vh}
+.app{display:flex}
 
 /* sidebar */
 .sidebar{
