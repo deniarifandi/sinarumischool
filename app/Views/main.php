@@ -5,17 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sinarumi | Dashboard</title>
 
+<!-- Fonts & Icons -->
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Vendor CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<!-- Vendor JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
-  
-</style>
-
-<style>
+/* =======================
+   ROOT & GLOBAL
+======================= */
 :root{
   --glass-bg: rgba(255,255,255,0.07);
   --glass-border: rgba(255,255,255,0.125);
@@ -25,53 +29,59 @@
   --sidebar-collapsed:70px;
 }
 
-.cursor-pointer{cursor:pointer;}
+*{ box-sizing:border-box; }
 
 body{
   font-family:'Plus Jakarta Sans',sans-serif;
   margin:0;
-  /*height:100vh;*/
-  background: radial-gradient(circle at top left,#0f172a,#1e293b);
-  
-    overflow:auto;
+  min-height:100vh;
+  background:radial-gradient(circle at top left,#0f172a,#1e293b);
   color:#fff;
+  overflow:auto;
+  overscroll-behavior-y:none;
 }
 
-/* ambient glow */
 body::before{
   content:'';
   position:fixed;
   inset:0;
   background:url('logo.png') center/contain no-repeat;
-  opacity:0.1;
+  opacity:.1;
   pointer-events:none;
   z-index:-1;
-
 }
 
-.app{display:flex;height:150vh}
+.cursor-pointer{cursor:pointer;}
 
-/* sidebar */
+/* =======================
+   LAYOUT
+======================= */
+.app{
+  display:flex;
+  min-height:100vh;
+}
+
+.main{
+  flex:1;
+  padding:30px;
+  padding-bottom:calc(env(safe-area-inset-bottom) + 80px);
+}
+
+/* =======================
+   SIDEBAR
+======================= */
 .sidebar{
   width:var(--sidebar-width);
+  height:100vh;
   background:var(--glass-bg);
   backdrop-filter:blur(20px);
   border-right:1px solid var(--glass-border);
   padding:15px;
-  height: 150vh;
   transition:.3s;
 }
 
-.sidebar.collapsed{width:var(--sidebar-collapsed)}
-.sidebar.collapsed .text{display:none}
-
-.brand{
-  font-weight:700;
-  letter-spacing:2px;
-  background:linear-gradient(to right,#fff,#94a3b8);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
+.sidebar.collapsed{width:var(--sidebar-collapsed);}
+.sidebar.collapsed .text{display:none;}
 
 .sidebar a{
   display:flex;
@@ -88,15 +98,24 @@ body::before{
   color:#fff;
 }
 
-/* main */
-.main{
-  flex:1;
-  padding:30px;
-  /*overflow:auto;*/
-  overflow:visible;
-  padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
+.brand{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:5px 0;
 }
 
+.brand img{height:45px;}
+.brand .text{
+  font-weight:600;
+  white-space:nowrap;
+  line-height:1.2;
+}
+
+/* =======================
+   TOPBAR
+======================= */
 .topbar{
   display:flex;
   align-items:center;
@@ -111,128 +130,66 @@ body::before{
   font-size:1.6rem;
 }
 
-/* cards */
+/* =======================
+   GLASS CARD
+======================= */
 .glass-card{
   background:var(--glass-bg);
   backdrop-filter:blur(20px);
   border:1px solid var(--glass-border);
   border-radius:20px;
   padding:24px;
-  margin-bottom: 25px;
+  margin-bottom:25px;
   box-shadow:0 25px 50px -12px rgba(0,0,0,.5);
 }
-</style>
 
-
-<style>
-  /* Container for the buttons */
-.action-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 15px;
+/* =======================
+   ACTION GRID
+======================= */
+.action-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:15px;
 }
 
-/* Custom Glass Button */
-.action-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 20px;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.3s ease;
-  cursor: pointer;
+.action-btn{
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--glass-border);
+  border-radius:16px;
+  padding:20px;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  transition:.3s;
+  cursor:pointer;
 }
 
-.action-btn i {
-  font-size: 1.5rem;
-  color: var(--accent-color);
-  transition: transform 0.3s ease;
+.action-btn i{
+  font-size:1.5rem;
+  color:var(--accent-color);
 }
 
-.action-btn span {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #cbd5f5;
+.action-btn span{
+  font-size:.9rem;
+  font-weight:500;
+  color:#cbd5f5;
 }
 
-/* Hover Effects */
-.action-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--accent-color);
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px -5px var(--accent-glow);
+.action-btn:hover{
+  background:rgba(255,255,255,.1);
+  border-color:var(--accent-color);
+  transform:translateY(-4px);
+  box-shadow:0 10px 20px -5px var(--accent-glow);
 }
 
-.action-btn:hover i {
-  transform: scale(1.1);
-  color: #fff;
-}
-</style>
+.action-btn:hover i{color:#fff;}
 
-<style>
-  .sidebar .brand{
-    display:flex;
-    align-items:center;        /* vertical center */
-    justify-content:center;    /* horizontal center */
-    gap:10px;
-    padding:0px 0;
-}
-
-.sidebar .brand img{
-    height:45px;
-    display:block;
-}
-
-.sidebar .brand .text{
-    font-weight:600;
-    white-space:nowrap;
-}
-
-</style>
-<style>
-/* MOBILE SIDEBAR OVERLAY */
-@media (max-width: 768px){
-  .sidebar{
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 240px;
-    transform: translateX(-100%);
-    z-index: 1050;
-  }
-
-  .sidebar.active{
-    transform: translateX(0);
-  }
-
-  .sidebar.collapsed{
-    width: 240px;
-  }
-
-  .overlay{
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,.45);
-    backdrop-filter: blur(2px);
-    z-index: 1040;
-    display: none;
-  }
-
-  .overlay.show{
-    display: block;
-  }
-}
-
-
-</style>
-
-<style>
-  .profile-layout{
+/* =======================
+   PROFILE
+======================= */
+.profile-layout{
   display:grid;
   grid-template-columns:280px 1fr;
   gap:25px;
@@ -291,19 +248,20 @@ body::before{
   background:rgba(255,255,255,.05);
   border:1px solid var(--glass-border);
   border-radius:14px;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 14px;
-  padding-right: 14px;
-  font-size: 0.8rem;
+  padding:6px 14px;
+  font-size:.8rem;
 }
 
 .info-item span{
+  display:block;
   font-size:.6rem;
   color:#94a3b8;
   text-transform:uppercase;
 }
 
+/* =======================
+   DOC GRID
+======================= */
 .doc-grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
@@ -327,93 +285,75 @@ body::before{
   color:#fff;
 }
 
-@media(max-width:768px){
+/* =======================
+   TABLE / CALENDAR
+======================= */
+.table-responsive{overflow-x:auto;}
+.calendar-table{min-width:300px;}
+
+/* =======================
+   MOBILE
+======================= */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  backdrop-filter:blur(2px);
+  z-index:1040;
+  display:none;
+}
+
+.overlay.show{display:block;}
+
+@media (max-width:768px){
+  .sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    transform:translateX(-100%);
+    z-index:1050;
+  }
+  .sidebar.active{transform:translateX(0);}
+  .sidebar.collapsed{width:var(--sidebar-width);}
   .profile-layout{grid-template-columns:1fr;}
 }
 
-
-/*CALENDAR HANDLE PHONE*/
-
-@media (max-width: 768px){
-  .calendar-day-cell{ height: 44px; }
-  .day-wrapper{
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-  }
-  .day-number{ font-size: .75rem; }
+@media (max-width:360px){
+  .status-dot{width:6px;height:6px;}
 }
-
-@media (max-width: 768px){
-  .card-header{ padding: 1rem !important; }
-  .calendar-table th{
-    font-size: .55rem;
-    padding-bottom: 10px;
-  }
-}
-
-.table-responsive{
-  overflow-x: auto;
-}
-.calendar-table{
-  min-width: 300px;
-}
-
-@media (max-width: 360px){
-  .day-number{ font-size: .7rem; }
-  .status-dot{ width:4px; height:4px; }
-}
-
-
 </style>
-
 </head>
 
-<body style=" overscroll-behavior-y: none;">
-  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<body>
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
 <div class="app">
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-
     <div class="brand">
       <img src="<?= base_url() ?>logosmall.png" alt="logo">
-      <span class="text">
-        SINARUMI<br>
-        CBIS 4.0
-
-      </span>
-
+      <span class="text">SINARUMI<br>CBIS 4.0</span>
     </div>
     <hr>
     <a href="<?= base_url('') ?>"><i class="bi bi-speedometer2"></i><span class="text">Dashboard</span></a>
     <a href="<?= base_url('logout') ?>"><i class="bi bi-box-arrow-right"></i><span class="text">Logout</span></a>
-
   </aside>
 
-
-  <!-- MAIN -->
   <main class="main">
     <div class="topbar">
-      <button class="toggle-btn" onclick="toggleSidebar()" aria-label="Toggle sidebar">
-        <i class="bi bi-list"></i>
-      </button>
+      <button class="toggle-btn" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
       <h5 class="mb-0">Dashboard</h5>
     </div>
 
-
-    <?= $this->renderSection('content') ?>      
-
-
+    <?= $this->renderSection('content') ?>
   </main>
 </div>
 
 <script>
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
+const sidebar=document.getElementById('sidebar');
+const overlay=document.getElementById('overlay');
 
 function toggleSidebar(){
-  if(window.innerWidth <= 768){
+  if(window.innerWidth<=768){
     sidebar.classList.toggle('active');
     overlay.classList.toggle('show');
   }else{
@@ -426,13 +366,9 @@ function closeSidebar(){
   overlay.classList.remove('show');
 }
 
-window.addEventListener('resize', () => {
-  if(window.innerWidth > 768){
-    closeSidebar();
-  }
+window.addEventListener('resize',()=>{
+  if(window.innerWidth>768) closeSidebar();
 });
 </script>
-
-
 </body>
 </html>
