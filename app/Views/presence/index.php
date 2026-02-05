@@ -95,13 +95,29 @@
                     </div>
 
                     <div class="text-end">
-                        <span class="badge rounded-pill px-3 py-2 
-                            <?= $h['status'] == 1 ? 'bg-success-subtle text-success border border-success' : '' ?>
-                            <?= $h['status'] == 2 ? 'bg-warning-subtle text-warning-emphasis border border-warning' : '' ?>
-                            <?= $h['status'] == 3 ? 'bg-danger-subtle text-danger border border-danger' : '' ?>">
-                            <i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i>
-                            <?= [1 => 'Hadir', 2 => 'Izin', 3 => 'Sakit'][$h['status']] ?>
+                        <?php
+                        $status = $h['status'] ?? 0;
+
+                        $badgeClass = match ($status) {
+                          1 => 'bg-success-subtle text-success border border-success',
+                          2 => 'bg-warning-subtle text-warning-emphasis border border-warning',
+                          3 => 'bg-danger-subtle text-danger border border-danger',
+                          default => 'bg-secondary-subtle text-secondary border border-secondary'
+                        };
+
+                        $label = match ($status) {
+                          1 => 'Hadir',
+                          2 => 'Izin',
+                          3 => 'Sakit',
+                          default => 'Belum diisi'
+                        };
+                        ?>
+
+                        <span class="badge rounded-pill px-3 py-2 <?= $badgeClass ?>">
+                          <i class="fas fa-circle me-1" style="font-size:0.5rem;"></i>
+                          <?= $label ?>
                         </span>
+
                     </div>
                 </div>
             <?php endforeach; ?>
