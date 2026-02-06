@@ -29,16 +29,28 @@ class Auth extends BaseController
             return redirect()->back()->with('error', 'Wrong password');
         }
 
+        //SET DIVISION
+         $divisi = $db->table('Gurudivisi gd')
+        ->select('d.divisi_id, d.divisi_nama')
+        ->join('Divisi d', 'd.divisi_id = gd.divisi_id')
+        ->where('gd.guru_id', $user['id'])
+        ->get()
+        ->getResultArray();
+
         session()->set([
             'id'        => $user['id'],
+
             'name'      => $user['name'],
             'username'  => $user['username'],
             'role'      => $user['role'],
+            'divisions' => $divisi,
             'logged_in' => true
         ]);
 
         return redirect()->to('/');
     }
+
+
 
     public function logout()
     {
