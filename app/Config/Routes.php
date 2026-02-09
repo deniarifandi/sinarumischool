@@ -10,6 +10,33 @@ use CodeIgniter\Router\RouteCollection;
     $routes->post('auth/loginauth', 'Auth::loginAuth');
     $routes->get('logout', 'Auth::logout');
 
+    $routes->group('division', ['filter' => 'auth'], function ($routes) {
+        $routes->get('/', 'DivisionController::index');
+        $routes->get('create', 'DivisionController::create');
+        $routes->get('edit/(:num)', 'DivisionController::edit/$1');
+        $routes->post('save', 'DivisionController::save');
+        $routes->post('save/(:num)', 'DivisionController::save/$1'); // <-- ADD THIS
+        $routes->post('delete/(:num)', 'DivisionController::delete/$1');
+    });
+
+    $routes->group('users', ['filter' => 'auth'], function ($routes) {
+        $routes->get('/', 'UserController::index');
+        $routes->get('create', 'UserController::create');
+        $routes->get('edit/(:num)', 'UserController::edit/$1');
+        $routes->post('save', 'UserController::save');
+        $routes->post('save/(:num)', 'UserController::save/$1');
+        $routes->post('delete/(:num)', 'UserController::delete/$1');
+
+        //roles
+        $routes->get('role/(:num)', 'UserController::editRole/$1');
+        $routes->post('role/(:num)', 'UserController::updateRole/$1');
+        //divisions
+        $routes->get('division/(:num)', 'UserController::editDivision/$1');
+        $routes->post('division/(:num)', 'UserController::updateDivision/$1');
+    });
+
+
+
     $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->get('/', 'Home::index');
 
@@ -47,6 +74,7 @@ use CodeIgniter\Router\RouteCollection;
         $routes->post('save/(:num)', 'ClassController::save/$1');
         $routes->post('delete/(:num)', 'ClassController::delete/$1');
     });
+
 
 
     // Grades

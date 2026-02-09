@@ -4,76 +4,72 @@ $finalDescription;
 $descriptionLower = [
     'Life' => [
         'A' => 
-        '"Shows strong self-awareness and self-regulation; calms self and works independently.<br>
-        Menunjukkan kesadaran diri dan regulasi diri yang kuat; mampu bersikap tenang dan bekerja secara mandiri"',
-        'B' => '"Recognises feelings and manages reactions with appropriate support; follows routines. <br> Menunjukkan kemampuan mengenali perasaan dengan dukungan yang sesuai, dan secara konsisten mengikuti rutinitas."',
-        'C' => '"Beginning to identify feelings; needs regular reminders for regulation and focus.<br>Menunjukkan perkembangan awal dalam mengenali perasaan dan masih memerlukan pendampingan untuk regulasi emosi dan fokus."',
+        'Shows strong self-awareness and self-regulation; calms self and works independently.<br>
+        Menunjukkan kesadaran diri dan regulasi diri yang kuat; mampu bersikap tenang dan bekerja secara mandiri',
+        'B' => 'Recognises feelings and manages reactions with appropriate support; follows routines. <br> Menunjukkan kemampuan mengenali perasaan dengan dukungan yang sesuai, dan secara konsisten mengikuti rutinitas.',
+        'C' => 'Beginning to identify feelings; needs regular reminders for regulation and focus.<br>Menunjukkan perkembangan awal dalam mengenali perasaan dan masih memerlukan pendampingan untuk regulasi emosi dan fokus.',
     ],
     'Soc' => [
-        'A' => '"Consistently empathetic, leads positive peer interactions and resolves minor conflicts.<br>
-        Secara konsisten menunjukkan empati, memimpin interaksi positif dengan teman sebaya, serta mampu menyelesaikan konflik ringan." ',
-        'B' => '"Interacts respectfully, shows empathy, cooperates in groups with occasional reminders.<br>
-        Berinteraksi dengan sopan, menunjukkan empati, serta bekerja sama dalam kelompok dengan sesekali pengingat."    
-        ',
-        'C' => '"Starting to show empathy; needs guidance in sharing and turn-taking.<br>
-        Mulai menunjukkan empati; masih memerlukan bimbingan dalam berbagi dan bergiliran."',
+        'A' => 'Consistently empathetic, leads positive peer interactions and resolves minor conflicts.<br>
+        Secara konsisten menunjukkan empati, memimpin interaksi positif dengan teman sebaya, serta mampu menyelesaikan konflik ringan.',
+        'B' => 'Interacts respectfully, shows empathy, cooperates in groups with occasional reminders.<br>
+        Berinteraksi dengan sopan, menunjukkan empati, serta bekerja sama dalam kelompok dengan sesekali pengingat.',
+        'C' => 'Starting to show empathy; needs guidance in sharing and turn-taking.<br>
+        Mulai menunjukkan empati; masih memerlukan bimbingan dalam berbagi dan bergiliran.',
     ],
     'Dev' => [
-        'A' => '"Makes thoughtful decisions, demonstrates responsibility, and guides peers.<br>
-        Membuat keputusan secara bijaksana, menunjukkan tanggung jawab, dan membimbing teman sebaya."',
-        'B' => '"Makes safe choices, accepts consequences, and learns from feedback.<br>
-        Membuat pilihan yangbertanggungjawab, menerima konsekuensi, dan belajar dari umpan balik
-        "',
-        'C' => '"Sometimes makes impulsive choices; needs support to consider consequences.<br>
-        Kadang menunjukkan keputusan impulsif dan membutuhkan bimbingan untuk memahami serta mempertimbangkan konsekuensi."',
+        'A' => 'Makes thoughtful decisions, demonstrates responsibility, and guides peers.<br>
+        Membuat keputusan secara bijaksana, menunjukkan tanggung jawab, dan membimbing teman sebaya.',
+        'B' => 'Makes safe choices, accepts consequences, and learns from feedback.<br>
+        Membuat pilihan yangbertanggungjawab, menerima konsekuensi, dan belajar dari umpan balik',
+        'C' => 'Sometimes makes impulsive choices; needs support to consider consequences.<br>
+        Kadang menunjukkan keputusan impulsif dan membutuhkan bimbingan untuk memahami serta mempertimbangkan konsekuensi.',
     ]
 ];
 $descriptionMid = [
     'Life' => [
-        'A' => '"Shows strong self-awareness and self-regulation; calms self and works independently.<br>
-        Menunjukkan kesadaran diri dan regulasi diri yang kuat; mampu bersikap tenang dan bekerja secara mandiri"',
-        'B' => '"Recognises feelings and manages reactions with appropriate support; follows routines.<br>
-        Menunjukkan kemampuan mengenali perasaan dengan dukungan yang sesuai, dan secara konsisten mengikuti rutinitas."',
-        'C' => '"Beginning to identify feelings; needs regular reminders for regulation and focus.<br>
-        Menunjukkan perkembangan awal dalam mengenali perasaan dan masih memerlukan pendampingan untuk regulasi emosi dan fokus."',
+        'A' => 'Shows strong self-awareness and self-regulation; calms self and works independently.<br>
+        Menunjukkan kesadaran diri dan regulasi diri yang kuat; mampu bersikap tenang dan bekerja secara mandiri',
+        'B' => 'Recognises feelings and manages reactions with appropriate support; follows routines.<br>
+        Menunjukkan kemampuan mengenali perasaan dengan dukungan yang sesuai, dan secara konsisten mengikuti rutinitas.',
+        'C' => 'Beginning to identify feelings; needs regular reminders for regulation and focus.<br>
+        Menunjukkan perkembangan awal dalam mengenali perasaan dan masih memerlukan pendampingan untuk regulasi emosi dan fokus.',
     ],
     'Soc' => [
-        'A' => '"Consistently empathetic, leads positive peer interactions and resolves minor conflicts.<br>
-        Secara konsisten menunjukkan empati, memimpin interaksi positif dengan teman sebaya, serta mampu menyelesaikan konflik ringan."',
-        'B' => '"Interacts respectfully, shows empathy, cooperates in groups with occasional reminders.<br>
-        Berinteraksi dengan sopan, menunjukkan empati, serta bekerja sama dalam kelompok dengan sesekali pengingat."',
-        'C' => '"Starting to show empathy; needs guidance in sharing and turn-taking.<br>
-        Mulai menunjukkan empati; masih memerlukan bimbingan dalam berbagi dan bergiliran.
-        "   ',
+        'A' => 'Consistently empathetic, leads positive peer interactions and resolves minor conflicts.<br>
+        Secara konsisten menunjukkan empati, memimpin interaksi positif dengan teman sebaya, serta mampu menyelesaikan konflik ringan.',
+        'B' => 'Interacts respectfully, shows empathy, cooperates in groups with occasional reminders.<br>
+        Berinteraksi dengan sopan, menunjukkan empati, serta bekerja sama dalam kelompok dengan sesekali pengingat.',
+        'C' => 'Starting to show empathy; needs guidance in sharing and turn-taking.<br>
+        Mulai menunjukkan empati; masih memerlukan bimbingan dalam berbagi dan bergiliran.',
     ],
     'Dev' => [
-        'A' => '"Makes thoughtful decisions, demonstrates responsibility, and guides peers.<br>
-Membuat keputusan secara bijaksana, menunjukkan tanggung jawab, dan membimbing teman sebaya."',
-        'B' => '"Makes safe choices, accepts consequences, and learns from feedback.<br>
-Membuat pilihan yangbertanggungjawab, menerima konsekuensi, dan belajar dari umpan balik
-"',
-        'C' => '"Sometimes makes impulsive choices; needs support to consider consequences.<br>
-Kadang menunjukkan keputusan impulsif dan membutuhkan bimbingan untuk memahami serta mempertimbangkan konsekuensi."',
+        'A' => 'Makes thoughtful decisions, demonstrates responsibility, and guides peers.<br>
+Membuat keputusan secara bijaksana, menunjukkan tanggung jawab, dan membimbing teman sebaya.',
+        'B' => 'Makes safe choices, accepts consequences, and learns from feedback.<br>
+Membuat pilihan yangbertanggungjawab, menerima konsekuensi, dan belajar dari umpan balik',
+        'C' => 'Sometimes makes impulsive choices; needs support to consider consequences.<br>
+Kadang menunjukkan keputusan impulsif dan membutuhkan bimbingan untuk memahami serta mempertimbangkan konsekuensi.',
     ]
 ];
 $descriptionUpper = [
     'Life' => [
-        'A' => '"Shows strong self-awareness and self-regulation; calms self and works independently.<br>Menunjukkan kesadaran diri dan regulasi diri yang kuat; mampu bersikap tenang dan bekerja secara mandiri"',
-        'B' => '"Recognises feelings and manages reactions with appropriate support; follows routines. <br>Menunjukkan kemampuan mengenali perasaan dengan dukungan yang sesuai, dan secara konsisten mengikuti rutinitas."',
-        'C' => '"Beginning to identify feelings; needs regular reminders for regulation and focus. <br> Menunjukkan perkembangan awal dalam mengenali perasaan dan masih memerlukan pendampingan untuk regulasi emosi dan fokus."',
+        'A' => 'Shows strong self-awareness and self-regulation; calms self and works independently.<br>Menunjukkan kesadaran diri dan regulasi diri yang kuat; mampu bersikap tenang dan bekerja secara mandiri',
+        'B' => 'Recognises feelings and manages reactions with appropriate support; follows routines. <br>Menunjukkan kemampuan mengenali perasaan dengan dukungan yang sesuai, dan secara konsisten mengikuti rutinitas.',
+        'C' => 'Beginning to identify feelings; needs regular reminders for regulation and focus. <br> Menunjukkan perkembangan awal dalam mengenali perasaan dan masih memerlukan pendampingan untuk regulasi emosi dan fokus.',
     ],
     'Soc' => [
-        'A' => '"Consistently empathetic, leads positive peer interactions and resolves minor conflicts.<br> Secara konsisten menunjukkan empati, memimpin interaksi positif dengan teman sebaya, serta mampu menyelesaikan konflik ringan."',
-        'B' => '"Interacts respectfully, shows empathy, cooperates in groups with occasional reminders.<br> Berinteraksi dengan sopan, menunjukkan empati, serta bekerja sama dalam kelompok dengan sesekali pengingat."',
-        'C' => '"Starting to show empathy; needs guidance in sharing and turn-taking.<br>
-Mulai menunjukkan empati; masih memerlukan bimbingan dalam berbagi dan bergiliran."',
+        'A' => 'Consistently empathetic, leads positive peer interactions and resolves minor conflicts.<br> Secara konsisten menunjukkan empati, memimpin interaksi positif dengan teman sebaya, serta mampu menyelesaikan konflik ringan.',
+        'B' => 'Interacts respectfully, shows empathy, cooperates in groups with occasional reminders.<br> Berinteraksi dengan sopan, menunjukkan empati, serta bekerja sama dalam kelompok dengan sesekali pengingat.',
+        'C' => 'Starting to show empathy; needs guidance in sharing and turn-taking.<br>
+Mulai menunjukkan empati; masih memerlukan bimbingan dalam berbagi dan bergiliran.',
     ],
     'Dev' => [
-        'A' => '"Makes thoughtful decisions, demonstrates responsibility, and guides peers.
-<br>Membuat keputusan secara bijaksana, menunjukkan tanggung jawab, dan membimbing teman sebaya."',
-        'B' => '"Makes safe choices, accepts consequences, and learns from feedback.<br>Membuat pilihan yangbertanggungjawab, menerima konsekuensi, dan belajar dari umpan balik"',
-        'C' => '"Sometimes makes impulsive choices; needs support to consider consequences.
-<br>Kadang menunjukkan keputusan impulsif dan membutuhkan bimbingan untuk memahami serta mempertimbangkan konsekuensi."',
+        'A' => 'Makes thoughtful decisions, demonstrates responsibility, and guides peers.
+<br>Membuat keputusan secara bijaksana, menunjukkan tanggung jawab, dan membimbing teman sebaya.',
+        'B' => 'Makes safe choices, accepts consequences, and learns from feedback.<br>Membuat pilihan yangbertanggungjawab, menerima konsekuensi, dan belajar dari umpan balik',
+        'C' => 'Sometimes makes impulsive choices; needs support to consider consequences.
+<br>Kadang menunjukkan keputusan impulsif dan membutuhkan bimbingan untuk memahami serta mempertimbangkan konsekuensi.',
     ]
 ];
 
@@ -195,7 +191,7 @@ $negativeCols = array_slice($cols, 6);
         <div class="meta">
             Class  : <?= esc($class['class_name']) ?><br>
             Grade  : <?= esc($class['grade_name']) ?><br>
-            Period : <?= date('F Y', strtotime($period.'-01')) ?>
+            Term : <?= date('m', strtotime($period)) ?>
         </div>
     </div>
 
@@ -244,9 +240,15 @@ $negativeCols = array_slice($cols, 6);
                     <td><?= esc($class['grade_name']) ?></td>
                 </tr>
                 <tr>
-                    <td class="label">Period</td>
+                    <td class="label">Term</td>
                     <td class="colon">:</td>
-                    <td><?= date('F Y', strtotime($period.'-01')) ?></td>
+                    <td><?= date('m', strtotime($period)) ?></td>
+
+                    <?php 
+
+
+
+                    ?>
                 </tr>
             </table>
 
@@ -307,37 +309,10 @@ $negativeCols = array_slice($cols, 6);
                 </tr>
 
                 <tr>
-                    <td colspan="2"  style="text-align: center;">TERM 3 (JANUARY - MARCH)</td>
+                    <td colspan="2"  style="text-align: center;">TERM : <?= date('m', strtotime($period)) ?></td>
                 </tr>
                 <tr>
-                    <td>A</td>
-                    <td>SELF SKILL<br>
-                        Keterampilan Intrapersonal
-                    </td>
-                    <td>
-                        CRITERIA<br>
-                        Kriteria
-                    </td>
-                    <td>ADVANCE/
-                        CONSISTENT/ DEVELOPING<br>
-                        Sangat baik/baik/berkembang
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>The student’s ability to manage themselves, demonstrate effort, maintain focus, and develop their personal skills.<br>
-                        Kemampuan siswa dalam mengelola diri, berusaha, fokus, dan mengembangkan kemampuan diri.
-                        <br><br>
-                        Lower Level (P1-P2)<br>
-                        Scope : <br>
-                        - Trying<br>
-                        Tetap berusaha saat tugas sulit.<br>
-                        - Following<br>
-                        mengikuti instruksi sederhana dengan usaha.<br>
-                    </td>
-                    <td colspan="2">
-
-                     <?php 
+                       <?php 
                      $highest = $highestArea1;
                      $lowest  = 0;
 
@@ -350,19 +325,76 @@ $negativeCols = array_slice($cols, 6);
 
                         if ($value <= $limitA) {
                             $category = 'C';
+                            $catResult = 'DEVELOPING <br> Berkembang';
                             $category = $finalDescription['Life']['C'];
                         } elseif ($value <= $limitB) {
                             $category = 'B';
+                            $catResult = 'CONSISTENT <br> Baik';
                             $category = $finalDescription['Life']['B'];
                         } else {
                             $category = 'A';
+                            $catResult = 'ADVANCE <br> Sangat Baik';
                             $category = $finalDescription['Life']['A'];
                         }
                         //echo $value;
-                        echo $category;
+
                         ?>
 
+                    <td>A</td>
+                    <td>SELF SKILL<br>
+                        Keterampilan Intrapersonal
+                    </td>
+                    <td>
+                        CRITERIA<br>
+                        Kriteria
+                    </td>
+                    <td>
+                        <?php echo $catResult; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <?php 
+                     $highest = $highestArea2;
+                     $lowest  = 0;
 
+                     $range = ($highest - $lowest) / 3;
+
+                     $limitA = $lowest + $range;
+                     $limitB = $lowest + ($range * 2);
+
+                        $value = $fin2; // value to check
+
+                        if ($value <= $limitA) {
+                            $category = 'C';
+                            $catResult = 'DEVELOPING <br> Berkembang';
+                            $category = $finalDescription['Soc']['C'];
+                        } elseif ($value <= $limitB) {
+                            $category = 'B';
+                            $catResult = 'CONSISTENT <br> Baik';
+                            $category = $finalDescription['Soc']['B'];
+                        } else {
+                            $category = 'A';
+                            $catResult = 'ADVANCE <br> Sangat Baik';
+                            $category = $finalDescription['Soc']['A'];
+                        }
+                        //echo $value;
+                        //echo $category;
+                        ?>
+
+                    <td></td>
+                    <td>The student’s ability to manage themselves, demonstrate effort, maintain focus, and develop their personal skills.<br>
+                        Kemampuan siswa dalam mengelola diri, berusaha, fokus, dan mengembangkan kemampuan diri.
+                        <br><br>
+                        Lower Level (P1-P2)<br>
+                        Scope : <br>
+                        - Trying<br>
+                        Tetap berusaha saat tugas sulit.<br>
+                        - Following<br>
+                        mengikuti instruksi sederhana dengan usaha.<br>
+                    </td>
+                    <td colspan="2">
+                  
+                        <?php echo $category;  ?>
 
                     </td>
                     
@@ -376,12 +408,39 @@ $negativeCols = array_slice($cols, 6);
                         CRITERIA<br>
                         Kriteria
                     </td>
-                    <td>ADVANCE/
-                        CONSISTENT/ DEVELOPING<br>
-                        Sangat baik/baik/berkembang
+                    <td>
+                        <?php echo $catResult; ?>
                     </td>
                 </tr>
                 <tr>
+
+
+                     <?php 
+                     $highest = $highestArea3;
+                     $lowest  = 0;
+
+                     $range = ($highest - $lowest) / 3;
+
+                     $limitA = $lowest + $range;
+                     $limitB = $lowest + ($range * 2);
+
+                        $value = $fin3; // value to check
+
+                         if ($value <= $limitA) {
+                            $category = 'C';
+                            $catResult = 'DEVELOPING <br> Berkembang';
+                            $category = $finalDescription['Dev']['C'];
+                        } elseif ($value <= $limitB) {
+                            $category = 'B';
+                            $catResult = 'CONSISTENT <br> Baik';
+                            $category = $finalDescription['Dev']['B'];
+                        } else {
+                            $category = 'A';
+                            $catResult = 'ADVANCE <br> Sangat Baik';
+                            $category = $finalDescription['Dev']['A'];
+                        }
+                        
+                        ?>
                     <td></td>
                     <td>The student’s behavior in following rules, demonstrating independence, and taking responsibility<br>
                         Perilaku siswa dalam mengikuti aturan, kemandirian, dan tanggung jawab.<br>
@@ -395,30 +454,7 @@ $negativeCols = array_slice($cols, 6);
                     </td>
                     <td colspan="2">
 
-                     <?php 
-                     $highest = $highestArea2;
-                     $lowest  = 0;
-
-                     $range = ($highest - $lowest) / 3;
-
-                     $limitA = $lowest + $range;
-                     $limitB = $lowest + ($range * 2);
-
-                        $value = $fin2; // value to check
-
-                        if ($value <= $limitA) {
-                            $category = $finalDescription['Soc']['C'];
-                        } elseif ($value <= $limitB) {
-                            $category = $finalDescription['Soc']['B'];
-                        } else {
-                            $category = $finalDescription['Soc']['A'];
-                        }
-                        //echo $value;
-                        echo $category;
-                        ?>
-
-
-
+                        <?php echo $category ?>
 
                     </td>
                 </tr>
@@ -432,9 +468,8 @@ $negativeCols = array_slice($cols, 6);
                         CRITERIA<br>
                         Kriteria
                     </td>
-                    <td>ADVANCE/
-                        CONSISTENT/ DEVELOPING<br>
-                        Sangat baik/baik/berkembang
+                    <td>
+                        <?php echo $catResult; ?>
                     </td>
                 </tr>
                 <tr>
@@ -452,27 +487,7 @@ $negativeCols = array_slice($cols, 6);
                     </td>
                     <td colspan="2">
 
-
-                     <?php 
-                     $highest = $highestArea3;
-                     $lowest  = 0;
-
-                     $range = ($highest - $lowest) / 3;
-
-                     $limitA = $lowest + $range;
-                     $limitB = $lowest + ($range * 2);
-
-                        $value = $fin3; // value to check
-
-                         if ($value <= $limitA) {
-                            $category = $finalDescription['Dev']['C'];
-                        } elseif ($value <= $limitB) {
-                            $category = $finalDescription['Dev']['B'];
-                        } else {
-                            $category = $finalDescription['Dev']['A'];
-                        }
-                        echo $category;
-                        ?>
+                        <?php echo $category; ?>
 
                     </td>
                 </tr>

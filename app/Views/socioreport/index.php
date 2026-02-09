@@ -29,8 +29,7 @@
     <!-- IMPORT FORM -->
     <?php
     $months = [
-        1=>'January',2=>'February',3=>'March',4=>'April',5=>'May',6=>'June',
-        7=>'July',8=>'August',9=>'September',10=>'October',11=>'November',12=>'December'
+        1=>'1',2=>'2',3=>'3',4=>'4'
     ];
     $currentYear = date('Y');
     ?>
@@ -55,9 +54,9 @@
             </div>
 
             <div class="col-md-2">
-                <label class="form-label small">Month</label>
+                <label class="form-label small">TERM</label>
                 <select name="month" class="form-select form-select-sm" required>
-                    <option value="">Month</option>
+                    <option value="">TERM</option>
                     <?php foreach ($months as $k=>$m): ?>
                         <option value="<?= $k ?>"><?= $m ?></option>
                     <?php endforeach ?>
@@ -69,7 +68,7 @@
                 <select name="year" class="form-select form-select-sm" required>
                     <?php for ($y=$currentYear-3; $y<=$currentYear+1; $y++): ?>
                         <option value="<?= $y ?>" <?= $y==$currentYear?'selected':'' ?>>
-                            <?= $y ?>
+                            <?php echo ($y-1)." - ".$y ?>
                         </option>
                     <?php endfor ?>
                 </select>
@@ -104,7 +103,7 @@
                 <thead>
                 <tr>
                     <th class="ps-3">Class</th>
-                    <th>Period</th>
+                    <th>Term</th>
                     <th>Total Students</th>
                     <th class="text-end pe-3">Action</th>
                 </tr>
@@ -116,7 +115,7 @@
                             <?= esc($p['class_name']) ?>
                         </td>
                         <td>
-                            <?= date('F Y', strtotime($p['period'].'-01')) ?>
+                            <?= date('m', strtotime($p['period'])) ?>
                         </td>
                         <td><?= $p['total'] ?></td>
                         <td class="text-end pe-3">
