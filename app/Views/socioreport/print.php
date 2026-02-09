@@ -122,6 +122,51 @@ Mulai menunjukkan empati; masih memerlukan bimbingan dalam berbagi dan bergilira
         }
 
     </style>
+
+    <style>
+.compact-table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+    font-size: 12px;
+}
+
+.compact-table th,
+.compact-table td {
+    border: 1px solid #e2e8f0;
+    padding: 4px 6px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.compact-table th:first-child,
+.compact-table td:first-child {
+    text-align: left;
+    min-width: 160px;
+}
+
+/* Diagonal header */
+.compact-table th.diagonal {
+    height: 80px;
+    vertical-align: bottom;
+    padding: 0;
+}
+
+.compact-table th.diagonal > div {
+    transform: rotate(-90deg);
+    /*transform-origin: bottom left;*/
+    white-space: nowrap;
+    font-size: 11px;
+    font-weight: 600;
+    padding-left:50px;
+}
+
+.compact-table thead th {
+    background: #f8f9fa;
+    font-weight: 700;
+}
+</style>
+
 </head>
 
 <body onload="window.print()">
@@ -201,6 +246,54 @@ $negativeCols = array_slice($cols, 6);
         Area 2 : <?= $highestArea2 ?><br>
         Area 3 : <?= $highestArea3 ?>
     </div>
+
+    <?php 
+
+    // echo json_encode($reports);
+    echo "<table class='compact-table'>";
+echo "<thead>";
+echo "<tr>";
+echo "<th class='diagonal' style='width: 150px'>Student Name</th>";
+
+for ($z = 0; $z < count($positiveCols); $z++) {
+    echo "<th class='diagonal'><div>{$positiveCols[$z]}</div></th>";
+}
+
+for ($z = 0; $z < count($negativeCols); $z++) {
+    echo "<th class='diagonal'><div>{$negativeCols[$z]}</div></th>";
+}
+
+echo "</tr>";
+echo "</thead>";
+    echo "<tbody>";
+    foreach ($reports as $r) {
+        echo "<tr>";
+        $fin = [0,0,0];
+        echo "<td style='white-space:normal'>".$r['student_name']."</td>";
+        for ($z=0; $z < count($positiveCols); $z++) { 
+            echo  "<td>".$r[$positiveCols[$z]]."</td>";
+        }
+
+        for ($z=0; $z < count($positiveCols); $z++) { 
+            echo  "<td>".$r[$negativeCols[$z]]."</td>";
+        }
+
+        for ($i=0; $i<6; $i++) {
+            $group = intdiv($i,2);
+            $fin[$group] += (int)$r[$positiveCols[$i]] - (int)$r[$negativeCols[$i]];
+
+        }
+        $highestArea1 = max($highestArea1, $fin[0]);
+        $highestArea2 = max($highestArea2, $fin[1]);
+        $highestArea3 = max($highestArea3, $fin[2]);
+
+        echo "</tr>";
+    }
+    echo "</tbody>";
+    echo "</table>";
+     ?>
+
+
 
 </div>
 
