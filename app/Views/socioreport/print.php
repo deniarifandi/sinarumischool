@@ -242,9 +242,9 @@ $negativeCols = array_slice($cols, 6);
 
     <div class="summary-box">
         <strong>Highest Scores (All Students)</strong><br><br>
-        Area 1 : <?= $highestArea1 ?><br>
-        Area 2 : <?= $highestArea2 ?><br>
-        Area 3 : <?= $highestArea3 ?>
+        Self Skill : <?= $highestArea1 ?><br>
+        Social Skill : <?= $highestArea2 ?><br>
+        Behavior : <?= $highestArea3 ?>
     </div>
 
     <?php 
