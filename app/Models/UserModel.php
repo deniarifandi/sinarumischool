@@ -27,13 +27,14 @@ class UserModel extends Model
 
     protected $useSoftDeletes = true;
 
-   public function getUsersData()
+    public function getUsersData()
     {
         return $this->select('
                 users.id,
                 users.name,
                 users.role,
                 users.username,
+                users.pasfoto,
                 divisions.division_name,
                 divisions.id as division_id
             ')
@@ -43,4 +44,21 @@ class UserModel extends Model
             ->findAll();
     }
 
+     public function getUsersDetailData($user_id)
+    {
+        return $this->select('
+                users.id,
+                users.name,
+                users.role,
+                users.username,
+                users.pasfoto,
+                divisions.division_name,
+                divisions.id as division_id
+            ')
+            ->join('user_divisions', 'user_divisions.user_id = users.id', 'left')
+            ->join('divisions', 'divisions.id = user_divisions.division_id', 'left')
+            ->where('users.id',$user_id)
+            ->orderBy('users.id')
+            ->findAll();
+    }
 }

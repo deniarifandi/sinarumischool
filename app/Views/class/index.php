@@ -50,7 +50,7 @@
         <div class="table-responsive"
              style="border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);">
 
-            <table class="table glass-table align-middle mb-0">
+            <table class="table glass-table align-middle mb-0" id="classTable">
                 <thead>
                     <tr>
                         <th class="ps-3">Grade</th>
@@ -114,5 +114,23 @@
         </div>
     <?php endif; ?>
 </div>
+
+<?= $this->endSection() ?>
+
+
+<?= $this->section('script') ?>
+<script>
+$(function () {
+    $('#classTable').DataTable({
+        pageLength: 10,
+        language: {
+            paginate: {
+                previous: '‹',
+                next: '›'
+            }
+        }
+    });
+});
+</script>
 
 <?= $this->endSection() ?>

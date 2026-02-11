@@ -5,12 +5,10 @@
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
       <h5 class="mb-0">Grade Management</h5>
-      <small class="text-white-50">Division : </small>
+      <small class="text-white-50">Division :  <?= esc($division[0]['division_name']) ?></small>
     </div>
 
-
-
-    <a href="<?= base_url('grade/create?divisi='.$divisiId) ?>"
+    <a href="<?= base_url('grade/create?divisi='.$division[0]['id']) ?>"
        class="btn btn-primary rounded-pill px-3">
       <i class="bi bi-plus-lg me-1"></i> Add Grade
     </a>
@@ -43,7 +41,7 @@
                 </span>
               </td>
               <td class="text-end pe-3">
-                <a href="<?= base_url('grade/edit/'.$g['id'].'?divisi='.$divisiId) ?>"
+                <a href="<?= base_url('grade/edit/'.$g['id'].'?divisi='.$division[0]['id']) ?>"
                    class="btn btn-sm btn-glass-edit">
                   <i class="bi bi-pencil-square"></i>
                 </a>
@@ -52,7 +50,7 @@
                       method="post"
                       class="d-inline">
                   <?= csrf_field() ?>
-                  <input type="hidden" name="divisi" value="<?= $divisiId ?>">
+                  <input type="hidden" name="divisi" value="<?= $division[0]['id'] ?>">
                   <button type="submit"
                           onclick="return confirm('Delete this grade?')"
                           class="btn btn-sm btn-outline-danger ms-1"

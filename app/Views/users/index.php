@@ -392,11 +392,6 @@ divisionModal.addEventListener('show.bs.modal', function (event) {
 $(function () {
     $('#usersTable').DataTable({
         pageLength: 10,
-        lengthChange: false,
-        searching: false,
-        info: true,
-        ordering: false,
-        pagingType: 'simple_numbers',
         language: {
             paginate: {
                 previous: '‹',

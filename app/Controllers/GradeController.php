@@ -3,25 +3,32 @@
 namespace App\Controllers;
 
 use App\Models\GradeModel;
+use App\Models\DivisionModel;
 
 class GradeController extends BaseController
 {
     protected $gradeModel;
+    protected $divisiModel;
 
     public function __construct()
     {
         $this->gradeModel = new GradeModel();
+        $this->divisiModel = new DivisionModel();
     }
 
     public function index()
     {
         $divisiId = $this->request->getGet('divisi');
+        $division = $this->divisiModel->getDivisionDetail($divisiId);
 
         $grades = $this->gradeModel->byDivision($divisiId);
 
+        // print_r($division[0]['division_name']);
+        // exit();
+
         return view('grade/index', [
             'grades'   => $grades,
-            'divisiId' => $divisiId
+            'division' => $division
         ]);
     }
 

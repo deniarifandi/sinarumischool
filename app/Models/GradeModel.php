@@ -6,19 +6,19 @@ use CodeIgniter\Model;
 
 class GradeModel extends Model
 {
-    protected $table      = 'grades';
-    protected $primaryKey = 'id';
+    protected $table            = 'grades';
+    protected $primaryKey       = 'id';
 
-    protected $allowedFields = [
+    protected $allowedFields    = [
         'division_id',
         'grade_name',
-        'sort_order'
+        'sort_order',
     ];
 
-    protected $useTimestamps = true;
-    protected $useSoftDeletes = true;
+    protected $useTimestamps    = true;
+    protected $useSoftDeletes   = true;
 
-    public function byDivision($divisionId)
+    public function byDivision(int $divisionId): array
     {
         return $this->where('division_id', $divisionId)
                     ->orderBy('sort_order', 'ASC')

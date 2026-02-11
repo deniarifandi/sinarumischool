@@ -19,6 +19,7 @@
 
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.css">
 </head>
 
 <body>
@@ -244,6 +245,34 @@ body::before{
   .status-dot{width:6px;height:6px;}
 }
 </style>
+
+<style>
+.glass-table {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+.glass-table thead th {
+    background: rgb(243, 244, 246);
+    color: #3b82f6;
+    border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+.glass-table tbody tr td {
+    background: rgba(255, 255, 255, 1);
+}
+.btn-glass-edit {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+.btn-glass-edit:hover {
+    background: #3b82f6;
+    color: #fff;
+}
+</style>
+
 </head>
 
 <body>

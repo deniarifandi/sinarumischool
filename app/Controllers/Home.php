@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\PresenceModel;
 use App\Models\UserDivisionModel;
+use App\Models\UserModel;
 
 class Home extends BaseController
 {
@@ -11,23 +12,30 @@ class Home extends BaseController
     public function __construct()
     {    
         $this->presence = new PresenceModel();
-        $this->userdivision = new UserDivisionModel();
+        $this->userDivision = new UserDivisionModel();
+        $this->userModel = new UserModel();
 
     }
 
     public function index(): string
     {   
-        $guruId = session('user_id'); // sesuaikan dengan session kamu
+
+        // print_r(session()->get());
+        // exit();
+        $user_id= session('id'); // sesuaikan dengan session kamu
         $checkedToday = $this->presence->presence_check(session('id'));
 
         // ambil divisi user
-        $divisions = $this->userdivision->getUserDivisions(session('id'));
+        $divisions = $this->userDivision->getUserDivisions(session('id'));
 
-        // print_r($divisions);
+        $userDetail = $this->userModel->getUsersDetailData($user_id);
+
+        // print_r($userDetail);
         // exit();
         return view('dashboard', [
             'checkedToday' => $checkedToday,
-            'divisions'    => $divisions
+            'divisions'    => $divisions,
+            'user'         => $userDetail[0]
         ]);
     }
    

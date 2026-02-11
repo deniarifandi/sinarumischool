@@ -22,4 +22,11 @@ class DivisionModel extends Model
     protected $deletedField     = 'deleted_at';
 
     protected $useSoftDeletes   = true;
+
+    
+    public function getDivisionDetail($divisionId){
+            return $this->select('divisions.*')
+                ->where('divisions.id', $divisionId)
+                ->findAll();
+    }
 }

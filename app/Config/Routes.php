@@ -35,6 +35,42 @@ use CodeIgniter\Router\RouteCollection;
         $routes->post('division/(:num)', 'UserController::updateDivision/$1');
     });
 
+    $routes->group('grade', ['filter' => 'auth'], function ($routes) {
+        $routes->get('/', 'GradeController::index');
+        $routes->get('create', 'GradeController::create');
+        $routes->get('edit/(:num)', 'GradeController::edit/$1');
+        $routes->post('save', 'GradeController::save');
+        $routes->post('save/(:num)', 'GradeController::save/$1');
+        $routes->post('delete/(:num)', 'GradeController::delete/$1');
+    });
+
+    $routes->group('subject', ['filter' => 'auth'], function ($routes) {
+        $routes->get('/', 'SubjectController::index');
+        $routes->get('create', 'SubjectController::create');
+        $routes->get('edit/(:num)', 'SubjectController::edit/$1');
+        $routes->post('save', 'SubjectController::save');
+        $routes->post('save/(:num)', 'SubjectController::save/$1');
+        $routes->post('delete/(:num)', 'SubjectController::delete/$1');
+    });
+
+
+    $routes->group('student', ['filter' => 'auth'], function ($routes) {
+        $routes->get('/', 'StudentController::index');
+        $routes->get('create', 'StudentController::create');
+        $routes->get('edit/(:num)', 'StudentController::edit/$1');
+        $routes->post('save', 'StudentController::save');
+        $routes->post('save/(:num)', 'StudentController::save/$1');
+        $routes->post('delete/(:num)', 'StudentController::delete/$1');
+    });
+
+    $routes->group('absence', ['filter' => 'auth'], function ($routes) {
+        $routes->get('/', 'StudentAbsenceController::index');
+        $routes->get('create', 'StudentAbsenceController::create');
+        $routes->get('edit/(:num)', 'StudentAbsenceController::edit/$1');
+        $routes->post('save', 'StudentAbsenceController::save');
+        $routes->post('save/(:num)', 'StudentAbsenceController::save/$1');
+        $routes->post('delete/(:num)', 'StudentAbsenceController::delete/$1');
+    });
 
 
     $routes->group('', ['filter' => 'auth'], function ($routes) {
