@@ -2,13 +2,24 @@
 <?= $this->section('content') ?>
 
 <style>
-  .profile-avatar{
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  object-fit:cover;
-  border:3px solid var(--accent-color);
+    .profile-avatar-wrap {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+   border:3px solid var(--accent-color);
 }
+
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;     /* crop to fill */
+  object-position: center;
+  display: block;
+
+}
+
 </style>
 
 <?php
@@ -18,7 +29,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
 ?>
 
 <?php if (empty($checkedToday)): ?>
-  <div class="glass-card">
+  <div class="glass-card" style="background: rgba(213, 0, 0, 0.4);">
     <p class="mb-2">
       You haven’t submitted your attendance yet.
     </p>
@@ -29,12 +40,12 @@ function safe_url($path, $fallback = 'avatar/default.png'){
 <?php endif; ?>
 
 <div class="glass-card d-flex align-items-center p-2 px-3 border rounded-3 shadow-sm bg-white py-2">
-    <div class="position-relative">
-       <div class="profile-avatar-wrap">
-       <img src="<?= safe_url($user['pasfoto']) ?>" class="profile-avatar" alt="Avatar" style="max-width: 50px; max-height: 50px;">
-        <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-light rounded-circle" title="Online"></span>
-      </div>
+   <div class="position-relative">
+    <div class="profile-avatar-wrap">
+      <img src="<?= safe_url($user['pasfoto']) ?>" class="profile-avatar" alt="Avatar">
+      <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-light rounded-circle" title="Online"></span>
     </div>
+  </div>
 
     <div class="ms-3 flex-grow-1">
         <div class="d-flex align-items-center justify-content-between">
@@ -48,7 +59,17 @@ function safe_url($path, $fallback = 'avatar/default.png'){
         
         <div class="d-flex gap-3">
            <small class="text-muted">
-                <b><i class="bi bi-people-fill me-1"></i>Role :</b> <?= esc($user['role']) ?>
+                <b><i class="bi bi-people-fill me-1"></i>Divisions :</b> 
+                <?php
+                  $names = array_column($divisions, 'division_name');
+                  $limited = array_slice($names, 0, 2);
+
+                  echo implode(', ', $limited);
+
+                  if (count($names) > 2) {
+                      echo ', etc.';
+                  }
+                ?>
             </small>
             <small class="text-muted">
                 <i class="bi bi-door-open me-1"></i>Class: <strong><?= esc($user['class_room'] ?? 'N/A') ?></strong>
@@ -57,7 +78,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
     </div>
 </div>
 
-<div class="glass-card" style="display:none">
+<div class="glass-card">
   <h5 class="mb-4">Superadmin Menu</h5>
     <div class="mb-3">
       <div class="fw-semibold text-primary mb-2">
@@ -117,7 +138,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
 </div>
 
 
-<div class="glass-card" style="display:none">
+<div class="glass-card">
   <h5 class="mb-4">Teachers Menu</h5>
 
   <?php foreach ($divisions as $d): ?>
@@ -159,7 +180,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
   <?php endforeach ?>
 </div>
 
-<div class="glass-card" style="display:none">
+<div class="glass-card">
   <h5 class="mb-4">Class Menu</h5>
 
     <div class="mb-3">

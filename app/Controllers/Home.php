@@ -20,13 +20,12 @@ class Home extends BaseController
     public function index(): string
     {   
 
-        // print_r(session()->get());
-        // exit();
+    
         $user_id= session('id'); // sesuaikan dengan session kamu
-        $checkedToday = $this->presence->presence_check(session('id'));
+        $checkedToday = $this->presence->presence_check($user_id);
 
         // ambil divisi user
-        $divisions = $this->userDivision->getUserDivisions(session('id'));
+        $divisions = $this->userDivision->getUserDivisions($user_id);
 
         $userDetail = $this->userModel->getUsersDetailData($user_id);
 
