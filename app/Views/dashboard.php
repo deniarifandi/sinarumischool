@@ -31,7 +31,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
 <div class="glass-card d-flex align-items-center p-2 px-3 border rounded-3 shadow-sm bg-white py-2">
     <div class="position-relative">
        <div class="profile-avatar-wrap">
-       <img src="<?= safe_url($user['pasfoto']) ?>" class="profile-avatar" alt="Avatar" style="max-width: 50px;">
+       <img src="<?= safe_url($user['pasfoto']) ?>" class="profile-avatar" alt="Avatar" style="max-width: 50px; max-height: 50px;">
         <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-light rounded-circle" title="Online"></span>
       </div>
     </div>
@@ -57,7 +57,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
     </div>
 </div>
 
-<div class="glass-card">
+<div class="glass-card" style="display:none">
   <h5 class="mb-4">Superadmin Menu</h5>
     <div class="mb-3">
       <div class="fw-semibold text-primary mb-2">
@@ -117,7 +117,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
 </div>
 
 
-<div class="glass-card">
+<div class="glass-card" style="display:none">
   <h5 class="mb-4">Teachers Menu</h5>
 
   <?php foreach ($divisions as $d): ?>
@@ -159,7 +159,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
   <?php endforeach ?>
 </div>
 
-<div class="glass-card">
+<div class="glass-card" style="display:none">
   <h5 class="mb-4">Class Menu</h5>
 
     <div class="mb-3">
