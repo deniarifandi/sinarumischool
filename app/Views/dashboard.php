@@ -72,13 +72,13 @@ function safe_url($path, $fallback = 'avatar/default.png'){
                 ?>
             </small>
             <small class="text-muted">
-                <i class="bi bi-door-open me-1"></i>Class: <strong><?= esc($user['class_room'] ?? 'N/A') ?></strong>
+                <i class="bi bi-door-open-fill me-1"></i>ClassTeacher of: <strong><?= esc($user['class_room'] ?? 'N/A') ?></strong>
             </small>
         </div>
     </div>
 </div>
 
-<div class="glass-card">
+<div class="glass-card" style="display:none">
   <h5 class="mb-4">Superadmin Menu</h5>
     <div class="mb-3">
       <div class="fw-semibold text-primary mb-2">
@@ -138,7 +138,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
 </div>
 
 
-<div class="glass-card">
+<div class="glass-card"  style="display:none">
   <h5 class="mb-4">Teachers Menu</h5>
 
   <?php foreach ($divisions as $d): ?>
@@ -180,7 +180,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
   <?php endforeach ?>
 </div>
 
-<div class="glass-card">
+<div class="glass-card"  style="display:none">
   <h5 class="mb-4">Class Menu</h5>
 
     <div class="mb-3">
