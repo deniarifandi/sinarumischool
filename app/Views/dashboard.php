@@ -71,9 +71,11 @@ function safe_url($path, $fallback = 'avatar/default.png'){
                   }
                 ?>
             </small>
-            <small class="text-muted">
+            <?php if ($user['role'] == "teacher"): ?>
+              <small class="text-muted">
                 <i class="bi bi-door-open-fill me-1"></i>ClassTeacher of: <strong><?= esc($user['class_room'] ?? 'N/A') ?></strong>
-            </small>
+              </small>
+            <?php endif ?>
         </div>
     </div>
 </div>
