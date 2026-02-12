@@ -29,7 +29,7 @@ class Home extends BaseController
 
         $userDetail = $this->userModel->getUserDetailData($user_id);
 
-        $mainClassId = $this->userModel->getUsersMainClass($user_id);
+        $mainClassId = $this->userModel->getUserMainClass($user_id);
 
         // print_r($userDetail);
         // exit();
