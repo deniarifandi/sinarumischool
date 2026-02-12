@@ -62,7 +62,7 @@ class UserModel extends Model
             ->findAll();
     }
 
-    public function getUserMainClass(){
+    public function getUserMainClass($user_id){
         return $this->select('
                 users.id
             ')
