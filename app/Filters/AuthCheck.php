@@ -22,8 +22,8 @@ class AuthCheck implements FilterInterface
                     ->get()
                     ->getRow();
 
-                print_r($row);
-                exit();
+                // print_r($row);
+                // exit()
                 if ($row) {
                     $session->set([
                         'id'   => $row->user_id,

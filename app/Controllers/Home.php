@@ -31,8 +31,9 @@ class Home extends BaseController
 
         $mainClassId = $this->userModel->getUserMainClass($user_id);
 
-        // print_r($userDetail);
-        // exit();
+        print_r(session()->get());
+        print_r($userDetail);
+        exit();
         return view('dashboard', [
             'checkedToday' => $checkedToday,
             'divisions'    => $divisions,
