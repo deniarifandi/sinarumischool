@@ -80,27 +80,6 @@ function safe_url($path, $fallback = 'avatar/default.png'){
     </div>
 </div>
 
-<div class="glass-card" style="display:none">
-  <h5 class="mb-4">Superadmin Menu</h5>
-    <div class="mb-3">
-      <div class="fw-semibold text-primary mb-2">
-        
-      </div>
-      <div class="action-grid">
-        <a href="<?= base_url('division') ?>" class="action-btn">
-          <i class="bi bi-layers"></i>
-          <span>Division</span>
-        </a>
-        <a href="<?= base_url('users') ?>" class="action-btn">
-          <i class="bi bi-layers"></i>
-          <span>Users</span>
-        </a>
-      </div>
-
-    </div>
-</div>
-
-
 <div class="glass-card">
   <h5 class="mb-4">Personal Management</h5>
   <div class="action-grid">
@@ -114,6 +93,29 @@ function safe_url($path, $fallback = 'avatar/default.png'){
     </a>
   </div>
 </div>
+
+  <?php if ($user['role'] == "superadmin"): ?>
+  <div class="glass-card">
+    <h5 class="mb-4">Superadmin Menu</h5>
+      <div class="mb-3">
+        <div class="fw-semibold text-primary mb-2">
+          
+        </div>
+        <div class="action-grid">
+          <a href="<?= base_url('division') ?>" class="action-btn">
+            <i class="bi bi-layers"></i>
+            <span>Division</span>
+          </a>
+          <a href="<?= base_url('users') ?>" class="action-btn">
+            <i class="bi bi-layers"></i>
+            <span>Users</span>
+          </a>
+        </div>
+
+      </div>
+  </div>
+  <?php endif ?>
+
 
 
 <div class="glass-card" style="display:none">
@@ -140,8 +142,9 @@ function safe_url($path, $fallback = 'avatar/default.png'){
 </div>
 
 
-<div class="glass-card"  style="display:none">
-  <h5 class="mb-4">Teachers Menu</h5>
+<?php if ($user['role'] == "superadmin" || $user['role'] == "teacher" || $user['role'] == "admin"): ?>
+<div class="glass-card">
+  <h5 class="mb-4">Division Admin Menu</h5>
 
   <?php foreach ($divisions as $d): ?>
     <div class="mb-3">
@@ -171,10 +174,6 @@ function safe_url($path, $fallback = 'avatar/default.png'){
           <span>Subjects</span>
         </a>
 
-        <a href="<?= base_url('absence') ?>" class="action-btn">
-          <i class="<?= 'bi bi-clipboard-check' ?>"></i>
-          <span>Student Attendance</span>
-        </a>
       </div>
 
 
@@ -182,7 +181,10 @@ function safe_url($path, $fallback = 'avatar/default.png'){
   <?php endforeach ?>
 </div>
 
-<div class="glass-card"  style="display:none">
+<?php endif ?>
+
+<?php if ($user['role'] == "superadmin" || $user['role'] == "teacher" || $user['role'] == "admin"): ?>
+<div class="glass-card" >
   <h5 class="mb-4">Class Menu</h5>
 
     <div class="mb-3">
@@ -205,5 +207,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
     </div>
 
 </div>
+
+<?php endif ?>
 
 <?= $this->endSection() ?>

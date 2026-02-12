@@ -27,7 +27,9 @@ class Home extends BaseController
         // ambil divisi user
         $divisions = $this->userDivision->getUserDivisions($user_id);
 
-        $userDetail = $this->userModel->getUsersDetailData($user_id);
+        $userDetail = $this->userModel->getUserDetailData($user_id);
+
+        $mainClassId = $this->userModel->getUsersMainClass($user_id);
 
         // print_r($userDetail);
         // exit();

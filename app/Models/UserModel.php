@@ -44,7 +44,7 @@ class UserModel extends Model
             ->findAll();
     }
 
-     public function getUsersDetailData($user_id)
+     public function getUserDetailData($user_id)
     {
         return $this->select('
                 users.id,
@@ -58,6 +58,17 @@ class UserModel extends Model
             ->join('user_divisions', 'user_divisions.user_id = users.id', 'left')
             ->join('divisions', 'divisions.id = user_divisions.division_id', 'left')
             ->where('users.id',$user_id)
+            ->orderBy('users.id')
+            ->findAll();
+    }
+
+    public function getUserMainClass(){
+        return $this->select('
+                users.id
+            ')
+            ->join('classes','classes.classteacher_id = users.id')
+            ->where('users.id',$user_id)
+
             ->orderBy('users.id')
             ->findAll();
     }
