@@ -21,7 +21,7 @@ class Home extends BaseController
     {   
 
     
-        $user_id= session('id'); // sesuaikan dengan session kamu
+        $user_id = session('id') ?? session('user_id');
         $checkedToday = $this->presence->presence_check($user_id);
 
         // ambil divisi user
