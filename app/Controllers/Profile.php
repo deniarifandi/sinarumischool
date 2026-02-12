@@ -9,7 +9,7 @@ class Profile extends BaseController
         $db = \Config\Database::connect();
 
         $user = $db->table('users')
-            ->where('id', session('id'))
+            ->where('id', session('id') ?? session('user_id'))
             ->get()
             ->getRowArray();
 
