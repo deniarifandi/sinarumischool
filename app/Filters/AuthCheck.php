@@ -24,7 +24,7 @@ class AuthCheck implements FilterInterface
 
                 if ($row) {
                     $session->set([
-                        'user_id'   => $row->user_id,
+                        'id'   => $row->user_id,
                         'logged_in'=> true,
                     ]);
                     return; // stop here, user now logged in
