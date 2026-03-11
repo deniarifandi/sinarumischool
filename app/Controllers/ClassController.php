@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\ClassModel;
 use App\Models\GradeModel;
+use App\Models\UserModel;
 
 class ClassController extends BaseController
 {
@@ -14,6 +15,7 @@ class ClassController extends BaseController
     {
         $this->classModel = new ClassModel();
         $this->gradeModel = new GradeModel(); // untuk dropdown grade
+        $this->userModel = new UserModel();
     }
 
     public function index()
@@ -40,32 +42,36 @@ class ClassController extends BaseController
     // CREATE FORM
     public function create()
     {
-        $divisiId = $this->request->getGet('divisi');
-        $grades   = $this->gradeModel->byDivision($divisiId);
+        $divisionId = $this->request->getGet('divisi');
+        $grades   = $this->gradeModel->byDivision($divisionId);
+        $teachers = $this->userModel->getUsersDataByDivision($divisionId);
 
         return view('class/form', [
-            'divisiId' => $divisiId,
-            'grades'   => $grades
+            'divisiId' => $divisionId,
+            'grades'   => $grades,
+            'teachers'  => $teachers
         ]);
     }
 
     // EDIT FORM
     public function edit($id)
     {
-        $divisiId = $this->request->getGet('divisi');
+        $divisionId = $this->request->getGet('divisi');
         $class = $this->classModel->find($id);
+        $teachers = $this->userModel->getUsersDataByDivision($divisionId);
 
-        if (!$class || $class['division_id'] != $divisiId) {
-            return redirect()->to('class?divisi='.$divisiId)
+        if (!$class || $class['division_id'] != $divisionId) {
+            return redirect()->to('class?divisi='.$divisionId)
                 ->with('error', 'Class not found');
         }
 
-        $grades = $this->gradeModel->byDivision($divisiId);
+        $grades = $this->gradeModel->byDivision($divisionId);
 
         return view('class/form', [
             'class'    => $class,
             'grades'   => $grades,
-            'divisiId' => $divisiId
+            'divisiId' => $divisionId,
+            'teachers'  => $teachers
         ]);
     }
 
@@ -79,6 +85,7 @@ class ClassController extends BaseController
             'grade'       => $this->request->getPost('grade'),
             'class_name'  => $this->request->getPost('class_name'),
             'description' => $this->request->getPost('description'),
+            'classteacher_id' => $this->request->getPost('classteacher_id'),
         ];
 
         if (!$data['class_name'] || !$data['grade']) {

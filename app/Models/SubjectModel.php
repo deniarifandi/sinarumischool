@@ -25,4 +25,8 @@ class SubjectModel extends Model
                     ->orderBy('subject_name', 'ASC')
                     ->findAll();
     }
+
+    
+
+
 }

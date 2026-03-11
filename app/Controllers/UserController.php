@@ -6,18 +6,21 @@ use App\Controllers\BaseController;
 use App\Models\UserModel;
 use App\Models\DivisionModel;
 use App\Models\UserDivisionModel;
+use App\Models\RoleModel;
 
 class UserController extends BaseController
 {
     protected $userModel;
     protected $divisionModel;
     protected $userDivisionModel;
+    protected $roleModel;
 
     public function __construct()
     {
         $this->userModel         = new UserModel();
         $this->divisionModel     = new DivisionModel();
         $this->userDivisionModel = new UserDivisionModel();
+        $this->roleModel = new RoleModel();
     }
 
     /* =========================
@@ -49,9 +52,11 @@ class UserController extends BaseController
             }
         }
 
+
         return view('users/index', [
             'users'     => array_values($users),
             'divisions' => $this->divisionModel->findAll(),
+            'roles'     => $this->roleModel->findAll()
         ]);
     }
 

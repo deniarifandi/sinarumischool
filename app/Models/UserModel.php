@@ -44,6 +44,25 @@ class UserModel extends Model
             ->findAll();
     }
 
+    public function getUsersDataByDivision($divisionId)
+    {
+        return $this->select('
+                users.id,
+                users.name,
+                users.role,
+                users.username,
+                users.pasfoto,
+                divisions.division_name,
+                divisions.id as division_id
+            ')
+            ->join('user_divisions', 'user_divisions.user_id = users.id', 'left')
+            ->join('divisions', 'divisions.id = user_divisions.division_id', 'left')
+            ->where('divisions.id',$divisionId)
+            ->where('users.role','teacher')
+            ->orderBy('users.name')
+            ->findAll();
+    }
+
      public function getUserDetailData($user_id)
     {
         return $this->select('
@@ -64,12 +83,10 @@ class UserModel extends Model
 
     public function getUserMainClass($user_id){
         return $this->select('
-                users.id
+                classes.*
             ')
-            ->join('classes','classes.classteacher_id = users.id')
+            ->join('classes','classes.classteacher_id = users.id','left')
             ->where('users.id',$user_id)
-
-            ->orderBy('users.id')
             ->findAll();
     }
 }

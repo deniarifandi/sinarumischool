@@ -107,6 +107,7 @@
                     <th style="width: 20%;">Identity</th>
                     <th style="width: 15%;">System Role</th>
                     <th>Divisions</th>
+                    <th>Subject Assign</th>
                     <th class="text-end" style="width: 100px;">Actions</th>
                 </tr>
             </thead>
@@ -156,6 +157,12 @@
                             </a>
 
                         </div>
+                    </td>
+                    <td>
+                        <a href="<?= base_url('user-subject/assign/'.$u['id']) ?>"
+                           class="btn btn-sm btn-primary">
+                            <i class="bi bi-link-45deg me-1"></i> Assign Subject
+                        </a>
                     </td>
                     <td class="text-end">
                         <div class="d-flex justify-content-end gap-1">
@@ -243,9 +250,10 @@
                                 id="modalUserRole"
                                 class="form-control form-select-sm-custom"
                                 required>
-                            <?php foreach (['superadmin','admin','teacher','staff'] as $r): ?>
-                                <option value="<?= $r ?>"><?= ucfirst($r) ?></option>
+                            <?php foreach ($roles as $r): ?>
+                                <option value="<?= $r['roles'] ?>"><?= ucfirst($r['roles']) ?></option>
                             <?php endforeach ?>
+
                         </select>
                     </div>
                 </div>

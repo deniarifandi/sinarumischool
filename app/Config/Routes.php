@@ -139,4 +139,43 @@ $routes->group('socioreport', ['filter' => 'auth'], function ($routes) {
     $routes->post('delete/(:num)/(:segment)', 'SocioReportController::deletePeriod/$1/$2');
 });
 
+$routes->group('lessonplan', function($routes) {
+    $routes->get('/', 'Lessonplan::index');
+    $routes->get('(:num)', 'Lessonplan::show/$1');
+    $routes->delete('(:num)', 'Lessonplan::delete/$1');
+
+    $routes->get('create', 'Lessonplan::create');
+    $routes->get('edit/(:num)', 'Lessonplan::edit/$1');
+    $routes->post('store', 'Lessonplan::store');
+    $routes->post('update/(:num)', 'Lessonplan::update/$1');
+});
+
+$routes->group('unit', function($routes) {
+    $routes->get('/', 'Unit::index');
+    $routes->get('create', 'Unit::create');
+    $routes->get('edit/(:num)', 'Unit::edit/$1');
+
+    $routes->post('store', 'Unit::store');
+    $routes->post('update/(:num)', 'Unit::update/$1');
+    $routes->post('delete/(:num)', 'Unit::delete/$1');
+});
+
+// routes.php
+$routes->group('roles', function($routes) {
+    $routes->get('/', 'Role::index');
+    $routes->get('create', 'Role::create');
+    $routes->get('edit/(:num)', 'Role::edit/$1');
+    $routes->post('save', 'Role::save');
+    $routes->post('save/(:num)', 'Role::save/$1');
+    $routes->post('delete/(:num)', 'Role::delete/$1');
+});
+
+$routes->group('user-subject', function($routes) {
+    $routes->get('/', 'UserSubject::index');
+    $routes->get('create', 'UserSubject::create');   // show form
+    $routes->post('store', 'UserSubject::store');
+    $routes->post('delete/(:num)', 'UserSubject::delete/$1');
+    $routes->get('assign/(:num)', 'UserSubject::assign/$1');
+    $routes->post('store', 'UserSubject::store');
+});
 

@@ -163,8 +163,8 @@ body::before{
   background:var(--glass-bg);
   backdrop-filter:blur(20px);
   border:1px solid var(--glass-border);
-  border-radius:20px;
-  padding:24px;
+  border-radius:10px;
+  padding:12px;
   margin-bottom:25px;
   box-shadow:0 25px 50px -12px rgba(0,0,0,.5);
 }
@@ -181,24 +181,24 @@ body::before{
 .action-btn{
   background:rgba(255,255,255,.05);
   border:1px solid var(--glass-border);
-  border-radius:16px;
-  padding:20px;
+  border-radius:4px;
+  padding:5px;
   color:#fff;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:10px;
+  gap:2px;
   transition:.3s;
   cursor:pointer;
 }
 
 .action-btn i{
-  font-size:1.5rem;
+  font-size:1.2rem;
   color:var(--accent-color);
 }
 
 .action-btn span{
-  font-size:.9rem;
+  font-size:.75rem;
   font-weight:500;
   color:#cbd5f5;
 }

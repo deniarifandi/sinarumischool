@@ -55,6 +55,7 @@
                     <tr>
                         <th class="ps-3">Grade</th>
                         <th>Class Name</th>
+                        <th>Class Teacher</th>
                         <th>Description</th>
                         <th class="text-end pe-3">Actions</th>
                         <th class="text-end pe-3">Manage</th>
@@ -72,6 +73,12 @@
                         <td>
                             <div class="fw-bold text-dark">
                                 <?= esc($c['class_name']) ?>
+                            </div>
+                        </td>
+
+                          <td>
+                            <div class="fw-bold text-dark">
+                                <?= esc($c['name']) ?>
                             </div>
                         </td>
 

@@ -5,7 +5,7 @@
     .profile-avatar-wrap {
   width: 50px;
   height: 50px;
-  border-radius: 50%;
+  border-radius: 90%;
   overflow: hidden;
   position: relative;
    border:3px solid var(--accent-color);
@@ -30,12 +30,13 @@ function safe_url($path, $fallback = 'avatar/default.png'){
 
 <?php if (empty($checkedToday)): ?>
   <div class="glass-card" style="background: rgba(213, 0, 0, 0.4);">
-    <p class="mb-2">
-      You haven’t submitted your attendance yet.
-    </p>
-    <a href="<?= base_url('presence') ?>" class="btn btn-sm btn-primary">
+    <p class="mb-1">
+      Attendance not submitted yet.
+      <a href="<?= base_url('presence') ?>" class="btn btn-sm btn-primary float-end">
       Submit Attendance
     </a>
+    </p>
+    
   </div>
 <?php endif; ?>
 
@@ -71,17 +72,41 @@ function safe_url($path, $fallback = 'avatar/default.png'){
                   }
                 ?>
             </small>
-            <?php if ($user['role'] == "teacher"): ?>
+            <?php if ($mainClass['class_name'] != ""): ?>
               <small class="text-muted">
-                <i class="bi bi-door-open-fill me-1"></i>ClassTeacher of: <strong><?= esc($user['class_room'] ?? 'N/A') ?></strong>
+                <i class="bi bi-door-open-fill me-1"></i>ClassTeacher of: <strong><?= esc($mainClass['class_name'] ?? 'N/A') ?></strong>
               </small>
             <?php endif ?>
         </div>
     </div>
 </div>
 
+<?php
+  $names = array_column($divisions, 'division_name');
+  if (in_array('pos paud bunga pelangi', array_map('strtolower', $names))): ?>
+  <div class="glass-card" >
+    <h6 class="mb-2">PPBP Menu</h5>
+
+      <div class="mb-1">
+        <div class="fw-semibold text-primary mb-2">
+
+        </div>
+
+        <div class="action-grid">
+          <a href="<?php echo base_url('lessonplan') ?>" class="action-btn">
+            <i class="bi bi-layers"></i>
+            <span>Modul Ajar</span>
+          </a>
+
+        </div>
+      </div>
+
+  </div>
+
+<?php endif ?>
+
 <div class="glass-card">
-  <h5 class="mb-4">Personal Management</h5>
+  <h6 class="mb-2">Personal Management</h5>
   <div class="action-grid">
     <a href="<?= base_url('profile') ?>" class="action-btn">
       <i class="bi bi-person"></i>
@@ -96,8 +121,8 @@ function safe_url($path, $fallback = 'avatar/default.png'){
 
   <?php if ($user['role'] == "superadmin"): ?>
   <div class="glass-card">
-    <h5 class="mb-4">Superadmin Menu</h5>
-      <div class="mb-3">
+    <h6 class="mb-2">Superadmin Menu</h5>
+      <div class="mb-1">
         <div class="fw-semibold text-primary mb-2">
           
         </div>
@@ -110,6 +135,11 @@ function safe_url($path, $fallback = 'avatar/default.png'){
             <i class="bi bi-layers"></i>
             <span>Users</span>
           </a>
+
+           <a href="<?= base_url('roles') ?>" class="action-btn">
+            <i class="bi bi-layers"></i>
+            <span>Roles</span>
+          </a>
         </div>
 
       </div>
@@ -118,12 +148,17 @@ function safe_url($path, $fallback = 'avatar/default.png'){
 
 
 
-<div class="glass-card" style="display:none">
-  <h5 class="mb-4">CSI</h5>
+<?php if (
+  $user['role'] == "superadmin" || 
+  $user['role'] == "teacher" || 
+  $user['role'] == "teacher_admin")
+: ?>
+<div class="glass-card">
+  <h6 class="mb-2">CSI</h5>
 
   <?php foreach ($divisions as $d): ?>
 
-    <div class="mb-3">
+    <div class="mb-1">
       <div class="fw-semibold text-primary mb-2">
         <?= esc($d['division_name']) ?>
       </div>
@@ -138,16 +173,21 @@ function safe_url($path, $fallback = 'avatar/default.png'){
     </div>
   </div>
   <?php endforeach ?>
-  
 </div>
+<?php endif ?>
 
 
-<?php if ($user['role'] == "superadmin" || $user['role'] == "teacher" || $user['role'] == "admin"): ?>
+<?php if (
+  $user['role'] == "superadmin" || 
+  $user['role'] == "teacher" || 
+  $user['role'] == "admin"|| 
+  $user['role'] == "teacher_admin")
+: ?>
 <div class="glass-card">
-  <h5 class="mb-4">Division Admin Menu</h5>
+  <h6 class="mb-2">Division Admin Menu</h5>
 
   <?php foreach ($divisions as $d): ?>
-    <div class="mb-3">
+    <div class="mb-1">
       <div class="fw-semibold text-primary mb-2">
         <?= esc($d['division_name']) ?>
       </div>
@@ -174,6 +214,18 @@ function safe_url($path, $fallback = 'avatar/default.png'){
           <span>Subjects</span>
         </a>
 
+
+         <a href="<?= base_url('unit?division='.$d['id']) ?>" class="action-btn" style="display:none">
+          <i class="bi bi-journal-text"></i>
+          <span>Units</span>
+        </a>
+
+        <a href="<?= base_url('user-subject?division='.$d['id']) ?>" class="action-btn">
+          <i class="bi bi-journal-text"></i>
+          <span>User Subject</span>
+        </a>
+
+
       </div>
 
 
@@ -183,11 +235,15 @@ function safe_url($path, $fallback = 'avatar/default.png'){
 
 <?php endif ?>
 
-<?php if ($user['role'] == "superadmin" || $user['role'] == "teacher" || $user['role'] == "admin"): ?>
+<?php if (
+  $user['role'] == "superadmin" || 
+  $user['role'] == "teacher" || 
+  $user['role'] == "teacher_admin"
+): ?>
 <div class="glass-card" >
-  <h5 class="mb-4">Class Menu</h5>
+  <h6 class="mb-2">Class Menu</h5>
 
-    <div class="mb-3">
+    <div class="mb-1">
       <div class="fw-semibold text-primary mb-2">
 
       </div>
@@ -205,6 +261,42 @@ function safe_url($path, $fallback = 'avatar/default.png'){
 
       </div>
     </div>
+
+</div>
+
+<?php endif ?>
+
+<?php if (
+  ($user['role'] == "superadmin" || 
+  $user['role'] == "teacher" || 
+  $user['role'] == "teacher_admin" ) && $userSubjects != null
+): ?>
+<div class="glass-card" >
+  <h6 class="mb-2">Subject Menu</h5>
+  
+  <?php foreach ($divisions as $di): ?>  
+    <h6 class="mb-2 text-primary"><?php echo $di['division_name']  ?></h5>
+
+    <?php foreach ($userSubjects as $d): ?>
+      <?php if ($di['division_name'] == $d['division_name']): ?>
+          <div class="mb-1">
+            <div class="fw-semibold text-danger mb-2" style="margin-left: 25px;">
+              <?= esc($d['subject_name']) ?>
+            </div>
+            <div class="action-grid">
+              <a href="<?= base_url('unit?divisi='.$d['id']) ?>" class="action-btn">
+                <i class="bi bi-layers"></i>
+                <span>Units</span>
+              </a>
+            </div>
+            
+          </div>
+        <?php endif ?>
+  <?php endforeach ?>
+
+  <?php endforeach ?>
+
+  
 
 </div>
 
