@@ -105,6 +105,7 @@
             <thead>
                 <tr>
                     <th style="width: 10%;">ID</th>
+                    <th>QR Code</th>
                     <th style="width: 20%;">Identity</th>
                     <th style="width: 15%;">System Role</th>
                     <th>Divisions</th>
@@ -115,7 +116,14 @@
             <tbody>
                 <?php foreach ($users as $u): ?>
                 <tr>
-                    <td><div class="d-flex align-items-center"><?php echo $u['id'] ?></div></td>
+                    <td>
+                         <span class="badge-solid"><?= esc($u['id']) ?></span>
+                    </td>
+                   <td>
+                        <button class="btn btn-sm btn-primary show-qr" data-id="<?= esc($u['id']) ?>" data-name="<?= esc($u['name']) ?>">
+                            QR
+                        </button>
+                    </td>
                     <td>
                         <div class="user-info">
                             <div class="fw-bold"><?= esc($u['name']) ?></div>
@@ -356,6 +364,20 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="qrModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body d-flex flex-column align-items-center justify-content-center text-center">
+        <div id="qrContainer"></div>
+        <div id="qrLabel" class="mt-2 small text-muted"></div>
+        <div id="qrName" class="mt-2 small text-primary"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <?= $this->endSection() ?>
 
 <?= $this->section('script') ?>
@@ -400,6 +422,7 @@ divisionModal.addEventListener('show.bs.modal', function (event) {
 
 <script>
 $(function () {
+
     $('#usersTable').DataTable({
         pageLength: 10,
         language: {
@@ -409,7 +432,33 @@ $(function () {
             }
         }
     });
+
 });
 </script>
+
+<script id="j5o8ru">
+$(document).on('click', '.show-qr', function () {
+    let id = $(this).data('id');
+    let name = $(this).data('name');
+
+    const container = document.getElementById("qrContainer");
+    container.innerHTML = '';
+
+    $('#qrLabel').text(id);
+    $('#qrName').text(name);
+
+    new QRCode(container, {
+        text: String(id),
+        width: 320,
+        height: 320
+    });
+
+    const qrModal = new bootstrap.Modal(document.getElementById('qrModal'));
+    qrModal.show();
+});
+</script>
+
+
+
 
 <?= $this->endSection() ?>
