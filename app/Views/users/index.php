@@ -106,11 +106,13 @@
                 <tr>
                     <th style="width: 10%;">ID</th>
                     <th>QR Code</th>
-                    <th style="width: 20%;">Identity</th>
-                    <th style="width: 15%;">System Role</th>
-                    <th>Divisions</th>
-                    <th>Subject Assign</th>
-                    <th class="text-end" style="width: 100px;">Actions</th>
+                        <th style="width: 20%;">Identity</th>
+                    <?php if ($user['role'] == "superadmin"): ?>
+                        <th style="width: 15%;">System Role</th>
+                        <th>Divisions</th>
+                        <th>Subject Assign</th>
+                        <th class="text-end" style="width: 100px;">Actions</th>
+                    <?php endif ?>
                 </tr>
             </thead>
             <tbody>
@@ -130,6 +132,7 @@
                             <small>@<?= esc($u['username']) ?></small>
                         </div>
                     </td>
+                    <?php if ($user['role'] == "superadmin"): ?>
                     <td>
                         <div class="d-flex align-items-center gap-2">
                             <span class="badge-solid badge-role"><?= esc($u['role'] ?? '—') ?></span>
@@ -187,6 +190,7 @@
                             </form>
                         </div>
                     </td>
+                <?php endif ?>
                 </tr>
                 <?php endforeach ?>
             </tbody>
