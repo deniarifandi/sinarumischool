@@ -119,7 +119,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
   </div>
 </div>
 
-  <?php if ($user['role'] == "superadmin"): ?>
+  <?php if ($user['role'] == "superadmin" || $user['role'] == "admin"): ?>
   <div class="glass-card">
     <h6 class="mb-2">Superadmin Menu</h5>
       <div class="mb-1">
