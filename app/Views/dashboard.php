@@ -251,7 +251,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
       <div class="action-grid">
         <a href="<?php //echo base_url('grade?classid='.$d['id']) ?>" class="action-btn">
           <i class="bi bi-layers"></i>
-          <span>Student Absence</span>
+          <span>Student Presence</span>
         </a>
 
       <!--   <a href="<?php //echo base_url('socioreport?classid='.$d['id']) ?>" class="action-btn">
