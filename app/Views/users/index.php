@@ -104,8 +104,8 @@
         <table class="table-solid" id="usersTable">
             <thead>
                 <tr>
-                    <th style="width: 10%;">ID</th>
-                    <th>QR Code</th>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 10%;">QR Code</th>
                         <th style="width: 20%;">Identity</th>
                     <?php if ($user_detail['role'] == "superadmin"): ?>
                         <th style="width: 15%;">System Role</th>
