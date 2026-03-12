@@ -104,6 +104,7 @@
         <table class="table-solid" id="usersTable">
             <thead>
                 <tr>
+                    <th style="width: 10%;">ID</th>
                     <th style="width: 20%;">Identity</th>
                     <th style="width: 15%;">System Role</th>
                     <th>Divisions</th>
@@ -114,6 +115,7 @@
             <tbody>
                 <?php foreach ($users as $u): ?>
                 <tr>
+                    <td><div class="d-flex align-items-center"><?php echo $u['id'] ?></div></td>
                     <td>
                         <div class="user-info">
                             <div class="fw-bold"><?= esc($u['name']) ?></div>
