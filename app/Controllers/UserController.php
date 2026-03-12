@@ -28,6 +28,10 @@ class UserController extends BaseController
     ========================== */
     public function index()
     {
+
+        $user_id = session('id') ?? session('user_id');
+        $userDetail = $this->userModel->getUserDetailData($user_id);
+
         $rows = $this->userModel->getUsersData();
 
         $users = [];
@@ -56,7 +60,8 @@ class UserController extends BaseController
         return view('users/index', [
             'users'     => array_values($users),
             'divisions' => $this->divisionModel->findAll(),
-            'roles'     => $this->roleModel->findAll()
+            'roles'     => $this->roleModel->findAll(),
+            'user_detail'=> $userDetail[0],
         ]);
     }
 

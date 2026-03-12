@@ -22,7 +22,6 @@ class Home extends BaseController
     public function index(): string
     {   
 
-    
         $user_id = session('id') ?? session('user_id');
         $checkedToday = $this->presence->presence_check($user_id);
 

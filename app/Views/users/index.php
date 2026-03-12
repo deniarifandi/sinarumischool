@@ -107,7 +107,7 @@
                     <th style="width: 10%;">ID</th>
                     <th>QR Code</th>
                         <th style="width: 20%;">Identity</th>
-                    <?php if ($user['role'] == "superadmin"): ?>
+                    <?php if ($user_detail['role'] == "superadmin"): ?>
                         <th style="width: 15%;">System Role</th>
                         <th>Divisions</th>
                         <th>Subject Assign</th>
@@ -132,7 +132,7 @@
                             <small>@<?= esc($u['username']) ?></small>
                         </div>
                     </td>
-                    <?php if ($user['role'] == "superadmin"): ?>
+                    <?php if ($user_detail['role'] == "superadmin"): ?>
                     <td>
                         <div class="d-flex align-items-center gap-2">
                             <span class="badge-solid badge-role"><?= esc($u['role'] ?? '—') ?></span>
