@@ -111,8 +111,8 @@ public function print()
     // presence subquery
     $presenceSub = $db->table('presensidata')
         ->select('guru_id, COUNT(*) as total_presence')
-        // ->where('presensidata_tanggal >=', $datestart)
-        // ->where('presensidata_tanggal <=', $dateend)
+        ->where('presensidata_tanggal >=', $datestart)
+        ->where('presensidata_tanggal <=', $dateend)
         ->groupBy('guru_id')
         ->getCompiledSelect();
 
