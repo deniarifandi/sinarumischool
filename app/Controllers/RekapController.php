@@ -125,6 +125,7 @@ public function print()
             r.user_role,
             r.role_sort,
             r.user_id,
+            r.nullified,
             u.name as user_name,
             d.division_name,
             COALESCE(p.total_presence,0) as total_presence

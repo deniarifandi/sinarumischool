@@ -81,6 +81,7 @@ th{
     <th>User</th>
     <th>Total Presence</th>
     <th>Incentive</th>
+    
 </tr>
 </thead>
 
@@ -103,7 +104,16 @@ th{
         <td><?= esc($u['user_role']) ?></td>
         <td><?= esc($u['user_name']) ?></td>
         <td><?= esc($u['total_presence']) ?></td>
-        <td><?= esc($u['total_presence'] * 15000) ?></td>
+        <td>
+            <?php if ($u['nullified'] == 0): ?>
+                <?= esc($u['total_presence'] * 15000) ?>    
+            <?php else :?>
+                0
+            <?php endif ?>
+                
+                
+        </td>
+        
     </tr>
 
     <?php endforeach; ?>
