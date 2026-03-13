@@ -302,8 +302,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
 
 <?php endif ?>
 
-<?php if (
-  ($user['role'] == "superadmin"): ?>
+<?php if ($user['role'] == "superadmin"): ?>
 <div class="glass-card">
   <h6 class="mb-2">Staff Presence Management</h5>
   <div class="action-grid">
