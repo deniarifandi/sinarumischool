@@ -179,3 +179,17 @@ $routes->group('user-subject', function($routes) {
     $routes->post('store', 'UserSubject::store');
 });
 
+
+//REKAPP
+
+$routes->group('rekap', ['filter' => 'auth'], function ($routes) {
+      $routes->get('/', 'RekapController::index');
+
+    $routes->get('create', 'RekapController::create');
+    $routes->get('edit/(:num)', 'RekapController::edit/$1');
+
+    $routes->post('save', 'RekapController::save');
+    $routes->post('save/(:num)', 'RekapController::save/$1');
+
+    $routes->get('print','RekapController::print');
+});

@@ -302,4 +302,14 @@ function safe_url($path, $fallback = 'avatar/default.png'){
 
 <?php endif ?>
 
+<div class="glass-card">
+  <h6 class="mb-2">Staff Presence Management</h5>
+  <div class="action-grid">
+    <a href="<?= base_url('rekap') ?>" class="action-btn">
+      <i class="bi bi-person"></i>
+      <span>Rekap</span>
+    </a>
+  </div>
+</div>
+
 <?= $this->endSection() ?>
