@@ -175,7 +175,7 @@ class SocioReportController extends BaseController
             $builder->where('teacher_id', session()->get('user_id'));
         }
         // echo $classId;
-
+        // exit();
         $classDetail = $this->classModel->getClassDetail($classId);
         // print_r($this->classModel->getClassDetail($classId));
         // exit();

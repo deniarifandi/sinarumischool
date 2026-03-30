@@ -23,8 +23,8 @@ class ClassModel extends Model
     public function getClassDetail($class_id){
         return $this->select('classes.*, grades.grade_name, users.name')
                     ->where('classes.id',$class_id)
-                    ->join('grades','grades.id = classes.grade')
-                    ->join('users','users.id = classes.classteacher_id')
+                    ->join('grades','grades.id = classes.grade','left')
+                    ->join('users','users.id = classes.classteacher_id','left')
                     ->orderBy('grade', 'ASC')
                     ->orderBy('class_name', 'ASC')
                     ->findAll();
