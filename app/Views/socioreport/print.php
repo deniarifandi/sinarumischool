@@ -92,7 +92,7 @@ Siswa menerima umpan balik dengan sikap positif dan dengan cepat mencoba kembali
 ];
 $descriptionUpper = [
     'Life' => [
-        'A' => 'Developing<br>
+        'C' => 'Developing<br>
 The student listens to feedback but does not always use it to improve work and may avoid new or difficult tasks<br><i>
 Berkembang<br>
 Siswa mendengarkan umpan balik, namun belum selalu menggunakannya untuk memperbaiki hasil kerja dan terkadang menghindari tugas yang baru atau sulit.</i>',
@@ -100,7 +100,7 @@ Siswa mendengarkan umpan balik, namun belum selalu menggunakannya untuk memperba
 The student begins to apply feedback to improve work and tries new strategies, though still hesitant at times.<br><i>
 Konsisten<br>
 Siswa mulai menerapkan umpan balik untuk memperbaiki hasil kerja dan mencoba strategi baru, meskipun terkadang masih ragu-ragu.</i>',
-        'C' => 'Advanced<br>
+        'A' => 'Advanced<br>
 The student actively uses feedback to improve performance and confidently tries new strategies when facing challenges.<br><i>
 Berkembang sangat baik<br>
 Siswa secara aktif menggunakan umpan balik untuk meningkatkan kinerja dan dengan percaya diri mencoba strategi baru saat menghadapi tantangan.</i>',
