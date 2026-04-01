@@ -106,7 +106,7 @@ Berkembang sangat baik<br>
 Siswa secara aktif menggunakan umpan balik untuk meningkatkan kinerja dan dengan percaya diri mencoba strategi baru saat menghadapi tantangan.</i>',
     ],
     'Soc' => [
-        'A' => 'Developing<br>
+        'C' => 'Developing<br>
 The student may withdraw or dominate group activities, making collaboration less effective.<br><i>
 Berkembang<br>
 Siswa terkadang menarik diri atau justru mendominasi kegiatan kelompok sehingga kerja sama menjadi kurang efektif.</i>',
@@ -114,20 +114,20 @@ Siswa terkadang menarik diri atau justru mendominasi kegiatan kelompok sehingga 
 The student contributes to group work and begins supporting peers in completing tasks.<br><i>
 Konsisten<br>
 Siswa berkontribusi dalam kerja kelompok dan mulai mendukung teman dalam menyelesaikan tugas.</i>',
-        'C' => 'Advanced<br>
+        'A' => 'Advanced<br>
 The student actively contributes ideas, supports teammates, and demonstrates mature collaboration skills.<br><i>
 Berkembang sangat baik<br>
 Siswa secara aktif menyumbangkan ide, mendukung teman satu tim, dan menunjukkan keterampilan kolaborasi yang matang.</i>',
     ],
     'Dev' => [
-        'A' => 'Developing<br>
+        'C' => 'Developing<br>
 The student may overreact during conflict or needs a long time to continue working after making mistakes.<br><i>
 Berkembang<br>
 Siswa terkadang bereaksi berlebihan saat terjadi konflik atau membutuhkan waktu yang cukup lama untuk kembali melanjutkan pekerjaan setelah melakukan kesalahan.</i>',
         'B' => 'Consistent<br>
 The student is generally able to manage emotions and recover after setbacks<br><i>
 Siswa umumnya mampu mengelola emosi dan dapat kembali bangkit setelah mengalami kesulitan atau kegagalan.<br></i>',
-        'C' => 'Advanced<br>
+        'A' => 'Advanced<br>
 The student stays calm during conflict and demonstrates resilience by quickly continuing work after mistakes<br><i>
 Berkembang Sangat Baik<br>
 Siswa tetap tenang saat menghadapi konflik dan menunjukkan ketangguhan dengan cepat melanjutkan pekerjaan setelah melakukan kesalahan.</i>',
