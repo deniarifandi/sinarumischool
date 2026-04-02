@@ -494,7 +494,9 @@ echo "</thead>";
 
         <tr>
             <td>A</td>
-            <td><b>SELF SKILL</b><br>Keterampilan Intrapersonal</td>
+            <td><b>SELF SKILL</b>
+                <?php echo $highestArea1." - ".$value1;  ?>
+                <br>Keterampilan Intrapersonal</td>
             <td>CRITERIA<br>Kriteria</td>
             <td><?= $catResult1 ?></td>
         </tr>
@@ -508,12 +510,12 @@ Kemampuan siswa dalam mengelola diri, berusaha, fokus, dan mengembangkan kemampu
 
         <!-- AREA 3 -->
         <?php 
-        $highest = $highestArea3;
+        $highest = $highestArea2;
         $range = ($highest - 0) / 3;
         $limitA = $range;
         $limitB = $range * 2;
 
-        $value3 = $fin3;
+        $value3 = $fin2;
 
         if ($value3 <= $limitA) {
             $grade3 = 'C';
@@ -532,7 +534,9 @@ Kemampuan siswa dalam mengelola diri, berusaha, fokus, dan mengembangkan kemampu
 
         <tr>
             <td>B</td>
-            <td><b>BEHAVIOR & DECISION</b><br>Perilaku dan Kemampuan Mengambil Keputusan</td>
+            <td><b>BEHAVIOR & DECISION</b>
+                <?php echo $highestArea2." - ".$value3;  ?>
+                <br>Perilaku dan Kemampuan Mengambil Keputusan</td>
             <td>CRITERIA<br>Kriteria</td>
             <td><?= $catResult3 ?></td>
         </tr>
@@ -547,12 +551,12 @@ Kemampuan siswa dalam berinteraksi, kerja sama, komunikasi, dan menyelesaikan ko
 
         <!-- AREA 2 -->
         <?php 
-        $highest = $highestArea2;
+        $highest = $highestArea3;
         $range = ($highest - 0) / 3;
         $limitA = $range;
         $limitB = $range * 2;
 
-        $value2 = $fin2;
+        $value2 = $fin3;
 
         if ($value2 <= $limitA) {
             $grade2 = 'A';
@@ -571,7 +575,9 @@ Kemampuan siswa dalam berinteraksi, kerja sama, komunikasi, dan menyelesaikan ko
 
         <tr>
             <td>C</td>
-            <td><b>SOCIAL SKILL</b><br>Keterampilan Interpersonal</td>
+            <td><b>SOCIAL SKILL</b>
+                <?php echo $highestArea2." - ".$value2;  ?>
+                <br>Keterampilan Interpersonal</td>
             <td>CRITERIA<br>Kriteria</td>
             <td><?= $catResult2 ?></td>
         </tr>
