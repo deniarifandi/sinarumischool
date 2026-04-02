@@ -237,16 +237,16 @@ Siswa tetap tenang saat menghadapi konflik dan menunjukkan ketangguhan dengan ce
    COLUMN GROUPING
    ====================== */
    $colLower = [
-    'trying','following','sharing','kindness','calm','composed',
-    'giving','reminders','not-sharing','rough','upset','reactive'
+    'trying','following','calm','composed','sharing','kindness',
+    'giving','reminders','upset','reactive','not-sharing','rough'
 ];
 $colMid = [
-    'focused','attempting','cooperative','listening','accepting','recovering',
-    'distracted','avoiding','disruptive','interrupting','rejecting','quitting'
+    'focused','attempting','accepting','recovering','cooperative','listening',
+    'distracted','avoiding','rejecting','quitting','disruptive','interrupting'
 ];
 $colUpper = [
-    'improving','challenging','contributing','supporting','steady','resilient',
-    'resisting','avoidance','withdrawing','dominating','overreacting','lingering'
+    'improving','challenging','steady','resilient','contributing','supporting',
+    'resisting','avoidance','overreacting','lingering','withdrawing','dominating'
 ];
 
 /* ======================
