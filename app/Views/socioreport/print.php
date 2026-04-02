@@ -532,15 +532,16 @@ Kemampuan siswa dalam mengelola diri, berusaha, fokus, dan mengembangkan kemampu
 
         <tr>
             <td>B</td>
-            <td><b>SOCIAL SKILL</b><br>Keterampilan Interpersonal</td>
-            <td>CRITERIA<br>Kriteria</td>
+            <td><b>BEHAVIOR & DECISION</b><br>Perilaku dan Kemampuan Mengambil Keputusan</td>
+            <td>CRITERIA<br>Kriteria</td>            
             <td><?= $catResult2 ?></td>
         </tr>
 
         <tr>
             <td></td>
-            <td>The student’s behavior in following rules, demonstrating independence, and taking responsibility<br><i>
-Perilaku siswa dalam mengikuti aturan, kemandirian, dan tanggung jawab.</i></td>
+            <td>The student’s capacity for interaction, collaboration, communication, and conflict resolution.<br><i>
+Kemampuan siswa dalam berinteraksi, kerja sama, komunikasi, dan menyelesaikan konflik.</i>
+</td>
             <td colspan="2"><?= $desc2 ?></td>
         </tr>
 
@@ -570,16 +571,17 @@ Perilaku siswa dalam mengikuti aturan, kemandirian, dan tanggung jawab.</i></td>
 
         <tr>
             <td>C</td>
-            <td><b>BEHAVIOR & DECISION</b><br>Perilaku dan Kemampuan Mengambil Keputusan</td>
+            <td><b>SOCIAL SKILL</b><br>Keterampilan Interpersonal</td>
             <td>CRITERIA<br>Kriteria</td>
+            
             <td><?= $catResult3 ?></td>
         </tr>
 
         <tr>
             <td></td>
-            <td>The student’s capacity for interaction, collaboration, communication, and conflict resolution.<br><i>
-Kemampuan siswa dalam berinteraksi, kerja sama, komunikasi, dan menyelesaikan konflik.</i>
-</td>
+            
+<td>The student’s behavior in following rules, demonstrating independence, and taking responsibility<br><i>
+Perilaku siswa dalam mengikuti aturan, kemandirian, dan tanggung jawab.</i></td>
             <td colspan="2"><?= $desc3 ?></td>
         </tr>
 
