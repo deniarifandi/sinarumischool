@@ -304,8 +304,8 @@ $negativeCols = array_slice($cols, 6);
     <div class="summary-box">
         <strong>Highest Scores (All Students)</strong><br><br>
         Self Skill : <?= $highestArea1 ?><br>
-        Social Skill : <?= $highestArea2 ?><br>
-        Behavior : <?= $highestArea3 ?>
+        Behavior : <?= $highestArea2 ?><br>
+        Social : <?= $highestArea3 ?>
     </div>
 
     <?php 
