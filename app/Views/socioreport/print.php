@@ -531,7 +531,7 @@ Kemampuan siswa dalam mengelola diri, berusaha, fokus, dan mengembangkan kemampu
         ?>
 
         <tr>
-            <td>C</td>
+            <td>B</td>
             <td><b>BEHAVIOR & DECISION</b><br>Perilaku dan Kemampuan Mengambil Keputusan</td>
             <td>CRITERIA<br>Kriteria</td>
             <td><?= $catResult3 ?></td>
@@ -570,7 +570,7 @@ Kemampuan siswa dalam berinteraksi, kerja sama, komunikasi, dan menyelesaikan ko
         ?>
 
         <tr>
-            <td>B</td>
+            <td>C</td>
             <td><b>SOCIAL SKILL</b><br>Keterampilan Interpersonal</td>
             <td>CRITERIA<br>Kriteria</td>
             <td><?= $catResult2 ?></td>
