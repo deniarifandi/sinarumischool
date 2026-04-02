@@ -237,16 +237,16 @@ Siswa tetap tenang saat menghadapi konflik dan menunjukkan ketangguhan dengan ce
    COLUMN GROUPING
    ====================== */
    $colLower = [
-    'trying','following','calm','composed','sharing','kindness',
-    'giving','reminders','upset','reactive','not-sharing','rough',
+    'trying','following','sharing','kindness','calm','composed',
+    'giving','reminders','not-sharing','rough','upset','reactive'
 ];
 $colMid = [
-    'focused','attempting','accepting','recovering','cooperative','listening',
-    'distracted','avoiding','rejecting','quitting','disruptive','interrupting',
+    'focused','attempting','cooperative','listening','accepting','recovering',
+    'distracted','avoiding','disruptive','interrupting','rejecting','quitting'
 ];
 $colUpper = [
-    'improving','challenging','steady','resilient','contributing','supporting',
-    'resisting','avoidance','overreacting','lingering','withdrawing','dominating'
+    'improving','challenging','contributing','supporting','steady','resilient',
+    'resisting','avoidance','withdrawing','dominating','overreacting','lingering'
 ];
 
 /* ======================
@@ -506,45 +506,6 @@ Kemampuan siswa dalam mengelola diri, berusaha, fokus, dan mengembangkan kemampu
             <td colspan="2"><?= $desc1 ?></td>
         </tr>
 
-        <!-- AREA 2 -->
-        <?php 
-        $highest = $highestArea2;
-        $range = ($highest - 0) / 3;
-        $limitA = $range;
-        $limitB = $range * 2;
-
-        $value2 = $fin2;
-
-        if ($value2 <= $limitA) {
-            $grade2 = 'C';
-            $catResult2 = 'DEVELOPING <br> Berkembang';
-            $desc2 = $finalDescription['Soc']['C'];
-        } elseif ($value2 <= $limitB) {
-            $grade2 = 'B';
-            $catResult2 = 'CONSISTENT <br> Baik';
-            $desc2 = $finalDescription['Soc']['B'];
-        } else {
-            $grade2 = 'A';
-            $catResult2 = 'ADVANCE <br> Sangat Baik';
-            $desc2 = $finalDescription['Soc']['A'];
-        }
-        ?>
-
-        <tr>
-            <td>B</td>
-            <td><b>BEHAVIOR & DECISION</b><br>Perilaku dan Kemampuan Mengambil Keputusan</td>
-            <td>CRITERIA<br>Kriteria</td>            
-            <td><?= $catResult2 ?></td>
-        </tr>
-
-        <tr>
-            <td></td>
-            <td>The student’s capacity for interaction, collaboration, communication, and conflict resolution.<br><i>
-Kemampuan siswa dalam berinteraksi, kerja sama, komunikasi, dan menyelesaikan konflik.</i>
-</td>
-            <td colspan="2"><?= $desc2 ?></td>
-        </tr>
-
         <!-- AREA 3 -->
         <?php 
         $highest = $highestArea3;
@@ -571,18 +532,55 @@ Kemampuan siswa dalam berinteraksi, kerja sama, komunikasi, dan menyelesaikan ko
 
         <tr>
             <td>C</td>
-            <td><b>SOCIAL SKILL</b><br>Keterampilan Interpersonal</td>
+            <td><b>BEHAVIOR & DECISION</b><br>Perilaku dan Kemampuan Mengambil Keputusan</td>
             <td>CRITERIA<br>Kriteria</td>
-            
             <td><?= $catResult3 ?></td>
         </tr>
 
         <tr>
             <td></td>
-            
-<td>The student’s behavior in following rules, demonstrating independence, and taking responsibility<br><i>
-Perilaku siswa dalam mengikuti aturan, kemandirian, dan tanggung jawab.</i></td>
+            <td>The student’s capacity for interaction, collaboration, communication, and conflict resolution.<br><i>
+Kemampuan siswa dalam berinteraksi, kerja sama, komunikasi, dan menyelesaikan konflik.</i>
+</td>
             <td colspan="2"><?= $desc3 ?></td>
+        </tr>
+
+        <!-- AREA 2 -->
+        <?php 
+        $highest = $highestArea2;
+        $range = ($highest - 0) / 3;
+        $limitA = $range;
+        $limitB = $range * 2;
+
+        $value2 = $fin2;
+
+        if ($value2 <= $limitA) {
+            $grade2 = 'A';
+            $catResult2 = 'DEVELOPING <br> Berkembang';
+            $desc2 = $finalDescription['Soc']['C'];
+        } elseif ($value2 <= $limitB) {
+            $grade2 = 'B';
+            $catResult2 = 'CONSISTENT <br> Baik';
+            $desc2 = $finalDescription['Soc']['B'];
+        } else {
+            $grade2 = 'C';
+            $catResult2 = 'ADVANCE <br> Sangat Baik';
+            $desc2 = $finalDescription['Soc']['A'];
+        }
+        ?>
+
+        <tr>
+            <td>B</td>
+            <td><b>SOCIAL SKILL</b><br>Keterampilan Interpersonal</td>
+            <td>CRITERIA<br>Kriteria</td>
+            <td><?= $catResult2 ?></td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <td>The student’s behavior in following rules, demonstrating independence, and taking responsibility<br><i>
+Perilaku siswa dalam mengikuti aturan, kemandirian, dan tanggung jawab.</i></td>
+            <td colspan="2"><?= $desc2 ?></td>
         </tr>
 
     </tbody>
