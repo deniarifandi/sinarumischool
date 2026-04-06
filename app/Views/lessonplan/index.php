@@ -46,8 +46,8 @@
                         </td>
 
                        <td><?= esc($lp['class_name']) ?></td>
-                        <td><?= esc($lp['unit_name']) ?></td>
-                        <td><?= esc($lp['subunit_name']) ?></td>
+                        <td><?= esc($lp['unit_nama']) ?></td>
+                        <td><?= esc($lp['subunit_nama']) ?></td>
                         <td><?= esc($lp['semester']) ?></td>
                         <td><?= esc($lp['bulan']) ?></td>
                         <td><?= esc($lp['dpl']) ?></td>
