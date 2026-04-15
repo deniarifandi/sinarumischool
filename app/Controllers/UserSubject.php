@@ -27,40 +27,34 @@ class UserSubject extends BaseController
 
         $builder = $this->userSubjectModel->builder();
 
-        $builder->select('subjects.subject_name, users.name');
-        $builder->join('users', 'users.id = user_subjects.user_id', 'left');
-        $builder->join('subjects', 'subjects.id = user_subjects.subject_id', 'left');
+$builder->select('subjects.subject_name, GROUP_CONCAT(users.name) as teachers, division_id');
+$builder->join('users', 'users.id = user_subjects.user_id', 'left');
+$builder->join('subjects', 'subjects.id = user_subjects.subject_id', 'left');
 
-        if ($userId) {
-            $builder->where('user_subjects.user_id', $userId);
-        }
-        if ($divisionId) {
-            $builder->where('subjects.division_id', $divisionId);
-        }
+if ($userId && $user) {
+    $builder->where('user_subjects.user_id', $userId);
+}
+if ($divisionId) {
+    $builder->where('subjects.division_id', $divisionId);
+}
 
-        $rows = $builder->get()->getResultArray();
+$builder->groupBy('subjects.subject_name');
+
+$rows = $builder->get()->getResultArray();
 
         $grouped = [];
 
-        foreach ($rows as $row) {
-            $subject = $row['subject_name'];
+        foreach ($rows as &$row) {
+    $row['teacher'] = explode(',', $row['teachers']);
+    unset($row['teachers']);
+}
 
-            if (!isset($grouped[$subject])) {
-                $grouped[$subject] = [
-                    'subject_name' => $subject,
-                    'teacher' => []
-                ];
-            }
-
-            $grouped[$subject]['teacher'][] = $row['name'];
-        }
-
-        //return $this->response->setJSON(array_values($grouped));
+        // return $this->response->setJSON($rows);
 
         return view('user_subject/index', [
-            'userSubjects' => $grouped,
-            'userId'       => $userId,
-        ]);
+    'userSubjects' => $rows,
+    'userId'       => $userId,
+]);
     }
 
     public function delete($id)

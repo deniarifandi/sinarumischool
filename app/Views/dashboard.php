@@ -284,13 +284,20 @@ function safe_url($path, $fallback = 'avatar/default.png'){
               <?= esc($d['subject_name']) ?>
             </div>
             <div class="action-grid">
-              <a href="<?= base_url('unit?divisi='.$d['id']) ?>" class="action-btn">
+              <a href="<?= base_url('unit?subject_id='.$d['subject_id']) ?>" class="action-btn">
                 <i class="bi bi-layers"></i>
-                <span>Units</span>
+                <span>Units & Sub-Units</span>
+              </a>
+
+              <a href="<?= base_url('outcome?subject_id='.$d['subject_id']) ?>" class="action-btn">
+                <i class="bi bi-layers"></i>
+                <span>Outcome & Objective</span>
               </a>
             </div>
+
             
           </div>
+
         <?php endif ?>
   <?php endforeach ?>
 

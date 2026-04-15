@@ -160,6 +160,39 @@ $routes->group('unit', function($routes) {
     $routes->post('delete/(:num)', 'Unit::delete/$1');
 });
 
+$routes->group('subunit', function($routes) {
+    $routes->get('/', 'Subunit::index');
+    $routes->get('create', 'Subunit::create');
+    $routes->get('edit/(:num)', 'Subunit::edit/$1');
+
+    $routes->post('store', 'Subunit::store');
+    $routes->post('update/(:num)', 'Subunit::update/$1');
+    $routes->post('delete/(:num)', 'Subunit::delete/$1');
+});
+
+
+$routes->group('outcome', function($routes) {
+    $routes->get('/', 'Outcome::index');
+    $routes->get('create', 'Outcome::create');
+    $routes->get('edit/(:num)', 'Outcome::edit/$1');
+
+    $routes->post('store', 'Outcome::store');
+    $routes->post('update/(:num)', 'Outcome::update/$1');
+    $routes->post('delete/(:num)', 'Outcome::delete/$1');
+});
+
+$routes->group('objective', function($routes) {
+    $routes->get('/', 'Objective::index');
+    $routes->get('create', 'Objective::create');
+    $routes->get('edit/(:num)', 'Objective::edit/$1');
+
+    $routes->post('store', 'Objective::store');
+    $routes->post('update/(:num)', 'Objective::update/$1');
+    $routes->post('delete/(:num)', 'Objective::delete/$1');
+});
+
+
+
 // routes.php
 $routes->group('roles', function($routes) {
     $routes->get('/', 'Role::index');

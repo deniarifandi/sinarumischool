@@ -4,23 +4,37 @@
 <div class="glass-card">
     <h5 class="mb-4">
         <?= isset($unit) ? 'Edit Unit' : 'Add Unit' ?>
+            <?php $subjectId = esc( $subject_id ?? $_GET['subject_id'] ?? '-') ?>
     </h5>
 
     <form action="<?= isset($unit)
         ? base_url('unit/update/'.$unit['id'])
-        : base_url('unit/create') ?>"
+        : base_url('unit/store') ?>"
         method="post">
 
         <?= csrf_field() ?>
 
         <input type="hidden"
                name="subject_id"
-               value="<?= old('subject_id', $unit['subject_id'] ?? $subjectId ?? '') ?>">
+               value="<?php echo $subjectId ?>">
 
-        <input type="hidden"
-               name="grade_id"
-               value="<?= old('grade_id', $unit['grade_id'] ?? $gradeId ?? '') ?>">
+    <?php 
+$selectedGrade = old('grade_id') 
+    ?? ($unit['grade_id'] ?? ($_GET['grade'] ?? ''));
+?>
 
+<div class="mb-3">
+    <label class="form-label">Grade</label>
+    <select name="grade_id" class="form-control" required>
+        <option value="">-- Select Grade --</option>
+        <?php foreach ($grades as $grade): ?>
+            <option value="<?= $grade['id'] ?>"
+                <?= $selectedGrade == $grade['id'] ? 'selected' : '' ?>>
+                <?= $grade['grade_name'] ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+</div>
         <div class="mb-3">
             <label class="form-label">Unit Name</label>
             <input type="text"
@@ -31,7 +45,7 @@
         </div>
 
         <div class="d-flex justify-content-end">
-            <a href="<?= base_url('unit?subject='.($subjectId ?? $unit['subject_id'] ?? '').'&grade='.($gradeId ?? $unit['grade_id'] ?? '')) ?>"
+            <a href="<?= base_url('unit?subject_id='.($subjectId ?? $unit['subject_id'] ?? '')) ?>"
                class="btn btn-outline-secondary me-2">
                 Back
             </a>
