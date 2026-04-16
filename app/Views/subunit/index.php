@@ -32,7 +32,7 @@
                 <thead>
                     <tr>
                         <th class="ps-3">ID</th>
-                        <th>Name</th>
+                        <th>Unit</th>
                         <th>Sub-Unit</th>
                         <th class="text-end pe-3">Actions</th>
                     </tr>
