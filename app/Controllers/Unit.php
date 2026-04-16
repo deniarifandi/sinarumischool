@@ -115,9 +115,7 @@ class Unit extends BaseController
 
         $this->unitModel->delete($id);
 
-        return redirect()->to('/unit?subject=' .
-            $unit['subject_id'] .
-            '&grade=' .
-            $unit['grade_id']);
+        return redirect()->to('/unit?subject_id=' .
+            $unit['subject_id']);
     }
 }
