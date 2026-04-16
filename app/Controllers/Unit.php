@@ -18,24 +18,64 @@ class Unit extends BaseController
         $this->gradeModel = new GradeModel();
     }
 
-    public function index()
-    {
-        $subjectId = $this->request->getGet('subject_id');
+    // public function index()
+    // {
+    //     $subjectId = $this->request->getGet('subject_id');
 
-        $builder = $this->unitModel->select('units.*, subjects.subject_name, grades.grade_name')
+    //     $builder = $this->unitModel->select('units.*, subjects.subject_name, grades.grade_name')
+    //     ->join('subjects','subjects.id = units.subject_id')
+    //     ->join('grades','grades.id = units.grade_id')
+    //     ->orderBy('grades.id');
+    //     if ($subjectId) {
+    //         $builder = $builder->where('subject_id', $subjectId);
+    //     }
+
+
+    //     return view('unit/index', [
+    //         'units'     => $builder->findAll(),
+    //         'subjectId' => $subjectId
+    //     ]);
+    // }
+
+    public function index()
+{
+    $subjectId = $this->request->getGet('subject_id');
+    $gradeId   = $this->request->getGet('grade_id');
+
+    // units
+    $builder = $this->unitModel
+        ->select('units.*, subjects.subject_name, grades.grade_name')
         ->join('subjects','subjects.id = units.subject_id')
         ->join('grades','grades.id = units.grade_id')
         ->orderBy('grades.id');
-        if ($subjectId) {
-            $builder = $builder->where('subject_id', $subjectId);
-        }
 
-
-        return view('unit/index', [
-            'units'     => $builder->findAll(),
-            'subjectId' => $subjectId
-        ]);
+    if ($subjectId) {
+        $builder->where('units.subject_id', $subjectId);
     }
+
+    if ($gradeId) {
+        $builder->where('units.grade_id', $gradeId);
+    }
+
+    // grades list (your query)
+    $grades = [];
+    if ($subjectId) {
+        $grades = $this->gradeModel
+            ->select('grades.*')
+            ->join('divisions','grades.division_id = divisions.id','left')
+            ->join('subjects','subjects.division_id = divisions.id','left')
+            ->where('subjects.id', $subjectId)
+            ->where('grades.deleted_at', null)
+            ->findAll();
+    }
+
+    return view('unit/index', [
+        'units'     => $builder->findAll(),
+        'subjectId' => $subjectId,
+        'gradeId'   => $gradeId,
+        'grades'    => $grades
+    ]);
+}
 
     public function create()
     {

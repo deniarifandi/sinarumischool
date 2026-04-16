@@ -13,11 +13,29 @@
             </small>
         </div>
 
+
+
         <a href="<?= base_url('unit/create?subject_id='.$subjectId) ?>"
            class="btn btn-primary rounded-pill px-3">
             <i class="bi bi-plus-lg me-1"></i> Add Unit
         </a>
     </div>
+
+      <form method="get" class="mb-3">
+    <input type="hidden" name="subject_id" value="<?= esc($subjectId) ?>">
+
+    <select name="grade_id" class="form-select w-auto d-inline">
+        <option value="">All Grades</option>
+        <?php foreach ($grades as $g): ?>
+            <option value="<?= $g['id'] ?>"
+                <?= ($gradeId == $g['id']) ? 'selected' : '' ?>>
+                <?= esc($g['grade_name']) ?>
+            </option>
+        <?php endforeach ?>
+    </select>
+
+    <button type="submit" class="btn btn-primary ms-2">Filter</button>
+</form>
 
     <?php if (empty($units)): ?>
         <div class="text-center py-5">
