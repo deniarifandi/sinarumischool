@@ -47,6 +47,7 @@ class Unit extends BaseController
             ->join('divisions','grades.division_id = divisions.id','left')
             ->join('subjects','subjects.division_id = divisions.id','left')
             ->where('subjects.id', $subject_id)
+            ->where('grades.deleted_at',null)
             ->get()
             ->getResultArray();
 
