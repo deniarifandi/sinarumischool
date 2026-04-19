@@ -36,17 +36,40 @@
                 <?php endforeach ?>
             </select>
 
-            <!-- Date Start -->
-            <input type="date"
-                   name="date_start"
-                   value="<?= esc(request()->getGet('date_start')) ?>"
-                   class="form-control form-control-sm bg-white text-dark border-secondary">
+            <?php
+$dateStart = request()->getGet('date_start');
+$dateEnd   = request()->getGet('date_end');
 
-            <!-- Date End -->
-            <input type="date"
-                   name="date_end"
-                   value="<?= esc(request()->getGet('date_end')) ?>"
-                   class="form-control form-control-sm bg-white text-dark border-secondary">
+if (!$dateStart || !$dateEnd) {
+    $now = new DateTime();
+
+    $start = (clone $now)->modify('first day of last month')->setDate(
+        (int)$now->modify('first day of last month')->format('Y'),
+        (int)$now->modify('first day of last month')->format('m'),
+        21
+    );
+
+    $end = (new DateTime())->setDate(
+        (int)date('Y'),
+        (int)date('m'),
+        20
+    );
+
+    $dateStart = $start->format('Y-m-d');
+    $dateEnd   = $end->format('Y-m-d');
+}
+?>
+
+            <!-- Date Start -->
+      <input type="date"
+       name="date_start"
+       value="<?= esc($dateStart) ?>"
+       class="form-control form-control-sm bg-white text-dark border-secondary">
+
+<input type="date"
+       name="date_end"
+       value="<?= esc($dateEnd) ?>"
+       class="form-control form-control-sm bg-white text-dark border-secondary">
 
             <!-- Print Button -->
             <button type="submit"
