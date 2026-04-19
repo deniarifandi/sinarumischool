@@ -5,7 +5,6 @@
 <title>Rekap Report</title>
 
 <style>
-
 body{
     font-family: Arial, Helvetica, sans-serif;
     font-size:14px;
@@ -53,10 +52,9 @@ th{
         display:none;
     }
 }
-
 </style>
-
 </head>
+
 <body>
 
 <div class="print-btn">
@@ -71,7 +69,6 @@ th{
     <?= esc($date_start ?? '-') ?> - <?= esc($date_end ?? '-') ?>
 </div>
 
-
 <table>
 
 <thead>
@@ -81,17 +78,17 @@ th{
     <th>User</th>
     <th>Total Presence</th>
     <th>Incentive</th>
-    
 </tr>
 </thead>
 
-<?php $grandTotal = 0; ?>
 <tbody>
+
+<?php $grandTotal = 0; ?>
 
 <?php foreach ($rekaps as $group): ?>
 
 <tr class="group-row">
-    <td colspan="3"><?= esc($group['group']) ?></td>
+    <td colspan="5"><?= esc($group['group']) ?></td>
 </tr>
 
 <?php $no = 1; ?>
@@ -103,18 +100,16 @@ th{
     <tr>
         <td class="text-center"><?= $no++ ?></td>
         <td><?= esc($u['user_role']) ?></td>
-       <td><?= $u['user_name'] === 'superadmin' ? '' : esc($u['user_name']) ?></td>
+        <td><?= $u['user_name'] === 'superadmin' ? '' : esc($u['user_name']) ?></td>
         <td><?= esc($u['total_presence']) ?></td>
-        
-           <?php if ($u['nullified'] == 0): ?>
-    <?php $amount = $u['total_presence'] * 15000; ?>
-    <?php $grandTotal += $amount; ?>
-    <td><?= esc($amount) ?></td>
-<?php else: ?>
-    <td style="background-color: black;"></td>
-<?php endif; ?>
-                
-        
+
+        <?php if ($u['nullified'] == 0): ?>
+            <?php $amount = $u['total_presence'] * 15000; ?>
+            <?php $grandTotal += $amount; ?>
+            <td><?= number_format($amount, 0, ',', '.') ?></td>
+        <?php else: ?>
+            <td style="background-color: black;"></td>
+        <?php endif; ?>
     </tr>
 
     <?php endforeach; ?>
@@ -122,7 +117,7 @@ th{
 <?php else: ?>
 
 <tr>
-    <td colspan="3" class="text-center">No data</td>
+    <td colspan="5" class="text-center">No data</td>
 </tr>
 
 <?php endif; ?>
@@ -131,8 +126,11 @@ th{
 
 <tr>
     <td colspan="4" style="text-align:right;font-weight:bold;">Total</td>
-    <td style="font-weight:bold;"><?= esc($grandTotal) ?></td>
+    <td style="font-weight:bold;">
+        <?= number_format($grandTotal, 0, ',', '.') ?>
+    </td>
 </tr>
+
 </tbody>
 
 </table>
