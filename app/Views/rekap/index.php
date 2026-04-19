@@ -36,28 +36,12 @@
                 <?php endforeach ?>
             </select>
 
-            <?php
-$dateStart = request()->getGet('date_start');
-$dateEnd   = request()->getGet('date_end');
+          <?php
+$dateStart = request()->getGet('date_start') 
+    ?? date('Y-m-21', strtotime('-1 month'));
 
-if (!$dateStart || !$dateEnd) {
-    $now = new DateTime();
-
-    $start = (clone $now)->modify('first day of last month')->setDate(
-        (int)$now->modify('first day of last month')->format('Y'),
-        (int)$now->modify('first day of last month')->format('m'),
-        21
-    );
-
-    $end = (new DateTime())->setDate(
-        (int)date('Y'),
-        (int)date('m'),
-        20
-    );
-
-    $dateStart = $start->format('Y-m-d');
-    $dateEnd   = $end->format('Y-m-d');
-}
+$dateEnd = request()->getGet('date_end') 
+    ?? date('Y-m-20');
 ?>
 
             <!-- Date Start -->
