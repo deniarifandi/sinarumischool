@@ -102,7 +102,7 @@ th{
     <tr>
         <td class="text-center"><?= $no++ ?></td>
         <td><?= esc($u['user_role']) ?></td>
-        <td><?= esc($u['user_name']) ?></td>
+       <td><?= $u['user_name'] === 'superadmin' ? '' : esc($u['user_name']) ?></td>
         <td><?= esc($u['total_presence']) ?></td>
         
             <?php if ($u['nullified'] == 0): ?>
