@@ -85,6 +85,7 @@ th{
 </tr>
 </thead>
 
+<?php $grandTotal = 0; ?>
 <tbody>
 
 <?php foreach ($rekaps as $group): ?>
@@ -105,13 +106,13 @@ th{
        <td><?= $u['user_name'] === 'superadmin' ? '' : esc($u['user_name']) ?></td>
         <td><?= esc($u['total_presence']) ?></td>
         
-            <?php if ($u['nullified'] == 0): ?>
-                <td>
-                <?= esc($u['total_presence'] * 15000) ?>    
-                </td>
-            <?php else :?>
-                <td style="background-color: black;"></td>
-            <?php endif ?>
+           <?php if ($u['nullified'] == 0): ?>
+    <?php $amount = $u['total_presence'] * 15000; ?>
+    <?php $grandTotal += $amount; ?>
+    <td><?= esc($amount) ?></td>
+<?php else: ?>
+    <td style="background-color: black;"></td>
+<?php endif; ?>
                 
         
     </tr>
@@ -128,6 +129,10 @@ th{
 
 <?php endforeach; ?>
 
+<tr>
+    <td colspan="4" style="text-align:right;font-weight:bold;">Total</td>
+    <td style="font-weight:bold;"><?= esc($grandTotal) ?></td>
+</tr>
 </tbody>
 
 </table>
