@@ -2,7 +2,17 @@
 
 <?= $this->section('content') ?>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
+<style>
+    .address-clamp {
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Number of lines to show */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        max-width: 250px;
+        line-height: 1.4; /* Adjust based on your font size for better spacing */
+        height: 2.8em;   /* line-height * line-clamp (1.4 * 2) */
+    }
+</style>
 <style>
     .glass-card {
         background: rgba(255, 255, 255, 0.95);
@@ -12,6 +22,8 @@
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
         padding: 1.5rem;
     }
+
+    
 
     /* Filter Styling */
     .filter-section {
@@ -157,10 +169,14 @@ $(function () {
                     return `<span class="badge ${s[1]}">${s[0]}</span>`;
                 }
             },
-            { 
-                data: 'address',
-                render: (data) => `<div class="text-truncate text-muted small" style="max-width: 250px;">${data || '-'}</div>`
-            }
+           { 
+    data: 'address',
+    render: function(data) {
+        return `<div class="address-clamp text-muted small" title="${data || ''}">
+                    ${data || '-'}
+                </div>`;
+    }
+}
         ]
     });
 
