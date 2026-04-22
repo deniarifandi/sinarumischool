@@ -159,7 +159,7 @@ $(function () {
             },
             { 
                 data: 'address',
-                render: (data) => `<div class="text-truncate text-muted small" style="max-width: 200px;">${data || '-'}</div>`
+                render: (data) => `<div class="text-truncate text-muted small" style="max-width: 250px;">${data || '-'}</div>`
             }
         ]
     });
