@@ -91,8 +91,11 @@ use CodeIgniter\Router\RouteCollection;
         //report
         $routes->get('presence/full_report/(:num)/(:num)', 'Presence::full_report/$1/$2');
 
-        $routes->get('attendance', 'Presence::attendanceList');
+        $routes->get('attendance', 'Presence::attendancePage');
+        
     });
+
+    $routes->post('attendance/data', 'Presence::attendanceData');
 
     $routes->group('grade', ['filter' => 'auth'], function ($routes) {
         $routes->get('/', 'GradeController::index');

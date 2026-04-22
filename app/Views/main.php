@@ -273,6 +273,36 @@ body::before{
 }
 </style>
 
+<style>
+  
+  .pagination {
+    display: flex;
+    gap: 6px;
+    list-style: none;
+    padding-left: 0;
+}
+
+.pagination li a,
+.pagination li span {
+    display: block;
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #333;
+}
+
+.pagination li.active span {
+    background: #0d6efd;
+    color: #fff;
+    border-color: #0d6efd;
+}
+
+.pagination li a:hover {
+    background: #f1f1f1;
+}
+</style>
+
 </head>
 
 <body>

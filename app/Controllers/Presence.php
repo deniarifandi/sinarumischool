@@ -52,60 +52,55 @@ class Presence extends BaseController
 
 // php_uname()
 
-    public function attendanceList()
+public function attendancePage()
+    {
+        return view('rekap/attendance_list');
+    }
+
+    // =========================
+    // DATATABLE SERVER-SIDE
+    // =========================
+    public function attendanceData()
 {
-    $perPage = (int) ($this->request->getGet('per_page') ?? 10);
-    $page    = max(1, (int) ($this->request->getGet('page') ?? 1));
+    $builder = $this->presence->builder()
+        ->select('presensidata_id, users.name, presensidata.created_at, presensidata.address, status')
+        ->join('users','users.id = presensidata.guru_id')
+      ;
 
-    $date    = $this->request->getGet('date');      // exact date: 2026-04-22
-    $start   = $this->request->getGet('start');     // range start
-    $end     = $this->request->getGet('end');       // range end
-    $search  = $this->request->getGet('search');    // keyword
-    $status  = $this->request->getGet('status');    // 1,2,3
+    // DataTables + filter (POST)
+    $date   = $this->request->getPost('date');
+    $start  = $this->request->getPost('start');
+    $end    = $this->request->getPost('end');
+    $status = $this->request->getPost('status');
 
-    $builder = $this->presence->where('guru_id', session('id'));
-
-    // filter by exact day
-    if ($date) {
-        $builder->where('presensidata_tanggal >=', $date . ' 00:00:00')
-                ->where('presensidata_tanggal <=', $date . ' 23:59:59');
-    }
-
-    // filter by range
+    // date filter priority: range > single date
     if ($start && $end) {
-        $builder->where('presensidata_tanggal >=', $start . ' 00:00:00')
-                ->where('presensidata_tanggal <=', $end . ' 23:59:59');
+        $builder->where('presensidata.created_at >=', $start . ' 00:00:00')
+                ->where('presensidata.created_at <=', $end . ' 23:59:59');
+    } elseif ($date) {
+        $builder->where('presensidata.created_at >=', $date . ' 00:00:00')
+                ->where('presensidata.created_at <=', $date . ' 23:59:59');
     }
 
-    // filter by status
+    // status filter
     if ($status !== null && $status !== '') {
-        $builder->where('status', (int)$status);
+        $builder->where('status', (int) $status);
     }
 
-    // simple search (adjust fields if needed)
-    if ($search) {
-        $builder->groupStart()
-                ->like('status', $search)
-                ->orLike('presensidata_tanggal', $search)
-                ->groupEnd();
-    }
-
-    $data = $builder
-        ->orderBy('presensidata_tanggal', 'DESC')
-        ->paginate($perPage);
-
-    return view('rekap/attendance_list', [
-        'data'  => $data,
-        'pager' => $this->presence->pager,
-        'filters' => [
-            'date'   => $date,
-            'start'  => $start,
-            'end'    => $end,
-            'search' => $search,
-            'status' => $status
+    $datatable = new \App\Libraries\DataTable(
+        $builder,
+        ['presensidata.created_at', 'status'],
+        [
+            0 => 'presensidata_id',
+            1 => 'presensidata.created_at',
+            2 => 'status',
+            3 => 'address'
         ]
-    ]);
+    );
+
+    return $this->response->setJSON($datatable->generate());
 }
+
 public function checkIn()
 {
     $userId = session('id');
