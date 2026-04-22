@@ -32,11 +32,11 @@ class Lessonplan extends BaseController
         $data['lessonplans'] = $this->lessonplan
             ->select('lessonplan.*, 
                       classes.class_name,
-                      unit.unit_nama as unit_name,
-                      subunit.name as subunit_name')
+                      units.unit_nama as unit_name,
+                      subunits.name as subunit_name')
             ->join('classes', 'classes.id = lessonplan.class_id', 'left')
             ->join('units', 'units.id = lessonplan.unit_id', 'left')
-            ->join('subunit', 'subunit.id = lessonplan.subunit_id', 'left')
+            ->join('subunit', 'subunits.id = lessonplan.subunit_id', 'left')
             ->findAll();
 
         return view('lessonplan/index', $data);

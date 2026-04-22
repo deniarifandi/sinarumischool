@@ -10,6 +10,7 @@ use CodeIgniter\Router\RouteCollection;
     $routes->post('auth/loginauth', 'Auth::loginAuth');
     $routes->get('logout', 'Auth::logout');
 
+
     $routes->group('division', ['filter' => 'auth'], function ($routes) {
         $routes->get('/', 'DivisionController::index');
         $routes->get('create', 'DivisionController::create');
@@ -89,6 +90,8 @@ use CodeIgniter\Router\RouteCollection;
 
         //report
         $routes->get('presence/full_report/(:num)/(:num)', 'Presence::full_report/$1/$2');
+
+        $routes->get('attendance', 'Presence::attendanceList');
     });
 
     $routes->group('grade', ['filter' => 'auth'], function ($routes) {

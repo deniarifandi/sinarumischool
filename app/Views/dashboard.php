@@ -33,7 +33,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
     <p class="mb-1">
       Attendance not submitted yet.
       <a href="<?= base_url('presence') ?>" class="btn btn-sm btn-primary float-end">
-      Submit Attendance
+      Submit
     </a>
     </p>
     

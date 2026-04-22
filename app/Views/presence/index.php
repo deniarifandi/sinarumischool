@@ -40,19 +40,36 @@
                     <span class="small fw-bold text-muted uppercase">Current Location</span>
                 </div>
                 
-                <div class="small">
+               <!--  <div class="small">
                     <div class="d-flex justify-content-between">
                         <span class="text-muted">Coordinate:</span>
                         <span id="coordText" class="font-monospace">Detecting...</span>
                     </div>
                     <hr class="my-1 opacity-25">
                     <div class="text-dark fw-medium" id="locText">Fetching address details...</div>
+                </div> -->
+
+                <div class="small">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Coordinate:</span>
+                        <span id="coordText" class="font-monospace">Detecting...</span>
+                    </div>
+
+                    <hr class="my-1 opacity-25">
+
+                    <div>
+                        <span class="text-muted d-block">Detected Address:</span>
+                        <div id="locText" class="fw-medium text-dark">
+                            Fetching address details...
+                        </div>
+                    </div>
                 </div>
                 <div id="map" class="rounded border mb-4" style="height:260px;"></div>
             </div>
 
             <input type="hidden" name="latitude" id="lat">
             <input type="hidden" name="longitude" id="lng">
+            <input type="hidden" name="address" id="address">
 
             <button type="submit" id="submitBtn" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
                 Submit Attendance
@@ -190,7 +207,7 @@ $statusText =
     }
 </style>
 
-<script>
+<!-- <script>
 document.addEventListener("DOMContentLoaded", function() {
     const locText = document.getElementById('locText');
     const coordText = document.getElementById('coordText');
@@ -236,9 +253,97 @@ document.addEventListener("DOMContentLoaded", function() {
         );
     }
 });
-</script>
+</script> -->
 
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const locText = document.getElementById('locText');
+    const coordText = document.getElementById('coordText');
+    const submitBtn = document.getElementById('submitBtn');
+    const locSpinner = document.getElementById('locSpinner');
+
+    let map, marker;
+
+    function initMap(lat, lng) {
+        map = L.map('map').setView([lat, lng], 17);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        marker = L.marker([lat, lng]).addTo(map)
+            .bindPopup('Your location')
+            .openPopup();
+    }
+
+    submitBtn.disabled = true;
+
+    if (!navigator.geolocation) {
+        locText.innerText = 'Geolocation not supported';
+        locSpinner.classList.add('d-none');
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            const lat = pos.coords.latitude.toFixed(6);
+            const lng = pos.coords.longitude.toFixed(6);
+
+            document.getElementById('lat').value = lat;
+            document.getElementById('lng').value = lng;
+            coordText.innerText = `${lat}, ${lng}`;
+
+            initMap(lat, lng);
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'User-Agent': 'attendance-app'
+                }
+            })
+            .then(r => r.json())
+            .then(d => {
+                const a = d.address || {};
+
+                const address = [
+                    a.road, 
+                    a.pedestrian,
+                    a.footway,
+                    a.neighbourhood,
+                    a.suburb,
+                    a.village
+                ]
+                .filter(Boolean)
+                .join(', ');
+
+                const finalAddress = d.display_name || 'Unknown location';
+
+                locText.innerText = finalAddress;
+                document.getElementById('address').value = finalAddress;
+
+                locSpinner.classList.add('d-none');
+                submitBtn.disabled = false;
+            })
+            .catch(() => {
+                locText.innerText = 'Address unavailable';
+                locSpinner.classList.add('d-none');
+                submitBtn.disabled = false;
+            });
+        },
+        () => {
+            locSpinner.classList.replace('text-primary', 'text-danger');
+            locText.classList.add('text-danger');
+            locText.innerText = 'Location permission denied';
+            coordText.innerText = 'Access denied';
+            locSpinner.classList.add('d-none');
+        },
+        { enableHighAccuracy: true }
+    );
+});
+</script>
+
+<!-- <script>
 document.addEventListener("DOMContentLoaded", function () {
     const locText = document.getElementById('locText');
     const coordText = document.getElementById('coordText');
@@ -281,15 +386,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 headers: { 'Accept': 'application/json' }
             })
             .then(r => r.json())
-            .then(d => {
-                locText.innerText =
-                    d?.address?.city ||
-                    d?.address?.town ||
-                    d?.address?.village ||
-                    d?.display_name ||
-                    'Location detected';
+           .then(d => {
+                const a = d.address || {};
 
-                locSpinner.classList.add('d-none');
+                const address =
+                    [
+                        a.road,
+                        a.neighbourhood,
+                        a.suburb,
+                        a.village
+                    ]
+                    .filter(Boolean)
+                    .join(', ');
+
+                locText.innerText = address || d.display_name;
+                document.getElementById('address').value = d.display_name || address;
+
                 submitBtn.disabled = false;
             })
             .catch(() => {
@@ -307,6 +419,6 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 });
 </script>
-
+ -->
 
 <?= $this->endSection() ?>
