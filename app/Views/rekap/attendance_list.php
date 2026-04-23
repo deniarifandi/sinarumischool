@@ -130,8 +130,8 @@ $(function () {
         processing: true,
         serverSide: true,
         searching: true, // Internal searching enabled
-        pageLength: 10,
-        dom: 'rtip', // "f" is hidden because we use #customSearch
+        pageLength: 300,
+        
         order: [[0, 'desc']],
         ajax: {
             url: "<?= base_url('attendance/data') ?>",
