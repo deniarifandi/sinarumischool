@@ -35,6 +35,7 @@
             </div>
 
             <div class="bg-light rounded p-3 mb-4 border">
+                
                 <div class="d-flex align-items-center mb-2">
                     <div class="spinner-grow spinner-grow-sm text-primary me-2" role="status" id="locSpinner"></div>
                     <span class="small fw-bold text-muted uppercase">Current Location</span>
@@ -207,54 +208,6 @@ $statusText =
     }
 </style>
 
-<!-- <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const locText = document.getElementById('locText');
-    const coordText = document.getElementById('coordText');
-    const submitBtn = document.getElementById('submitBtn');
-    const locSpinner = document.getElementById('locSpinner');
-
-    if (!navigator.geolocation) {
-        locText.innerText = 'Geolocation is not supported by your browser';
-        locSpinner.classList.add('d-none');
-    } else {
-        navigator.geolocation.getCurrentPosition(
-            pos => {
-                const lat = pos.coords.latitude.toFixed(6);
-                const lng = pos.coords.longitude.toFixed(6);
-
-                document.getElementById('lat').value = lat;
-                document.getElementById('lng').value = lng;
-                coordText.innerText = `${lat}, ${lng}`;
-
-                // Reverse Geocoding
-                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-                    .then(res => res.json())
-                    .then(d => {
-                        locText.innerText = d.address.city || d.address.town || d.address.village || d.display_name;
-                        locSpinner.classList.replace('spinner-grow', 'bi-geo-alt-fill'); // Switch to icon if using Bootstrap icons
-                        locSpinner.style.animation = "none";
-                        
-                        // Enable the button once location is locked
-                        submitBtn.disabled = false;
-                    })
-                    .catch(() => {
-                        locText.innerText = "Location detected (Address fetch failed)";
-                        submitBtn.disabled = false;
-                    });
-            },
-            err => {
-                locSpinner.classList.replace('text-primary', 'text-danger');
-                locText.classList.add('text-danger');
-                locText.innerText = 'Please enable location permissions to check in.';
-                coordText.innerText = 'Access Denied';
-            },
-            { enableHighAccuracy: true }
-        );
-    }
-});
-</script> -->
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const locText = document.getElementById('locText');
@@ -262,10 +215,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const submitBtn = document.getElementById('submitBtn');
     const locSpinner = document.getElementById('locSpinner');
 
-    let map, marker;
+    let map = null;
+    let marker = null;
+    let hasFetchedAddress = false;
+    let lastUpdate = 0;
 
     function initMap(lat, lng) {
-        map = L.map('map').setView([lat, lng], 17);
+        map = L.map('map').setView([lat, lng], 16);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
@@ -282,143 +238,86 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!navigator.geolocation) {
         locText.innerText = 'Geolocation not supported';
         locSpinner.classList.add('d-none');
+        submitBtn.disabled = false;
         return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-        pos => {
-            const lat = pos.coords.latitude.toFixed(6);
-            const lng = pos.coords.longitude.toFixed(6);
+    // fallback jika GPS lama
+    setTimeout(() => {
+        if (submitBtn.disabled) {
+            locText.innerText = 'Using limited location';
+            locSpinner.classList.add('d-none');
+            submitBtn.disabled = false;
+        }
+    }, 15000);
 
+    navigator.geolocation.watchPosition(
+        pos => {
+            const now = Date.now();
+            if (now - lastUpdate < 1000) return; // throttle 1 detik
+            lastUpdate = now;
+
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+
+            // update hidden input
             document.getElementById('lat').value = lat;
             document.getElementById('lng').value = lng;
-            coordText.innerText = `${lat}, ${lng}`;
 
-            initMap(lat, lng);
+            // update text
+            coordText.innerText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
 
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
-                headers: {
-                    'Accept': 'application/json',
-                    'User-Agent': 'attendance-app'
-                }
-            })
-            .then(r => r.json())
-            .then(d => {
-                const a = d.address || {};
+            // init / update map
+            if (!map) {
+                initMap(lat, lng);
+            } else {
+                marker.setLatLng([lat, lng]).update();
+                map.setView([lat, lng], map.getZoom(), { animate: false });
+            }
 
-                const address = [
-                    a.road, 
-                    a.pedestrian,
-                    a.footway,
-                    a.neighbourhood,
-                    a.suburb,
-                    a.village
-                ]
-                .filter(Boolean)
-                .join(', ');
+            // ambil alamat sekali saja
+            if (!hasFetchedAddress) {
+                hasFetchedAddress = true;
 
-                const finalAddress = d.display_name || 'Unknown location';
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'User-Agent': 'attendance-app/1.0'
+                    }
+                })
+                .then(r => r.json())
+                .then(d => {
+                    const address = d.display_name || 'Unknown location';
 
-                locText.innerText = finalAddress;
-                document.getElementById('address').value = finalAddress;
+                    locText.innerText = address;
+                    document.getElementById('address').value = address;
 
-                locSpinner.classList.add('d-none');
-                submitBtn.disabled = false;
-            })
-            .catch(() => {
-                locText.innerText = 'Address unavailable';
-                locSpinner.classList.add('d-none');
-                submitBtn.disabled = false;
-            });
+                    locSpinner.classList.add('d-none');
+                    submitBtn.disabled = false;
+                })
+                .catch(() => {
+                    locText.innerText = 'Address unavailable';
+                    locSpinner.classList.add('d-none');
+                    submitBtn.disabled = false;
+                });
+            }
         },
-        () => {
+        err => {
             locSpinner.classList.replace('text-primary', 'text-danger');
             locText.classList.add('text-danger');
             locText.innerText = 'Location permission denied';
             coordText.innerText = 'Access denied';
             locSpinner.classList.add('d-none');
+
+            submitBtn.disabled = false;
         },
-        { enableHighAccuracy: true }
+        {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: 10000
+        }
     );
 });
 </script>
-
-<!-- <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const locText = document.getElementById('locText');
-    const coordText = document.getElementById('coordText');
-    const submitBtn = document.getElementById('submitBtn');
-    const locSpinner = document.getElementById('locSpinner');
-
-    let map, marker;
-
-    function initMap(lat, lng) {
-        map = L.map('map').setView([lat, lng], 17);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; OpenStreetMap'
-        }).addTo(map);
-
-        marker = L.marker([lat, lng]).addTo(map)
-            .bindPopup('Your location')
-            .openPopup();
-    }
-
-    if (!navigator.geolocation) {
-        locText.innerText = 'Geolocation not supported';
-        locSpinner.classList.add('d-none');
-        return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-        pos => {
-            const lat = +pos.coords.latitude.toFixed(6);
-            const lng = +pos.coords.longitude.toFixed(6);
-
-            document.getElementById('lat').value = lat;
-            document.getElementById('lng').value = lng;
-            coordText.innerText = `${lat}, ${lng}`;
-
-            initMap(lat, lng);
-
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
-                headers: { 'Accept': 'application/json' }
-            })
-            .then(r => r.json())
-           .then(d => {
-                const a = d.address || {};
-
-                const address =
-                    [
-                        a.road,
-                        a.neighbourhood,
-                        a.suburb,
-                        a.village
-                    ]
-                    .filter(Boolean)
-                    .join(', ');
-
-                locText.innerText = address || d.display_name;
-                document.getElementById('address').value = d.display_name || address;
-
-                submitBtn.disabled = false;
-            })
-            .catch(() => {
-                locText.innerText = 'Location detected';
-                submitBtn.disabled = false;
-            });
-        },
-        () => {
-            locSpinner.classList.replace('text-primary', 'text-danger');
-            locText.classList.add('text-danger');
-            locText.innerText = 'Location permission denied';
-            coordText.innerText = 'Access denied';
-        },
-        { enableHighAccuracy: true }
-    );
-});
-</script>
- -->
 
 <?= $this->endSection() ?>
