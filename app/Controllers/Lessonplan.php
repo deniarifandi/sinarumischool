@@ -8,6 +8,7 @@ use App\Models\UnitModel;
 use App\Models\SubunitModel;
 use App\Models\UserModel;
 use App\Models\TujuanModel;
+use App\Models\ObjectiveModel;
 
 class Lessonplan extends BaseController
 {
@@ -16,14 +17,16 @@ class Lessonplan extends BaseController
     protected $subunitModel;
     protected $userModel;
     protected $tujuanModel;
+    protected $objectiveModel;
 
     public function __construct()
     {
-        $this->lessonplan = new LessonplanModel();
-        $this->unitModel  = new UnitModel();
+        $this->lessonplan   = new LessonplanModel();
+        $this->unitModel    = new UnitModel();
         $this->subunitModel = new SubunitModel();
-        $this->userModel = new UserModel();
+        $this->userModel    = new UserModel();
         $this->tujuanModel  = new TujuanModel();
+        $this->objectiveModel = new ObjectiveModel();
     }
 
     // GET /lessonplan
@@ -32,71 +35,183 @@ class Lessonplan extends BaseController
         $data['lessonplans'] = $this->lessonplan
             ->select('lessonplan.*, 
                       classes.class_name,
-                      units.unit_nama as unit_name,
-                      subunits.name as subunit_name')
+                      units.name as unit_name,
+                      subunits.subunit_name as subunit_name')
             ->join('classes', 'classes.id = lessonplan.class_id', 'left')
             ->join('units', 'units.id = lessonplan.unit_id', 'left')
-            ->join('subunit', 'subunits.id = lessonplan.subunit_id', 'left')
+            ->join('subunits', 'subunits.id = lessonplan.subunit_id', 'left')
             ->findAll();
 
         return view('lessonplan/index', $data);
     }
 
-    public function create()
-    {    
-        $user_id = session('id') ?? session('user_id');
+    // GET /lessonplan/create
+  public function create()
+{
+    $user_id = session('id') ?? session('user_id');
+    $subject_id = $this->request->getGet('subject_id');
 
-        //print_r($this->userModel->getUserMainClass($user_id));
-        $mainClass = $this->userModel->getUserMainClass($user_id);
-        $tujuanAgama = $this->tujuanModel->getAgamaByGrade($mainClass[0]['grade']);
-        $tujuanJati = $this->tujuanModel->getJatiByGrade($mainClass[0]['grade']);
-        $tujuanLiterasi = $this->tujuanModel->getLiterasiByGrade($mainClass[0]['grade']);
-        // print_r($tujuanAgama1);
-        // exit();
+    $mainClass = $this->userModel->getUserMainClass($user_id);
 
-        return view('lessonplan/form', [
-            'units' => $this->unitModel->findAll(),
-            'subunits'  => $this->subunitModel->findAll(),
-            'mainClass' => $mainClass[0],
-            'agama1List' => $tujuanAgama,
-            'jatiList' => $tujuanJati,
-            'literasiList' => $tujuanLiterasi
-        ]);
+    if (empty($mainClass)) {
+        throw new \RuntimeException('User has no main class');
     }
 
+    if (!$subject_id) {
+        throw new \RuntimeException('Subject ID required');
+    }
 
+    return view('lessonplan/form', [
+        'units'        => $this->unitModel->findAll(),
+        'subunits'     => $this->subunitModel->findAll(),
+        'mainClass'    => $mainClass[0],
+
+        'agama'        => $this->objectiveModel->getAgamaBySubject($subject_id),
+        'jati'         => $this->objectiveModel->getJatiBySubject($subject_id),
+        'literasi'     => $this->objectiveModel->getLiterasiBySubject($subject_id),
+    ]);
+}
+
+    // GET /lessonplan/edit/{id}
     public function edit($id)
-    {
-        $user_id = session('id') ?? session('user_id');
+{
+    $user_id = session('id') ?? session('user_id');
 
-        //print_r($this->userModel->getUserMainClass($user_id));
-        $mainClass = $this->userModel->getUserMainClass($user_id);
+    $mainClass = $this->userModel->getUserMainClass($user_id);
 
-        $tujuanAgama = $this->tujuanModel->getAgamaByGrade($mainClass[0]['grade']);
-        $tujuanJati = $this->tujuanModel->getJatiByGrade($mainClass[0]['grade']);
-        $tujuanLiterasi = $this->tujuanModel->getLiterasiByGrade($mainClass[0]['grade']);
-
-        return view('lessonplan/form', [
-            'lessonplan' => $this->lessonplan->find($id),
-            'units'      => $this->unitModel->findAll(),
-            'subunits'   => $this->subunitModel->findAll(),
-            'agama1List' => $tujuanAgama,
-            'jatiList' => $tujuanJati,
-            'literasiList' => $tujuanLiterasi
-        ]);
+    if (empty($mainClass)) {
+        throw new \RuntimeException('User has no main class');
     }
 
-public function store()
-{
-    $this->lessonplan->insert($this->request->getPost());
-    return redirect()->to('/lessonplan');
+    $grade = $mainClass[0]['grade'];
+
+    $lessonplan = $this->lessonplan->find($id);
+
+    if (!$lessonplan) {
+        throw new \RuntimeException('Data tidak ditemukan');
+    }
+
+    return view('lessonplan/form', [
+        'lessonplan'  => $lessonplan,
+        'units'       => $this->unitModel->findAll(),
+        'subunits'    => $this->subunitModel->findAll(),
+        'mainClass'   => $mainClass[0],
+
+        'agama'       => $this->objectiveModel->getAgamaBySubject($lessonplan['unit_id']),
+        'jati'        => $this->objectiveModel->getJatiBySubject($lessonplan['unit_id']),
+        'literasi'    => $this->objectiveModel->getLiterasiBySubject($lessonplan['unit_id']),
+    ]);
 }
 
-public function update($id)
+    // POST /lessonplan/store
+    public function store()
 {
-    $this->lessonplan->update($id, $this->request->getPost());
-    return redirect()->to('/lessonplan');
+    // DPL checkbox → integer
+    $dplArray = $this->request->getPost('dpl') ?? [];
+
+    $dplValue = 0;
+    foreach ($dplArray as $v) {
+        $dplValue += (int)$v;
+    }
+
+    $data = [
+        'class_id'   => $this->request->getPost('class_id'),
+        'unit_id'    => $this->request->getPost('unit_id'),
+        'subunit_id' => $this->request->getPost('subunit_id'),
+        'semester'   => $this->request->getPost('semester'),
+        'bulan'      => $this->request->getPost('bulan'),
+        'dpl'        => $dplValue,
+
+        'agama1' => $this->request->getPost('agama1'),
+        'agama2' => $this->request->getPost('agama2'),
+        'jati1'  => $this->request->getPost('jati1'),
+        'jati2'  => $this->request->getPost('jati2'),
+        'dasar1' => $this->request->getPost('dasar1'),
+        'dasar2' => $this->request->getPost('dasar2'),
+
+        'iktp'       => $this->request->getPost('iktp'),
+        'pedagogis'  => $this->request->getPost('pedagogis'),
+        'kemitraan'  => $this->request->getPost('kemitraan'),
+        'alatbahan'  => $this->request->getPost('alatbahan'),
+        'sumber'     => $this->request->getPost('sumber'),
+
+        'inti'    => $this->request->getPost('inti'),
+        'penutup' => $this->request->getPost('penutup'),
+
+        'sambut1' => $this->request->getPost('sambut1'),
+        'sambut2' => $this->request->getPost('sambut2'),
+        'sambut3' => $this->request->getPost('sambut3'),
+        'sambut4' => $this->request->getPost('sambut4'),
+        'sambut5' => $this->request->getPost('sambut5'),
+
+        'pembukaan' => $this->request->getPost('pembukaan'),
+
+        'inti1' => $this->request->getPost('inti1'),
+        'inti2' => $this->request->getPost('inti2'),
+        'inti3' => $this->request->getPost('inti3'),
+        'inti4' => $this->request->getPost('inti4'),
+        'inti5' => $this->request->getPost('inti5'),
+    ];
+
+    if (!$this->lessonplan->insert($data)) {
+        return redirect()->back()
+            ->withInput()
+            ->with('errors', $this->lessonplan->errors());
+    }
+
+    return redirect()->to('/')->with('success', 'Data saved');
 }
+
+    // POST /lessonplan/update/{id}
+    public function update($id)
+    {
+        $data = [
+            'class_id'   => $this->request->getPost('class_id'),
+            'unit_id'    => $this->request->getPost('unit_id'),
+            'subunit_id' => $this->request->getPost('subunit_id'),
+            'semester'   => $this->request->getPost('semester'),
+            'bulan'      => $this->request->getPost('bulan'),
+            'dpl'        => $this->request->getPost('dpl'),
+
+            'agama1' => $this->request->getPost('agama1'),
+            'agama2' => $this->request->getPost('agama2'),
+            'jati1'  => $this->request->getPost('jati1'),
+            'jati2'  => $this->request->getPost('jati2'),
+            'dasar1' => $this->request->getPost('dasar1'),
+            'dasar2' => $this->request->getPost('dasar2'),
+
+            'iktp'       => $this->request->getPost('iktp'),
+            'pedagogis'  => $this->request->getPost('pedagogis'),
+            'kemitraan'  => $this->request->getPost('kemitraan'),
+            'alatbahan'  => $this->request->getPost('alatbahan'),
+            'sumber'     => $this->request->getPost('sumber'),
+
+            'inti'    => $this->request->getPost('inti'),
+            'penutup' => $this->request->getPost('penutup'),
+
+            'sambut1' => $this->request->getPost('sambut1'),
+            'sambut2' => $this->request->getPost('sambut2'),
+            'sambut3' => $this->request->getPost('sambut3'),
+            'sambut4' => $this->request->getPost('sambut4'),
+            'sambut5' => $this->request->getPost('sambut5'),
+
+            'pembukaan' => $this->request->getPost('pembukaan'),
+
+            'inti1' => $this->request->getPost('inti1'),
+            'inti2' => $this->request->getPost('inti2'),
+            'inti3' => $this->request->getPost('inti3'),
+            'inti4' => $this->request->getPost('inti4'),
+            'inti5' => $this->request->getPost('inti5'),
+        ];
+
+        if (!$this->lessonplan->update($id, $data)) {
+            return redirect()->back()
+                ->withInput()
+                ->with('errors', $this->lessonplan->errors());
+        }
+
+        return redirect()->to('/lessonplan')->with('success', 'Data updated');
+    }
 
     // GET /lessonplan/{id}
     public function show($id)
@@ -112,7 +227,7 @@ public function update($id)
     }
 
     // DELETE /lessonplan/{id}
-      public function delete($id)
+    public function delete($id)
     {
         if (!$this->lessonplan->find($id)) {
             return redirect()->to('/lessonplan')

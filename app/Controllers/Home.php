@@ -34,6 +34,8 @@ class Home extends BaseController
 
         $userSubjects = $this->UserSubjectModel->getUserSubjects($user_id);
 
+        // print_r($mainClass);
+        // exit();
         // print_r(session()->get());
         // print_r($userSubjects);
         // echo json_encode($userSubjects);

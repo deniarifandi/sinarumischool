@@ -93,10 +93,12 @@ function safe_url($path, $fallback = 'avatar/default.png'){
         </div>
 
         <div class="action-grid">
-          <a href="<?php echo base_url('lessonplan') ?>" class="action-btn">
+          <?php foreach ($userSubjects as $d): ?>
+          <a href="<?php echo base_url('lessonplan'); echo "?subject_id=".$d['subject_id'] ?>" class="action-btn">
             <i class="bi bi-layers"></i>
             <span>Modul Ajar</span>
           </a>
+        <?php endforeach ?>
 
         </div>
       </div>
@@ -249,9 +251,14 @@ function safe_url($path, $fallback = 'avatar/default.png'){
       </div>
 
       <div class="action-grid">
-        <a href="<?php //echo base_url('grade?classid='.$d['id']) ?>" class="action-btn">
+        <a href="<?php echo base_url('student/attendance/class/').$mainClass["id"] ?>" class="action-btn">
           <i class="bi bi-layers"></i>
           <span>Student Presence</span>
+        </a>
+
+        <a href="<?php echo base_url('student/attendance/list/class/').$mainClass["id"] ?>" class="action-btn">
+          <i class="bi bi-layers"></i>
+          <span>Attendance List</span>
         </a>
 
       <!--   <a href="<?php //echo base_url('socioreport?classid='.$d['id']) ?>" class="action-btn">

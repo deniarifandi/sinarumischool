@@ -1,255 +1,211 @@
 <?= $this->extend('main') ?>
 <?= $this->section('content') ?>
 
-<?php if (session()->getFlashdata('error')): ?>
-    <div class="alert alert-danger">
-        <?php 
-        $error = session()->getFlashdata('error');
-        if (is_array($error)) {
-            foreach ($error as $e) {
-                echo '<div>' . esc($e) . '</div>';
-            }
-        } else {
-            echo esc($error);
-        }
-        ?>
-    </div>
-<?php endif; ?>
+<div class="glass-card">
+    <h5 class="mb-4"><?= isset($lessonplan) ? 'Edit' : 'Tambah' ?> Lesson Plan</h5>
 
-<?php if (session()->getFlashdata('success')): ?>
-    <div class="alert alert-success">
-        <?= esc(session()->getFlashdata('success')) ?>
-    </div>
-<?php endif; ?>
+    <form action="<?= isset($lessonplan)
+        ? base_url('lessonplan/update/'.$lessonplan['id'])
+        : base_url('lessonplan/store') ?>" method="post">
 
-<div class="container-fluid pb-5">
-    <form method="post" action="<?= isset($lessonplan) ? base_url('lessonplan/update/'.$lessonplan['id']) : base_url('lessonplan/store') ?>">
         <?= csrf_field() ?>
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h4 class="fw-bold mb-0 text-white">
-                    <?= isset($lessonplan) ? '<i class="bi bi-pencil-square"></i> Edit Lesson Plan' : '<i class="bi bi-plus-circle"></i> Create Lesson Plan' ?>
-                </h4>
-                <p class="text-white-50 mb-0">Fill in the details to organize your teaching schedule.</p>
-            </div>
-            <div class="d-flex gap-2">
-                <a href="<?= base_url('lessonplan') ?>" class="btn btn-outline-light rounded-pill px-4">Cancel</a>
-                <button type="submit" class="btn btn-primary rounded-pill px-4 shadow">
-                    <i class="bi bi-save me-1"></i> <?= isset($lessonplan) ? 'Update Plan' : 'Save Plan' ?>
-                </button>
-            </div>
+        <input type="hidden" name="class_id" value="<?= esc($mainClass['id']) ?>">
+
+        <!-- TOPIK -->
+        <div class="mb-3">
+            <label>Topik</label>
+            <select name="unit_id" class="form-control" required>
+                <option value="">-- pilih topik --</option>
+                <?php foreach ($units as $u): ?>
+                    <option value="<?= $u['id'] ?>"
+                        <?= ($lessonplan['unit_id'] ?? '') == $u['id'] ? 'selected' : '' ?>>
+                        <?= esc($u['name']) ?>
+                    </option>
+                <?php endforeach ?>
+            </select>
         </div>
 
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="glass-card mb-4">
-                    <h6 class="text-uppercase fw-bold text-primary mb-3">General Information</h6>
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <label class="form-label small fw-bold">Class ID</label>
-                            <input type="text" name="class_id" class="form-control bg-light" value="<?= old('class_id', $mainClass['id'] ?? $lessonplan['class_id']) ?>" readonly>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-bold">Nama Kelas</label>
-                            <input type="text" class="form-control bg-light" value="<?= old('class_name', $mainClass['class_name'] ?? '') ?>" readonly>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small fw-bold">Unit / Subunit</label>
-                            <div class="input-group">
-                                <select name="unit_id" class="form-select">
-                                    <option value="">Unit...</option>
-                                    <?php foreach ($units as $u): ?>
-                                        <option value="<?= esc($u['id']) ?>" <?= old('unit_id', $lessonplan['unit_id'] ?? '') == $u['id'] ? 'selected' : '' ?>><?= esc($u['name']) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <select name="subunit_id" class="form-select">
-                                    <option value="">Subunit...</option>
-                                    <?php foreach ($subunits as $s): ?>
-                                        <option value="<?= esc($s['id']) ?>" <?= old('subunit_id', $lessonplan['subunit_id'] ?? '') == $s['id'] ? 'selected' : '' ?>><?= esc($s['name']) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-bold">Semester</label>
-                            <select name="semester" class="form-select">
-                                <option value="1" <?= old('semester', $lessonplan['semester'] ?? '') == '1' ? 'selected' : '' ?>>1</option>
-                                <option value="2" <?= old('semester', $lessonplan['semester'] ?? '') == '2' ? 'selected' : '' ?>>2</option>
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-bold">Bulan</label>
-                            <select name="bulan" class="form-select">
-                                <?php $months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-                                $selectedMonth = old('bulan', $lessonplan['bulan'] ?? ''); ?>
-                                <?php foreach ($months as $m): ?>
-                                    <option value="<?= $m ?>" <?= $selectedMonth === $m ? 'selected' : '' ?>><?= $m ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small fw-bold">DPL (Dosen Pembimbing)</label>
-                            <input type="text" name="dpl" class="form-control" placeholder="Enter name..." value="<?= old('dpl', $lessonplan['dpl'] ?? '') ?>">
-                        </div>
-                    </div>
-                </div>
-
-              
-                    <h6 class="text-uppercase fw-bold text-success mb-3">Target Kurikulum</h6>
-                    <div class="glass-card mb-4">
-    <h6 class="text-uppercase fw-bold text-success mb-3">Target Kurikulum</h6>
-
-    <!-- Agama -->
-    <div class="mb-3">
-        <label class="form-label small">Agama & Budi Pekerti</label>
-        <select name="agama1" class="form-select mb-2 small shadow-sm">
-            <option value="">-- Tujuan 1 --</option>
-            <?php foreach ($agama1List as $t): ?>
-                <option value="<?= esc($t['id']) ?>" <?= old('agama1', $lessonplan['agama1'] ?? '') == $t['id'] ? 'selected' : '' ?>>
-                    <?= esc($t['nama']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <select name="agama2" class="form-select small shadow-sm">
-            <option value="">-- Tujuan 2 --</option>
-            <?php foreach ($agama1List as $t): ?>
-                <option value="<?= esc($t['id']) ?>" <?= old('agama2', $lessonplan['agama2'] ?? '') == $t['id'] ? 'selected' : '' ?>>
-                    <?= esc($t['nama']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
-
-    <!-- Literasi -->
-    <div class="mb-3">
-        <label class="form-label small">Literasi</label>
-        <select name="literasi1" class="form-select mb-2 small shadow-sm">
-            <option value="">-- Tujuan 1 --</option>
-            <?php foreach ($literasiList as $t): ?>
-                <option value="<?= esc($t['id']) ?>" <?= old('literasi1', $lessonplan['literasi1'] ?? '') == $t['id'] ? 'selected' : '' ?>>
-                    <?= esc($t['nama']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <select name="literasi2" class="form-select small shadow-sm">
-            <option value="">-- Tujuan 2 --</option>
-            <?php foreach ($literasiList as $t): ?>
-                <option value="<?= esc($t['id']) ?>" <?= old('literasi2', $lessonplan['literasi2'] ?? '') == $t['id'] ? 'selected' : '' ?>>
-                    <?= esc($t['nama']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
-
-    <!-- Jati Diri -->
-    <div class="mb-3">
-        <label class="form-label small">Jati Diri</label>
-        <select name="jatidiri1" class="form-select mb-2 small shadow-sm">
-            <option value="">-- Tujuan 1 --</option>
-            <?php foreach ($jatiList as $t): ?>
-                <option value="<?= esc($t['id']) ?>" <?= old('jatidiri1', $lessonplan['jatidiri1'] ?? '') == $t['id'] ? 'selected' : '' ?>>
-                    <?= esc($t['nama']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <select name="jatidiri2" class="form-select small shadow-sm">
-            <option value="">-- Tujuan 2 --</option>
-            <?php foreach ($jatiList as $t): ?>
-                <option value="<?= esc($t['id']) ?>" <?= old('jatidiri2', $lessonplan['jatidiri2'] ?? '') == $t['id'] ? 'selected' : '' ?>>
-                    <?= esc($t['nama']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
-
-</div>
-             
-
-
-            </div>
-
-            <div class="col-lg-8">
-                <div class="glass-card mb-4">
-                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active rounded-pill" id="pills-prep-tab" data-bs-toggle="pill" data-bs-target="#pills-prep" type="button">Persiapan</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link rounded-pill" id="pills-sambut-tab" data-bs-toggle="pill" data-bs-target="#pills-sambut" type="button">Kegiatan Sambut</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link rounded-pill" id="pills-inti-tab" data-bs-toggle="pill" data-bs-target="#pills-inti" type="button">Kegiatan Inti</button>
-                        </li>
-                    </ul>
-
-                    <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade show active" id="pills-prep" role="tabpanel">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">IKTP</label>
-                                    <textarea name="iktp" class="form-control" rows="3"><?= old('iktp', $lessonplan['iktp'] ?? '') ?></textarea>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Pedagogis</label>
-                                    <textarea name="pedagogis" class="form-control" rows="3"><?= old('pedagogis', $lessonplan['pedagogis'] ?? '') ?></textarea>
-                                </div>
-                                <div class="col-md-12">
-                                    <label class="form-label fw-bold">Alat, Bahan & Sumber</label>
-                                    <textarea name="alatbahan" class="form-control mb-2" placeholder="Alat & Bahan..."><?= old('alatbahan', $lessonplan['alatbahan'] ?? '') ?></textarea>
-                                    <textarea name="sumber" class="form-control" placeholder="Sumber Belajar..."><?= old('sumber', $lessonplan['sumber'] ?? '') ?></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="tab-pane fade" id="pills-sambut" role="tabpanel">
-                            <div class="alert alert-info py-2 small">Input standard greeting activities for each day.</div>
-                            <?php for($i=1; $i<=5; $i++): ?>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold text-muted">Sambut <?= $i ?></label>
-                                    <textarea name="sambut<?= $i ?>" class="form-control shadow-sm"><?= old("sambut$i", $lessonplan["sambut$i"] ?? '') ?></textarea>
-                                </div>
-                            <?php endfor; ?>
-                        </div>
-
-                        <div class="tab-pane fade" id="pills-inti" role="tabpanel">
-                            <div class="mb-4 bg-light p-3 rounded shadow-sm">
-                                <label class="form-label fw-bold text-primary">Pembukaan</label>
-                                <textarea name="pembukaan" class="form-control bg-white" rows="5"><?= old('pembukaan', $lessonplan['pembukaan'] ?? '') ?></textarea>
-                            </div>
-                            <div class="row g-3">
-                                <?php for($i=1; $i<=5; $i++): ?>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-bold">Kegiatan Inti <?= $i ?></label>
-                                        <textarea name="inti<?= $i ?>" class="form-control" rows="4" placeholder="Description for day <?= $i ?>..."><?= old("inti$i", $lessonplan["inti$i"] ?? '') ?></textarea>
-                                    </div>
-                                <?php endfor; ?>
-                                <div class="col-12">
-                                    <label class="form-label fw-bold text-danger">Penutup</label>
-                                    <textarea name="penutup" class="form-control border-danger-subtle" rows="5"><?= old('penutup', $lessonplan['penutup'] ?? '') ?></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- SUB TOPIK -->
+        <div class="mb-3">
+            <label>Sub Topik</label>
+            <select name="subunit_id" class="form-control" required>
+                <option value="">-- pilih sub topik --</option>
+                <?php foreach ($subunits as $s): ?>
+                    <option value="<?= $s['id'] ?>"
+                        <?= ($lessonplan['subunit_id'] ?? '') == $s['id'] ? 'selected' : '' ?>>
+                        <?= esc($s['subunit_name']) ?>
+                    </option>
+                <?php endforeach ?>
+            </select>
         </div>
+
+        <!-- SEMESTER -->
+        <div class="mb-3">
+            <label>Semester</label>
+            <select name="semester" class="form-control" required>
+                <option value="">-- pilih semester --</option>
+                <option value="1" <?= ($lessonplan['semester'] ?? '') == '1' ? 'selected' : '' ?>>1</option>
+                <option value="2" <?= ($lessonplan['semester'] ?? '') == '2' ? 'selected' : '' ?>>2</option>
+            </select>
+        </div>
+
+        <!-- BULAN -->
+        <div class="mb-3">
+            <label>Bulan</label>
+            <?php
+            $bulanList = [
+                'Januari','Februari','Maret','April','Mei','Juni',
+                'Juli','Agustus','September','Oktober','November','Desember'
+            ];
+            ?>
+            <select name="bulan" class="form-control" required>
+                <option value="">-- pilih bulan --</option>
+                <?php foreach ($bulanList as $b): ?>
+                    <option value="<?= $b ?>"
+                        <?= ($lessonplan['bulan'] ?? '') == $b ? 'selected' : '' ?>>
+                        <?= $b ?>
+                    </option>
+                <?php endforeach ?>
+            </select>
+        </div>
+
+        <!-- DPL -->
+        <div class="mb-3">
+            <label>DPL (Profil Lulusan)</label>
+
+            <?php
+            $dplOptions = [
+                1   => 'Beriman & Bertakwa',
+                2   => 'Mandiri',
+                4   => 'Bernalar Kritis',
+                8   => 'Kreatif',
+                16  => 'Gotong Royong',
+                32  => 'Berkebinekaan Global',
+                64  => 'Komunikatif',
+                128 => 'Berakhlak Mulia'
+            ];
+
+            $selected = isset($lessonplan['dpl']) ? (int)$lessonplan['dpl'] : 0;
+            ?>
+
+            <?php foreach ($dplOptions as $val => $label): ?>
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           name="dpl[]"
+                           value="<?= $val ?>"
+                           <?= ($selected & $val) ? 'checked' : '' ?>>
+                    <label class="form-check-label"><?= $label ?></label>
+                </div>
+            <?php endforeach ?>
+        </div>
+
+        <!-- AGAMA -->
+        <div class="mb-3">
+            <label>Agama 1</label>
+            <select name="agama1" class="form-control">
+                <option value="">-- pilih --</option>
+                <?php foreach ($agama as $a): ?>
+                    <option value="<?= $a['id'] ?>"
+                        <?= ($lessonplan['agama1'] ?? '') == $a['id'] ? 'selected' : '' ?>>
+                        <?= esc($a['objective_name']) ?>
+                    </option>
+                <?php endforeach ?>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Agama 2</label>
+            <select name="agama2" class="form-control">
+                <option value="">-- pilih --</option>
+                <?php foreach ($agama as $a): ?>
+                    <option value="<?= $a['id'] ?>"
+                        <?= ($lessonplan['agama2'] ?? '') == $a['id'] ? 'selected' : '' ?>>
+                        <?= esc($a['objective_name']) ?>
+                    </option>
+                <?php endforeach ?>
+            </select>
+        </div>
+
+        <!-- JATI DIRI -->
+        <div class="mb-3">
+            <label>Jati Diri 1</label>
+            <select name="jati1" class="form-control">
+                <option value="">-- pilih --</option>
+                <?php foreach ($jati as $j): ?>
+                    <option value="<?= $j['id'] ?>"
+                        <?= ($lessonplan['jati1'] ?? '') == $j['id'] ? 'selected' : '' ?>>
+                        <?= esc($j['objective_name']) ?>
+                    </option>
+                <?php endforeach ?>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Jati Diri 2</label>
+            <select name="jati2" class="form-control">
+                <option value="">-- pilih --</option>
+                <?php foreach ($jati as $j): ?>
+                    <option value="<?= $j['id'] ?>"
+                        <?= ($lessonplan['jati2'] ?? '') == $j['id'] ? 'selected' : '' ?>>
+                        <?= esc($j['objective_name']) ?>
+                    </option>
+                <?php endforeach ?>
+            </select>
+        </div>
+
+        <!-- LITERASI -->
+        <div class="mb-3">
+            <label>Literasi 1</label>
+            <select name="dasar1" class="form-control">
+                <option value="">-- pilih --</option>
+                <?php foreach ($literasi as $l): ?>
+                    <option value="<?= $l['id'] ?>"
+                        <?= ($lessonplan['dasar1'] ?? '') == $l['id'] ? 'selected' : '' ?>>
+                        <?= esc($l['objective_name']) ?>
+                    </option>
+                <?php endforeach ?>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Literasi 2</label>
+            <select name="dasar2" class="form-control">
+                <option value="">-- pilih --</option>
+                <?php foreach ($literasi as $l): ?>
+                    <option value="<?= $l['id'] ?>"
+                        <?= ($lessonplan['dasar2'] ?? '') == $l['id'] ? 'selected' : '' ?>>
+                        <?= esc($l['objective_name']) ?>
+                    </option>
+                <?php endforeach ?>
+            </select>
+        </div>
+
+        <!-- TEXTAREAS -->
+        <?php
+        $fields = [
+            'pedagogis','kemitraan','alatbahan','sumber',
+            'inti','penutup','pembukaan',
+            'sambut1','sambut2','sambut3','sambut4','sambut5',
+            'inti1','inti2','inti3','inti4','inti5'
+        ];
+        ?>
+
+        <?php foreach ($fields as $f): ?>
+            <div class="mb-3">
+                <label><?= strtoupper($f) ?></label>
+                <textarea name="<?= $f ?>" class="form-control" rows="2"><?= $lessonplan[$f] ?? '' ?></textarea>
+            </div>
+        <?php endforeach ?>
+
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary">
+                <?= isset($lessonplan) ? 'Update' : 'Simpan' ?>
+            </button>
+        </div>
+
     </form>
 </div>
-
-<style>
-    .glass-card {
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
-        border-radius: 1rem;
-        padding: 1.5rem;
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-    }
-    .form-label { color: #495057; }
-    .nav-pills .nav-link.active { background-color: #0d6efd; box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3); }
-    .nav-pills .nav-link { color: #6c757d; font-weight: 500; }
-    input[readonly] { cursor: not-allowed; }
-</style>
 
 <?= $this->endSection() ?>

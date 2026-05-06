@@ -18,4 +18,26 @@ class ObjectiveModel extends Model
 
     protected $returnType = 'array';
 
+     public function getAgamaBySubject($subjectId)
+    {
+        return $this->join('outcomes','outcomes.id = objectives.outcome_id')
+                    ->where('outcomes.subject_id', $subjectId)
+                    ->where("outcome_name LIKE '%agama%'")
+                    ->findAll();
+    }
+     public function getJatiBySubject($subjectId)
+    {
+        return $this->join('outcomes','outcomes.id = objectives.outcome_id')
+                    ->where('outcomes.subject_id', $subjectId)
+                    ->where("outcome_name LIKE '%jati%'")
+                    ->findAll();
+    }
+     public function getLiterasiBySubject($subjectId)
+    {
+        return $this->join('outcomes','outcomes.id = objectives.outcome_id')
+                    ->where('outcomes.subject_id', $subjectId)
+                    ->where("outcome_name LIKE '%literasi%'")
+                    ->findAll();
+    }
+
 }
