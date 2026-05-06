@@ -96,7 +96,7 @@ function safe_url($path, $fallback = 'avatar/default.png'){
           <?php foreach ($userSubjects as $d): ?>
           <a href="<?php echo base_url('lessonplan'); echo "?subject_id=".$d['subject_id'] ?>" class="action-btn">
             <i class="bi bi-layers"></i>
-            <span>Modul Ajar</span>
+            <span>Modul Ajar <?php echo $d['subject_name'] ?></span>
           </a>
         <?php endforeach ?>
 
