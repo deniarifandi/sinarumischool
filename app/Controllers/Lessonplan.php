@@ -243,7 +243,7 @@ class Lessonplan extends BaseController
 
         $this->lessonplan->delete($id);
 
-        return redirect()->to('/lessonplan')
+        return redirect()->to('/')
                          ->with('success', 'Deleted successfully');
     }
 }
