@@ -53,7 +53,7 @@
                         <td><?= esc($lp['dpl'] ?? '-') ?></td>
 
                         <td class="text-end pe-3">
-                            <a href="<?= base_url('lessonplan/edit/'.$lp['id']) ?>"
+                            <a href="<?= base_url('lessonplan/edit/'.$lp['id'])."?subject_id=".$_GET['subject_id'] ?>"
                                class="btn btn-sm btn-glass-edit">
                                 <i class="bi bi-pencil-square"></i>
                             </a>

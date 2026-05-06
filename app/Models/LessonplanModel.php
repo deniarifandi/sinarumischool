@@ -34,7 +34,8 @@ class LessonplanModel extends Model
         'penutup',
         'sambut1','sambut2','sambut3','sambut4','sambut5',
         'pembukaan',
-        'inti1','inti2','inti3','inti4','inti5'
+        'inti1','inti2','inti3','inti4','inti5','subject_id'
+
     ];
 
     protected $useTimestamps = false;

@@ -40,6 +40,7 @@ class Lessonplan extends BaseController
             ->join('classes', 'classes.id = lessonplan.class_id', 'left')
             ->join('units', 'units.id = lessonplan.unit_id', 'left')
             ->join('subunits', 'subunits.id = lessonplan.subunit_id', 'left')
+            ->where('lessonplan.subject_id',$_GET['subject_id'])
             ->findAll();
 
         return view('lessonplan/index', $data);
@@ -116,6 +117,7 @@ class Lessonplan extends BaseController
 
     $data = [
         'class_id'   => $this->request->getPost('class_id'),
+        'subject_id'   => $this->request->getPost('subject_id'),
         'unit_id'    => $this->request->getPost('unit_id'),
         'subunit_id' => $this->request->getPost('subunit_id'),
         'semester'   => $this->request->getPost('semester'),
@@ -174,6 +176,7 @@ class Lessonplan extends BaseController
 
     $data = [
         'class_id'    => $this->request->getPost('class_id'),
+        'subject_id'    => $this->request->getPost('subject_id'),
         'unit_id'     => $this->request->getPost('unit_id'),
         'subunit_id'  => $this->request->getPost('subunit_id'),
         'semester'    => $this->request->getPost('semester'),

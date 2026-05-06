@@ -11,7 +11,7 @@
         <?= csrf_field() ?>
 
         <input type="hidden" name="class_id" value="<?= esc($mainClass['id']) ?>">
-
+        <input type="hidden" name="subject_id" value="<?= $_GET['subject_id'] ?>">
         <!-- TOPIK -->
         <div class="mb-3">
             <label>Topik</label>
