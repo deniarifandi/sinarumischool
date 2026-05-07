@@ -249,4 +249,51 @@ class Lessonplan extends BaseController
         return redirect()->to('/')
                          ->with('success', 'Deleted successfully');
     }
+
+    public function print($id)
+{
+    $lessonplan = $this->lessonplan
+        ->select('
+            lessonplan.*,
+
+            classes.class_name,
+            units.name as unit_name,
+            subunits.subunit_name,
+
+            agama1_obj.objective_name as agama1_name,
+            agama2_obj.objective_name as agama2_name,
+
+            jati1_obj.objective_name as jati1_name,
+            jati2_obj.objective_name as jati2_name,
+
+            dasar1_obj.objective_name as dasar1_name,
+            dasar2_obj.objective_name as dasar2_name
+        ')
+
+        ->join('classes', 'classes.id = lessonplan.class_id', 'left')
+        ->join('units', 'units.id = lessonplan.unit_id', 'left')
+        ->join('subunits', 'subunits.id = lessonplan.subunit_id', 'left')
+
+        // AGAMA
+        ->join('objectives as agama1_obj', 'agama1_obj.id = lessonplan.agama1', 'left')
+        ->join('objectives as agama2_obj', 'agama2_obj.id = lessonplan.agama2', 'left')
+
+        // JATI
+        ->join('objectives as jati1_obj', 'jati1_obj.id = lessonplan.jati1', 'left')
+        ->join('objectives as jati2_obj', 'jati2_obj.id = lessonplan.jati2', 'left')
+
+        // LITERASI
+        ->join('objectives as dasar1_obj', 'dasar1_obj.id = lessonplan.dasar1', 'left')
+        ->join('objectives as dasar2_obj', 'dasar2_obj.id = lessonplan.dasar2', 'left')
+
+        ->find($id);
+
+    if (!$lessonplan) {
+        throw new \RuntimeException('Lesson plan tidak ditemukan');
+    }
+
+    return view('lessonplan/print', [
+        'lessonplan' => $lessonplan
+    ]);
+}
 }

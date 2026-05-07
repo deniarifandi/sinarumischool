@@ -167,7 +167,9 @@ $routes->group('lessonplan', function($routes) {
     $routes->get('edit/(:num)', 'Lessonplan::edit/$1');
     $routes->post('store', 'Lessonplan::store');
     $routes->post('update/(:num)', 'Lessonplan::update/$1');
+
 });
+$routes->get('lessonplan/print/(:num)', 'Lessonplan::print/$1');
 
 $routes->group('unit', function($routes) {
     $routes->get('/', 'Unit::index');

@@ -57,6 +57,11 @@
                                class="btn btn-sm btn-glass-edit">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
+                            <a href="<?= base_url('lessonplan/print/'.$lp['id']) ?>"
+                               target="_blank"
+                               class="btn btn-sm btn-secondary">
+                                <i class="bi bi-printer"></i>
+                            </a>
 
                             <form action="<?= base_url('lessonplan/'.$lp['id']) ?>" method="post" class="d-inline">
                                 <?= csrf_field() ?>
