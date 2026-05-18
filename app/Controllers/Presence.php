@@ -79,7 +79,7 @@ public function attendancePage()
 
     $history = $builder
         ->orderBy('presensidata_tanggal', 'DESC')
-        ->limit(1000)
+        ->limit(10000)
         ->get()
         ->getResultArray();
 
