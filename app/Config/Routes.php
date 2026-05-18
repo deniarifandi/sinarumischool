@@ -110,6 +110,7 @@ use CodeIgniter\Router\RouteCollection;
 
     // $routes->post('attendance/data', 'Presence::attendanceData');
     $routes->get('attendance/data', 'Presence::attendanceData');
+    $routes->post('attendance/store', 'Presence::storeAttendance');
 
     $routes->group('grade', ['filter' => 'auth'], function ($routes) {
         $routes->get('/', 'GradeController::index');

@@ -54,7 +54,14 @@ class Presence extends BaseController
 
 public function attendancePage()
 {
-    return view('rekap/attendance_list');
+     $users = $this->db->table('users')
+        ->select('id, name')
+        ->get()
+        ->getResultArray();
+
+    return view('rekap/attendance_list', [
+        'allUsers' => $users
+    ]);
 }
 
 public function attendanceData()
@@ -216,62 +223,49 @@ public function attendancePageOLD()
     ]);
 }
    
-
-
-    public function attendanceData2()
+   private function insertAttendance(array $data)
 {
+    $userId = $data['guru_id'];
 
-          $history = $this->db->table('presensidata')
-            ->select('presensidata.*, users.name')
-            ->join('users','users.id = presensidata.guru_id')
-            ->orderBy('presensidata_tanggal', 'DESC')
-            ->limit(10)
-            ->get()
-            ->getResultArray();
+    $start = date('Y-m-d 00:00:00');
+    $end   = date('Y-m-d 23:59:59');
 
-            return json_encode($history);
+    $exists = $this->db->table('presensidata')
+        ->where('guru_id', $userId)
+        ->where('presensidata_tanggal >=', $start)
+        ->where('presensidata_tanggal <=', $end)
+        ->countAllResults();
 
-        return view('users/index', [
-            'users'     => $history
-        ]);
+    if ($exists) {
+        return ['ok' => false, 'msg' => 'Attendance already submitted today'];
+    }
 
-    // $builder = $this->presence->builder()
-    //     ->select('presensidata_id, users.name, presensidata.created_at, presensidata.address, status')
-    //     ->join('users','users.id = presensidata.guru_id')
-    //   ;
+    $this->db->table('presensidata')->insert([
+        'guru_id' => $userId,
+        'status' => (int) $data['status'],
+        'latitude' => 0,
+        'longitude' => 0,
+        'address' => "Admin Injected",
+        'presensidata_tanggal' => $data['date'] . ' ' . date('H:i:s'),
+        'created_at' => date('Y-m-d H:i:s'),
+    ]);
 
-    // // DataTables + filter (POST)
-    // $date   = $this->request->getPost('date');
-    // $start  = $this->request->getPost('start');
-    // $end    = $this->request->getPost('end');
-    // $status = $this->request->getPost('status');
+    return ['ok' => true];
+}
 
-    // // date filter priority: range > single date
-    // if ($start && $end) {
-    //     $builder->where('presensidata.created_at >=', $start . ' 00:00:00')
-    //             ->where('presensidata.created_at <=', $end . ' 23:59:59');
-    // } elseif ($date) {
-    //     $builder->where('presensidata.created_at >=', $date . ' 00:00:00')
-    //             ->where('presensidata.created_at <=', $date . ' 23:59:59');
-    // }
+public function storeAttendance()
+{
+    $result = $this->insertAttendance([
+        'guru_id' => $this->request->getPost('guru_id'),
+        'status' => $this->request->getPost('status'),
+        'date' => $this->request->getPost('date'),
+    ]);
 
-    // // status filter
-    // if ($status !== null && $status !== '') {
-    //     $builder->where('status', (int) $status);
-    // }
+    if (!$result['ok']) {
+        return redirect()->back()->with('error', $result['msg']);
+    }
 
-    // $datatable = new \App\Libraries\DataTable(
-    //     $builder,
-    //     ['presensidata.created_at', 'status'],
-    //     [
-    //         0 => 'presensidata_id',
-    //         1 => 'presensidata.created_at',
-    //         2 => 'status',
-    //         3 => 'address'
-    //     ]
-    // );
-
-    // return $this->response->setJSON($datatable->generate());
+    return redirect()->back()->with('success', 'Attendance added');
 }
 
 public function checkIn()
@@ -318,42 +312,7 @@ public function checkIn()
 
     return redirect()->back()->with('success', 'Attendance recorded');
 }
-//    public function checkIn()
-// {
-//     $this->db = \Config\Database::connect();
-//     $userId = session('id');
-//     $today  = date('Y-m-d');
 
-//     // blok double submit
-//     $exists = $this->db->table('presensidata')
-//         ->where('guru_id', $userId)
-//         ->where('DATE(presensidata_tanggal)', $today)
-//         ->countAllResults();
-
-//     if ($exists > 0) {
-//         return redirect()->back()
-//             ->with('error', 'Attendance already submitted today');
-//     }
-
-//     $statusMap = [1,2,3];
-//     $status = (int) $this->request->getPost('status');
-
-//     if (!in_array($status, $statusMap, true)) {
-//         return redirect()->back()->with('error','Invalid status');
-//     }
-
-//     $this->db->table('presensidata')->insert([
-//         'guru_id' => $userId,
-//         'longitude' => $this->request->getPost('longitude'),
-//         'latitude' => $this->request->getPost('latitude'),
-//         'presensidata_tanggal' => date('Y-m-d H:i:s'),
-//         'status' => $status,
-//         'created_at' => date('Y-m-d H:i:s')
-//     ]);
-
-//     return redirect()->back()
-//         ->with('success', 'Attendance recorded');
-// }
 
 public function full_report($year = null, $month = null)
 {

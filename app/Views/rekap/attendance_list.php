@@ -185,6 +185,10 @@
                 </button>
             </div>
 
+            <button class="btn btn-primary btn-sm shadow-sm" data-bs-toggle="modal" data-bs-target="#addAttendanceModal">
+            <i class="bi bi-plus"></i> Add Attendance
+        </button>
+
         </form>
 
     </div>
@@ -211,6 +215,56 @@
 
     </div>
 
+</div>
+
+<div class="modal fade" id="addAttendanceModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" action="<?= base_url('attendance/store') ?>">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title">Add Attendance</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <div class="mb-3">
+            <label class="form-label">User</label>
+            <select name="guru_id" class="form-select" required>
+              <option value="">Select user</option>
+              <?php foreach ($allUsers as $u): ?>
+                <option value="<?= $u['id'] ?>">
+                  <?= esc($u['name']) ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Date</label>
+            <input type="date" name="date" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select" required>
+              <option value="1">Masuk</option>
+              <option value="2">Izin</option>
+              <option value="3">Sakit</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+
+      </div>
+    </form>
+  </div>
 </div>
 
 <?= $this->endSection() ?>
