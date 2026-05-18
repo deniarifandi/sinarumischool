@@ -352,6 +352,25 @@ public function full_report($year = null, $month = null)
     ]);
 }
 
+public function updateStatus()
+{
+    $id = $this->request->getPost('presensidata_id');
+    $status = (int) $this->request->getPost('status');
+
+    if (!in_array($status, [1,2,3], true)) {
+        return redirect()->back()->with('error', 'Invalid status');
+    }
+
+    $this->db->table('presensidata')
+        ->where('presensidata_id', $id)
+        ->update([
+            'status' => $status,
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+
+    return redirect()->back()->with('success', 'Status updated');
+}
+
 
 
 

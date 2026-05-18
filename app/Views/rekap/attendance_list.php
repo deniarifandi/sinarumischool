@@ -218,6 +218,7 @@
                     <th>Coordinates</th>
                     <th>Address</th>
                     <th>Created At</th>
+                    <th>Action</th>
                 </tr>
             </thead>
 
@@ -277,6 +278,60 @@
       </div>
     </form>
   </div>
+</div>
+
+<div class="modal fade" id="editStatusModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form method="POST" action="<?= base_url('attendance/update-status') ?>">
+
+            <input type="hidden" name="presensidata_id" id="edit_presensidata_id">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Status</h5>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                    ></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+
+                        <select name="status" id="edit_status" class="form-select" required>
+                            <option value="1">Masuk</option>
+                            <option value="2">Izin</option>
+                            <option value="3">Sakit</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+    </div>
 </div>
 
 <?= $this->endSection() ?>
@@ -433,6 +488,25 @@ $(function () {
                         </span>
                     `;
                 }
+            },
+            {
+                data: null,
+
+                orderable: false,
+                searchable: false,
+
+                render: function(data) {
+
+                    return `
+                        <button
+                            class="btn btn-sm btn-light border edit-btn"
+                            data-id="${data.presensidata_id}"
+                            data-status="${data.status}"
+                        >
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    `;
+                }
             }
 
         ],
@@ -467,6 +541,18 @@ $(function () {
         table.search('').draw();
     });
 
+});
+
+$(document).on('click', '.edit-btn', function () {
+
+    $('#edit_presensidata_id').val($(this).data('id'));
+    $('#edit_status').val($(this).data('status'));
+
+    let modal = new bootstrap.Modal(
+        document.getElementById('editStatusModal')
+    );
+
+    modal.show();
 });
 </script>
 
