@@ -458,19 +458,22 @@ $(function () {
                 }
             },
 
-            {
-                data: null,
+        {
+    data: null,
 
-                render: function(data) {
+    render: function(data) {
 
-                    return `
-                        <span class="text-muted small">
-                            <i class="bi bi-geo-alt text-secondary"></i>
-                            ${data.latitude}, ${data.longitude}
-                        </span>
-                    `;
-                }
-            },
+        const lat = parseFloat(data.latitude).toFixed(4);
+        const lng = parseFloat(data.longitude).toFixed(4);
+
+        return `
+            <span class="text-muted small">
+                <i class="bi bi-geo-alt text-secondary"></i>
+                ${lat}, ${lng}
+            </span>
+        `;
+    }
+},
 
             {
                 data: 'address',
