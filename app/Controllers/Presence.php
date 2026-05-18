@@ -59,6 +59,57 @@ public function attendancePage()
 
 public function attendanceData()
 {
+    $request = $this->request->getGet();
+
+    $builder = $this->db->table('presensidata')
+        ->select('presensidata.*, users.name')
+        ->join('users', 'users.id = presensidata.guru_id');
+
+    $dt = new \App\Libraries\DataTables($builder, $request);
+
+    $dt->setColumns([
+        'presensidata.presensidata_id',
+        'users.name',
+        'presensidata.presensidata_tanggal',
+        'presensidata.status',
+        'presensidata.latitude',
+        'presensidata.longitude',
+        'presensidata.address',
+        'presensidata.created_at',
+    ]);
+
+    $data = $dt
+        ->applySearch([
+            'users.name',
+            'presensidata.address'
+        ])
+        ->applyFilters(function ($builder, $request) {
+
+            if (!empty($request['date'])) {
+                $builder->where('presensidata.presensidata_tanggal', $request['date']);
+            }
+
+            if (!empty($request['status'])) {
+                $builder->where('presensidata.status', $request['status']);
+            }
+        })
+        ->applyOrdering()
+        ->paginate()
+        ->result();
+
+    $recordsFiltered = $dt->countFiltered();
+    $recordsTotal    = $dt->countAll('presensidata');
+
+    return $this->response->setJSON([
+        'draw' => (int)($request['draw'] ?? 1),
+        'recordsTotal' => $recordsTotal,
+        'recordsFiltered' => $recordsFiltered,
+        'data' => $data
+    ]);
+}
+
+public function attendanceDataOLD2()
+{
     $request = service('request');
 
     $draw   = (int) $request->getGet('draw');
