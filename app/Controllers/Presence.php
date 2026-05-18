@@ -53,52 +53,117 @@ class Presence extends BaseController
 // php_uname()
 
 public function attendancePage()
-    {
-        return view('rekap/attendance_list');
+{
+    $builder = $this->db->table('presensidata')
+        ->select('presensidata.*, users.name')
+        ->join('users', 'users.id = presensidata.guru_id');
+
+    // FILTERS
+    $date   = $this->request->getGet('date');
+    $start  = $this->request->getGet('start');
+    $end    = $this->request->getGet('end');
+    $status = $this->request->getGet('status');
+
+    if (!empty($date)) {
+        $builder->where('presensidata_tanggal', $date);
     }
+
+    if (!empty($start) && !empty($end)) {
+        $builder->where('presensidata_tanggal >=', $start);
+        $builder->where('presensidata_tanggal <=', $end);
+    }
+
+    if (!empty($status)) {
+        $builder->where('status', $status);
+    }
+
+    $history = $builder
+        ->orderBy('presensidata_tanggal', 'DESC')
+        ->limit(10)
+        ->get()
+        ->getResultArray();
+
+    return view('rekap/attendance_list', [
+        'users' => $history
+    ]);
+}
+    // public function attendancePage()
+    // {
+    //   //  exit()
+    //        $history = $this->db->table('presensidata')
+    //         ->select('presensidata.*, users.name')
+    //         ->join('users','users.id = presensidata.guru_id')
+    //         ->orderBy('presensidata_tanggal', 'DESC')
+    //         ->limit(1000)
+    //         ->get()
+    //         ->getResultArray();
+
+    //         // return json_encode($history);
+
+    //     return view('rekap/attendance_list', [
+    //         'users'     => $history
+    //     ]);
+    // }
 
     // =========================
     // DATATABLE SERVER-SIDE
     // =========================
-    public function attendanceData()
+
+
+    public function attendanceData2()
 {
-    $builder = $this->presence->builder()
-        ->select('presensidata_id, users.name, presensidata.created_at, presensidata.address, status')
-        ->join('users','users.id = presensidata.guru_id')
-      ;
 
-    // DataTables + filter (POST)
-    $date   = $this->request->getPost('date');
-    $start  = $this->request->getPost('start');
-    $end    = $this->request->getPost('end');
-    $status = $this->request->getPost('status');
+          $history = $this->db->table('presensidata')
+            ->select('presensidata.*, users.name')
+            ->join('users','users.id = presensidata.guru_id')
+            ->orderBy('presensidata_tanggal', 'DESC')
+            ->limit(10)
+            ->get()
+            ->getResultArray();
 
-    // date filter priority: range > single date
-    if ($start && $end) {
-        $builder->where('presensidata.created_at >=', $start . ' 00:00:00')
-                ->where('presensidata.created_at <=', $end . ' 23:59:59');
-    } elseif ($date) {
-        $builder->where('presensidata.created_at >=', $date . ' 00:00:00')
-                ->where('presensidata.created_at <=', $date . ' 23:59:59');
-    }
+            return json_encode($history);
 
-    // status filter
-    if ($status !== null && $status !== '') {
-        $builder->where('status', (int) $status);
-    }
+        return view('users/index', [
+            'users'     => $history
+        ]);
 
-    $datatable = new \App\Libraries\DataTable(
-        $builder,
-        ['presensidata.created_at', 'status'],
-        [
-            0 => 'presensidata_id',
-            1 => 'presensidata.created_at',
-            2 => 'status',
-            3 => 'address'
-        ]
-    );
+    // $builder = $this->presence->builder()
+    //     ->select('presensidata_id, users.name, presensidata.created_at, presensidata.address, status')
+    //     ->join('users','users.id = presensidata.guru_id')
+    //   ;
 
-    return $this->response->setJSON($datatable->generate());
+    // // DataTables + filter (POST)
+    // $date   = $this->request->getPost('date');
+    // $start  = $this->request->getPost('start');
+    // $end    = $this->request->getPost('end');
+    // $status = $this->request->getPost('status');
+
+    // // date filter priority: range > single date
+    // if ($start && $end) {
+    //     $builder->where('presensidata.created_at >=', $start . ' 00:00:00')
+    //             ->where('presensidata.created_at <=', $end . ' 23:59:59');
+    // } elseif ($date) {
+    //     $builder->where('presensidata.created_at >=', $date . ' 00:00:00')
+    //             ->where('presensidata.created_at <=', $date . ' 23:59:59');
+    // }
+
+    // // status filter
+    // if ($status !== null && $status !== '') {
+    //     $builder->where('status', (int) $status);
+    // }
+
+    // $datatable = new \App\Libraries\DataTable(
+    //     $builder,
+    //     ['presensidata.created_at', 'status'],
+    //     [
+    //         0 => 'presensidata_id',
+    //         1 => 'presensidata.created_at',
+    //         2 => 'status',
+    //         3 => 'address'
+    //     ]
+    // );
+
+    // return $this->response->setJSON($datatable->generate());
 }
 
 public function checkIn()
