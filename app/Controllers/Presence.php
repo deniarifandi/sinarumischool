@@ -227,8 +227,10 @@ public function attendancePageOLD()
 {
     $userId = $data['guru_id'];
 
-    $start = date('Y-m-d 00:00:00');
-    $end   = date('Y-m-d 23:59:59');
+   $submittedDate = $data['date'];
+
+$start = $submittedDate . ' 00:00:00';
+$end   = $submittedDate . ' 23:59:59';
 
     $exists = $this->db->table('presensidata')
         ->where('guru_id', $userId)
@@ -255,6 +257,7 @@ public function attendancePageOLD()
 
 public function storeAttendance()
 {
+
     $result = $this->insertAttendance([
         'guru_id' => $this->request->getPost('guru_id'),
         'status' => $this->request->getPost('status'),
