@@ -218,7 +218,7 @@
                     <th>Coordinates</th>
                     <th>Address</th>
                     <th>Created At</th>
-                    <th>Action</th>
+                    <th>Edit Status</th>
                 </tr>
             </thead>
 
@@ -406,17 +406,25 @@ $(function () {
             },
 
             {
-                data: 'presensidata_tanggal',
+    data: 'presensidata_tanggal',
 
-                render: function(data) {
-                    return `
-                        <div class="small text-dark">
-                            <i class="bi bi-calendar3 me-1 text-muted"></i>
-                            ${data}
-                        </div>
-                    `;
-                }
-            },
+    render: function(data) {
+        const date = new Date(data);
+
+        const formatted = date.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+
+        return `
+            <div class="small text-dark">
+                <i class="bi bi-calendar3 me-1 text-muted"></i>
+                ${formatted}
+            </div>
+        `;
+    }
+},
 
             {
                 data: 'status',
