@@ -241,7 +241,7 @@ $(function () {
             }
         },
 
-        order: [[6, 'desc']],
+        order: [[0, 'desc']],
 
         columns: [
 
