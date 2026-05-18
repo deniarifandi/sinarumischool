@@ -54,6 +54,83 @@ class Presence extends BaseController
 
 public function attendancePage()
 {
+    return view('rekap/attendance_list');
+}
+
+public function attendanceData()
+{
+    $request = service('request');
+
+    $draw   = (int) $request->getGet('draw');
+    $start  = (int) $request->getGet('start');
+    $length = (int) $request->getGet('length');
+
+    $search = $request->getGet('search')['value'] ?? '';
+
+    $date   = $request->getGet('date');
+    $startDate = $request->getGet('startDate');
+    $endDate   = $request->getGet('endDate');
+    $status = $request->getGet('status');
+
+    $builder = $this->db->table('presensidata')
+        ->select('
+            presensidata.presensidata_id,
+            presensidata.presensidata_tanggal,
+            presensidata.status,
+            presensidata.latitude,
+            presensidata.longitude,
+            presensidata.address,
+            presensidata.created_at,
+            users.name
+        ')
+        ->join('users', 'users.id = presensidata.guru_id');
+
+    // FILTERS
+    if (!empty($date)) {
+        $builder->where('presensidata.presensidata_tanggal', $date);
+    } elseif (!empty($startDate) && !empty($endDate)) {
+        $builder->where('presensidata.presensidata_tanggal >=', $startDate);
+        $builder->where('presensidata.presensidata_tanggal <=', $endDate);
+    }
+
+    if (!empty($status)) {
+        $builder->where('presensidata.status', $status);
+    }
+
+    // SEARCH
+    if (!empty($search)) {
+        $builder->groupStart()
+            ->like('users.name', $search)
+            ->orLike('presensidata.address', $search)
+            ->groupEnd();
+    }
+
+    // TOTAL FILTERED
+    $filteredBuilder = clone $builder;
+    $recordsFiltered = $filteredBuilder->countAllResults(false);
+
+    // ORDER
+    $builder->orderBy('presensidata.created_at', 'DESC');
+
+    // PAGINATION
+    $data = $builder
+        ->limit($length, $start)
+        ->get()
+        ->getResultArray();
+
+    // TOTAL ALL
+    $recordsTotal = $this->db->table('presensidata')->countAll();
+
+    return $this->response->setJSON([
+        'draw' => $draw,
+        'recordsTotal' => $recordsTotal,
+        'recordsFiltered' => $recordsFiltered,
+        'data' => $data
+    ]);
+}
+
+public function attendancePageOLD()
+{
     $builder = $this->db->table('presensidata')
         ->select('presensidata.*, users.name')
         ->join('users', 'users.id = presensidata.guru_id');
@@ -87,27 +164,7 @@ public function attendancePage()
         'users' => $history
     ]);
 }
-    // public function attendancePage()
-    // {
-    //   //  exit()
-    //        $history = $this->db->table('presensidata')
-    //         ->select('presensidata.*, users.name')
-    //         ->join('users','users.id = presensidata.guru_id')
-    //         ->orderBy('presensidata_tanggal', 'DESC')
-    //         ->limit(1000)
-    //         ->get()
-    //         ->getResultArray();
-
-    //         // return json_encode($history);
-
-    //     return view('rekap/attendance_list', [
-    //         'users'     => $history
-    //     ]);
-    // }
-
-    // =========================
-    // DATATABLE SERVER-SIDE
-    // =========================
+   
 
 
     public function attendanceData2()
