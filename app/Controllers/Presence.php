@@ -249,7 +249,7 @@ $end   = $submittedDate . ' 23:59:59';
         'longitude' => 0,
         'address' => "Admin Injected",
         'presensidata_tanggal' => $data['date'] . ' ' . date('H:i:s'),
-        'created_at' => date('Y-m-d H:i:s'),
+        'created_at' => $data['date'] . ' ' . date('H:i:s'),
     ]);
 
     return ['ok' => true];
