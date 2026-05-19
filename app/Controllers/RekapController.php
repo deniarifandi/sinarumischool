@@ -143,10 +143,13 @@ public function printComplete()
     SELECT 
         u.name,
         d.division_name,
+        j.jabatan_nama,
         " . implode(",\n", $columns) . "
     FROM users u
     JOIN user_divisions ud ON ud.user_id = u.id
     JOIN divisions d ON d.id = ud.division_id
+    LEFT JOIN gurujabatan gj ON gj.guru_id = u.id
+    LEFT JOIN jabatan j ON j.jabatan_id = gj.jabatan_id 
     LEFT JOIN Presensidata p 
         ON p.guru_id = u.id 
         AND DATE(p.created_at) BETWEEN '$startDate' AND '$endDate'

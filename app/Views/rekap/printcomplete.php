@@ -11,7 +11,7 @@
     <thead>
         <tr>
             <th>Nama</th>
-            
+            <th>Jabatan</th>
             <th>Divisi</th>
             <?php foreach ($dates as $d): ?>
                 <?php
@@ -40,7 +40,7 @@
         ?>
             <tr>
                 <td><?= $row->name ?></td>
-                
+                <td><?= $row->jabatan_nama ?></td>
                 <td><?= $row->division_name ?></td>
                 <?php foreach ($dates as $d): 
                     $status = $row->$d ?? ' ';
