@@ -362,7 +362,7 @@ $(function () {
             }
         },
 
-        order: [[6, 'desc']],
+        order: [[2, 'desc']],
 
         columns: [
 
