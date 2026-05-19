@@ -20,23 +20,23 @@
     <div>
         <h5 class="mb-2">Print Rekap</h5>
 
-        <form method="get" action="<?= base_url('rekap/print') ?>" class="d-flex gap-2 align-items-center flex-wrap">
+        <form method="get" class="d-flex gap-2 align-items-center flex-wrap">
 
-            <!-- Division Dropdown -->
-            <select name="division_id"
-                    class="form-select form-select-sm bg-white text-dark border-secondary"
-                    style="width:200px">
-                <option value="">- All Divisions -</option>
+    <!-- Division Dropdown -->
+    <select name="division_id"
+            class="form-select form-select-sm bg-white text-dark border-secondary"
+            style="width:200px">
+        <option value="">- All Divisions -</option>
 
-                <?php foreach ($divisions as $d): ?>
-                    <option value="<?= $d['id'] ?>"
-                        <?= request()->getGet('division_id') == $d['id'] ? 'selected' : '' ?>>
-                        <?= esc($d['division_name']) ?>
-                    </option>
-                <?php endforeach ?>
-            </select>
+        <?php foreach ($divisions as $d): ?>
+            <option value="<?= $d['id'] ?>"
+                <?= request()->getGet('division_id') == $d['id'] ? 'selected' : '' ?>>
+                <?= esc($d['division_name']) ?>
+            </option>
+        <?php endforeach ?>
+    </select>
 
-          <?php
+<?php
 $dateStart = request()->getGet('date_start') 
     ?? date('Y-m-21', strtotime('-1 month'));
 
@@ -44,24 +44,32 @@ $dateEnd = request()->getGet('date_end')
     ?? date('Y-m-20');
 ?>
 
-            <!-- Date Start -->
-      <input type="date"
-       name="date_start"
-       value="<?= esc($dateStart) ?>"
-       class="form-control form-control-sm bg-white text-dark border-secondary">
+    <!-- Date Start -->
+    <input type="date"
+           name="date_start"
+           value="<?= esc($dateStart) ?>"
+           class="form-control form-control-sm bg-white text-dark border-secondary">
 
-<input type="date"
-       name="date_end"
-       value="<?= esc($dateEnd) ?>"
-       class="form-control form-control-sm bg-white text-dark border-secondary">
+    <input type="date"
+           name="date_end"
+           value="<?= esc($dateEnd) ?>"
+           class="form-control form-control-sm bg-white text-dark border-secondary">
 
-            <!-- Print Button -->
-            <button type="submit"
-                    class="btn btn-success btn-sm rounded-pill px-3">
-                <i class="bi bi-printer me-1"></i> Print Report
-            </button>
+    <!-- Print 501 -->
+    <button type="submit"
+            formaction="<?= base_url('rekap/print') ?>"
+            class="btn btn-success btn-sm rounded-pill px-3">
+        <i class="bi bi-printer me-1"></i> Print 501
+    </button>
 
-        </form>
+    <!-- Print TU -->
+    <button type="submit"
+            formaction="<?= base_url('rekap/printcomplete') ?>"
+            class="btn btn-success btn-sm rounded-pill px-3">
+        <i class="bi bi-printer me-1"></i> Print TU
+    </button>
+
+</form>
     </div>
 
 </div>
@@ -123,6 +131,8 @@ $dateEnd = request()->getGet('date_end')
                         <td>
                             <?php if ($r['nullified'] == 0): ?>
                                 <span class="badge bg-success">Active</span>
+                            <?php elseif ($r['nullified'] == 2): ?>
+                                <span class="badge bg-info">Fixed</span>
                             <?php else: ?>
                                 <span class="badge bg-danger">Nullified</span>
                             <?php endif; ?>

@@ -107,6 +107,11 @@ th{
             <?php $amount = $u['total_presence'] * 15000; ?>
             <?php $grandTotal += $amount; ?>
             <td><?= number_format($amount, 0, ',', '.') ?></td>
+
+        <?php elseif ($u['nullified'] == 2): ?>
+            <?php $amount = $u['fixed']; ?>
+            <?php $grandTotal += $amount; ?>
+            <td><?= number_format($amount, 0, ',', '.') ?></td>
         <?php else: ?>
             <td style="background-color: black;"></td>
         <?php endif; ?>

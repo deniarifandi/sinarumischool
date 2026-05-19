@@ -38,4 +38,11 @@ class StudentModel extends Model
                     ->orderBy('name', 'ASC')
                     ->findAll();
     }
+
+    public function getByClass($class_id)
+    {
+        return $this->where('class_id', $class_id)
+                    ->where('deleted_at', null)
+                    ->findAll();
+    }
 }

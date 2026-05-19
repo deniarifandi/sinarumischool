@@ -91,10 +91,19 @@ $selectClass = "form-select form-select-sm bg-white text-dark border-secondary";
             </div>
             <div class="col-md-4">
                 <label class="form-label small text-white-50 mb-1">Status</label>
-                <select name="nullified" class="<?= $selectClass ?>">
+                <select name="nullified" id="nullified" class="<?= $selectClass ?>">
                     <option value="0" <?= old('nullified', $rekap['nullified'] ?? 0) == 0 ? 'selected' : '' ?>>Active</option>
                     <option value="1" <?= old('nullified', $rekap['nullified'] ?? 0) == 1 ? 'selected' : '' ?>>Nullified</option>
+                    <option value="2" <?= old('nullified', $rekap['nullified'] ?? 0) == 2 ? 'selected' : '' ?>>Fixed</option>
                 </select>
+            </div>
+
+            <div class="col-md-3" id="fixedField" style="display:none;">
+                <label class="form-label small text-white-50 mb-1">Fixed Incentive</label>
+                <input type="number"
+                       name="fixed"
+                       value="<?= old('fixed', $rekap['fixed'] ?? '') ?>"
+                       class="<?= $inputClass ?>">
             </div>
 
         </div>
@@ -114,5 +123,23 @@ $selectClass = "form-select form-select-sm bg-white text-dark border-secondary";
     </form>
 
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const statusSelect = document.getElementById('nullified');
+    const fixedField = document.getElementById('fixedField');
+
+    function toggleFixedField() {
+        if (statusSelect.value === '2') {
+            fixedField.style.display = 'block';
+        } else {
+            fixedField.style.display = 'none';
+        }
+    }
+
+    toggleFixedField();
+    statusSelect.addEventListener('change', toggleFixedField);
+});
+</script>
 
 <?= $this->endSection() ?>

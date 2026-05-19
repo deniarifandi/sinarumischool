@@ -16,6 +16,7 @@ class RekapModel extends Model
         'user_role',
         'role_sort',
         'user_id',
+        'fixed',
         'nullified'
     ];
 

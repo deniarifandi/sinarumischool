@@ -249,4 +249,6 @@ $routes->group('rekap', ['filter' => 'auth'], function ($routes) {
     $routes->post('save/(:num)', 'RekapController::save/$1');
 
     $routes->get('print','RekapController::print');
+
+    $routes->get('printcomplete','RekapController::printComplete');
 });

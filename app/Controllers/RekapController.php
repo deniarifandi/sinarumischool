@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\RekapModel;
 use App\Models\UserModel;
 use App\Models\DivisionModel;
+use DateTime;
 
 class RekapController extends BaseController
 {
@@ -88,6 +89,7 @@ class RekapController extends BaseController
             'user_role'   => $this->request->getPost('user_role'),
             'role_sort'   => $this->request->getPost('role_sort'),
             'user_id'     => $this->request->getPost('user_id'),
+            'fixed'       => $this->request->getPost('fixed'),
             'nullified'   => $this->request->getPost('nullified'),
         ];
 
@@ -99,6 +101,80 @@ class RekapController extends BaseController
 
         return redirect()->to('/rekap');
     }
+
+public function printComplete()
+{
+     // Get inputs
+    $startDate = $this->request->getGet('date_start');
+    $endDate = $this->request->getGet('date_end');
+    $divisi_id = $this->request->getGet('division_id');
+
+    // Format dates
+    $startDateObj = new DateTime($startDate);
+    $endDateObj = new DateTime($endDate);
+    $startMonthName = $startDateObj->format('F');
+    $endMonthName = $endDateObj->format('F');
+
+    // Generate dynamic columns
+    $dates = [];
+    $columns = [];
+    $period = new \DatePeriod(
+        new \DateTime($startDate),
+        new \DateInterval('P1D'),
+        (new \DateTime($endDate))->modify('+1 day')
+    );
+
+    foreach ($period as $date) {
+        $label = $date->format('M d');
+        $dateString = $date->format('Y-m-d');
+        $dates[] = $label;
+        $columns[] = "
+            MAX(
+                CASE 
+                    WHEN DATE(p.created_at) = '$dateString' THEN p.status 
+                    ELSE NULL 
+                END
+            ) AS `$label`";
+    }
+
+    // Build query
+    $db = \Config\Database::connect();
+    $sql = "
+    SELECT 
+        u.name,
+        d.division_name,
+        " . implode(",\n", $columns) . "
+    FROM users u
+    JOIN user_divisions ud ON ud.id = u.id
+    JOIN divisions d ON d.id = ud.division_id
+    LEFT JOIN Presensidata p 
+        ON p.guru_id = u.id 
+        AND DATE(p.created_at) BETWEEN '$startDate' AND '$endDate'
+    WHERE d.id = '$divisi_id'
+      AND u.deleted_at IS NULL
+    GROUP BY u.id
+    ORDER BY u.name
+    ";
+
+    $query = $db->query($sql);
+    $results = $query->getResult();
+
+    // print_r($results);
+    // exit();
+
+    if (count($results) < 1) {
+        return "error"; // fallback
+    }
+
+    return view('rekap/printcomplete', [
+        'results' => $results,
+        'dates' => $dates,
+        'startMonth' => $startMonthName,
+        'endMonth' => $endMonthName,
+        'division' => $results[0]->division_name,
+    ]);
+
+}
 
 public function print()
 {
@@ -113,6 +189,7 @@ public function print()
         ->select('guru_id, COUNT(*) as total_presence')
         ->where('presensidata_tanggal >=', $datestart)
         ->where('presensidata_tanggal <=', $dateend)
+        ->where('status',1)
         ->groupBy('guru_id')
         ->getCompiledSelect();
 
@@ -126,6 +203,7 @@ public function print()
             r.role_sort,
             r.user_id,
             r.nullified,
+            r.fixed,
             u.name as user_name,
             d.division_name,
             COALESCE(p.total_presence,0) as total_presence
@@ -134,6 +212,7 @@ public function print()
         ->join('divisions d','d.id = r.division_id','left')
         ->join("($presenceSub) p",'p.guru_id = r.user_id','left')
         ->where('r.division_id',$divisionId)
+
         ->orderBy('r.group_sort','ASC')
         ->orderBy('r.role_sort','ASC')
         ->get()
