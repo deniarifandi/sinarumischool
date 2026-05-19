@@ -145,7 +145,7 @@ public function printComplete()
         d.division_name,
         " . implode(",\n", $columns) . "
     FROM users u
-    JOIN user_divisions ud ON ud.id = u.id
+    JOIN user_divisions ud ON ud.user_id = u.id
     JOIN divisions d ON d.id = ud.division_id
     LEFT JOIN Presensidata p 
         ON p.guru_id = u.id 
