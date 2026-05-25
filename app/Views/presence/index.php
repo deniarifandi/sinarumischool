@@ -210,6 +210,8 @@ $statusText =
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+
+      
     const locText = document.getElementById('locText');
     const coordText = document.getElementById('coordText');
     const submitBtn = document.getElementById('submitBtn');
@@ -232,91 +234,82 @@ document.addEventListener("DOMContentLoaded", function () {
             .bindPopup('Your location')
             .openPopup();
     }
+      submitBtn.disabled = true;
 
-    submitBtn.disabled = true;
 
-    if (!navigator.geolocation) {
+
+     if (!navigator.geolocation) {
         locText.innerText = 'Geolocation not supported';
         locSpinner.classList.add('d-none');
-        submitBtn.disabled = false;
+        submitBtn.disabled = true;
         return;
     }
 
-    // fallback jika GPS lama
+    // fallback jangan enable
     setTimeout(() => {
         if (submitBtn.disabled) {
-            locText.innerText = 'Using limited location';
+            locText.innerText = 'Waiting for GPS...';
             locSpinner.classList.add('d-none');
-            submitBtn.disabled = false;
         }
     }, 15000);
 
-    navigator.geolocation.watchPosition(
-        pos => {
-            const now = Date.now();
-            if (now - lastUpdate < 1000) return; // throttle 1 detik
-            lastUpdate = now;
+   navigator.geolocation.watchPosition(
+    pos => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
 
-            const lat = pos.coords.latitude;
-            const lng = pos.coords.longitude;
+        document.getElementById('lat').value = lat;
+        document.getElementById('lng').value = lng;
 
-            // update hidden input
-            document.getElementById('lat').value = lat;
-            document.getElementById('lng').value = lng;
+        coordText.innerText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
 
-            // update text
-            coordText.innerText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-
-            // init / update map
-            if (!map) {
-                initMap(lat, lng);
-            } else {
-                marker.setLatLng([lat, lng]).update();
-                map.setView([lat, lng], map.getZoom(), { animate: false });
-            }
-
-            // ambil alamat sekali saja
-            if (!hasFetchedAddress) {
-                hasFetchedAddress = true;
-
-                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'User-Agent': 'attendance-app/1.0'
-                    }
-                })
-                .then(r => r.json())
-                .then(d => {
-                    const address = d.display_name || 'Unknown location';
-
-                    locText.innerText = address;
-                    document.getElementById('address').value = address;
-
-                    locSpinner.classList.add('d-none');
-                    submitBtn.disabled = false;
-                })
-                .catch(() => {
-                    locText.innerText = 'Address unavailable';
-                    locSpinner.classList.add('d-none');
-                    submitBtn.disabled = false;
-                });
-            }
-        },
-        err => {
-            locSpinner.classList.replace('text-primary', 'text-danger');
-            locText.classList.add('text-danger');
-            locText.innerText = 'Location permission denied';
-            coordText.innerText = 'Access denied';
-            locSpinner.classList.add('d-none');
-
-            submitBtn.disabled = false;
-        },
-        {
-            enableHighAccuracy: true,
-            maximumAge: 0,
-            timeout: 10000
+        if (!map) {
+            initMap(lat, lng);
+        } else {
+            marker.setLatLng([lat, lng]).update();
         }
-    );
+
+        if (!hasFetchedAddress) {
+            hasFetchedAddress = true;
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+            .then(r => r.json())
+            .then(d => {
+                const address = d.display_name || 'Unknown location';
+
+                locText.innerText = address;
+                document.getElementById('address').value = address;
+
+                locSpinner.classList.add('d-none');
+
+                // aktif hanya saat sukses
+                submitBtn.disabled = false;
+            })
+            .catch(() => {
+                locText.innerText = 'Address unavailable';
+                locSpinner.classList.add('d-none');
+
+                // kalau address gagal tapi GPS ada -> boleh submit
+                submitBtn.disabled = false;
+            });
+        }
+    },
+    err => {
+        locSpinner.classList.replace('text-primary', 'text-danger');
+        locText.classList.add('text-danger');
+        locText.innerText = 'Location permission denied';
+        coordText.innerText = 'Access denied';
+        locSpinner.classList.add('d-none');
+
+        // tetap disable
+        submitBtn.disabled = true;
+    },
+    {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 10000
+    }
+);
 });
 </script>
 
