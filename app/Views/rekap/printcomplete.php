@@ -85,7 +85,7 @@
                 <td style="text-align:center;"><?= $countPresent ?></td>
                 <td style="text-align:center;"><?= $countIzin ?></td>
                 <td style="text-align:center;"><?= $countSakit ?></td>
-                <td style="text-align:right;"><?= number_format($total, 0, ',', '.') ?></td>
+                <td style="text-align:right;"><?= number_format($total, 0, '.', ',') ?></td>
             </tr>
         <?php endforeach; ?>
     </tbody>
