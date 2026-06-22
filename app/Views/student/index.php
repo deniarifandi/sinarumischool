@@ -46,14 +46,7 @@
     </div>
 </form>
 
-    <?php if (empty($students)): ?>
-        <div class="text-center py-5">
-            <i class="bi bi-people display-4 text-white-50"></i>
-            <p class="mt-3 text-muted">No students found.</p>
-        </div>
-    <?php else: ?>
-        <div class="table-responsive"
-             style="border-radius:12px;overflow:hidden;">
+   
 
 
 
@@ -68,6 +61,13 @@
                         <th class="text-end pe-3">Actions</th>
                     </tr>
                 </thead>
+
+                 <?php if (empty($students)): ?>
+       
+    <?php else: ?>
+        <div class="table-responsive"
+             style="border-radius:12px;overflow:hidden;">
+
                 <tbody>
                 <?php foreach ($students as $s): ?>
                     <tr>
@@ -122,10 +122,11 @@
                         </td>
                     </tr>
                 <?php endforeach ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
-    <?php endif; ?>
+
 </div>
 
 <?= $this->endSection() ?>
