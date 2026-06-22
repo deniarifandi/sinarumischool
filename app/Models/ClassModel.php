@@ -14,7 +14,8 @@ class ClassModel extends Model
         'grade',
         'class_name',
         'description',
-        'classteacher_id'
+        'classteacher_id',
+        'assclassteacher_id'
     ];
 
     protected $useTimestamps  = true;
@@ -32,10 +33,11 @@ class ClassModel extends Model
 
     public function byDivision($divisionId)
     {
-        return $this->select('classes.*, grades.grade_name, users.name')
+        return $this->select('classes.*, grades.grade_name, u.name as homeroom, u2.name as asshomeroom')
                     ->where('classes.division_id', $divisionId)
                     ->join('grades','grades.id = classes.grade','left')
-                    ->join('users','users.id = classes.classteacher_id','left')
+                    ->join('users u','u.id = classes.classteacher_id','left')
+                   ->join('users u2','u2.id = classes.assclassteacher_id','left')
                     ->orderBy('grade', 'ASC')
                     ->orderBy('class_name', 'ASC')
                     ->findAll();

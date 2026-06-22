@@ -30,7 +30,7 @@ class ClassController extends BaseController
         $classes = $this->classModel->byDivision($divisiId);
 
         //$grades = $this->gradeModel->byDivision($divisiId);
-
+        
         return view('class/index', [
             'classes'  => $classes,
           //  'grades'   => $grades,
@@ -86,6 +86,7 @@ class ClassController extends BaseController
             'class_name'  => $this->request->getPost('class_name'),
             'description' => $this->request->getPost('description'),
             'classteacher_id' => $this->request->getPost('classteacher_id'),
+             'assclassteacher_id' => $this->request->getPost('assclassteacher_id'),
         ];
 
         if (!$data['class_name'] || !$data['grade']) {

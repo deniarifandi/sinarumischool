@@ -55,7 +55,8 @@
                     <tr>
                         <th class="ps-3">Grade</th>
                         <th>Class Name</th>
-                        <th>Class Teacher</th>
+                        <th>Homeroom</th>
+                        <th>Assistant Homeroom</th>
                         <th>Description</th>
                         <th class="text-end pe-3">Actions</th>
                         <th class="text-end pe-3">Manage</th>
@@ -78,7 +79,12 @@
 
                           <td>
                             <div class="fw-bold text-dark">
-                                <?= esc($c['name']) ?>
+                                <?= esc($c['homeroom']) ?>
+                            </div>
+                        </td>
+                          <td>
+                            <div class="fw-bold text-dark">
+                                <?= esc($c['asshomeroom']) ?>
                             </div>
                         </td>
 
@@ -109,7 +115,7 @@
                         </td>
 
                         <td class="text-end pe-3">
-                            <a href="<?= base_url('student?class='.$c['id']) ?>"
+                            <a href="<?= base_url('student?division='.$divisiId) ?>"
                                class="btn btn-sm btn-outline-primary">
                                 Manage
                             </a>

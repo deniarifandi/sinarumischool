@@ -70,6 +70,21 @@ $title = $isEdit ? 'Edit Class' : 'Add Class';
             </select>
         </div>
 
+        <div class="mb-3">
+            <label class="form-label text-white-50">Assistant Class Teacher</label>
+            <select name="assclassteacher_id"
+                    class="form-select bg-white text-dark border-secondary"
+                    >
+                <option value="">-- Select Assistant Teacher --</option>
+                <?php foreach ($teachers as $teacher): ?>
+                    <option value="<?= $teacher['id']; ?>"
+                        <?= old('assclassteacher_id', $class['assclassteacher_id'] ?? '') == $teacher['id'] ? 'selected' : ''; ?>>
+                        <?= esc($teacher['name']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
 
         <!-- Description -->
         <div class="mb-4">
