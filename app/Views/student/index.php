@@ -10,12 +10,41 @@
                 Division ID: <?= esc($divisionId ?? '-') ?>
             </small>
         </div>
-
+        <?php if ($user['role'] == "superadmin" || $user['role'] == "admin"): ?>
         <a href="<?= base_url('student/create?division='.$divisionId) ?>"
            class="btn btn-primary rounded-pill px-3">
             <i class="bi bi-plus-lg me-1"></i> Add Student
         </a>
+        <?php endif ?>
     </div>
+
+    <form method="get" class="row g-3 mb-4">
+    <input type="hidden" name="division" value="<?= $divisionId ?>">
+
+    <div class="col-md-4">
+        <select name="class" class="form-select" onchange="this.form.submit()">
+            <option value="">All Classes</option>
+
+            <?php foreach ($classes as $class): ?>
+                <option value="<?= $class['id'] ?>"
+                    <?= ($classId == $class['id']) ? 'selected' : '' ?>>
+                    <?= esc($class['class_name']) ?>
+                </option>
+            <?php endforeach ?>
+        </select>
+    </div>
+
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">
+            Filter
+        </button>
+
+        <a href="<?= base_url('student?division='.$divisionId) ?>"
+           class="btn btn-secondary">
+            Reset
+        </a>
+    </div>
+</form>
 
     <?php if (empty($students)): ?>
         <div class="text-center py-5">
@@ -25,6 +54,8 @@
     <?php else: ?>
         <div class="table-responsive"
              style="border-radius:12px;overflow:hidden;">
+
+
 
             <table class="table align-middle mb-0" id="studentsTable">
                 <thead>

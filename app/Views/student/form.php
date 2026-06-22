@@ -54,7 +54,7 @@ $selectClass = "form-select form-select-sm bg-white text-dark border-secondary";
                 <label class="form-label small text-white-50 mb-1">Class</label>
                 <select name="class_id"
                         class="<?= $inputClass ?>"
-                        required>
+                        >
                     <option value="">- Select Class -</option>
                     <?php foreach ($classes as $c): ?>
                         <option value="<?= $c['id'] ?>"

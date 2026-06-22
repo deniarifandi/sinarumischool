@@ -4,31 +4,40 @@ namespace App\Controllers;
 
 use App\Models\StudentModel;
 use App\Models\ClassModel;
+use App\Models\UserModel;
 
 class StudentController extends BaseController
 {
     protected StudentModel $studentModel;
 
+
     public function __construct()
     {
         $this->studentModel = new StudentModel();
         $this->classModel = new ClassModel();
+        $this->userModel = new UserModel();
     }
 
-    public function index()
-    {
-        $divisionId = (int) $this->request->getGet('division');
+   public function index()
+{
+    $divisionId = (int) $this->request->getGet('division');
+    $user = session('id') ?? session('user_id');
+    $userDetail = $this->userModel->getUserDetailData($user);
+    $classId = $this->request->getGet('class');
+    $classId = ($classId !== null && $classId !== '') ? (int) $classId : null;
 
-        $students = $this->studentModel->studentDetail($divisionId);
+    $students = $this->studentModel->studentDetail($divisionId, $classId);
+    $classes  = $this->classModel->byDivision($divisionId);
 
 
-        // echo json_encode($students);
-        // exit();
-        return view('student/index', [
-            'students'   => $students,
-            'divisionId' => $divisionId,
-        ]);
-    }
+    return view('student/index', [
+        'students'   => $students,
+        'divisionId' => $divisionId,
+        'classes'    => $classes,
+        'classId'    => $classId,
+        'user'    => $userDetail[0]
+    ]);
+}
 
     public function create()
     {

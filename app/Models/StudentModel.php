@@ -30,13 +30,19 @@ class StudentModel extends Model
                     ->findAll();
     }
 
-    public function studentDetail($divisionId){
-        return $this->select('students.*, classes.class_name')
-                    ->where('students.division_id', $divisionId)
-                    ->join('classes','classes.id = students.class_id','left')
-                    ->groupBy('students.id')
-                    ->orderBy('name', 'ASC')
-                    ->findAll();
+   public function studentDetail($divisionId, $classId = null)
+{
+    $builder = $this->select('students.*, classes.class_name')
+                    ->join('classes', 'classes.id = students.class_id', 'left')
+                    ->where('students.division_id', $divisionId);
+
+    if ($classId !== null) {
+        $builder->where('students.class_id', $classId);
+    }
+
+        return $builder->groupBy('students.id')
+                       ->orderBy('name', 'ASC')
+                       ->findAll();
     }
 
     public function getByClass($class_id)
