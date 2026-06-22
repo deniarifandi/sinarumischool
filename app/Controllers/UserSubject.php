@@ -21,41 +21,39 @@ class UserSubject extends BaseController
     }
 
     public function index()
-    {
-        $userId = $this->request->getGet('user');
-        $divisionId = $this->request->getGet('division');
+{
+    $userId     = $this->request->getGet('user');
+    $divisionId = $this->request->getGet('division');
 
-        $builder = $this->userSubjectModel->builder();
+    $builder = $this->userSubjectModel->builder();
 
-$builder->select('subjects.subject_name, GROUP_CONCAT(users.name) as teachers, division_id');
-$builder->join('users', 'users.id = user_subjects.user_id', 'left');
-$builder->join('subjects', 'subjects.id = user_subjects.subject_id', 'left');
+    // Use ||| as separator — safe for names with commas (e.g. "Deni Arifandi, S.Kom")
+    $builder->select("subjects.subject_name, GROUP_CONCAT(DISTINCT users.name ORDER BY users.name SEPARATOR '|||') AS teachers");
+    $builder->join('users',    'users.id = user_subjects.user_id',       'left');
+    $builder->join('subjects', 'subjects.id = user_subjects.subject_id', 'left');
 
-if ($userId && $user) {
-    $builder->where('user_subjects.user_id', $userId);
-}
-if ($divisionId) {
-    $builder->where('subjects.division_id', $divisionId);
-}
-
-$builder->groupBy('subjects.subject_name');
-
-$rows = $builder->get()->getResultArray();
-
-        $grouped = [];
-
-        foreach ($rows as &$row) {
-    $row['teacher'] = explode(',', $row['teachers']);
-    unset($row['teachers']);
-}
-
-        // return $this->response->setJSON($rows);
-
-        return view('user_subject/index', [
-    'userSubjects' => $rows,
-    'userId'       => $userId,
-]);
+    if ($userId) {                                          // fix: removed undefined $user
+        $builder->where('user_subjects.user_id', $userId);
     }
+    if ($divisionId) {
+        $builder->where('subjects.division_id', $divisionId);
+    }
+
+    $builder->groupBy('subjects.subject_name');
+    $rows = $builder->get()->getResultArray();
+
+    foreach ($rows as &$row) {
+        // Split on ||| and trim each name cleanly
+        $row['teacher'] = array_map('trim', explode('|||', $row['teachers']));
+        unset($row['teachers']);
+    }
+    unset($row); // fix: break reference after the loop
+
+    return view('user_subject/index', [
+        'userSubjects' => $rows,
+        'userId'       => $userId,
+    ]);
+}
 
     public function delete($id)
     {
