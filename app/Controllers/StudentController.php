@@ -175,25 +175,51 @@ class StudentController extends BaseController
 // }
 
     
-   public function attendanceList($class_id)
+    public function attendanceList($class_id)
 {
     $db = \Config\Database::connect();
 
     $rows = $db->table('absensi a')
-        ->select('DISTINCT a.tanggal, c.class_name', false) // <-- penting
+        ->select('a.tanggal, c.class_name')
         ->join('students s', 's.id = a.murid_id')
         ->join('classes c', 'c.id = s.class_id')
         ->where('s.class_id', $class_id)
+        ->groupBy('a.tanggal')
         ->orderBy('a.tanggal', 'DESC')
         ->get()
         ->getResultArray();
 
+    $academicYear = '';
+
+    $date = new \DateTime();
+
+    if ((int)$date->format('n') >= 7) {
+        $startYear = (int)$date->format('Y');
+    } else {
+        $startYear = (int)$date->format('Y') - 1;
+    }
+
+    $startDate = $startYear . '-07-01';
+    $endDate   = ($startYear + 1) . '-06-30';
+
+    $rows = $db->table('absensi a')
+    ->select('a.tanggal, c.class_name')
+    ->join('students s', 's.id = a.murid_id')
+    ->join('classes c', 'c.id = s.class_id')
+    ->where('s.class_id', $class_id)
+    ->where('a.tanggal >=', $startDate)
+    ->where('a.tanggal <=', $endDate)
+    ->groupBy('a.tanggal')
+    ->orderBy('a.tanggal', 'DESC')
+    ->get()
+    ->getResultArray();
+
     return view('student/attendanceList', [
-        'dates'     => $rows,
-        'class_id'  => $class_id
+        'dates'         => $rows,
+        'academicYear'  => $academicYear,
+        'class_id'      => $class_id,
     ]);
 }
-
      public function simpan()
 {
     $db = \Config\Database::connect();
@@ -267,62 +293,116 @@ public function editAttendance($class_id, $tanggal)
 {
     $db = \Config\Database::connect();
 
-    $rows = $db->table('students s')
-        ->select('s.id as murid_id, s.name, a.status, a.absensi_keterangan')
-        ->join('absensi a', 'a.murid_id = s.id AND a.tanggal = "'.$tanggal.'"', 'left', false)
+    $data = $db->table('students s')
+        ->select('
+            s.id AS murid_id,
+            s.name,
+            a.status,
+            a.absensi_keterangan
+        ')
+        ->join(
+            'absensi a',
+            "a.murid_id = s.id AND a.tanggal = ".$db->escape($tanggal),
+            'left'
+        )
         ->where('s.class_id', $class_id)
-        ->orderBy('s.name', 'ASC')
+        ->orderBy('s.name')
         ->get()
         ->getResultArray();
 
-    return view('student/attendanceEdit', [
-        'data'      => $rows,
-        'class_id'  => $class_id,
-        'tanggal'   => $tanggal
+    return view('student/editAttendance', [
+        'data' => $data,
+        'tanggal' => $tanggal,
+        'class_id' => $class_id
     ]);
 }
 
 public function updateAttendance()
 {
     $db = \Config\Database::connect();
-    $builder = $db->table('absensi');
 
-    $murid_ids  = $this->request->getPost('student_id');
-    $status     = $this->request->getPost('status');
+    $tanggal = $this->request->getPost('tanggal');
+    $class_id = $this->request->getPost('class_id');
+    $students = $this->request->getPost('student_id');
+    $status = $this->request->getPost('status');
     $keterangan = $this->request->getPost('keterangan');
-    $tanggal    = $this->request->getPost('tanggal');
-    $class_id   = $this->request->getPost('class_id');
 
-    $now = date('Y-m-d H:i:s');
+    foreach ($students as $id) {
 
-    foreach ($murid_ids as $i => $id) {
-
-        $data = [
-            'status'             => $status[$i] ?? null,
-            'absensi_keterangan' => $keterangan[$i] ?? null,
-            'updated_at'         => $now
-        ];
-
-        $exists = $builder
+        $db->table('absensi')
             ->where('murid_id', $id)
             ->where('tanggal', $tanggal)
-            ->get()
-            ->getRowArray();
-
-        if ($exists) {
-            $builder
-                ->where('murid_id', $id)
-                ->where('tanggal', $tanggal)
-                ->update($data);
-        } else {
-            $data['murid_id'] = $id;
-            $data['tanggal']  = $tanggal;
-            $data['created_at'] = $now;
-
-            $builder->insert($data);
-        }
+            ->update([
+                'status' => $status[$id],
+                'absensi_keterangan' => $keterangan[$id],
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
     }
 
-    return redirect()->to('/attendance/detail/' . $class_id . '/' . $tanggal);
+    return redirect()->to('/student/attendance/list/class/'.$class_id);
+}
+
+public function attendanceRecap($class_id)
+{
+    $db = \Config\Database::connect();
+
+    $class = $db->table('classes')
+        ->where('id', $class_id)
+        ->get()
+        ->getRowArray();
+
+    return view('student/attendanceRecap', [
+        'class_id'  => $class_id,
+        'class_name'=> $class['class_name'] ?? '',
+        'month'     => date('m'),
+        'year'      => date('Y'),
+        'data'      => []
+    ]);
+}
+
+public function attendanceRecapResult()
+{
+    $db = \Config\Database::connect();
+
+    $class_id = $this->request->getPost('class_id');
+    $month    = (int) $this->request->getPost('month');
+    $year     = (int) $this->request->getPost('year');
+
+    $startDate = sprintf('%04d-%02d-01', $year, $month);
+    $endDate   = date('Y-m-t', strtotime($startDate));
+
+    $class = $db->table('classes')
+        ->where('id', $class_id)
+        ->get()
+        ->getRowArray();
+
+    $rows = $db->query("
+        SELECT
+            s.id,
+            s.name,
+            SUM(CASE WHEN a.status = 1 THEN 1 ELSE 0 END) AS hadir,
+            SUM(CASE WHEN a.status = 2 THEN 1 ELSE 0 END) AS izin,
+            SUM(CASE WHEN a.status = 3 THEN 1 ELSE 0 END) AS sakit,
+            SUM(CASE WHEN a.status = 4 THEN 1 ELSE 0 END) AS alpha
+        FROM students s
+        LEFT JOIN absensi a
+            ON a.murid_id = s.id
+            AND a.tanggal BETWEEN ? AND ?
+        WHERE s.class_id = ?
+        GROUP BY s.id, s.name
+        ORDER BY s.name
+    ", [
+        $startDate,
+        $endDate,
+        $class_id
+    ])->getResultArray();
+
+    return view('student/attendanceRecap', [
+        'class_id'   => $class_id,
+        'class_name' => $class['class_name'] ?? '',
+        'month'      => $month,
+        'year'       => $year,
+        'data'       => $rows
+    ]);
 }
 }

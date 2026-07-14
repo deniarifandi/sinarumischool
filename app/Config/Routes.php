@@ -72,7 +72,10 @@ use CodeIgniter\Router\RouteCollection;
 
         $routes->get('attendance/detail/(:num)/(:segment)','StudentController::attendanceDetail/$1/$2');
         $routes->get('attendance/list/class/(:num)', 'StudentController::attendanceList/$1');
+        $routes->post('attendance/update', 'StudentController::updateAttendance');
 
+        $routes->get('attendance/recap/(:num)', 'StudentController::attendanceRecap/$1');
+        $routes->post('attendance/recap', 'StudentController::attendanceRecapResult');
     
     });
 

@@ -73,7 +73,7 @@
 
                                     <!-- Izin Toggle -->
                                     <input type="radio" 
-                                           class="btn-check btn-check-izin" 
+                                           class="btn-check btn-check-hadir" 
                                            name="status[<?= $id ?>]" 
                                            id="status_i_<?= $id ?>" 
                                            value="2">
@@ -81,7 +81,7 @@
 
                                     <!-- Sakit Toggle -->
                                     <input type="radio" 
-                                           class="btn-check btn-check-sakit" 
+                                           class="btn-check btn-check-hadir" 
                                            name="status[<?= $id ?>]" 
                                            id="status_s_<?= $id ?>" 
                                            value="3">
@@ -89,7 +89,7 @@
 
                                     <!-- Alpha Toggle -->
                                     <input type="radio" 
-                                           class="btn-check btn-check-alpha" 
+                                           class="btn-check btn-check-hadir" 
                                            name="status[<?= $id ?>]" 
                                            id="status_a_<?= $id ?>" 
                                            value="4">
