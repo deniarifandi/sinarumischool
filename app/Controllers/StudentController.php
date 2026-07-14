@@ -29,7 +29,8 @@ class StudentController extends BaseController
     $students = $this->studentModel->studentDetail($divisionId, $classId);
     $classes  = $this->classModel->byDivision($divisionId);
 
-
+    // echo json_encode($students);
+    // exit();
     return view('student/index', [
         'students'   => $students,
         'divisionId' => $divisionId,
@@ -71,14 +72,57 @@ class StudentController extends BaseController
     public function save($id = null)
     {
         $data = [
-            'division_id'   => (int) $this->request->getPost('division_id'),
-            'class_id'      => (int) $this->request->getPost('class_id'),
-            'name'          => trim((string) $this->request->getPost('name')),
-            'gender'        => $this->request->getPost('gender'),
-            'birthdate'     => $this->request->getPost('birthdate'),
-            'student_code'  => trim((string) $this->request->getPost('student_code')),
-            'address'       => $this->request->getPost('address'),
-            'murid_agama'   => $this->request->getPost('murid_agama'),
+            'division_id'           => (int) $this->request->getPost('division_id'),
+            'class_id'              => (int) $this->request->getPost('class_id'),
+
+            'name'                  => trim((string) $this->request->getPost('name')),
+            'student_code'          => trim((string) $this->request->getPost('student_code')),
+            'gender'               => $this->request->getPost('gender'),
+            'birthdate'            => $this->request->getPost('birthdate'),
+            'address'              => $this->request->getPost('address'),
+            'murid_agama'          => $this->request->getPost('murid_agama'),
+
+            'nickname'             => $this->request->getPost('nickname'),
+            'birth_place'          => $this->request->getPost('birth_place'),
+            'nationality'          => $this->request->getPost('nationality'),
+            'child_order'          => $this->request->getPost('child_order'),
+            'family_status'        => $this->request->getPost('family_status'),
+            'language'             => $this->request->getPost('language'),
+
+            'father_name'          => $this->request->getPost('father_name'),
+            'father_education'     => $this->request->getPost('father_education'),
+            'father_occupation'    => $this->request->getPost('father_occupation'),
+
+            'mother_name'          => $this->request->getPost('mother_name'),
+            'mother_education'     => $this->request->getPost('mother_education'),
+            'mother_occupation'    => $this->request->getPost('mother_occupation'),
+
+            'guardian_name'        => $this->request->getPost('guardian_name'),
+            'guardian_relationship'=> $this->request->getPost('guardian_relationship'),
+            'parent_address'       => $this->request->getPost('parent_address'),
+            'parent_phone'         => $this->request->getPost('parent_phone'),
+
+            'blood_type'           => $this->request->getPost('blood_type'),
+            'weight'               => $this->request->getPost('weight'),
+            'height'               => $this->request->getPost('height'),
+
+            'medical_history'      => $this->request->getPost('medical_history'),
+            'immunization_history' => $this->request->getPost('immunization_history'),
+            'speech_development'   => $this->request->getPost('speech_development'),
+            'physical_condition'   => $this->request->getPost('physical_condition'),
+
+            'admission_date'       => $this->request->getPost('admission_date'),
+            'admission_age'        => $this->request->getPost('admission_age'),
+            'group_name'           => $this->request->getPost('group_name'),
+
+            'exit_date'            => $this->request->getPost('exit_date'),
+            'exit_reason'          => $this->request->getPost('exit_reason'),
+            'next_school'          => $this->request->getPost('next_school'),
+
+            'achievements'         => $this->request->getPost('achievements'),
+            'development_notes'    => $this->request->getPost('development_notes'),
+            'remarks'              => $this->request->getPost('remarks'),
+            'photo'                => $this->request->getPost('photo'),
         ];
 
         if ($data['name'] === '') {
@@ -96,10 +140,13 @@ class StudentController extends BaseController
     }
 
     public function delete($id)
-    {
+    {   
+        
+        $divisionId = $this->request->getPost('division_id');
+
         $this->studentModel->delete($id);
 
-        return redirect()->back()->with('success', 'Deleted');
+        return redirect()->to('student?division=' . $divisionId)->with('success', 'Deleted');
     }
 
     public function createAttendance($class_id)
