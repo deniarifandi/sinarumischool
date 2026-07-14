@@ -116,33 +116,37 @@ function val($v){ return esc($v ?? ''); }
       <input type="file" name="filekk" class="form-control">
     </div>
   </div>
+   <?php if ($user['role'] == "superadmin" || $user['role'] == "admin"): ?>
     <hr class="my-4">
-  <div class="row g-3">
-    <div class="col-md-6">
-      <label class="form-label">BPJS Kesehatan</label>
-      <input type="text" name="bpjskesehatan" class="form-control" value="<?= val($user['bpjskesehatan']) ?>">
-    </div>
-    <div class="col-md-6">
-      <label class="form-label">BPJS Ketenagakerjaan</label>
-      <input type="text" name="bpjsketenagakerjaan" class="form-control" value="<?= val($user['bpjsketenagakerjaan']) ?>">
-    </div>
-  </div>
-  <hr class="my-4">
     <div class="row g-3">
-    <div class="col-md-4">
-      <label class="form-label">Masa KKB (Tahun)</label>
-      <input type="number" name="kkb" class="form-control" value="<?= val($user['kkb']) ?>">
-    </div>
-    <div class="col-md-4">
-      <label class="form-label">Tanggal KKB</label>
-      <input type="date" name="kkbstart" class="form-control" value="<?= val($user['kkbstart']) ?>">
-    </div>
-     <div class="col-md-4">
-      <label class="form-label">Nomor KKB</label>
-      <input type="text" name="kkbnomor" class="form-control" value="<?= val($user['kkbnomor']) ?>">
+      <div class="col-md-6">
+        <label class="form-label">BPJS Kesehatan</label>
+        <input type="text" name="bpjskesehatan" class="form-control" value="<?= val($user['bpjskesehatan']) ?>">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">BPJS Ketenagakerjaan</label>
+        <input type="text" name="bpjsketenagakerjaan" class="form-control" value="<?= val($user['bpjsketenagakerjaan']) ?>">
+      </div>
     </div>
 
-  </div>
+ 
+    <hr class="my-4">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Masa KKB (Tahun)</label>
+        <input type="number" name="kkb" class="form-control" value="<?= val($user['kkb']) ?>">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Tanggal KKB</label>
+        <input type="date" name="kkbstart" class="form-control" value="<?= val($user['kkbstart']) ?>">
+      </div>
+       <div class="col-md-4">
+        <label class="form-label">Nomor KKB</label>
+        <input type="text" name="kkbnomor" class="form-control" value="<?= val($user['kkbnomor']) ?>">
+      </div>
+    </div>
+   <?php endif ?>
+
   <hr class="my-4">
   <div class="col-md-12">
   

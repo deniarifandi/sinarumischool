@@ -202,7 +202,7 @@ function val($v){
         <?php endif; ?>
 
       </div>
-
+      
       <h6 class="section-title mt-4">KKB</h6>
       <div class="info-grid">
          <div class="info-item"><span>Masa KKB</span><strong><br><?= val($user['kkb']) ?></strong></div>
