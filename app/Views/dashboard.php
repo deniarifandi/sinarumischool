@@ -291,6 +291,7 @@ if (!function_exists('safe_url')) {
                             </a>
                         <?php endif; ?>
 
+                        <?php if ($user['role'] == "superadmin" || $user['role'] == "admin"): ?>
                         <a href="<?= base_url('grade?divisi='.$d['id']) ?>" class="nav-item-btn">
                             <i class="bi bi-award"></i>
                             <span>Grades Management</span>
@@ -300,17 +301,18 @@ if (!function_exists('safe_url')) {
                             <i class="bi bi-diagram-3"></i>
                             <span>Classes Structure</span>
                         </a>
+                        <?php endif ?>
 
                         <a href="<?= base_url('student?division='.$d['id']) ?>" class="nav-item-btn">
                             <i class="bi bi-people"></i>
                             <span>Student Registry</span>
                         </a>
-
+                         <?php if ($user['role'] == "superadmin" || $user['role'] == "admin"): ?>
                         <a href="<?= base_url('subject?division='.$d['id']) ?>" class="nav-item-btn">
                             <i class="bi bi-book-half"></i>
                             <span>Subject Management</span>
                         </a>
-
+                    <?php endif ?>
                         <a href="<?= base_url('user-subject?division='.$d['id']) ?>" class="nav-item-btn">
                             <i class="bi bi-person-lines-fill"></i>
                             <span>User Subject Assignments</span>
