@@ -6,7 +6,7 @@ use App\Models\PresenceModel;
 use App\Models\UserDivisionModel;
 use App\Models\UserModel;
 use App\Models\UserSubjectModel;
-
+use DB;
 class Home extends BaseController
 {
 
@@ -49,6 +49,17 @@ class Home extends BaseController
                 $groupedSubjects[$subject['division_name']][] = $subject;
             }
         }
+
+         $db = \Config\Database::connect();
+
+         $hasAttendance = $db->table('absensi a')
+            ->join('students s', 's.id = a.murid_id')
+            ->where('s.class_id', $mainClass[0]['id'])
+            ->where('a.tanggal', date('Y-m-d'))
+            ->countAllResults();
+
+        $attendanceMissing = ($hasAttendance == 0);
+
         return view('dashboard', [
             'checkedToday' => $checkedToday,
             'divisions'    => $divisions,
@@ -56,7 +67,8 @@ class Home extends BaseController
             'mainClass'    => $mainClass[0],
             'userSubjects' => $userSubjects,
             'allowedRoles'  => $allowedRoles,
-            'groupedSubjects'   => $groupedSubjects
+            'groupedSubjects'   => $groupedSubjects,
+            'attendanceMissing' => $attendanceMissing
 
         ]);
     }

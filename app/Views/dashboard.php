@@ -128,6 +128,20 @@ if (!function_exists('safe_url')) {
         </div>
     <?php endif; ?>
 
+    <?php if ($attendanceMissing && $mainClass['id']): ?>
+        <div class="alert alert-warning d-flex justify-content-between align-items-center">
+            <div>
+                <strong>Attendance Reminder</strong><br>
+                Student Attendance for today has not been recorded.
+            </div>
+
+            <a href="<?= base_url('student/attendance/create/'.$mainClass['id']) ?>"
+               class="btn btn-warning btn-sm">
+                Take Attendance
+            </a>
+        </div>
+        <?php endif; ?>
+
     <!-- Header & Profile Card -->
     <div class="card border-0 shadow-sm mb-4 bg-light" style="border-radius: var(--card-border-radius);">
         <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">

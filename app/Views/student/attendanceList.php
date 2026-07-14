@@ -4,7 +4,7 @@
 <style>
     /* Consistent dark glassmorphic layout for the main card container */
     .glass-card {
-        max-width: 950px;
+     
         background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
@@ -45,7 +45,7 @@
     }
 </style>
 
-<div class="container py-4">
+<div class="">
     <div class="glass-card mx-auto">
 
         <!-- Header -->
