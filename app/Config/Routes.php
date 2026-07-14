@@ -63,14 +63,15 @@ use CodeIgniter\Router\RouteCollection;
         $routes->post('save/(:num)', 'StudentController::save/$1');
         $routes->post('delete/(:num)', 'StudentController::delete/$1');
 
-        $routes->get('attendance/list/class/(:num)', 'StudentController::attendanceList/$1');
+        $routes->get('attendance/class/(:num)', 'StudentController::attendanceList/$1');
 
         $routes->get('attendance/create/(:num)', 'StudentController::createAttendance/$1');
-        $routes->get('student/attendance/edit/(:num)/(:segment)', 'StudentController::editAttendance/$1/$2');
+        $routes->get('attendance/edit/(:num)/(:segment)', 'StudentController::editAttendance/$1/$2');
         
         $routes->post('attendance/save', 'StudentController::simpan');
 
         $routes->get('attendance/detail/(:num)/(:segment)','StudentController::attendanceDetail/$1/$2');
+        $routes->get('attendance/list/class/(:num)', 'StudentController::attendanceList/$1');
 
     
     });

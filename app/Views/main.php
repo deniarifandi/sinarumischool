@@ -303,6 +303,95 @@ body::before{
 }
 </style>
 
+<style>
+    /* Consistent dark glassmorphic layout for the main card container */
+    .glass-card {
+       
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Dedicated Styling for the Crisp White Table */
+    .table-white-custom {
+        background-color: #ffffff !important;
+        color: #212529 !important; /* Dark text */
+        border-radius: 8px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+    .table-white-custom th {
+        background-color: #f8f9fa !important;
+        color: #495057 !important;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        padding: 12px;
+        border-bottom: 2px solid #dee2e6 !important;
+    }
+    .table-white-custom td {
+        background-color: #ffffff !important;
+        color: #212529 !important;
+        padding: 12px;
+        vertical-align: middle;
+        border-bottom: 1px solid #e9ecef !important;
+    }
+
+    /* Style form elements inside the white table */
+    .table-white-custom .form-control {
+        background-color: #f8f9fa !important;
+        color: #212529 !important;
+        border: 1px solid #ced4da !important;
+    }
+    .table-white-custom .form-control:focus {
+        background-color: #ffffff !important;
+        color: #212529 !important;
+        border-color: #86b7fe !important;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    }
+
+    /* Segmented Touch Toggles optimized for Light backgrounds */
+    .btn-group-toggle .btn-check + .btn {
+        background: #f1f3f5;
+        color: #495057;
+        border: 1px solid #ced4da;
+        font-size: 0.78rem;
+        padding: 0.35rem 0.65rem;
+        transition: all 0.2s ease;
+    }
+    .btn-group-toggle .btn-check:hover + .btn {
+        background: #e9ecef;
+        color: #212529;
+    }
+    /* Dynamic active status colors */
+    .btn-check-hadir:checked + .btn {
+        background-color: #d1e7dd !important;
+        border-color: #a3cfbb !important;
+        color: #0f5132 !important;
+    }
+    .btn-check-izin:checked + .btn {
+        background-color: #cff4fc !important;
+        border-color: #9eeaf9 !important;
+        color: #087990 !important;
+    }
+    .btn-check-sakit:checked + .btn {
+        background-color: #fff3cd !important;
+        border-color: #ffe69c !important;
+        color: #664d03 !important;
+    }
+    .btn-check-alpha:checked + .btn {
+        background-color: #f8d7da !important;
+        border-color: #f1aeb5 !important;
+        color: #842029 !important;
+    }
+</style>
+
 </head>
 
 <body>

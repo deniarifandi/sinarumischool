@@ -320,10 +320,10 @@ if (!function_exists('safe_url')) {
                     <i class="bi bi-check2-square"></i>
                     <span>Take Student Presence</span>
                 </a>
-                <a href="<?= base_url('student/attendance/list/class/'.$mainClass["id"]) ?>" class="nav-item-btn">
+              <!--   <a href="<?= base_url('student/attendance/list/class/'.$mainClass["id"]) ?>" class="nav-item-btn">
                     <i class="bi bi-list-check"></i>
-                    <span>Attendance Overview Ledger</span>
-                </a>
+                    <span>Attendance Overview</span>
+                </a> -->
             </div>
         </div>
     </div>
