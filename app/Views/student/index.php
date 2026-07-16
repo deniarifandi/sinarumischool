@@ -1,6 +1,9 @@
 <?= $this->extend('main') ?>
+
 <?= $this->section('content') ?>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <div class="glass-card">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -61,71 +64,57 @@
             </thead>
 
             <tbody>
-                <?php if (empty($students)): ?>
+                <?php foreach ($students as $s): ?>
                     <tr>
-                        <td colspan="7" class="text-center py-4">
-                            No students found.
+                        <td class="ps-3">
+                            <span class="badge bg-primary bg-opacity-25 text-primary">
+                                <?= esc($s['id']) ?>
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="fw-bold text-dark">
+                                <?= esc($s['name']) ?>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="fw-bold text-dark">
+                                <?= esc($s['student_code']) ?>
+                            </div>
+                        </td>
+
+                        <td><?= esc($s['gender']) ?></td>
+
+                        <td><?= esc($s['birthdate']) ?></td>
+
+                        <td><?= esc($s['class_name']) ?></td>
+
+                        <td class="text-end pe-3">
+                            <a href="<?= base_url('student/edit/' . $s['id'] . '?division=' . $divisionId) ?>"
+                               class="btn btn-sm btn-glass-edit">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+
+                            <form action="<?= base_url('student/delete/' . $s['id']) ?>"
+                                  method="post"
+                                  class="d-inline">
+                                <?= csrf_field() ?>
+
+                                <input type="hidden"
+                                       name="division_id"
+                                       value="<?= esc($divisionId) ?>">
+
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-danger ms-1"
+                                        style="border-color:rgba(220,53,69,.3)"
+                                        onclick="return confirm('Delete this student?')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
-                <?php else: ?>
-                    <?php foreach ($students as $s): ?>
-                        <tr>
-                            <td class="ps-3">
-                                <span class="badge bg-primary bg-opacity-25 text-primary">
-                                    <?= esc($s['id']) ?>
-                                </span>
-                            </td>
-
-                            <td>
-                                <div class="fw-bold text-dark">
-                                    <?= esc($s['name']) ?>
-                                </div>
-                            </td>
-
-                            <td>
-                                <div class="fw-bold text-dark">
-                                    <?= esc($s['student_code']) ?>
-                                </div>
-                            </td>
-
-                            <td>
-                                <?= esc($s['gender']) ?>
-                            </td>
-
-                            <td>
-                                <?= esc($s['birthdate']) ?>
-                            </td>
-
-                            <td>
-                                <?= esc($s['class_name']) ?>
-                            </td>
-
-                            <td class="text-end pe-3">
-                                <a href="<?= base_url('student/edit/' . $s['id'] . '?division=' . $divisionId) ?>"
-                                   class="btn btn-sm btn-glass-edit">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-
-                                <form action="<?= base_url('student/delete/' . $s['id']) ?>"
-                                      method="post"
-                                      class="d-inline">
-                                    <?= csrf_field() ?>
-
-                                    <input type="hidden"
-                                           name="division_id"
-                                           value="<?= esc($divisionId) ?>">
-
-                                    <button type="submit"
-                                            class="btn btn-sm btn-outline-danger ms-1"
-                                            style="border-color:rgba(220,53,69,.3)"
-                                            onclick="return confirm('Delete this student?')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                <?php endforeach; ?>
             </tbody>
         </table>
     </div>
@@ -133,7 +122,7 @@
 
 <?= $this->endSection() ?>
 
-<?= $this->section('script') ?>
+
 <?= $this->section('script') ?>
 
 <?php if (session()->getFlashdata('success')): ?>
@@ -164,16 +153,15 @@ $(function () {
         pageLength: 10,
         searching: true,
         language: {
+            emptyTable: "No students found.",
+            zeroRecords: "No students found.",
             paginate: {
-                previous: '‹',
-                next: '›'
+                previous: "‹",
+                next: "›"
             }
         }
     });
 });
 </script>
-
-<?= $this->endSection() ?>
-
 
 <?= $this->endSection() ?>
