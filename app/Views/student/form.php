@@ -77,7 +77,7 @@ $selectClass = "form-select form-select-sm bg-white text-dark border-secondary";
                     </div>
                     <div class="col-md-6">
                         <label class="form-label small text-white-50 mb-1">Gender <span class="text-danger">*</span></label>
-                        <select name="gender" class="<?= $selectClass ?>" required>
+                        <select name="gender" class="<?= $selectClass ?>">
                             <option value="">- Pilih Gender -</option>
                             <option value="L" <?= old('gender', $student['gender'] ?? '') === 'L' ? 'selected' : '' ?>>Laki-laki (Male)</option>
                             <option value="P" <?= old('gender', $student['gender'] ?? '') === 'P' ? 'selected' : '' ?>>Perempuan (Female)</option>
