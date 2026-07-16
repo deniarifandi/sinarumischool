@@ -173,8 +173,8 @@ if (!function_exists('safe_url')) {
             <div style="min-width: 260px;">
                 <label class="form-label text-muted small fw-bold mb-1"><i class="bi bi-sliders me-1"></i> Active Division Workspace</label>
                 <select class="form-select form-select-md shadow-sm border-secondary-subtle" id="divisionSwitcher">
-                    <?php foreach ($divisions as $index => $d): ?>
-                        <option value="<?= esc($d['id']) ?>" <?= $index === 0 ? 'selected' : '' ?>>
+                    <?php foreach ($divisions as $d): ?>
+                        <option value="<?= esc($d['id']) ?>">
                             <?= esc($d['division_name']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -421,31 +421,50 @@ if (!function_exists('safe_url')) {
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const switcher = document.getElementById('divisionSwitcher');
-    
+    const STORAGE_KEY = 'selectedDivision';
+
     function updateWorkspaceView() {
         const selectedId = switcher.value;
         const selectedText = switcher.options[switcher.selectedIndex].text;
-        
-        // Update label tags across containers
+
+        // Save selected division
+        localStorage.setItem(STORAGE_KEY, selectedId);
+
+        // Update badge
         document.querySelectorAll('.division-badge-label').forEach(badge => {
             badge.textContent = selectedText;
         });
 
-        // Toggle Division Operation components
+        // Division menu
         document.querySelectorAll('.division-pane').forEach(pane => {
-            pane.style.display = (pane.getAttribute('data-division-id') === selectedId) ? 'block' : 'none';
+            pane.style.display =
+                pane.dataset.divisionId === selectedId ? 'block' : 'none';
         });
 
-        // Toggle Curriculum matrix blocks
+        // Subject section
         document.querySelectorAll('.division-subject-pane').forEach(pane => {
-            pane.style.display = (pane.getAttribute('data-division-name') === selectedText.toLowerCase().trim()) ? 'block' : 'none';
+            pane.style.display =
+                pane.dataset.divisionName === selectedText.toLowerCase().trim()
+                    ? 'block'
+                    : 'none';
         });
     }
 
-    if (switcher) {
-        switcher.addEventListener('change', updateWorkspaceView);
-        updateWorkspaceView(); // Initialization on DOM setup execution
+    if (!switcher) return;
+
+    // Restore previous selection
+    const savedDivision = localStorage.getItem(STORAGE_KEY);
+    if (savedDivision) {
+        const option = switcher.querySelector(`option[value="${savedDivision}"]`);
+        if (option) {
+            switcher.value = savedDivision;
+        }
     }
+
+    switcher.addEventListener('change', updateWorkspaceView);
+
+    // Initial render
+    updateWorkspaceView();
 });
 </script>
 
