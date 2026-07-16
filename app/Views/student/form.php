@@ -181,7 +181,7 @@ $selectClass = "form-select form-select-sm bg-white text-dark border-secondary";
                     </div>
                     <div class="col-md-4">
                         <label class="form-label small text-white-50 mb-1">Parent Phone <span class="text-danger">*</span></label>
-                        <input type="text" name="parent_phone" value="<?= old('parent_phone', $student['parent_phone'] ?? '') ?>" class="<?= $inputClass ?>" required placeholder="Nomor Telepon Aktif">
+                        <input type="text" name="parent_phone" value="<?= old('parent_phone', $student['parent_phone'] ?? '') ?>" class="<?= $inputClass ?>" placeholder="Nomor Telepon Aktif">
                         <div class="invalid-feedback text-danger small mt-1">No. HP Orang Tua wajib diisi.</div>
                     </div>
                 </div>
@@ -196,7 +196,7 @@ $selectClass = "form-select form-select-sm bg-white text-dark border-secondary";
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label small text-white-50 mb-1">Assigned Class <span class="text-danger">*</span></label>
-                        <select name="class_id" class="<?= $selectClass ?>" required>
+                        <select name="class_id" class="<?= $selectClass ?>">
                             <option value="">- Pilih Kelas -</option>
                             <?php foreach ($classes as $c): ?>
                                 <option value="<?= $c['id'] ?>" <?= old('class_id', $student['class_id'] ?? '') == $c['id'] ? 'selected' : '' ?>>
