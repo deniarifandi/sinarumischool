@@ -69,6 +69,12 @@
         border: 1px solid #475569;
     }
 
+    .badge-secondary {
+        background: #475569;
+        color: #f8fafc;
+        border: 1px solid #64748b;
+    }
+
     /* Division breakdown list */
     .division-row {
         display: flex;
@@ -440,8 +446,13 @@
                     </td>
                     <td><?= esc($k['kkbnomor'] ?? '—') ?></td>
                     <td><?= esc($k['kkb_years']) ?> tahun</td>
-                    <td><?= !empty($k['kkbstart']) ? date('j F Y', strtotime($k['kkbstart'])) : '—' ?></td>
-                    <td><?= !empty($k['expiry']) ? date('j F Y', strtotime($k['expiry'])) : '—' ?></td>
+                    <td data-order="<?= esc($k['kkbstart']) ?>">
+    <?= !empty($k['kkbstart']) ? date('j F Y', strtotime($k['kkbstart'])) : '—' ?>
+</td>
+
+<td data-order="<?= esc($k['expiry']) ?>">
+    <?= !empty($k['expiry']) ? date('j F Y', strtotime($k['expiry'])) : '—' ?>
+</td>
                     <td data-order="<?= $k['days_left'] ?>">
                         <?= $k['days_left'] < 0
                             ? abs($k['days_left']) . ' days ago'

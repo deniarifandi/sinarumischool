@@ -65,8 +65,194 @@ class UserController extends BaseController
         ]);
     }
 
+public function dashboard()
+{
+    $user_id    = session('id') ?? session('user_id');
+    $userDetail = $this->userModel->getUserDetailData($user_id);
+    $rows       = $this->userModel->getUsersForDashboard();
 
-   public function dashboard()
+    // Optional division filter, e.g. /dashboard?division=3
+    $filterDivision = $this->request->getGet('division');
+    $filterDivision = $filterDivision !== null && $filterDivision !== '' ? (int) $filterDivision : null;
+
+    // --- Group raw rows into one entry per user ---
+    $users = [];
+    foreach ($rows as $r) {
+        $uid = $r['id'];
+
+        if (!isset($users[$uid])) {
+            $users[$uid] = [
+                'id'           => $r['id'],
+                'name'         => $r['name'],
+                'username'     => $r['username'],
+                'role'         => $r['role'],
+                'kkb'          => $r['kkb'],
+                'kkbnomor'     => $r['kkbnomor'],
+                'kkbstart'     => $r['kkbstart'],
+                'division_ids' => [],
+                'divisions'    => [],
+            ];
+        }
+
+        if (!empty($r['division_id'])) {
+            $users[$uid]['division_ids'][] = (int) $r['division_id'];
+            $users[$uid]['divisions'][]    = $r['division_name'];
+        }
+    }
+
+    $users = array_values($users);
+
+    // --- KKB duration breakdown ---
+    $kkbDurationCounts = [];
+    $noKkbCount        = 0;
+
+    foreach ($users as $u) {
+        if (empty($u['kkb'])) {
+            $label = 'No KKB Data';
+            $noKkbCount++;
+        } else {
+            $label = (int) $u['kkb'] . ' Tahun';
+        }
+
+        $kkbDurationCounts[$label] = ($kkbDurationCounts[$label] ?? 0) + 1;
+    }
+
+    arsort($kkbDurationCounts);
+
+    // --- Division breakdown ---
+    $allDivisions = $this->divisionModel->findAll();
+
+    $divisionCounts = [];
+    foreach ($allDivisions as $d) {
+        $divisionCounts[$d['id']] = [
+            'name'  => $d['division_name'],
+            'count' => 0,
+        ];
+    }
+
+    $unassignedDivisionCount = 0;
+
+    foreach ($users as $u) {
+        if (empty($u['division_ids'])) {
+            $unassignedDivisionCount++;
+            continue;
+        }
+
+        foreach ($u['division_ids'] as $did) {
+            if (isset($divisionCounts[$did])) {
+                $divisionCounts[$did]['count']++;
+            }
+        }
+    }
+
+    uasort($divisionCounts, fn($a, $b) => $b['count'] <=> $a['count']);
+
+    // --- KKB renewal calculation ---
+    $urgentDays  = 30;
+    $warningDays = 90;
+    $today       = new \DateTime('today');
+
+    $kkbList = [];
+
+    foreach ($users as $u) {
+
+        // Apply division filter
+        if ($filterDivision !== null && !in_array($filterDivision, $u['division_ids'], true)) {
+            continue;
+        }
+
+        // No KKB data
+        if (empty($u['kkb']) || empty($u['kkbstart'])) {
+            $kkbList[] = [
+                'id'         => $u['id'],
+                'name'       => $u['name'],
+                'username'   => $u['username'],
+                'divisions'  => $u['divisions'],
+                'kkbnomor'   => $u['kkbnomor'],
+                'kkb_years'  => null,
+                'kkbstart'   => null,
+                'expiry'     => null,
+                'days_left'  => PHP_INT_MAX,
+                'status'     => 'no_kkb',
+            ];
+            continue;
+        }
+
+        $start = \DateTime::createFromFormat('Y-m-d', $u['kkbstart']);
+
+        // Invalid date
+        if (!$start) {
+            $kkbList[] = [
+                'id'         => $u['id'],
+                'name'       => $u['name'],
+                'username'   => $u['username'],
+                'divisions'  => $u['divisions'],
+                'kkbnomor'   => $u['kkbnomor'],
+                'kkb_years'  => $u['kkb'],
+                'kkbstart'   => $u['kkbstart'],
+                'expiry'     => null,
+                'days_left'  => PHP_INT_MAX,
+                'status'     => 'no_kkb',
+            ];
+            continue;
+        }
+
+        $expiry = clone $start;
+        $expiry->modify('+' . (int) $u['kkb'] . ' years');
+
+        $daysLeft = (int) $today->diff($expiry)->format('%r%a');
+
+        if ($daysLeft < 0) {
+            $status = 'expired';
+        } elseif ($daysLeft <= $urgentDays) {
+            $status = 'urgent';
+        } elseif ($daysLeft <= $warningDays) {
+            $status = 'warning';
+        } else {
+            $status = 'ok';
+        }
+
+        $kkbList[] = [
+            'id'         => $u['id'],
+            'name'       => $u['name'],
+            'username'   => $u['username'],
+            'divisions'  => $u['divisions'],
+            'kkbnomor'   => $u['kkbnomor'],
+            'kkb_years'  => $u['kkb'],
+            'kkbstart'   => $u['kkbstart'],
+            'expiry'     => $expiry->format('Y-m-d'),
+            'days_left'  => $daysLeft,
+            'status'     => $status,
+        ];
+    }
+
+    usort($kkbList, function ($a, $b) {
+        return $a['days_left'] <=> $b['days_left'];
+    });
+
+    $kkbNeedsRenewal = array_values(array_filter(
+        $kkbList,
+        fn($k) => in_array($k['status'], ['expired', 'urgent', 'warning'])
+    ));
+
+    $kkbAll = $kkbList;
+
+    return view('users/dashboard', [
+        'user_detail'             => $userDetail[0],
+        'totalStaff'              => count($users),
+        'totalDivisions'          => count($allDivisions),
+        'kkbDurationCounts'       => $kkbDurationCounts,
+        'noKkbCount'              => $noKkbCount,
+        'divisionCounts'          => $divisionCounts,
+        'unassignedDivisionCount' => $unassignedDivisionCount,
+        'allDivisionsForFilter'   => $allDivisions,
+        'selectedDivision'        => $filterDivision,
+        'kkbNeedsRenewal'         => $kkbNeedsRenewal,
+        'kkbAll'                  => $kkbAll,
+    ]);
+}
+
+   public function dashboardold()
 {
     $user_id     = session('id') ?? session('user_id');
     $userDetail  = $this->userModel->getUserDetailData($user_id);
