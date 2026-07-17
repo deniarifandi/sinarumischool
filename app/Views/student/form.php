@@ -206,7 +206,7 @@ $selectClass = "form-select form-select-sm bg-white text-dark border-secondary";
                         </select>
                         <div class="invalid-feedback text-danger small mt-1">Kelas wajib dipilih.</div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6" style="display: none;">
                         <label class="form-label small text-white-50 mb-1">Group (Rombel)</label>
                         <input type="text" name="group_name" value="<?= old('group_name', $student['group_name'] ?? '') ?>" class="<?= $inputClass ?>" placeholder="Grup Kelas">
                     </div>
