@@ -437,10 +437,10 @@
                     <td><?= esc($k['kkb_years']) ?> tahun</td>
                     <td><?= esc($k['kkbstart']) ?></td>
                     <td><?= esc($k['expiry']) ?></td>
-                    <td>
+                    <td data-order="<?= $k['days_left'] ?>">
                         <?= $k['days_left'] < 0
-                            ? esc(abs($k['days_left'])) . ' days ago'
-                            : esc($k['days_left']) . ' days' ?>
+                            ? abs($k['days_left']) . ' days ago'
+                            : $k['days_left'] . ' days' ?>
                     </td>
                     <td>
                         <?php
