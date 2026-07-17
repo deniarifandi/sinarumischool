@@ -246,6 +246,10 @@
             size: A4 landscape;
             margin: 12mm;
         }
+
+        .no-print {
+            display: none !important;
+        }
     }
 </style>
 
@@ -408,14 +412,14 @@
             <thead>
                 <tr>
                     <th>Staff</th>
-                    <th>Division</th>
+                    <th style="width:170px;">Division</th>
                     <th>KKB No.</th>
                     <th>Duration</th>
                     <th>Start</th>
                     <th>Expiry</th>
                     <th>Days Left</th>
                     <th>Status</th>
-                    <th>Action</th>
+                    <th class="no-print">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -425,7 +429,7 @@
                         <div class="fw-bold text-white"><?= esc($k['name']) ?></div>
                         <small class="text-muted">@<?= esc($k['username']) ?></small>
                     </td>
-                    <td>
+                    <td style="width:170px;">
                         <?php if (!empty($k['divisions'])): ?>
                             <?php foreach ($k['divisions'] as $dn): ?>
                                 <span class="badge-solid"><?= esc($dn) ?></span>
@@ -454,7 +458,7 @@
                         ?>
                         <span class="badge-status <?= $badgeClass ?>"><?= esc($k['status']) ?></span>
                     </td>
-                   <td>
+                    <td class="no-print">
                         <a href="<?= base_url('users/edit/' . $k['id']) ?>"
                            class="btn btn-sm btn-primary">
                             <i class="bi bi-pencil-square"></i> Edit
