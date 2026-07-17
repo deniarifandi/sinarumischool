@@ -390,7 +390,7 @@ if (!function_exists('safe_url')) {
                             <i class="bi bi-diagram-2"></i>
                             <span>Manage Divisions</span>
                         </a>
-                        <a href="<?= base_url('users') ?>" class="nav-item-btn">
+                        <a href="<?= base_url('users/dashboard') ?>" class="nav-item-btn">
                             <i class="bi bi-people-fill"></i>
                             <span>System User Control</span>
                         </a>

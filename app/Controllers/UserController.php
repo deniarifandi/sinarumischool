@@ -65,6 +65,165 @@ class UserController extends BaseController
         ]);
     }
 
+
+   public function dashboard()
+{
+    $user_id     = session('id') ?? session('user_id');
+    $userDetail  = $this->userModel->getUserDetailData($user_id);
+    $rows        = $this->userModel->getUsersForDashboard();
+
+    // Optional division filter, e.g. /dashboard?division=3
+    $filterDivision = $this->request->getGet('division');
+    $filterDivision = $filterDivision !== null && $filterDivision !== '' ? (int) $filterDivision : null;
+
+    // --- group raw rows into one entry per user (a user can belong to multiple divisions) ---
+    $users = [];
+    foreach ($rows as $r) {
+        $uid = $r['id'];
+        if (!isset($users[$uid])) {
+            $users[$uid] = [
+                'id'           => $r['id'],
+                'name'         => $r['name'],
+                'username'     => $r['username'],
+                'role'         => $r['role'],
+                'kkb'          => $r['kkb'],
+                'kkbnomor'     => $r['kkbnomor'],
+                'kkbstart'     => $r['kkbstart'],
+                'division_ids' => [],
+                'divisions'    => [],
+            ];
+        }
+        if (!empty($r['division_id'])) {
+            $users[$uid]['division_ids'][] = (int) $r['division_id'];
+            $users[$uid]['divisions'][]    = $r['division_name'];
+        }
+    }
+    $users = array_values($users);
+
+    // --- KKB duration breakdown (all staff, unfiltered) ---
+    $kkbDurationCounts = [];
+    $noKkbCount        = 0;
+    foreach ($users as $u) {
+        if ($u['kkb'] === null || $u['kkb'] === '') {
+            $noKkbCount++;
+            $label = 'No KKB Data';
+        } else {
+            $label = (int) $u['kkb'] . ' Tahun';
+        }
+        $kkbDurationCounts[$label] = ($kkbDurationCounts[$label] ?? 0) + 1;
+    }
+    
+    // Sorts duration categories from highest count to lowest count
+    arsort($kkbDurationCounts);
+
+    // --- division breakdown (all staff, unfiltered) ---
+    $allDivisions   = $this->divisionModel->findAll();
+    $divisionCounts = [];
+    foreach ($allDivisions as $d) {
+        $divisionCounts[$d['id']] = [
+            'name'  => $d['division_name'],
+            'count' => 0,
+        ];
+    }
+    $unassignedDivisionCount = 0;
+    foreach ($users as $u) {
+        if (empty($u['division_ids'])) {
+            $unassignedDivisionCount++;
+            continue;
+        }
+        foreach ($u['division_ids'] as $did) {
+            if (isset($divisionCounts[$did])) {
+                $divisionCounts[$did]['count']++;
+            }
+        }
+    }
+
+    // Sorts division lists from highest staff count to lowest staff count
+    uasort($divisionCounts, fn($a, $b) => $b['count'] <=> $a['count']);
+
+    // --- KKB renewal calculation ---
+    $urgentDays  = 30;
+    $warningDays = 90;
+    $today       = new \DateTime('today');
+    $kkbList     = [];
+
+    foreach ($users as $u) {
+        // Apply division filter here: skip users not in the selected division
+        if ($filterDivision !== null && !in_array($filterDivision, $u['division_ids'], true)) {
+            continue;
+        }
+
+        if (empty($u['kkbstart']) || empty($u['kkb'])) {
+            continue;
+        }
+
+        $start = \DateTime::createFromFormat('Y-m-d', $u['kkbstart']);
+        if (!$start) {
+            continue;
+        }
+
+        $expiry   = clone $start;
+        $expiry->modify('+' . (int) $u['kkb'] . ' years');
+        $daysLeft = (int) $today->diff($expiry)->format('%r%a'); // signed
+
+        if ($daysLeft < 0) {
+            $status = 'expired';
+        } elseif ($daysLeft <= $urgentDays) {
+            $status = 'urgent';
+        } elseif ($daysLeft <= $warningDays) {
+            $status = 'warning';
+        } else {
+            $status = 'ok';
+        }
+
+        $kkbList[] = [
+            'id'         => $u['id'],
+            'name'       => $u['name'],
+            'username'   => $u['username'],
+            'divisions'  => $u['divisions'],
+            'kkbnomor'   => $u['kkbnomor'],
+            'kkb_years'  => $u['kkb'],
+            'kkbstart'   => $u['kkbstart'],
+            'expiry'     => $expiry->format('Y-m-d'),
+            'days_left'  => $daysLeft,
+            'status'     => $status,
+        ];
+    }
+
+    usort($kkbList, fn($a, $b) => $a['days_left'] <=> $b['days_left']);
+
+    $kkbNeedsRenewal = array_values(array_filter(
+        $kkbList,
+        fn($k) => in_array($k['status'], ['expired', 'urgent', 'warning'])
+    ));
+
+    $kkbAll = array_values($kkbList);
+
+    return view('users/dashboard', [
+        'user_detail'              => $userDetail[0],
+        'totalStaff'               => count($users),
+        'totalDivisions'           => count($allDivisions),
+        'kkbDurationCounts'        => $kkbDurationCounts,
+        'noKkbCount'               => $noKkbCount,
+        'divisionCounts'           => $divisionCounts,
+        'unassignedDivisionCount'  => $unassignedDivisionCount,
+        'allDivisionsForFilter'    => $allDivisions,
+        'selectedDivision'         => $filterDivision,
+        'kkbAll'                   => $kkbList,
+        'kkbNeedsRenewal'          => $kkbNeedsRenewal,
+        'kkbAll'                   => $kkbAll
+    ]);
+}
+
+
+
+    public function getUsersForDashboard()
+    {
+        return $this->select('id, name, username, role, kkb, kkbnomor, kkbstart')
+                    ->where('deleted_at', null)
+                    ->findAll();
+    }
+
     /* =========================
        CREATE / EDIT USER
     ========================== */

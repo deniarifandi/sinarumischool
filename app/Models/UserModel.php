@@ -27,6 +27,16 @@ class UserModel extends Model
 
     protected $useSoftDeletes = true;
 
+    public function getUsersForDashboard()
+    {
+        return $this->select('users.id, users.name, users.username, users.role,
+                               users.kkb, users.kkbnomor, users.kkbstart,
+                               divisions.id as division_id, divisions.division_name')
+                    ->join('user_divisions', 'user_divisions.user_id = users.id', 'left')
+                    ->join('divisions', 'divisions.id = user_divisions.division_id', 'left')
+                    ->where('users.deleted_at', null)
+                    ->findAll();
+    }
     public function getUsersData()
     {
         return $this->select('

@@ -28,6 +28,8 @@ use CodeIgniter\Router\RouteCollection;
         $routes->post('save/(:num)', 'UserController::save/$1');
         $routes->post('delete/(:num)', 'UserController::delete/$1');
 
+        $routes->get('dashboard','UserController::dashboard');
+
         //roles
         $routes->get('role/(:num)', 'UserController::editRole/$1');
         $routes->post('role/(:num)', 'UserController::updateRole/$1');
