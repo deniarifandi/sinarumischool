@@ -415,6 +415,7 @@
                     <th>Expiry</th>
                     <th>Days Left</th>
                     <th>Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -435,8 +436,8 @@
                     </td>
                     <td><?= esc($k['kkbnomor'] ?? '—') ?></td>
                     <td><?= esc($k['kkb_years']) ?> tahun</td>
-                    <td><?= esc($k['kkbstart']) ?></td>
-                    <td><?= esc($k['expiry']) ?></td>
+                    <td><?= !empty($k['kkbstart']) ? date('j F Y', strtotime($k['kkbstart'])) : '—' ?></td>
+                    <td><?= !empty($k['expiry']) ? date('j F Y', strtotime($k['expiry'])) : '—' ?></td>
                     <td data-order="<?= $k['days_left'] ?>">
                         <?= $k['days_left'] < 0
                             ? abs($k['days_left']) . ' days ago'
@@ -452,6 +453,12 @@
                             ][$k['status']] ?? '';
                         ?>
                         <span class="badge-status <?= $badgeClass ?>"><?= esc($k['status']) ?></span>
+                    </td>
+                   <td>
+                        <a href="<?= base_url('users/edit/' . $k['id']) ?>"
+                           class="btn btn-sm btn-primary">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
                     </td>
                 </tr>
                 <?php endforeach ?>
