@@ -23,6 +23,8 @@ $selectedGrade = old('grade_id')
     ?? ($unit['grade_id'] ?? ($_GET['grade'] ?? ''));
 ?>
 
+<?php if ($grades[0]['subject_name'] != 'All Subject'): ?>
+
 <div class="mb-3">
     <label class="form-label">Grade</label>
     <select name="grade_id" class="form-control" required>
@@ -35,6 +37,8 @@ $selectedGrade = old('grade_id')
         <?php endforeach; ?>
     </select>
 </div>
+
+<?php endif ?>
         <div class="mb-3">
             <label class="form-label">Unit Name</label>
             <input type="text"

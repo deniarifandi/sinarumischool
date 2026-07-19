@@ -99,9 +99,7 @@ $fieldLabels = [
         <div class="mb-3">
             <label>Topik</label>
 
-            <select name="unit_id"
-                    class="form-control"
-                    required>
+            <select name="unit_id" id="unit_id" class="form-control" required>
 
                 <option value="">-- pilih topik --</option>
 
@@ -123,19 +121,17 @@ $fieldLabels = [
             <label>Sub Topik</label>
 
             <select name="subunit_id"
+                    id="subunit_id"
                     class="form-control"
-                    required>
+                    required
+                    <?= empty($lessonplan['unit_id']) ? 'disabled' : '' ?>>
 
                 <option value="">-- pilih sub topik --</option>
 
                 <?php foreach ($subunits as $s): ?>
                     <option value="<?= $s['id'] ?>"
-                        <?= ($lessonplan['subunit_id'] ?? '') == $s['id']
-                            ? 'selected'
-                            : '' ?>>
-
+                        <?= ($lessonplan['subunit_id'] ?? '') == $s['id'] ? 'selected' : '' ?>>
                         <?= esc($s['subunit_name']) ?>
-
                     </option>
                 <?php endforeach ?>
             </select>
@@ -374,5 +370,41 @@ $fieldLabels = [
     </form>
 
 </div>
+
+
+<script>
+const unitSelect = document.getElementById('unit_id');
+const subSelect = document.getElementById('subunit_id');
+
+function loadSubunits(unitId) {
+    if (!unitId) {
+        subSelect.disabled = true;
+        subSelect.innerHTML =
+            '<option value="">-- pilih topik terlebih dahulu --</option>';
+        return;
+    }
+
+    subSelect.disabled = false;
+    subSelect.innerHTML = '<option>Loading...</option>';
+
+    fetch('<?= base_url('lessonplan/subunits') ?>/' + unitId)
+        .then(r => r.json())
+        .then(data => {
+            subSelect.innerHTML =
+                '<option value="">-- pilih sub topik --</option>';
+
+            data.forEach(item => {
+                subSelect.innerHTML += `
+                    <option value="${item.id}">
+                        ${item.subunit_name}
+                    </option>`;
+            });
+        });
+}
+
+unitSelect.addEventListener('change', function () {
+    loadSubunits(this.value);
+});
+</script>
 
 <?= $this->endSection() ?>

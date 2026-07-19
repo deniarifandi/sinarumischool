@@ -45,7 +45,7 @@
                             </span>
                         </td>
 
-                        <td><?= esc($lp['class_name'] ?? '-') ?></td>
+                        <td><?= esc($lp['subject_name'] ?? '-') ?></td>
                         <td><?= esc($lp['unit_name'] ?? '-') ?></td> <!-- FIX -->
                         <td><?= esc($lp['subunit_name'] ?? '-') ?></td> <!-- FIX -->
                         <td><?= esc($lp['semester'] ?? '-') ?></td>

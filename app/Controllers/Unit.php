@@ -46,11 +46,14 @@ class Unit extends BaseController
     $builder = $this->unitModel
         ->select('units.*, subjects.subject_name, grades.grade_name')
         ->join('subjects','subjects.id = units.subject_id')
-        ->join('grades','grades.id = units.grade_id')
+        ->join('grades','grades.id = units.grade_id','left')
         ->orderBy('grades.id');
 
     if ($subjectId) {
-        $builder->where('units.subject_id', $subjectId);
+        $builder->groupStart()
+            ->where('units.subject_id', $subjectId)
+            ->orWhere('subjects.subject_name', 'All Subject')
+            ->groupEnd();
     }
 
     if ($gradeId) {
@@ -83,7 +86,7 @@ class Unit extends BaseController
 
         $grade_list = $this->gradeModel->builder();
         $grades = $grade_list
-            ->select('grades.*')
+            ->select('grades.*,subjects.subject_name')
             ->join('divisions','grades.division_id = divisions.id','left')
             ->join('subjects','subjects.division_id = divisions.id','left')
             ->where('subjects.id', $subject_id)
@@ -92,6 +95,7 @@ class Unit extends BaseController
             ->getResultArray();
 
         // return json_encode($grades);
+        // exit();
 
         return view('unit/form', [
             'subjectId' => $this->request->getGet('subject'),

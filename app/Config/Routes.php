@@ -59,6 +59,8 @@ use CodeIgniter\Router\RouteCollection;
 
     $routes->group('student', ['filter' => 'auth'], function ($routes) {
         $routes->get('/', 'StudentController::index');
+        $routes->get('dashboard', 'StudentController::dashboard');
+
         $routes->get('create', 'StudentController::create');
         $routes->get('edit/(:num)', 'StudentController::edit/$1');
         $routes->post('save', 'StudentController::save');
@@ -176,6 +178,7 @@ $routes->group('lessonplan', function($routes) {
     $routes->get('edit/(:num)', 'Lessonplan::edit/$1');
     $routes->post('store', 'Lessonplan::store');
     $routes->post('update/(:num)', 'Lessonplan::update/$1');
+    $routes->get('subunits/(:num)', 'Lessonplan::getSubunits/$1');
 
 });
 $routes->get('lessonplan/print/(:num)', 'Lessonplan::print/$1');

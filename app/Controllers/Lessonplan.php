@@ -36,10 +36,12 @@ class Lessonplan extends BaseController
             ->select('lessonplan.*, 
                       classes.class_name,
                       units.name as unit_name,
-                      subunits.subunit_name as subunit_name')
+                      subunits.subunit_name as subunit_name, subjects.subject_name'
+                    )
             ->join('classes', 'classes.id = lessonplan.class_id', 'left')
             ->join('units', 'units.id = lessonplan.unit_id', 'left')
             ->join('subunits', 'subunits.id = lessonplan.subunit_id', 'left')
+            ->join('subjects','subjects.id = lessonplan.subject_id','left')
             ->where('lessonplan.subject_id',$_GET['subject_id'])
             ->findAll();
 
@@ -63,14 +65,21 @@ class Lessonplan extends BaseController
     }
 
     return view('lessonplan/form', [
-        'units'        => $this->unitModel->findAll(),
-        'subunits'     => $this->subunitModel->findAll(),
-        'mainClass'    => $mainClass[0],
+        'units'     => $this->unitModel->getUnitBySubject($subject_id),
+        'subunits'  => [],
+        'mainClass' => $mainClass[0],
 
-        'agama'        => $this->objectiveModel->getAgamaBySubject($subject_id),
-        'jati'         => $this->objectiveModel->getJatiBySubject($subject_id),
-        'literasi'     => $this->objectiveModel->getLiterasiBySubject($subject_id),
+        'agama'     => $this->objectiveModel->getAgamaBySubject($subject_id),
+        'jati'      => $this->objectiveModel->getJatiBySubject($subject_id),
+        'literasi'  => $this->objectiveModel->getLiterasiBySubject($subject_id),
     ]);
+}
+
+public function getSubunits($unitId)
+{
+    return $this->response->setJSON(
+        $this->subunitModel->getByUnit($unitId)
+    );
 }
 
     // GET /lessonplan/edit/{id}
@@ -115,9 +124,11 @@ class Lessonplan extends BaseController
         $dplValue += (int)$v;
     }
 
+    $subject_id = $this->request->getPost('subject_id');
+
     $data = [
         'class_id'   => $this->request->getPost('class_id'),
-        'subject_id'   => $this->request->getPost('subject_id'),
+        'subject_id'   => $subject_id,
         'unit_id'    => $this->request->getPost('unit_id'),
         'subunit_id' => $this->request->getPost('subunit_id'),
         'semester'   => $this->request->getPost('semester'),
@@ -161,7 +172,7 @@ class Lessonplan extends BaseController
             ->with('errors', $this->lessonplan->errors());
     }
 
-    return redirect()->to('/')->with('success', 'Data saved');
+    return redirect()->to('/lessonplan?subject_id='.$subject_id)->with('success', 'Data saved');
 }
 
     // POST /lessonplan/update/{id}
@@ -174,9 +185,11 @@ class Lessonplan extends BaseController
         $dplValue += (int)$v;
     }
 
+    $subject_id = $this->request->getPost('subject_id');
+
     $data = [
         'class_id'    => $this->request->getPost('class_id'),
-        'subject_id'    => $this->request->getPost('subject_id'),
+        'subject_id'    => $subject_id,
         'unit_id'     => $this->request->getPost('unit_id'),
         'subunit_id'  => $this->request->getPost('subunit_id'),
         'semester'    => $this->request->getPost('semester'),
@@ -220,7 +233,7 @@ class Lessonplan extends BaseController
             ->with('errors', $this->lessonplan->errors());
     }
 
-    return redirect()->to('/')->with('success', 'Data berhasil diupdate');
+    return redirect()->to('/lessonplan?subject_id='.$subject_id)->with('success', 'Data berhasil diupdate');
 }
 
     // GET /lessonplan/{id}
