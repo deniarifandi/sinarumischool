@@ -114,33 +114,30 @@ public function getSubunits($unitId)
 }
 
     // POST /lessonplan/store
-    public function store()
+ public function store()
 {
-    // DPL checkbox → integer
-    $dplArray = $this->request->getPost('dpl') ?? [];
-
-    $dplValue = 0;
-    foreach ($dplArray as $v) {
-        $dplValue += (int)$v;
-    }
+    $dplValue = array_sum(array_map('intval', $this->request->getPost('dpl') ?? []));
+    $intiValue = array_sum(array_map('intval', $this->request->getPost('inti') ?? []));
 
     $subject_id = $this->request->getPost('subject_id');
 
     $data = [
         'class_id'   => $this->request->getPost('class_id'),
-        'subject_id'   => $subject_id,
+        'subject_id' => $subject_id,
         'unit_id'    => $this->request->getPost('unit_id'),
         'subunit_id' => $this->request->getPost('subunit_id'),
         'semester'   => $this->request->getPost('semester'),
         'bulan'      => $this->request->getPost('bulan'),
-        'dpl'        => $dplValue,
 
-        'agama1' => $this->request->getPost('agama1'),
-        'agama2' => $this->request->getPost('agama2'),
-        'jati1'  => $this->request->getPost('jati1'),
-        'jati2'  => $this->request->getPost('jati2'),
-        'dasar1' => $this->request->getPost('dasar1'),
-        'dasar2' => $this->request->getPost('dasar2'),
+        'dpl'        => $dplValue,
+        'inti'       => $intiValue,
+
+        'agama1'     => $this->request->getPost('agama1'),
+        'agama2'     => $this->request->getPost('agama2'),
+        'jati1'      => $this->request->getPost('jati1'),
+        'jati2'      => $this->request->getPost('jati2'),
+        'dasar1'     => $this->request->getPost('dasar1'),
+        'dasar2'     => $this->request->getPost('dasar2'),
 
         'iktp'       => $this->request->getPost('iktp'),
         'pedagogis'  => $this->request->getPost('pedagogis'),
@@ -148,22 +145,20 @@ public function getSubunits($unitId)
         'alatbahan'  => $this->request->getPost('alatbahan'),
         'sumber'     => $this->request->getPost('sumber'),
 
-        'inti'    => $this->request->getPost('inti'),
-        'penutup' => $this->request->getPost('penutup'),
+        'pembukaan'  => $this->request->getPost('pembukaan'),
+        'penutup'    => $this->request->getPost('penutup'),
 
-        'sambut1' => $this->request->getPost('sambut1'),
-        'sambut2' => $this->request->getPost('sambut2'),
-        'sambut3' => $this->request->getPost('sambut3'),
-        'sambut4' => $this->request->getPost('sambut4'),
-        'sambut5' => $this->request->getPost('sambut5'),
+        'sambut1'    => $this->request->getPost('sambut1'),
+        'sambut2'    => $this->request->getPost('sambut2'),
+        'sambut3'    => $this->request->getPost('sambut3'),
+        'sambut4'    => $this->request->getPost('sambut4'),
+        'sambut5'    => $this->request->getPost('sambut5'),
 
-        'pembukaan' => $this->request->getPost('pembukaan'),
-
-        'inti1' => $this->request->getPost('inti1'),
-        'inti2' => $this->request->getPost('inti2'),
-        'inti3' => $this->request->getPost('inti3'),
-        'inti4' => $this->request->getPost('inti4'),
-        'inti5' => $this->request->getPost('inti5'),
+        'inti1'      => $this->request->getPost('inti1'),
+        'inti2'      => $this->request->getPost('inti2'),
+        'inti3'      => $this->request->getPost('inti3'),
+        'inti4'      => $this->request->getPost('inti4'),
+        'inti5'      => $this->request->getPost('inti5'),
     ];
 
     if (!$this->lessonplan->insert($data)) {
@@ -172,59 +167,55 @@ public function getSubunits($unitId)
             ->with('errors', $this->lessonplan->errors());
     }
 
-    return redirect()->to('/lessonplan?subject_id='.$subject_id)->with('success', 'Data saved');
+    return redirect()->to('/lessonplan?subject_id=' . $subject_id)
+        ->with('success', 'Data saved');
 }
 
-    // POST /lessonplan/update/{id}
-    public function update($id)
+public function update($id)
 {
-    $dplArray = $this->request->getPost('dpl') ?? [];
-
-    $dplValue = 0;
-    foreach ($dplArray as $v) {
-        $dplValue += (int)$v;
-    }
+    $dplValue = array_sum(array_map('intval', $this->request->getPost('dpl') ?? []));
+    $intiValue = array_sum(array_map('intval', $this->request->getPost('inti') ?? []));
 
     $subject_id = $this->request->getPost('subject_id');
 
     $data = [
-        'class_id'    => $this->request->getPost('class_id'),
-        'subject_id'    => $subject_id,
-        'unit_id'     => $this->request->getPost('unit_id'),
-        'subunit_id'  => $this->request->getPost('subunit_id'),
-        'semester'    => $this->request->getPost('semester'),
-        'bulan'       => $this->request->getPost('bulan'),
-        'dpl'         => $dplValue,
+        'class_id'   => $this->request->getPost('class_id'),
+        'subject_id' => $subject_id,
+        'unit_id'    => $this->request->getPost('unit_id'),
+        'subunit_id' => $this->request->getPost('subunit_id'),
+        'semester'   => $this->request->getPost('semester'),
+        'bulan'      => $this->request->getPost('bulan'),
 
-        'agama1'      => $this->request->getPost('agama1'),
-        'agama2'      => $this->request->getPost('agama2'),
+        'dpl'        => $dplValue,
+        'inti'       => $intiValue,
 
-        'jati1'       => $this->request->getPost('jati1'),
-        'jati2'       => $this->request->getPost('jati2'),
+        'agama1'     => $this->request->getPost('agama1'),
+        'agama2'     => $this->request->getPost('agama2'),
+        'jati1'      => $this->request->getPost('jati1'),
+        'jati2'      => $this->request->getPost('jati2'),
+        'dasar1'     => $this->request->getPost('dasar1'),
+        'dasar2'     => $this->request->getPost('dasar2'),
 
-        'dasar1'      => $this->request->getPost('dasar1'),
-        'dasar2'      => $this->request->getPost('dasar2'),
+        'iktp'       => $this->request->getPost('iktp'),
+        'pedagogis'  => $this->request->getPost('pedagogis'),
+        'kemitraan'  => $this->request->getPost('kemitraan'),
+        'alatbahan'  => $this->request->getPost('alatbahan'),
+        'sumber'     => $this->request->getPost('sumber'),
 
-        'pedagogis'   => $this->request->getPost('pedagogis'),
-        'kemitraan'   => $this->request->getPost('kemitraan'),
-        'alatbahan'   => $this->request->getPost('alatbahan'),
-        'sumber'      => $this->request->getPost('sumber'),
+        'pembukaan'  => $this->request->getPost('pembukaan'),
+        'penutup'    => $this->request->getPost('penutup'),
 
-        'inti'        => $this->request->getPost('inti'),
-        'penutup'     => $this->request->getPost('penutup'),
-        'pembukaan'   => $this->request->getPost('pembukaan'),
+        'sambut1'    => $this->request->getPost('sambut1'),
+        'sambut2'    => $this->request->getPost('sambut2'),
+        'sambut3'    => $this->request->getPost('sambut3'),
+        'sambut4'    => $this->request->getPost('sambut4'),
+        'sambut5'    => $this->request->getPost('sambut5'),
 
-        'sambut1'     => $this->request->getPost('sambut1'),
-        'sambut2'     => $this->request->getPost('sambut2'),
-        'sambut3'     => $this->request->getPost('sambut3'),
-        'sambut4'     => $this->request->getPost('sambut4'),
-        'sambut5'     => $this->request->getPost('sambut5'),
-
-        'inti1'       => $this->request->getPost('inti1'),
-        'inti2'       => $this->request->getPost('inti2'),
-        'inti3'       => $this->request->getPost('inti3'),
-        'inti4'       => $this->request->getPost('inti4'),
-        'inti5'       => $this->request->getPost('inti5'),
+        'inti1'      => $this->request->getPost('inti1'),
+        'inti2'      => $this->request->getPost('inti2'),
+        'inti3'      => $this->request->getPost('inti3'),
+        'inti4'      => $this->request->getPost('inti4'),
+        'inti5'      => $this->request->getPost('inti5'),
     ];
 
     if (!$this->lessonplan->update($id, $data)) {
@@ -233,7 +224,8 @@ public function getSubunits($unitId)
             ->with('errors', $this->lessonplan->errors());
     }
 
-    return redirect()->to('/lessonplan?subject_id='.$subject_id)->with('success', 'Data berhasil diupdate');
+    return redirect()->to('/lessonplan?subject_id=' . $subject_id)
+        ->with('success', 'Data berhasil diupdate');
 }
 
     // GET /lessonplan/{id}

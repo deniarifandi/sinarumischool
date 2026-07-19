@@ -20,21 +20,24 @@ class ObjectiveModel extends Model
 
      public function getAgamaBySubject($subjectId)
     {
-        return $this->join('outcomes','outcomes.id = objectives.outcome_id')
+        return $this->select('objectives.*')
+                    ->join('outcomes','outcomes.id = objectives.outcome_id')
                     ->where('outcomes.subject_id', $subjectId)
                     ->where("outcome_name LIKE '%agama%'")
                     ->findAll();
     }
      public function getJatiBySubject($subjectId)
     {
-        return $this->join('outcomes','outcomes.id = objectives.outcome_id')
+        return $this->select('objectives.*')
+                    ->join('outcomes','outcomes.id = objectives.outcome_id')
                     ->where('outcomes.subject_id', $subjectId)
                     ->where("outcome_name LIKE '%jati%'")
                     ->findAll();
     }
      public function getLiterasiBySubject($subjectId)
     {
-        return $this->join('outcomes','outcomes.id = objectives.outcome_id')
+        return $this->select('objectives.*')
+                    ->join('outcomes','outcomes.id = objectives.outcome_id')
                     ->where('outcomes.subject_id', $subjectId)
                     ->where("outcome_name LIKE '%literasi%'")
                     ->findAll();

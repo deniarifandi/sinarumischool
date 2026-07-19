@@ -23,6 +23,16 @@ $selectedDpl = isset($lessonplan['dpl'])
     ? (int)$lessonplan['dpl']
     : 0;
 
+$intiOptions = [
+    1 => 'Mindful',
+    2 => 'Meaningful',
+    4 => 'Joyful',
+];
+
+$selectedInti = isset($lessonplan['inti'])
+    ? (int)$lessonplan['inti']
+    : 0;
+
 $defaultText = [
 
     'pedagogis' => 'Guru menggunakan pendekatan pembelajaran aktif dan menyenangkan.',
@@ -37,7 +47,7 @@ $defaultText = [
 - Membuat kesepakatan bersama.
 - Apersepsi.',
 
-    'inti' => 'Peserta didik melakukan kegiatan inti sesuai tujuan pembelajaran.',
+    // 'inti' => 'Peserta didik melakukan kegiatan inti sesuai tujuan pembelajaran.',
 
     'penutup' => 'Guru melakukan refleksi dan menutup kegiatan belajar.',
 
@@ -62,14 +72,14 @@ $fieldLabels = [
     'sumber'    => 'Sumber Belajar',
 
     'pembukaan' => 'Kegiatan Pembukaan',
-    'inti'      => 'Kegiatan Inti',
+    // 'inti'      => 'Kegiatan Inti',
     'penutup'   => 'Kegiatan Penutup',
 
-    'inti1' => 'Langkah Inti 1',
-    'inti2' => 'Langkah Inti 2',
-    'inti3' => 'Langkah Inti 3',
-    'inti4' => 'Langkah Inti 4',
-    'inti5' => 'Langkah Inti 5',
+    'inti1' => 'Hari Senin',
+    'inti2' => 'Hari Selasa',
+    'inti3' => 'Hari Rabu',
+    'inti4' => 'Hari Kamis',
+    'inti5' => 'Hari Jumat',
 ];
 
 ?>
@@ -93,7 +103,7 @@ $fieldLabels = [
 
         <input type="hidden"
                name="subject_id"
-               value="<?= esc($_GET['subject_id'] ?? '') ?>">
+               value="<?= esc(request()->getGet('subject_id')) ?>">
 
         <!-- TOPIK -->
         <div class="mb-3">
@@ -207,6 +217,25 @@ $fieldLabels = [
                 </div>
             <?php endforeach ?>
         </div>
+
+        <!-- INTI PEMBELAJARAN -->
+<div class="mb-4">
+    <label class="mb-2">Karakter Pembelajaran</label>
+
+    <?php foreach ($intiOptions as $val => $label): ?>
+        <div class="form-check">
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="inti[]"
+                   value="<?= $val ?>"
+                   <?= ($selectedInti & $val) ? 'checked' : '' ?>>
+
+            <label class="form-check-label">
+                <?= esc($label) ?>
+            </label>
+        </div>
+    <?php endforeach ?>
+</div>
 
         <!-- AGAMA -->
         <div class="mb-3">
@@ -334,7 +363,7 @@ $fieldLabels = [
             'alatbahan',
             'sumber',
             'pembukaan',
-            'inti',
+            // 'inti',
             'penutup',
             'inti1',
             'inti2',
@@ -376,6 +405,8 @@ $fieldLabels = [
 const unitSelect = document.getElementById('unit_id');
 const subSelect = document.getElementById('subunit_id');
 
+const selectedSubunit = '<?= $lessonplan['subunit_id'] ?? '' ?>';
+
 function loadSubunits(unitId) {
     if (!unitId) {
         subSelect.disabled = true;
@@ -394,13 +425,18 @@ function loadSubunits(unitId) {
                 '<option value="">-- pilih sub topik --</option>';
 
             data.forEach(item => {
+                const selected = item.id == selectedSubunit ? 'selected' : '';
                 subSelect.innerHTML += `
-                    <option value="${item.id}">
+                    <option value="${item.id}" ${selected}>
                         ${item.subunit_name}
                     </option>`;
             });
         });
 }
+
+<?php if(isset($lessonplan['unit_id'])): ?>
+loadSubunits('<?= $lessonplan['unit_id'] ?>');
+<?php endif; ?>
 
 unitSelect.addEventListener('change', function () {
     loadSubunits(this.value);

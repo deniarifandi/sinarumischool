@@ -19,54 +19,58 @@ class Home extends BaseController
 
     }
 
-    public function index(): string
-    {   
-
+   public function index(): string
+    {
         $user_id = session('id') ?? session('user_id');
 
-$checkedToday = $this->presence->presence_check($user_id);
-$divisions    = $this->userDivision->getUserDivisions($user_id);
-$userDetail   = $this->userModel->getUserDetailData($user_id);
+        $checkedToday = $this->presence->presence_check($user_id);
+        $divisions    = $this->userDivision->getUserDivisions($user_id);
 
-$mainClass = $this->userModel->getUserMainClass($user_id);
-$mainClass = $mainClass[0] ?? null;
+        $userDetail = $this->userModel->getUserDetailData($user_id);
+        $userDetail = $userDetail[0] ?? null;
 
-$userSubjects = $this->UserSubjectModel->getUserSubjects($user_id);
+        if (!$userDetail) {
+            throw new \RuntimeException('User not found');
+        }
 
-$allowedRoles = ['superadmin', 'teacher', 'teacher_admin'];
+        $mainClass = $this->userModel->getUserMainClass($user_id);
+        $mainClass = $mainClass[0] ?? null;
 
-$groupedSubjects = [];
+        $userSubjects = $this->UserSubjectModel->getUserSubjects($user_id);
 
-if (in_array($userDetail[0]['role'], $allowedRoles) && !empty($userSubjects)) {
-    foreach ($userSubjects as $subject) {
-        $groupedSubjects[$subject['division_name']][] = $subject;
+        $allowedRoles = ['superadmin', 'teacher', 'teacher_admin'];
+
+        $groupedSubjects = [];
+
+        if (in_array($userDetail['role'], $allowedRoles) && !empty($userSubjects)) {
+            foreach ($userSubjects as $subject) {
+                $groupedSubjects[$subject['division_name']][] = $subject;
+            }
+        }
+
+        $attendanceMissing = false;
+
+        if ($mainClass) {
+            $db = \Config\Database::connect();
+
+            $hasAttendance = $db->table('absensi a')
+                ->join('students s', 's.id = a.murid_id')
+                ->where('s.class_id', $mainClass['id'])
+                ->where('a.tanggal', date('Y-m-d'))
+                ->countAllResults();
+
+            $attendanceMissing = ($hasAttendance == 0);
+        }
+
+        return view('dashboard', [
+            'checkedToday'      => $checkedToday,
+            'divisions'         => $divisions,
+            'user'              => $userDetail,
+            'mainClass'         => $mainClass,
+            'userSubjects'      => $userSubjects,
+            'allowedRoles'      => $allowedRoles,
+            'groupedSubjects'   => $groupedSubjects,
+            'attendanceMissing' => $attendanceMissing,
+        ]);
     }
-}
-
-$db = \Config\Database::connect();
-
-$attendanceMissing = false;
-
-if ($mainClass) {
-    $hasAttendance = $db->table('absensi a')
-        ->join('students s', 's.id = a.murid_id')
-        ->where('s.class_id', $mainClass['id'])
-        ->where('a.tanggal', date('Y-m-d'))
-        ->countAllResults();
-
-    $attendanceMissing = ($hasAttendance == 0);
-}
-
-return view('dashboard', [
-    'checkedToday'      => $checkedToday,
-    'divisions'         => $divisions,
-    'user'              => $userDetail[0],
-    'mainClass'         => $mainClass,
-    'userSubjects'      => $userSubjects,
-    'allowedRoles'      => $allowedRoles,
-    'groupedSubjects'   => $groupedSubjects,
-    'attendanceMissing' => $attendanceMissing,
-]);
-    }
-   
  }
