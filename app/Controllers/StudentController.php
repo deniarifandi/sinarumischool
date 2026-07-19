@@ -44,10 +44,11 @@ class StudentController extends BaseController
         ->countAllResults();
 
     $totalGrades = $db->table('classes')
-        ->select('grade')
-        ->where('deleted_at', null)
+        ->select('grades.grade_name')
+        ->join('grades','grades.id = classes.grade','left')
+        ->where('classes.deleted_at', null)
         ->when($divisionId > 0, static function ($q) use ($divisionId) {
-            $q->where('division_id', $divisionId);
+            $q->where('classes.division_id', $divisionId);
         })
         ->groupBy('grade')
         ->get()
@@ -67,8 +68,9 @@ class StudentController extends BaseController
 
     // 4. Data untuk Chart Tingkatan (Grades)
     $grades = $db->table('students s')
-        ->select('c.grade, COUNT(*) total')
+        ->select('c.grade, grades.grade_name as grade, COUNT(*) total')
         ->join('classes c', 'c.id = s.class_id')
+        ->join('grades','grades.id = c.grade')
         ->where('s.deleted_at', null)
         ->when($divisionId > 0, static function ($q) use ($divisionId) {
             $q->where('s.division_id', $divisionId);
