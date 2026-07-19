@@ -91,12 +91,26 @@ class UserModel extends Model
             ->findAll();
     }
 
-    public function getUserMainClass($user_id){
-        return $this->select('
-                classes.*
-            ')
-            ->join('classes','classes.classteacher_id = users.id','left')
-            ->where('users.id',$user_id)
-            ->findAll();
-    }
+   public function getUserMainClass($user_id)
+{
+    return $this->select("
+            classes.*,
+            users.name,
+            CASE
+                WHEN classes.classteacher_id = {$user_id} THEN 'classteacher'
+                WHEN classes.assclassteacher_id = {$user_id} THEN 'assistant'
+            END AS teacher_role
+        ")
+        ->join(
+            'classes',
+            'users.id = classes.classteacher_id OR users.id = classes.assclassteacher_id'
+        )
+        ->groupStart()
+            ->where('classes.classteacher_id', $user_id)
+            ->orWhere('classes.assclassteacher_id', $user_id)
+        ->groupEnd()
+        ->where('classes.deleted_at', null)
+        ->where('users.id', $user_id)
+        ->findAll();
+}
 }
