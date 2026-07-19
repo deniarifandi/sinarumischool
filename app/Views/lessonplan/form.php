@@ -44,8 +44,8 @@ $defaultText = [
     'sumber' => 'Lingkungan sekitar, buku cerita, dan media visual.',
 
     'pembukaan' => '- Masuk kelas dan berdoa bersama.
-- Membuat kesepakatan bersama.
-- Apersepsi.',
+    - Membuat kesepakatan bersama.
+    - Apersepsi.',
 
     // 'inti' => 'Peserta didik melakukan kegiatan inti sesuai tujuan pembelajaran.',
 
@@ -62,6 +62,7 @@ $defaultText = [
     'inti3' => 'Peserta didik mencoba kegiatan.',
     'inti4' => 'Guru mendampingi kegiatan.',
     'inti5' => 'Peserta didik menyimpulkan kegiatan.',
+    'assessment' => 'observasi, checklist, hasil karya',
 ];
 
 $fieldLabels = [
@@ -80,6 +81,7 @@ $fieldLabels = [
     'inti3' => 'Hari Rabu',
     'inti4' => 'Hari Kamis',
     'inti5' => 'Hari Jumat',
+    'assessment' => 'Assesssment (Penilaian)',
 ];
 
 ?>
@@ -369,7 +371,8 @@ $fieldLabels = [
             'inti2',
             'inti3',
             'inti4',
-            'inti5'
+            'inti5',
+            'assessment'
         ];
 
         ?>

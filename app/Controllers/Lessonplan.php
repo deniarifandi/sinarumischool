@@ -216,6 +216,7 @@ public function update($id)
         'inti3'      => $this->request->getPost('inti3'),
         'inti4'      => $this->request->getPost('inti4'),
         'inti5'      => $this->request->getPost('inti5'),
+        'assessment'      => $this->request->getPost('assessment'),
     ];
 
     if (!$this->lessonplan->update($id, $data)) {
