@@ -80,14 +80,20 @@ class ClassController extends BaseController
     {
         $divisiId = $this->request->getPost('division_id');
 
-        $data = [
-            'division_id' => $divisiId,
-            'grade'       => $this->request->getPost('grade'),
-            'class_name'  => $this->request->getPost('class_name'),
-            'description' => $this->request->getPost('description'),
-            'classteacher_id' => $this->request->getPost('classteacher_id'),
-             'assclassteacher_id' => $this->request->getPost('assclassteacher_id'),
-        ];
+        // echo $this->request->getPost('assclassteacher_id');
+        // exit(); 
+        
+
+        $assClassTeacher = $this->request->getPost('assclassteacher_id');
+
+$data = [
+    'division_id'         => $divisiId,
+    'grade'               => $this->request->getPost('grade'),
+    'class_name'          => $this->request->getPost('class_name'),
+    'description'         => $this->request->getPost('description'),
+    'classteacher_id'     => $this->request->getPost('classteacher_id'),
+    'assclassteacher_id'  => $assClassTeacher !== '' ? $assClassTeacher : null,
+];
 
         if (!$data['class_name'] || !$data['grade']) {
             return redirect()->back()

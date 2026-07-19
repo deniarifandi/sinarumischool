@@ -159,13 +159,19 @@ if (!function_exists('safe_url')) {
                             <?= esc($user['role'] ?? 'Unpositioned') ?>
                         </span>
                     </div>
-                    <p class="text-muted small mb-0">
-                        <?php if ($mainClass['class_name'] ?? false): ?>
-                            <i class="bi bi-door-open me-1"></i> Class Teacher: <strong><?= esc($mainClass['class_name']) ?></strong>
-                        <?php else: ?>
-                            <i class="bi bi-person-badge me-1"></i> Operations Console
-                        <?php endif ?>
-                    </p>
+               <p class="text-muted small mb-0">
+                <?php if (!empty($mainClass['class_name'])): ?>
+                    <i class="bi bi-door-open me-1"></i>
+
+                    <?= $mainClass['teacher_role'] === 'assistant'
+                        ? 'Assistant Class Teacher of'
+                        : 'Class Teacher of' ?>:
+
+                    <strong><?= esc($mainClass['class_name']) ?></strong>
+                <?php else: ?>
+                    <i class="bi bi-person-badge me-1"></i> Operations Console
+                <?php endif ?>
+            </p>
                 </div>
             </div>
 
@@ -303,7 +309,7 @@ if (!function_exists('safe_url')) {
                         </a>
                         <?php endif ?>
 
-                        <a href="<?= base_url('student?division='.$d['id']) ?>" class="nav-item-btn">
+                        <a href="<?= base_url('student/dashboard?division='.$d['id']) ?>" class="nav-item-btn">
                             <i class="bi bi-people"></i>
                             <span>Student Registry</span>
                         </a>

@@ -101,7 +101,17 @@ $selectClass = "form-select form-select-sm bg-white text-dark border-secondary";
                     </div>
                     <div class="col-md-4">
                         <label class="form-label small text-white-50 mb-1">Blood Type</label>
-                        <input type="text" name="blood_type" value="<?= old('blood_type', $student['blood_type'] ?? '') ?>" class="<?= $inputClass ?>" placeholder="Golongan Darah">
+                        <?php 
+                            // Ambil nilai lama dari flash data (old input) atau dari database, default kosong
+                            $currentBloodType = old('blood_type', $student['blood_type'] ?? ''); 
+                        ?>
+                        <select name="blood_type" class="form-select <?= current(explode(' ', $inputClass)) == 'is-invalid' ? 'is-invalid' : '' ?>">
+                            <option value="" <?= $currentBloodType == '' ? 'selected' : '' ?>>- Pilih Golongan Darah -</option>
+                            <option value="A" <?= $currentBloodType == 'A' ? 'selected' : '' ?>>A</option>
+                            <option value="B" <?= $currentBloodType == 'B' ? 'selected' : '' ?>>B</option>
+                            <option value="AB" <?= $currentBloodType == 'AB' ? 'selected' : '' ?>>AB</option>
+                            <option value="O" <?= $currentBloodType == 'O' ? 'selected' : '' ?>>O</option>
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label small text-white-50 mb-1">Language</label>

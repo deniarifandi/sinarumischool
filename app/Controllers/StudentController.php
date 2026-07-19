@@ -18,6 +18,107 @@ class StudentController extends BaseController
         $this->userModel = new UserModel();
     }
 
+   public function dashboard()
+{
+    $db = \Config\Database::connect();
+
+    $divisionId = (int) ($this->request->getGet('division') ?? 0);
+
+    // 1. Base Query untuk Murid
+    $studentBuilder = $db->table('students')
+        ->where('deleted_at', null)
+        ->when($divisionId > 0, static function ($q) use ($divisionId) {
+            $q->where('division_id', $divisionId);
+        });
+
+    $totalStudents  = (clone $studentBuilder)->countAllResults();
+    $maleStudents   = (clone $studentBuilder)->where('gender', 'L')->countAllResults();
+    $femaleStudents = (clone $studentBuilder)->where('gender', 'P')->countAllResults();
+
+    // 2. Total Classes & Grades
+    $totalClasses = $db->table('classes')
+        ->where('deleted_at', null)
+        ->when($divisionId > 0, static function ($q) use ($divisionId) {
+            $q->where('division_id', $divisionId);
+        })
+        ->countAllResults();
+
+    $totalGrades = $db->table('classes')
+        ->select('grade')
+        ->where('deleted_at', null)
+        ->when($divisionId > 0, static function ($q) use ($divisionId) {
+            $q->where('division_id', $divisionId);
+        })
+        ->groupBy('grade')
+        ->get()
+        ->getNumRows();
+
+    // 3. Data untuk Chart Agama
+    $religions = $db->table('students')
+        ->select('murid_agama, COUNT(*) total')
+        ->where('deleted_at', null)
+        ->when($divisionId > 0, static function ($q) use ($divisionId) {
+            $q->where('division_id', $divisionId);
+        })
+        ->groupBy('murid_agama')
+        ->orderBy('total', 'DESC')
+        ->get()
+        ->getResultArray();
+
+    // 4. Data untuk Chart Tingkatan (Grades)
+    $grades = $db->table('students s')
+        ->select('c.grade, COUNT(*) total')
+        ->join('classes c', 'c.id = s.class_id')
+        ->where('s.deleted_at', null)
+        ->when($divisionId > 0, static function ($q) use ($divisionId) {
+            $q->where('s.division_id', $divisionId);
+        })
+        ->groupBy('c.grade')
+        ->orderBy('c.grade')
+        ->get()
+        ->getResultArray();
+
+    // 5. Data untuk Tabel/List Siswa Per Kelas
+    $studentsPerClass = $db->table('classes c')
+        ->select('c.grade, c.class_name, COUNT(s.id) total')
+        ->join('students s', 's.class_id = c.id AND s.deleted_at IS NULL', 'left', false)
+        ->where('c.deleted_at', null)
+        ->when($divisionId > 0, static function ($q) use ($divisionId) {
+            $q->where('c.division_id', $divisionId);
+        })
+        ->groupBy('c.id')
+        ->orderBy('c.grade')
+        ->orderBy('c.class_name')
+        ->get()
+        ->getResultArray();
+
+    // 6. Data untuk Chart Golongan Darah
+    $bloodTypes = $db->table('students')
+        ->select('blood_type, COUNT(*) total')
+        ->where('deleted_at', null)
+        ->when($divisionId > 0, static function ($q) use ($divisionId) {
+            $q->where('division_id', $divisionId);
+        })
+        ->groupBy('blood_type')
+        ->orderBy('blood_type')
+        ->get()
+        ->getResultArray();
+
+    // Kirim SEMUA data ke view
+    return view('student/dashboard', [
+        'divisionId'        => $divisionId,
+        'totalStudents'     => $totalStudents,
+        'totalClasses'      => $totalClasses,
+        'totalGrades'       => $totalGrades,
+        'maleStudents'      => $maleStudents,
+        'femaleStudents'    => $femaleStudents,
+        'religions'         => $religions,
+        'grades'            => $grades,
+        'studentsPerClass'  => $studentsPerClass,
+        'bloodTypes'        => $bloodTypes,
+    ]);
+}
+
    public function index()
 {
     $divisionId = (int) $this->request->getGet('division');
@@ -374,16 +475,32 @@ public function updateAttendance()
     $status = $this->request->getPost('status');
     $keterangan = $this->request->getPost('keterangan');
 
+    $table = $db->table('absensi');
+
     foreach ($students as $id) {
 
-        $db->table('absensi')
+        $existing = $table
             ->where('murid_id', $id)
             ->where('tanggal', $tanggal)
-            ->update([
-                'status' => $status[$id],
-                'absensi_keterangan' => $keterangan[$id],
-                'updated_at' => date('Y-m-d H:i:s')
-            ]);
+            ->get()
+            ->getRow();
+
+        $data = [
+            'murid_id' => $id,
+            'tanggal' => $tanggal,
+            'status' => $status[$id],
+            'absensi_keterangan' => $keterangan[$id],
+            'updated_at' => date('Y-m-d H:i:s'),
+        ];
+
+        if ($existing) {
+            $table->where('murid_id', $id)
+                  ->where('tanggal', $tanggal)
+                  ->update($data);
+        } else {
+            $data['created_at'] = date('Y-m-d H:i:s');
+            $table->insert($data);
+        }
     }
 
     return redirect()->to('/student/attendance/list/class/'.$class_id);
