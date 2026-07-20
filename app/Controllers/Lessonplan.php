@@ -30,27 +30,37 @@ class Lessonplan extends BaseController
     }
 
     // GET /lessonplan
-    public function index()
-    {
-        $user_id = session('id') ?? session('user_id');
-        $data['lessonplans'] = $this->lessonplan
-            ->select('lessonplan.*, 
-                      classes.class_name,
-                      units.name as unit_name,
-                      users.name,
-                      subunits.subunit_name as subunit_name, subjects.subject_name'
-                    )
-            ->join('classes', 'classes.id = lessonplan.class_id', 'left')
-            ->join('units', 'units.id = lessonplan.unit_id', 'left')
-            ->join('subunits', 'subunits.id = lessonplan.subunit_id', 'left')
-            ->join('subjects','subjects.id = lessonplan.subject_id','left')
-            ->join('users','users.id = classes.classteacher_id','left')
-            ->where('lessonplan.subject_id',$_GET['subject_id'])
-            ->where('users.id',$user_id)
-            ->findAll();
+public function index()
+{
+    $user_id = session('id') ?? session('user_id');
 
-        return view('lessonplan/index', $data);
+    $builder = $this->lessonplan
+        ->select('
+            lessonplan.*,
+            classes.class_name,
+            units.name AS unit_name,
+            users.name,
+            subunits.subunit_name,
+            subjects.subject_name
+        ')
+        ->join('classes', 'classes.id = lessonplan.class_id', 'left')
+        ->join('units', 'units.id = lessonplan.unit_id', 'left')
+        ->join('subunits', 'subunits.id = lessonplan.subunit_id', 'left')
+        ->join('subjects', 'subjects.id = lessonplan.subject_id', 'left')
+        ->join('users', 'users.id = classes.classteacher_id', 'left');
+
+    if ($subject_id = $this->request->getGet('subject_id')) {
+        $builder->where('lessonplan.subject_id', $subject_id);
     }
+
+    if ($user_id != 0) {
+        $builder->where('users.id', $user_id);
+    }
+
+    $data['lessonplans'] = $builder->findAll();
+
+    return view('lessonplan/index', $data);
+}
 
     // GET /lessonplan/create
   public function create()
