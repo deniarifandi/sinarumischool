@@ -36,12 +36,14 @@ class Lessonplan extends BaseController
             ->select('lessonplan.*, 
                       classes.class_name,
                       units.name as unit_name,
+                      users.name,
                       subunits.subunit_name as subunit_name, subjects.subject_name'
                     )
             ->join('classes', 'classes.id = lessonplan.class_id', 'left')
             ->join('units', 'units.id = lessonplan.unit_id', 'left')
             ->join('subunits', 'subunits.id = lessonplan.subunit_id', 'left')
             ->join('subjects','subjects.id = lessonplan.subject_id','left')
+            ->join('users','users.id = classes.classteacher_id','left')
             ->where('lessonplan.subject_id',$_GET['subject_id'])
             ->findAll();
 
@@ -269,6 +271,8 @@ public function update($id)
             units.name as unit_name,
             subunits.subunit_name,
 
+            users.name,
+
             agama1_obj.objective_name as agama1_name,
             agama2_obj.objective_name as agama2_name,
 
@@ -282,7 +286,7 @@ public function update($id)
         ->join('classes', 'classes.id = lessonplan.class_id', 'left')
         ->join('units', 'units.id = lessonplan.unit_id', 'left')
         ->join('subunits', 'subunits.id = lessonplan.subunit_id', 'left')
-
+        ->join('users','users.id = classes.classteacher_id','left')
         // AGAMA
         ->join('objectives as agama1_obj', 'agama1_obj.id = lessonplan.agama1', 'left')
         ->join('objectives as agama2_obj', 'agama2_obj.id = lessonplan.agama2', 'left')

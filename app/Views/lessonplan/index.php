@@ -27,7 +27,7 @@
                 <thead>
                     <tr>
                         <th class="ps-3">ID</th>
-                        <th>Kelas</th>
+                        <th>Teacher</th>
                         <th>Unit</th>
                         <th>Subunit</th>
                         <th>Semester</th>
@@ -45,7 +45,7 @@
                             </span>
                         </td>
 
-                        <td><?= esc($lp['subject_name'] ?? '-') ?></td>
+                        <td><?= esc($lp['name'] ?? '-') ?></td>
                         <td><?= esc($lp['unit_name'] ?? '-') ?></td> <!-- FIX -->
                         <td><?= esc($lp['subunit_name'] ?? '-') ?></td> <!-- FIX -->
                         <td><?= esc($lp['semester'] ?? '-') ?></td>

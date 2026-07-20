@@ -251,26 +251,34 @@ $selectedInti = isset($lessonplan['inti']) ? (int)$lessonplan['inti'] : 0;
     <!-- Tabel Informasi Utama -->
     <table class="meta-table">
         <tr>
-            <td class="label-meta">Kelas</td>
-            <td class="colon">:</td>
-            <td style="width: 35%;"><?= esc($lessonplan['class_name'] ?? '-') ?></td>
-            <td class="label-meta">Semester</td>
-            <td class="colon">:</td>
-            <td><?= esc($lessonplan['semester'] ?? '-') ?></td>
-        </tr>
-        <tr>
-            <td class="label-meta">Topik Utama</td>
-            <td class="colon">:</td>
-            <td><?= esc($lessonplan['unit_name'] ?? '-') ?></td>
-            <td class="label-meta">Bulan</td>
-            <td class="colon">:</td>
-            <td><?= esc($lessonplan['bulan'] ?? '-') ?></td>
-        </tr>
-        <tr>
-            <td class="label-meta">Sub Topik</td>
-            <td class="colon">:</td>
-            <td colspan="4"><?= esc($lessonplan['subunit_name'] ?? '-') ?></td>
-        </tr>
+    <td class="label-meta">Kelas</td>
+    <td class="colon">:</td>
+    <td style="width:35%;"><?= esc($lessonplan['class_name'] ?? '-') ?></td>
+
+    <td class="label-meta">Guru</td>
+    <td class="colon">:</td>
+    <td><?= esc($lessonplan['name'] ?? '-') ?></td>
+</tr>
+
+<tr>
+    <td class="label-meta">Topik Utama</td>
+    <td class="colon">:</td>
+    <td><?= esc($lessonplan['unit_name'] ?? '-') ?></td>
+
+    <td class="label-meta">Semester</td>
+    <td class="colon">:</td>
+    <td><?= esc($lessonplan['semester'] ?? '-') ?></td>
+</tr>
+
+<tr>
+    <td class="label-meta">Sub Topik</td>
+    <td class="colon">:</td>
+    <td><?= esc($lessonplan['subunit_name'] ?? '-') ?></td>
+
+    <td class="label-meta">Bulan</td>
+    <td class="colon">:</td>
+    <td><?= esc($lessonplan['bulan'] ?? '-') ?></td>
+</tr>
     </table>
 
     <!-- Bagian 1: Karakter & Profil (Grid Checkbox) -->
