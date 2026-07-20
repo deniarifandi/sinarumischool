@@ -7,6 +7,8 @@ use App\Models\UserModel;
 use App\Models\DivisionModel;
 use App\Models\UserDivisionModel;
 use App\Models\RoleModel;
+use App\Models\PositionModel;
+use App\Models\UserPositionModel;
 
 class UserController extends BaseController
 {
@@ -14,56 +16,89 @@ class UserController extends BaseController
     protected $divisionModel;
     protected $userDivisionModel;
     protected $roleModel;
+    protected $positionModel;
+    protected $userPositionModel;
 
     public function __construct()
     {
-        $this->userModel         = new UserModel();
-        $this->divisionModel     = new DivisionModel();
-        $this->userDivisionModel = new UserDivisionModel();
-        $this->roleModel = new RoleModel();
+           $this->userModel         = new UserModel();
+            $this->divisionModel     = new DivisionModel();
+            $this->userDivisionModel = new UserDivisionModel();
+            $this->roleModel         = new RoleModel();
+            $this->positionModel     = new PositionModel();
+            $this->userPositionModel = new UserPositionModel();
     }
 
     /* =========================
        USER LIST
     ========================== */
-    public function index()
-    {
+   public function index()
+{
+    $user_id = session('id') ?? session('user_id');
+    $userDetail = $this->userModel->getUserDetailData($user_id);
 
-        $user_id = session('id') ?? session('user_id');
-        $userDetail = $this->userModel->getUserDetailData($user_id);
+    $rows = $this->userModel->getUsersData();
 
-        $rows = $this->userModel->getUsersData();
+    $users = [];
 
-        $users = [];
+    foreach ($rows as $r) {
+        $uid = $r['id'];
 
-        foreach ($rows as $r) {
-            $uid = $r['id'];
-
-            if (!isset($users[$uid])) {
-                $users[$uid] = [
-                    'id'           => $r['id'],
-                    'name'         => $r['name'],
-                    'username'     => $r['username'],
-                    'role'         => $r['role'],
-                    'divisions'    => [],
-                    'division_ids' => [],
-                ];
-            }
-
-            if (!empty($r['division_id'])) {
-                $users[$uid]['division_ids'][] = (int) $r['division_id'];
-                $users[$uid]['divisions'][]    = $r['division_name'];
-            }
+        if (!isset($users[$uid])) {
+            $users[$uid] = [
+                'id'           => $r['id'],
+                'name'         => $r['name'],
+                'username'     => $r['username'],
+                'role'         => $r['role'],
+                'divisions'    => [],
+                'division_ids' => [],
+                'positions'    => [],
+                'position_ids' => [],
+            ];
         }
 
+        if (!empty($r['division_id'])) {
+            $users[$uid]['division_ids'][] = (int) $r['division_id'];
+            $users[$uid]['divisions'][]    = $r['division_name'];
+        }
 
-        return view('users/index', [
-            'users'     => array_values($users),
-            'divisions' => $this->divisionModel->findAll(),
-            'roles'     => $this->roleModel->findAll(),
-            'user_detail'=> $userDetail[0],
+        if (!empty($r['jabatan_id'])) {
+            $users[$uid]['position_ids'][] = (int) $r['jabatan_id'];
+            $users[$uid]['positions'][]    = $r['jabatan_nama'];
+        }
+    }
+
+    return view('users/index', [
+        'users'      => array_values($users),
+        'divisions'  => $this->divisionModel->findAll(),
+        'positions'  => $this->positionModel->findAll(),
+        'roles'      => $this->roleModel->findAll(),
+        'user_detail'=> $userDetail[0],
+    ]);
+}
+
+/* =========================
+   POSITION / JABATAN (MODAL)
+========================== */
+public function updatePosition($userId)
+{
+    $positions = $this->request->getPost('jabatan') ?? [];
+
+    // reset
+    $this->userPositionModel
+         ->where('guru_id', $userId)
+         ->delete();
+
+    // insert new
+    foreach ($positions as $jabatanId) {
+        $this->userPositionModel->insert([
+            'guru_id'    => $userId,
+            'jabatan_id' => $jabatanId,
         ]);
     }
+
+    return redirect()->to('/users')->with('success', 'Positions updated');
+}
 
 public function dashboard()
 {

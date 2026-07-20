@@ -36,6 +36,8 @@ use CodeIgniter\Router\RouteCollection;
         //divisions
         $routes->get('division/(:num)', 'UserController::editDivision/$1');
         $routes->post('division/(:num)', 'UserController::updateDivision/$1');
+
+        $routes->post('position/(:num)', 'UserController::updatePosition/$1');
     });
 
     $routes->group('grade', ['filter' => 'auth'], function ($routes) {

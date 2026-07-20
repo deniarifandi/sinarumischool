@@ -37,23 +37,26 @@ class UserModel extends Model
                     ->where('users.deleted_at', null)
                     ->findAll();
     }
-    public function getUsersData()
-    {
-        return $this->select('
-                users.id,
-                users.name,
-                users.role,
-                users.username,
-                users.pasfoto,
-                divisions.division_name,
-                divisions.id as division_id
-            ')
-            ->join('user_divisions', 'user_divisions.user_id = users.id', 'left')
-            ->join('divisions', 'divisions.id = user_divisions.division_id', 'left')
-            ->orderBy('users.id')
-            ->findAll();
-    }
-
+  public function getUsersData()
+{
+    return $this->select('
+            users.id,
+            users.name,
+            users.role,
+            users.username,
+            users.pasfoto,
+            divisions.division_name,
+            divisions.id as division_id,
+            position.jabatan_id,
+            position.jabatan_nama,
+        ')
+        ->join('user_divisions', 'user_divisions.user_id = users.id', 'left')
+        ->join('divisions', 'divisions.id = user_divisions.division_id', 'left')
+        ->join('user_position', 'user_position.guru_id = users.id', 'left')
+        ->join('position', 'position.jabatan_id = user_position.jabatan_id', 'left')
+        ->orderBy('users.id')
+        ->findAll();
+}
     public function getUsersDataByDivision($divisionId)
     {
         return $this->select('

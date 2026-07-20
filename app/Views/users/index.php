@@ -110,6 +110,7 @@
                     <?php if ($user_detail['role'] == "superadmin"): ?>
                         <th style="width: 15%;">System Role</th>
                         <th>Divisions</th>
+                        <th>Positions</th>
                         <th>Subject Assign</th>
                         <th class="text-end" style="width: 100px;">Actions</th>
                     <?php endif ?>
@@ -171,6 +172,26 @@
 
                         </div>
                     </td>
+                    <td>
+    <div class="d-flex flex-wrap align-items-center gap-1">
+        <?php if (!empty($u['positions'])): ?>
+            <?php foreach ($u['positions'] as $p): ?>
+                <span class="badge-solid"><?= esc($p) ?></span>
+            <?php endforeach ?>
+        <?php else: ?>
+            <span class="text-muted small"><em>Unassigned</em></span>
+        <?php endif; ?>
+        <a href="#"
+           class="btn-flat"
+           data-bs-toggle="modal"
+           data-bs-target="#positionModal"
+           data-user-id="<?= $u['id'] ?>"
+           data-user-name="<?= esc($u['name']) ?>"
+           data-user-positions='<?= json_encode($u['position_ids'] ?? []) ?>'>
+            <i class="bi bi-briefcase"></i>
+        </a>
+    </div>
+</td>
                     <td>
                         <a href="<?= base_url('user-subject/assign/'.$u['id']) ?>"
                            class="btn btn-sm btn-primary">
@@ -286,6 +307,55 @@
                 </div>
             </form>
 
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="positionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content custom-solid-modal p-0">
+
+            <div class="d-flex justify-content-between align-items-center p-2 px-3 bg-white">
+                <h6 class="mb-0 fw-bold" style="font-size: 13px;">
+                    <i class="bi bi-briefcase me-2 text-primary"></i>Assign Positions
+                </h6>
+                <button type="button" class="btn-close" style="font-size: 10px;" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-user-subtitle">
+                <small class="text-muted text-uppercase fw-bold" style="font-size: 9px; letter-spacing: 0.5px;">Managing Positions For:</small>
+                <div class="text-dark fw-bold" id="positionUserName" style="font-size: 14px; line-height: 1.2;"></div>
+            </div>
+
+            <form method="post" id="positionForm">
+                <?= csrf_field() ?>
+
+                <div class="p-3" style="max-height: 400px; overflow-y: auto;">
+                    <label class="form-label-sm mb-2">Available Positions</label>
+                    <div class="row g-1">
+                        <?php foreach ($positions as $p): ?>
+                        <div class="col-6">
+                            <label class="division-item">
+                                <input type="checkbox"
+                                       class="form-check-input mt-0 position-checkbox"
+                                       name="jabatan[]"
+                                       value="<?= esc($p['jabatan_id']) ?>">
+                                <span class="small text-dark text-truncate"><?= esc($p['jabatan_nama']) ?></span>
+                            </label>
+                        </div>
+                        <?php endforeach ?>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-1 p-2 px-3 border-top bg-light">
+                    <button type="button" class="btn-flat" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-sm fw-bold px-3 shadow-sm">
+                        SAVE CHANGES
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -462,6 +532,26 @@ $(document).on('click', '.show-qr', function () {
 });
 </script>
 
+<script>
+const positionModal = document.getElementById('positionModal');
+
+positionModal.addEventListener('show.bs.modal', function (event) {
+    const btn = event.relatedTarget;
+
+    const userId   = btn.getAttribute('data-user-id');
+    const userName = btn.getAttribute('data-user-name');
+    const userPositions = JSON.parse(btn.getAttribute('data-user-positions') || '[]');
+
+    document.getElementById('positionUserName').textContent = userName;
+    document.getElementById('positionForm').action =
+        "<?= base_url('users/position/') ?>" + userId;
+
+    document.querySelectorAll('.position-checkbox').forEach(cb => {
+        cb.checked = userPositions.includes(parseInt(cb.value));
+    });
+});
+
+</script>
 
 
 
