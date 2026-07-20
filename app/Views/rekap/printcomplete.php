@@ -25,10 +25,10 @@
             'Sunday'    => 'Sun',
             'Monday'    => 'Mon',
             'Tuesday'   => 'Tue',
-            'Wednesday' => 'Web',
-            'Thursday'  => 'Kam',
-            'Friday'    => 'Jum',
-            'Saturday'  => 'Sab'
+            'Wednesday' => 'Wed',
+            'Thursday'  => 'Thu',
+            'Friday'    => 'Fri',
+            'Saturday'  => 'Sat'
         ];
 
         $bulan = [
