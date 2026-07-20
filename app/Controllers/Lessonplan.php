@@ -89,7 +89,7 @@ public function getSubunits($unitId)
     public function edit($id)
 {
     $user_id = session('id') ?? session('user_id');
-
+    $subject_id = $this->request->getGet('subject_id');
     $mainClass = $this->userModel->getUserMainClass($user_id);
 
     if (empty($mainClass)) {
