@@ -59,14 +59,15 @@
                 : '';
 
             $tanggal =
-                $hari[date('l', $ts)] . ', ' .
-                date('d', $ts) . ' ' .
+                $hari[date('l', $ts)] . ",<br>" .
+                date('d', $ts) . " " .
                 $bulan[date('F', $ts)];
             ?>
 
             <th <?= $style ?>>
                 <?= $tanggal ?>
             </th>
+                
 
         <?php endforeach; ?>
 
@@ -172,7 +173,7 @@ async function exportToExcel() {
 
             } else {
 
-                value = td.innerText.trim();
+                value = td.innerText.replace(/\n/g, "\n").trim();
             }
 
             values.push(value);
@@ -235,23 +236,31 @@ async function exportToExcel() {
     });
 
     // Auto width
-    worksheet.columns.forEach(column=>{
+    worksheet.getRow(1).height = 50;
+    worksheet.columns.forEach((column, index) => {
 
-        let max=10;
+    // A = Nama
+    if (index === 0) {
+        column.width = 25;
 
-        column.eachCell({includeEmpty:true},cell=>{
+    // B = Jabatan
+    } else if (index === 1) {
+        column.width = 20;
 
-            const len=cell.value
-                ?cell.value.toString().length
-                :0;
+    // C = Divisi
+    } else if (index === 2) {
+        column.width = 15;
 
-            if(len>max) max=len;
+    // Last 4 columns (Masuk, Izin, Sakit, Total)
+    } else if (index >= worksheet.columnCount - 4) {
+        column.width = 10;
 
-        });
+    // Date columns
+    } else {
+        column.width = 6;
+    }
 
-        column.width=max+3;
-
-    });
+});
 
     const buffer = await workbook.xlsx.writeBuffer();
 
