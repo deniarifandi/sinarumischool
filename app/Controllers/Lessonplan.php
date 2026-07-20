@@ -64,6 +64,9 @@ class Lessonplan extends BaseController
         throw new \RuntimeException('Subject ID required');
     }
 
+    // print_r($this->objectiveModel->getAgamaBySubject($subject_id));
+    // exit();
+
     return view('lessonplan/form', [
         'units'     => $this->unitModel->getUnitBySubject($subject_id),
         'subunits'  => [],
@@ -107,9 +110,9 @@ public function getSubunits($unitId)
         'subunits'    => $this->subunitModel->findAll(),
         'mainClass'   => $mainClass[0],
 
-        'agama'       => $this->objectiveModel->getAgamaBySubject($lessonplan['unit_id']),
-        'jati'        => $this->objectiveModel->getJatiBySubject($lessonplan['unit_id']),
-        'literasi'    => $this->objectiveModel->getLiterasiBySubject($lessonplan['unit_id']),
+        'agama'       => $this->objectiveModel->getAgamaBySubject($subject_id),
+        'jati'        => $this->objectiveModel->getJatiBySubject($subject_id),
+        'literasi'    => $this->objectiveModel->getLiterasiBySubject($subject_id),
     ]);
 }
 
