@@ -15,28 +15,67 @@
 
 <table id="tableRekap" style="font-size:10px; width:100%; border-collapse: collapse;" border="1" cellpadding="5">
     <thead>
-        <tr>
-            <th>Nama</th>
-            <th>Jabatan</th>
-            <th>Divisi</th>
-            <?php foreach ($dates as $d): ?>
-                <?php
-                    $timestamp = strtotime($d);
-                    $dayName = date('D', $timestamp);
-                    $dayOfWeek = date('w', $timestamp);
-                    $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6);
-                    $style = $isWeekend ? 'style="color:red;"' : '';
-                ?>
-                <th <?= $style ?>>
-                    <?= $d ?><br><?= $dayName ?>
-                </th>
-            <?php endforeach; ?>
-            <th>Masuk</th>
-            <th>Izin</th>
-            <th>Sakit</th>
-            <th>Total</th>
-        </tr>
-    </thead>
+    <tr>
+        <th>Nama</th>
+        <th>Jabatan</th>
+        <th>Divisi</th>
+
+        <?php
+        $hari = [
+            'Sunday'    => 'Minggu',
+            'Monday'    => 'Senin',
+            'Tuesday'   => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday'  => 'Kamis',
+            'Friday'    => 'Jumat',
+            'Saturday'  => 'Sabtu'
+        ];
+
+        $bulan = [
+            'January'   => 'Januari',
+            'February'  => 'Februari',
+            'March'     => 'Maret',
+            'April'     => 'April',
+            'May'       => 'Mei',
+            'June'      => 'Juni',
+            'July'      => 'Juli',
+            'August'    => 'Agustus',
+            'September' => 'September',
+            'October'   => 'Oktober',
+            'November'  => 'November',
+            'December'  => 'Desember'
+        ];
+        ?>
+
+        <?php foreach ($dates as $d): ?>
+
+            <?php
+            $ts = strtotime($d);
+
+            $isWeekend = in_array(date('w', $ts), [0, 6]);
+
+            $style = $isWeekend
+                ? 'style="color:red;"'
+                : '';
+
+            $tanggal =
+                $hari[date('l', $ts)] . ', ' .
+                date('d', $ts) . ' ' .
+                $bulan[date('F', $ts)];
+            ?>
+
+            <th <?= $style ?>>
+                <?= $tanggal ?>
+            </th>
+
+        <?php endforeach; ?>
+
+        <th>Masuk</th>
+        <th>Izin</th>
+        <th>Sakit</th>
+        <th>Total</th>
+    </tr>
+</thead>
     <tbody>
         <?php foreach ($results as $row): 
             $countPresent = 0;
@@ -93,9 +132,9 @@
                 <td style="text-align:center;"><?= $countSakit ?></td>
                 <td
                     style="text-align:right;"
-                    data-value="<?= $total ?>"
+                    data-value="<?= $total; ?>"
                 >
-                    Rp <?= number_format($total, 0, ',', '.') ?>
+                    Rp <?= number_format($total, 0, ',', '.'); ?>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -108,6 +147,7 @@
 <!-- Export function -->
 <script>
 async function exportToExcel() {
+
     const table = document.getElementById('tableRekap');
 
     const workbook = new ExcelJS.Workbook();
@@ -116,85 +156,101 @@ async function exportToExcel() {
     const rows = table.querySelectorAll('tr');
 
     rows.forEach((tr, rowIndex) => {
-        const cells = tr.querySelectorAll('th, td');
 
-        const excelRow = [];
+        const htmlCells = tr.querySelectorAll('th,td');
 
-        cells.forEach(td => {
+        const values = [];
 
-    let value;
+        htmlCells.forEach(td => {
 
-    if (td.dataset.value !== undefined) {
-        // Read numeric value from data-value
-        value = Number(td.dataset.value);
-    } else {
-        value = td.innerText.trim();
+            let value;
 
-        // Convert normal numeric cells
-        const numeric = value.replace(/[^\d.-]/g, '');
+            // Total column
+            if (td.dataset.value !== undefined) {
 
-        if (numeric !== '' && !isNaN(numeric)) {
-            value = Number(numeric);
-        }
-    }
+                value = Number(td.dataset.value);
 
-    excelRow.push(value);
-});
+            } else {
 
-        const row = worksheet.addRow(excelRow);
-
-        cells.forEach((td, colIndex) => {
-            const cell = row.getCell(colIndex + 1);
-
-            // Border
-            cell.border = {
-                top: { style: 'thin' },
-                left: { style: 'thin' },
-                bottom: { style: 'thin' },
-                right: { style: 'thin' }
-            };
-
-            // Alignment
-            cell.alignment = {
-                vertical: 'middle',
-                horizontal: 'center'
-            };
-
-            // Header
-            if (rowIndex === 0) {
-                cell.font = { bold: true };
+                value = td.innerText.trim();
             }
 
-            // Preserve red font
-            const color = window.getComputedStyle(td).color;
+            values.push(value);
 
-            if (color === 'rgb(255, 0, 0)') {
-                cell.font = {
-                    ...(cell.font || {}),
-                    color: { argb: 'FFFF0000' }
-                };
-            }
-
-            // Total column format
-            if (colIndex === cells.length - 1 && typeof cell.value === 'number') {
-                cell.numFmt = '"Rp" #,##0';
-                cell.alignment = {
-                    horizontal: 'right'
-                };
-            }
         });
+
+        const excelRow = worksheet.addRow(values);
+
+        htmlCells.forEach((td, colIndex) => {
+
+            const cell = excelRow.getCell(colIndex + 1);
+
+            // border
+            cell.border = {
+                top:{style:'thin'},
+                left:{style:'thin'},
+                bottom:{style:'thin'},
+                right:{style:'thin'}
+            };
+
+            // alignment
+            cell.alignment = {
+                vertical:'middle',
+                horizontal:'center',
+                wrapText:true
+            };
+
+            // header
+            if(rowIndex===0){
+                cell.font={
+                    bold:true
+                };
+            }
+
+            // preserve red font
+            const color = getComputedStyle(td).color;
+
+            if(color==="rgb(255, 0, 0)"){
+
+                cell.font={
+                    ...(cell.font||{}),
+                    color:{argb:'FFFF0000'}
+                };
+
+            }
+
+            // Total column
+            if(td.dataset.value!==undefined){
+
+                cell.numFmt='"Rp" #,##0';
+
+                cell.alignment={
+                    horizontal:'right'
+                };
+
+            }
+
+        });
+
     });
 
     // Auto width
-    worksheet.columns.forEach(column => {
-        let maxLength = 10;
+    worksheet.columns.forEach(column=>{
 
-        column.eachCell({ includeEmpty: true }, cell => {
-            const len = cell.value ? cell.value.toString().length : 0;
-            if (len > maxLength) maxLength = len;
+        let max=10;
+
+        column.eachCell({includeEmpty:true},cell=>{
+
+            const len=cell.value
+                ?cell.value.toString().length
+                :0;
+
+            if(len>max) max=len;
+
         });
 
-        column.width = maxLength + 2;
+        column.width=max+3;
+
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
@@ -203,10 +259,12 @@ async function exportToExcel() {
         new Blob(
             [buffer],
             {
-                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             }
         ),
-        'Attendance_Report.xlsx'
+        "Attendance_Report.xlsx"
     );
+
 }
+
 </script>
