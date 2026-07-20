@@ -272,11 +272,18 @@ public function dashboard()
 
     $kkbAll = $kkbList;
 
+
+    // --- ADD THIS LINE FOR POSITIONS ---
+    // If you haven't loaded the model yet, use: $positionModel = new \App\Models\PositionModel();
+    // Assuming it's already instantiated as $this->positionModel:
+    $totalPositionsCount = $this->positionModel->countAllResults();
+
     return view('users/dashboard', [
         'user_detail'             => $userDetail[0],
         'totalStaff'              => count($users),
         'totalDivisions'          => count($allDivisions),
         'kkbDurationCounts'       => $kkbDurationCounts,
+        'totalPositions'          => $totalPositionsCount,
         'noKkbCount'              => $noKkbCount,
         'divisionCounts'          => $divisionCounts,
         'unassignedDivisionCount' => $unassignedDivisionCount,

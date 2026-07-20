@@ -262,7 +262,7 @@
 <!-- Stat cards -->
 <div class="row g-2 mb-3 no-print">
     <!-- Total Staff Card -->
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="stat-card p-2.5 border rounded shadow-sm position-relative">
             <div class="d-flex align-items-center">
                 <div class="stat-icon stat-icon-blue me-2 fs-4 text-primary"><i class="bi bi-people-fill"></i></div>
@@ -278,7 +278,7 @@
     </div>
 
     <!-- Divisions Card -->
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="stat-card p-2.5 border rounded shadow-sm position-relative">
             <div class="d-flex align-items-center">
                 <div class="stat-icon stat-icon-green me-2 fs-4 text-success"><i class="bi bi-diagram-3-fill"></i></div>
@@ -292,6 +292,24 @@
             </a>
         </div>
     </div>
+
+     <!-- Positions Card -->
+    <div class="col-md-2">
+    <div class="stat-card p-2.5 border rounded shadow-sm position-relative">
+        <div class="d-flex align-items-center">
+            <!-- Changed icon here to bi-briefcase-fill -->
+            <div class="stat-icon stat-icon-blue me-2 fs-4 text-light"><i class="bi bi-briefcase-fill"></i></div>
+            <div>
+                <!-- Swapped to match the Positions context -->
+                <div class="stat-value fw-bold lh-1 fs-5"><?= esc($totalPositions) ?></div>
+                <div class="stat-label text-muted small" style="font-size: 0.75rem;">Positions</div>
+            </div>
+        </div>
+        <a href="<?= base_url('positions') ?>" class="position-absolute top-50 translate-middle-y end-0 me-3 btn btn-link p-0 text-decoration-none text-success small" style="font-size: 0.8rem;">
+            Kelola <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+</div>
 
     <!-- KKB Expired Card -->
     <div class="col-md-3">
