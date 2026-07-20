@@ -1,9 +1,15 @@
+
+<script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver/dist/FileSaver.min.js"></script>
+
 <h2 style="text-align: center;">Monthly Attendance Report</h2>
 <h3 style="text-align: center;"><?= $startMonth ?> - <?= $endMonth ?></h3>
 <h4 style="margin-bottom:3px; text-align:right">Division: <?= $division ?></h4>
 <br>
 
-<button onclick="exportToExcel('tableRekap', 'Attendance_Report')">Export to Excel</button>
+<button onclick="exportToExcel()">
+    Export to Excel
+</button>
 
 <br><br>
 
@@ -85,7 +91,12 @@
                 <td style="text-align:center;"><?= $countPresent ?></td>
                 <td style="text-align:center;"><?= $countIzin ?></td>
                 <td style="text-align:center;"><?= $countSakit ?></td>
-                <td style="text-align:right;"><?= number_format($total, 0, '.', ',') ?></td>
+                <td
+                    style="text-align:right;"
+                    data-value="<?= $total ?>"
+                >
+                    Rp <?= number_format($total, 0, ',', '.') ?>
+                </td>
             </tr>
         <?php endforeach; ?>
     </tbody>
@@ -96,9 +107,106 @@
 
 <!-- Export function -->
 <script>
-function exportToExcel(tableID, filename = '') {
-    const table = document.getElementById(tableID);
-    const workbook = XLSX.utils.table_to_book(table, {sheet: "Sheet1"});
-    XLSX.writeFile(workbook, filename ? filename + ".xlsx" : "export.xlsx");
+async function exportToExcel() {
+    const table = document.getElementById('tableRekap');
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Attendance');
+
+    const rows = table.querySelectorAll('tr');
+
+    rows.forEach((tr, rowIndex) => {
+        const cells = tr.querySelectorAll('th, td');
+
+        const excelRow = [];
+
+        cells.forEach(td => {
+
+    let value;
+
+    if (td.dataset.value !== undefined) {
+        // Read numeric value from data-value
+        value = Number(td.dataset.value);
+    } else {
+        value = td.innerText.trim();
+
+        // Convert normal numeric cells
+        const numeric = value.replace(/[^\d.-]/g, '');
+
+        if (numeric !== '' && !isNaN(numeric)) {
+            value = Number(numeric);
+        }
+    }
+
+    excelRow.push(value);
+});
+
+        const row = worksheet.addRow(excelRow);
+
+        cells.forEach((td, colIndex) => {
+            const cell = row.getCell(colIndex + 1);
+
+            // Border
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+
+            // Alignment
+            cell.alignment = {
+                vertical: 'middle',
+                horizontal: 'center'
+            };
+
+            // Header
+            if (rowIndex === 0) {
+                cell.font = { bold: true };
+            }
+
+            // Preserve red font
+            const color = window.getComputedStyle(td).color;
+
+            if (color === 'rgb(255, 0, 0)') {
+                cell.font = {
+                    ...(cell.font || {}),
+                    color: { argb: 'FFFF0000' }
+                };
+            }
+
+            // Total column format
+            if (colIndex === cells.length - 1 && typeof cell.value === 'number') {
+                cell.numFmt = '"Rp" #,##0';
+                cell.alignment = {
+                    horizontal: 'right'
+                };
+            }
+        });
+    });
+
+    // Auto width
+    worksheet.columns.forEach(column => {
+        let maxLength = 10;
+
+        column.eachCell({ includeEmpty: true }, cell => {
+            const len = cell.value ? cell.value.toString().length : 0;
+            if (len > maxLength) maxLength = len;
+        });
+
+        column.width = maxLength + 2;
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    saveAs(
+        new Blob(
+            [buffer],
+            {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }
+        ),
+        'Attendance_Report.xlsx'
+    );
 }
 </script>
