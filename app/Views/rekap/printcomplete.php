@@ -22,28 +22,28 @@
 
         <?php
         $hari = [
-            'Sunday'    => 'Minggu',
-            'Monday'    => 'Senin',
-            'Tuesday'   => 'Selasa',
-            'Wednesday' => 'Rabu',
-            'Thursday'  => 'Kamis',
-            'Friday'    => 'Jumat',
-            'Saturday'  => 'Sabtu'
+            'Sunday'    => 'Sun',
+            'Monday'    => 'Mon',
+            'Tuesday'   => 'Tue',
+            'Wednesday' => 'Web',
+            'Thursday'  => 'Kam',
+            'Friday'    => 'Jum',
+            'Saturday'  => 'Sab'
         ];
 
         $bulan = [
-            'January'   => 'Januari',
-            'February'  => 'Februari',
-            'March'     => 'Maret',
-            'April'     => 'April',
+            'January'   => 'Jan',
+            'February'  => 'Feb',
+            'March'     => 'Mar',
+            'April'     => 'Apr',
             'May'       => 'Mei',
-            'June'      => 'Juni',
-            'July'      => 'Juli',
-            'August'    => 'Agustus',
-            'September' => 'September',
-            'October'   => 'Oktober',
-            'November'  => 'November',
-            'December'  => 'Desember'
+            'June'      => 'Jun',
+            'July'      => 'Jul',
+            'August'    => 'Agu',
+            'September' => 'Sep',
+            'October'   => 'Oct',
+            'November'  => 'Nov',
+            'December'  => 'Dec'
         ];
         ?>
 
