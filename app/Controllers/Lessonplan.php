@@ -32,6 +32,7 @@ class Lessonplan extends BaseController
     // GET /lessonplan
     public function index()
     {
+        $user_id = session('id') ?? session('user_id');
         $data['lessonplans'] = $this->lessonplan
             ->select('lessonplan.*, 
                       classes.class_name,
@@ -45,6 +46,7 @@ class Lessonplan extends BaseController
             ->join('subjects','subjects.id = lessonplan.subject_id','left')
             ->join('users','users.id = classes.classteacher_id','left')
             ->where('lessonplan.subject_id',$_GET['subject_id'])
+            ->where('users.id',$user_id)
             ->findAll();
 
         return view('lessonplan/index', $data);
