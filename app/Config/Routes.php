@@ -40,6 +40,11 @@ use CodeIgniter\Router\RouteCollection;
         $routes->post('position/(:num)', 'UserController::updatePosition/$1');
     });
 
+    $routes->get('positions', 'PositionController::index');
+    $routes->post('positions/save', 'PositionController::save');
+    $routes->post('positions/save/(:num)', 'PositionController::save/$1');
+    $routes->post('positions/delete/(:num)', 'PositionController::delete/$1');
+
     $routes->group('grade', ['filter' => 'auth'], function ($routes) {
         $routes->get('/', 'GradeController::index');
         $routes->get('create', 'GradeController::create');
