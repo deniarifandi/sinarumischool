@@ -60,7 +60,9 @@ $fields = ['pedagogis', 'kemitraan', 'alatbahan', 'sumber', 'pembukaan', 'penutu
         <div class="card-body p-4 bg-light-gradient">
             <form action="<?= isset($lessonplan) ? base_url('lessonplan/update/'.$lessonplan['id']) : base_url('lessonplan/store') ?>" method="post">
                 <?= csrf_field() ?>
+
                 <input type="hidden" name="class_id" value="<?= esc($mainClass['id']) ?>">
+                
                 <input type="hidden" name="subject_id" value="<?= esc(request()->getGet('subject_id')) ?>">
 
                 <div class="row g-4">

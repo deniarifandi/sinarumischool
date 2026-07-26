@@ -289,8 +289,12 @@ if (!function_exists('safe_url')) {
             <?php foreach ($divisions as $d): ?>
                 <div class="division-pane" data-division-id="<?= esc($d['id']) ?>" style="display:none;">
                     <div class="nav-grid">
-                        
+                            <a href="<?= base_url('sla?division='.$d['id']) ?>" class="nav-item-btn">
+                               <i class="bi bi-clock-history"></i>
+                                <span>Students Late Arrival Slip</span>
+                            </a>
                         <?php if (in_array($user['role'], ['superadmin', 'teacher', 'teacher_admin'])): ?>
+                           
                             <a href="<?= base_url('socioreport?divisi='.$d['id']) ?>" class="nav-item-btn">
                                 <i class="bi bi-heart-pulse"></i>
                                 <span>Socio-Emotional Report</span>

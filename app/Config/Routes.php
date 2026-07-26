@@ -176,6 +176,18 @@ $routes->group('socioreport', ['filter' => 'auth'], function ($routes) {
     $routes->post('delete/(:num)/(:segment)', 'SocioReportController::deletePeriod/$1/$2');
 });
 
+$routes->group('sla', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'SlaController::index');
+    $routes->get('create', 'SlaController::create');
+    $routes->post('store', 'SlaController::store');
+    $routes->get('edit/(:num)', 'SlaController::edit/$1');
+    $routes->post('update/(:num)', 'SlaController::update/$1');
+    $routes->post('delete/(:num)', 'SlaController::delete/$1');
+    $routes->get('students-by-class/(:num)', 'SlaController::studentsByClass/$1');
+});
+
+
+
 $routes->group('lessonplan', function($routes) {
     $routes->get('/', 'Lessonplan::index');
     $routes->get('(:num)', 'Lessonplan::show/$1');
