@@ -96,6 +96,7 @@
                                 <i class="bi bi-pencil-square"></i>
                             </a>
 
+                            <?php if (!empty($user) && in_array($user['role'], ['superadmin', 'admin','teacher_admin'])): ?>
                             <form action="<?= base_url('student/delete/' . $s['id']) ?>"
                                   method="post"
                                   class="d-inline">
@@ -112,6 +113,7 @@
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>
+                            <?php endif ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
