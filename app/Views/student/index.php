@@ -22,32 +22,39 @@
     </div>
 
     <form method="get" class="row g-3 mb-4">
-        <input type="hidden" name="division" value="<?= esc($divisionId) ?>">
+    <input type="hidden" name="division" value="<?= esc($divisionId) ?>">
 
-        <div class="col-md-4">
-            <select name="class" class="form-select" onchange="this.form.submit()">
-                <option value="">All Classes</option>
+    <div class="col-md-4">
+        <select name="class" class="form-select" onchange="this.form.submit()">
+            <option value="">All Classes</option>
 
-                <?php foreach ($classes as $class): ?>
-                    <option value="<?= $class['id'] ?>"
-                        <?= ($classId == $class['id']) ? 'selected' : '' ?>>
-                        <?= esc($class['class_name']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+            <?php foreach ($classes as $class): ?>
+                <option value="<?= $class['id'] ?>"
+                    <?= ($classId == $class['id']) ? 'selected' : '' ?>>
+                    <?= esc($class['class_name']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
 
-        <div class="col-auto">
-            <button type="submit" class="btn btn-primary">
-                Filter
-            </button>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">
+            Filter
+        </button>
 
-            <a href="<?= base_url('student?division=' . $divisionId) ?>"
-               class="btn btn-secondary">
-                Reset
-            </a>
-        </div>
-    </form>
+        <a href="<?= base_url('student?division=' . $divisionId) ?>"
+           class="btn btn-secondary">
+            Reset
+        </a>
+
+        <a href="<?= base_url('student/print?division=' . $divisionId . '&class=' . ($classId ?? '')) ?>"
+           target="_blank"
+           class="btn btn-dark">
+            <i class="bi bi-printer me-1"></i>
+            Print
+        </a>
+    </div>
+</form>
 
     <div class="table-responsive" style="border-radius:12px; overflow:hidden;">
         <table class="table align-middle mb-0" id="studentsTable">

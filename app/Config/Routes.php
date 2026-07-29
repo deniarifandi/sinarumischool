@@ -87,7 +87,9 @@ use CodeIgniter\Router\RouteCollection;
 
         $routes->get('attendance/recap/(:num)', 'StudentController::attendanceRecap/$1');
         $routes->post('attendance/recap', 'StudentController::attendanceRecapResult');
-    
+        
+        $routes->get('print', 'StudentController::print');
+
     });
 
     $routes->group('absence', ['filter' => 'auth'], function ($routes) {

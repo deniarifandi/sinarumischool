@@ -571,4 +571,40 @@ public function attendanceRecapResult()
         'data'       => $rows
     ]);
 }
+
+
+public function print()
+{
+    $divisionId = $this->request->getGet('division');
+    $classId    = $this->request->getGet('class');
+
+    $builder = $this->studentModel
+        ->select('students.*, classes.class_name')
+        ->join('classes', 'classes.id = students.class_id', 'left')
+        ->where('students.division_id', $divisionId);
+
+    if (!empty($classId)) {
+        $builder->where('students.class_id', $classId);
+    }
+
+    $students = $builder
+        ->orderBy('classes.class_name', 'ASC')
+        ->orderBy('students.name', 'ASC')
+        ->findAll();
+
+    $className = 'All Classes';
+
+    if (!empty($classId)) {
+        $class = $this->classModel->find($classId);
+
+        if ($class) {
+            $className = $class['class_name'];
+        }
+    }
+
+    return view('student/print', [
+        'students'  => $students,
+        'className' => $className,
+    ]);
+}
 }
