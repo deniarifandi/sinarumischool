@@ -150,7 +150,7 @@ public function printComplete()
     JOIN divisions d ON d.id = ud.division_id
     LEFT JOIN user_position gj ON gj.guru_id = u.id
     LEFT JOIN position j ON j.jabatan_id = gj.jabatan_id 
-    LEFT JOIN Presensidata p 
+    LEFT JOIN presensidata p 
         ON p.guru_id = u.id 
         AND DATE(p.created_at) BETWEEN '$startDate' AND '$endDate'
     WHERE d.id = '$divisi_id'
