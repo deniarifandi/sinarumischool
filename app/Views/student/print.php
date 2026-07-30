@@ -63,9 +63,8 @@
             <tr>
                 <th class="number">No.</th>
                 <th class="name">Student Name</th>
-                <th class="score">Score 1</th>
-                <th class="score">Score 2</th>
-                <th class="score">Score 3</th>
+                
+                
             </tr>
         </thead>
         <tbody>
@@ -74,9 +73,8 @@
                     <tr>
                         <td class="number"><?= $index + 1 ?></td>
                         <td class="name"><?= esc($student['name']) ?></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                
+                
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
