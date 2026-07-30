@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sinarumi | Dashboard</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<!-- jQuery (for DataTables only) -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS (REQUIRED for modal) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+/* =======================
+   ROOT & GLOBAL
+======================= */
+:root{
+  --glass-bg: rgba(255,255,255,0.07);
+  --glass-border: rgba(255,255,255,0.125);
+  --accent-color:#3b82f6;
+  --accent-glow: rgba(59,130,246,.5);
+  --sidebar-width:240px;
+  --sidebar-collapsed:70px;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  margin:0;
+  min-height:100vh;
+  background:radial-gradient(circle at top left,#0f172a,#1e293b);
+  color:#fff;
+  overflow:auto;
+  overscroll-behavior-y:none;
+}
+
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  /*background:url('logo.png') center/contain no-repeat;*/
+  opacity:.1;
+  pointer-events:none;
+  z-index:-1;
+}
+
+.cursor-pointer{cursor:pointer;}
+
+/* =======================
+   LAYOUT
+======================= */
+.app{
+  display:flex;
+  min-height:100vh;
+}
+
+.main{
+  flex:1;
+  padding:30px;
+  padding-bottom:calc(env(safe-area-inset-bottom) + 80px);
+}
+
+/* =======================
+   SIDEBAR
+======================= */
+.sidebar{
+  width:var(--sidebar-width);
+/*  height:100vh;*/
+  background:var(--glass-bg);
+  backdrop-filter:blur(20px);
+  border-right:1px solid var(--glass-border);
+  padding:15px;
+  transition: width .3s;
+}
+
+.content{
+   flex: 1;
+  transition: margin-left .3s;
+}
+
+.sidebar.collapsed{width:var(--sidebar-collapsed);}
+.sidebar.collapsed .text{display:none;}
+
+.sidebar a{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  border-radius:12px;
+  color:#cbd5f5;
+  text-decoration:none;
+}
+
+.sidebar a:hover{
+  background:rgba(255,255,255,.08);
+  color:#fff;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:5px 0;
+}
+
+.brand img{height:45px;}
+.brand .text{
+  font-weight:600;
+  white-space:nowrap;
+  line-height:1.2;
+}
+
+/* =======================
+   TOPBAR
+======================= */
+.topbar{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.toggle-btn{
+  background:none;
+  border:none;
+  color:#fff;
+  font-size:1.6rem;
+}
+
+/* =======================
+   GLASS CARD
+======================= */
+.glass-card{
+  background:var(--glass-bg);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border);
+  border-radius:10px;
+  padding:12px;
+  margin-bottom:25px;
+  box-shadow:0 25px 50px -12px rgba(0,0,0,.5);
+}
+
+/* =======================
+   ACTION GRID
+======================= */
+.action-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:15px;
+}
+
+.action-btn{
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--glass-border);
+  border-radius:4px;
+  padding:5px;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:2px;
+  transition:.3s;
+  cursor:pointer;
+}
+
+.action-btn i{
+  font-size:1.2rem;
+  color:var(--accent-color);
+}
+
+.action-btn span{
+  font-size:.75rem;
+  font-weight:500;
+  color:#cbd5f5;
+}
+
+.action-btn:hover{
+  background:rgba(255,255,255,.1);
+  border-color:var(--accent-color);
+  transform:translateY(-4px);
+  box-shadow:0 10px 20px -5px var(--accent-glow);
+}
+
+.action-btn:hover i{color:#fff;}
+
+
+/* =======================
+   MOBILE
+======================= */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  backdrop-filter:blur(2px);
+  z-index:1040;
+  display:none;
+}
+
+.overlay.show{display:block;}
+
+@media (max-width:768px){
+  .sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    transform:translateX(-100%);
+    z-index:1050;
+    height: 100vh;
+  }
+  .sidebar.active{transform:translateX(0);}
+  .sidebar.collapsed{width:var(--sidebar-width);}
+  
+}
+
+@media (max-width:360px){
+  .status-dot{width:6px;height:6px;}
+}
+</style>
+
+<style>
+.glass-table {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+.glass-table thead th {
+    background: rgb(243, 244, 246);
+    color: #3b82f6;
+    border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+.glass-table tbody tr td {
+    background: rgba(255, 255, 255, 1);
+}
+.btn-glass-edit {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+.btn-glass-edit:hover {
+    background: #3b82f6;
+    color: #fff;
+}
+</style>
+
+<style>
+  
+  .pagination {
+    display: flex;
+    gap: 6px;
+    list-style: none;
+    padding-left: 0;
+}
+
+.pagination li a,
+.pagination li span {
+    display: block;
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #333;
+}
+
+.pagination li.active span {
+    background: #0d6efd;
+    color: #fff;
+    border-color: #0d6efd;
+}
+
+.pagination li a:hover {
+    background: #f1f1f1;
+}
+</style>
+
+<style>
+    /* Consistent dark glassmorphic layout for the main card container */
+    .glass-card {
+       
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Dedicated Styling for the Crisp White Table */
+    .table-white-custom {
+        background-color: #ffffff !important;
+        color: #212529 !important; /* Dark text */
+        border-radius: 8px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+    .table-white-custom th {
+        background-color: #f8f9fa !important;
+        color: #495057 !important;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        padding: 12px;
+        border-bottom: 2px solid #dee2e6 !important;
+    }
+    .table-white-custom td {
+        background-color: #ffffff !important;
+        color: #212529 !important;
+        padding: 12px;
+        vertical-align: middle;
+        border-bottom: 1px solid #e9ecef !important;
+    }
+
+    /* Style form elements inside the white table */
+    .table-white-custom .form-control {
+        background-color: #f8f9fa !important;
+        color: #212529 !important;
+        border: 1px solid #ced4da !important;
+    }
+    .table-white-custom .form-control:focus {
+        background-color: #ffffff !important;
+        color: #212529 !important;
+        border-color: #86b7fe !important;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    }
+
+    /* Segmented Touch Toggles optimized for Light backgrounds */
+    .btn-group-toggle .btn-check + .btn {
+        background: #f1f3f5;
+        color: #495057;
+        border: 1px solid #ced4da;
+        font-size: 0.78rem;
+        padding: 0.35rem 0.65rem;
+        transition: all 0.2s ease;
+    }
+    .btn-group-toggle .btn-check:hover + .btn {
+        background: #e9ecef;
+        color: #212529;
+    }
+    /* Dynamic active status colors */
+    .btn-check-hadir:checked + .btn {
+        background-color: #d1e7dd !important;
+        border-color: #a3cfbb !important;
+        color: #0f5132 !important;
+    }
+    .btn-check-izin:checked + .btn {
+        background-color: #cff4fc !important;
+        border-color: #9eeaf9 !important;
+        color: #087990 !important;
+    }
+    .btn-check-sakit:checked + .btn {
+        background-color: #fff3cd !important;
+        border-color: #ffe69c !important;
+        color: #664d03 !important;
+    }
+    .btn-check-alpha:checked + .btn {
+        background-color: #f8d7da !important;
+        border-color: #f1aeb5 !important;
+        color: #842029 !important;
+    }
+</style>
+
+</head>
+
+<body>
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      
+      <img src="<?= base_url() ?><?php echo env('LOGO', ''); ?>" alt="logo">
+      <span class="text"><?php echo env('OWNER', ''); ?><br>SINARUMI</span>
+    </div>
+    <hr>
+    <a href="<?= base_url('') ?>"><i class="bi bi-speedometer2"></i><span class="text">Dashboard</span></a>
+    <a href="<?= base_url('logout') ?>"><i class="bi bi-box-arrow-right"></i><span class="text">Logout</span></a>
+  </aside>
+<div class="content" id="content">
+    <div class="row">
+      <main class="main">
+        <div class="topbar">
+          <button class="toggle-btn" onclick="toggleSidebar()">
+            <i class="bi bi-list"></i>
+          </button>
+          <h5 class="mb-0">Dashboard</h5>
+        </div>
+        <?= $this->renderSection('content') ?>
+      </main>
+
+
+    </div>
+  </div>
+
+
+</div>
+
+
+<?= $this->renderSection('modal') ?>
+
+
+
+<script>
+const sidebar=document.getElementById('sidebar');
+const overlay=document.getElementById('overlay');
+
+function toggleSidebar(){
+  if(window.innerWidth<=768){
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('show');
+  }else{
+    sidebar.classList.toggle('collapsed');
+  }
+}
+
+function closeSidebar(){
+  sidebar.classList.remove('active');
+  overlay.classList.remove('show');
+}
+
+window.addEventListener('resize',()=>{
+  if(window.innerWidth>768) closeSidebar();
+});
+</script>
+
+<?= $this->renderSection('script') ?>
+
+</body>
+</html>

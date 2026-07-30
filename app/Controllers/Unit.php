@@ -72,6 +72,7 @@ class Unit extends BaseController
             ->findAll();
     }
 
+ 
     return view('unit/index', [
         'units'     => $builder->findAll(),
         'subjectId' => $subjectId,
@@ -112,7 +113,7 @@ class Unit extends BaseController
 
         $grade_list = $this->gradeModel->builder();
         $grades = $grade_list
-            ->select('grades.*')
+            ->select('grades.*, subjects.subject_name')
             ->join('divisions','grades.division_id = divisions.id','left')
             ->join('subjects','subjects.division_id = divisions.id','left')
             ->where('subjects.id', $subject_id)
@@ -120,6 +121,7 @@ class Unit extends BaseController
             ->get()
             ->getResultArray();
 
+        // print_r($grades);
         // print_r($subject_id);
         // exit();
 

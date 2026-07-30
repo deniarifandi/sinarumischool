@@ -200,6 +200,7 @@ $routes->group('lessonplan', function($routes) {
     $routes->post('store', 'Lessonplan::store');
     $routes->post('update/(:num)', 'Lessonplan::update/$1');
     $routes->get('subunits/(:num)', 'Lessonplan::getSubunits/$1');
+     $routes->post('ai-fix', 'Lessonplan::aiFix'); // <-- baru
 
 });
 $routes->get('lessonplan/print/(:num)', 'Lessonplan::print/$1');

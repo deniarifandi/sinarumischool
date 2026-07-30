@@ -274,6 +274,21 @@ if (!function_exists('safe_url')) {
             </div>
         </div>
     </div>
+
+    <?php elseif (in_array('brightelly', array_map('strtolower', $names))):  ?>
+        <div class="dashboard-card">
+        <div class="dashboard-card-header"><i class="bi bi-stars me-2 text-warning"></i>BrightElly Program Engine</div>
+        <div class="dashboard-card-body">
+            <div class="nav-grid">
+                <?php foreach ($userSubjects as $d): ?>
+                    <a href="<?= base_url('lessonplan?subject_id=' . $d['subject_id']) ?>" class="nav-item-btn">
+                        <i class="bi bi-journal-code"></i>
+                        <span>Modul Ajar <?= esc($d['subject_name']) ?></span>
+                    </a>
+                <?php endforeach ?>
+            </div>
+        </div>
+    </div>
     <?php endif ?>
 
     <!-- Division Scope Controlled Block (Dynamic filtering shows context matches) -->
@@ -289,6 +304,8 @@ if (!function_exists('safe_url')) {
             <?php foreach ($divisions as $d): ?>
                 <div class="division-pane" data-division-id="<?= esc($d['id']) ?>" style="display:none;">
                     <div class="nav-grid">
+
+                         <?php if (!in_array('brightelly', array_map('strtolower', $names))):  ?>
                             <a href="<?= base_url('sla?division='.$d['id']) ?>" class="nav-item-btn">
                                <i class="bi bi-clock-history"></i>
                                 <span>Students Late Arrival Slip</span>
@@ -300,6 +317,8 @@ if (!function_exists('safe_url')) {
                                 <span>Socio-Emotional Report</span>
                             </a>
                         <?php endif; ?>
+
+                    <?php endif ?>
 
                         <?php if ($user['role'] == "superadmin" || $user['role'] == "admin"): ?>
                         <a href="<?= base_url('grade?divisi='.$d['id']) ?>" class="nav-item-btn">

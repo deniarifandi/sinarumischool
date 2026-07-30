@@ -209,6 +209,29 @@ $fields = ['pedagogis', 'kemitraan', 'alatbahan', 'sumber', 'pembukaan', 'penutu
                             
                             <div class="row g-3">
                                 <?php foreach ($fields as $f): ?>
+    <?php 
+    $isDaily = strpos($f, 'inti') !== false;
+    $colClass = $isDaily ? 'col-md-6' : 'col-12';
+    ?>
+    <div class="<?= $colClass ?>">
+        <div class="mb-2">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <label for="field_<?= $f ?>" class="form-label fw-bold text-dark fs-6 mb-0">
+                    <?= $fieldLabels[$f] ?? $f ?>
+                </label>
+                <button type="button"
+                        class="btn btn-sm btn-outline-primary ai-fix-btn"
+                        data-target="field_<?= $f ?>"
+                        data-label="<?= esc($fieldLabels[$f] ?? $f) ?>">
+                    ✨ Perbaiki dengan AI
+                </button>
+            </div>
+            <textarea name="<?= $f ?>" id="field_<?= $f ?>" class="form-control text-dark fs-6 font-monospace-custom" style="height: 120px; border: 1px solid #ced4da;" placeholder="Contoh: <?= esc($defaultText[$f] ?? '') ?>"><?= $lessonplan[$f] ?? ($defaultText[$f] ?? '') ?></textarea>
+        </div>
+    </div>
+<?php endforeach ?>
+
+                             <!--    <?php foreach ($fields as $f): ?>
                                     <?php 
                                     $isDaily = strpos($f, 'inti') !== false;
                                     $colClass = $isDaily ? 'col-md-6' : 'col-12';
@@ -221,7 +244,7 @@ $fields = ['pedagogis', 'kemitraan', 'alatbahan', 'sumber', 'pembukaan', 'penutu
                                             <textarea name="<?= $f ?>" id="field_<?= $f ?>" class="form-control text-dark fs-6 font-monospace-custom" style="height: 120px; border: 1px solid #ced4da;" placeholder="Contoh: <?= esc($defaultText[$f] ?? '') ?>"><?= $lessonplan[$f] ?? ($defaultText[$f] ?? '') ?></textarea>
                                         </div>
                                     </div>
-                                <?php endforeach ?>
+                                <?php endforeach ?> -->
                             </div>
                         </div>
                     </div>
@@ -322,6 +345,67 @@ document.addEventListener('DOMContentLoaded', () => {
 
     unitSelect.addEventListener('change', (e) => {
         loadSubunits(e.target.value);
+    });
+});
+</script>
+
+<script>
+    document.querySelectorAll('.ai-fix-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const targetId = btn.dataset.target;
+        const label = btn.dataset.label;
+        const textarea = document.getElementById(targetId);
+        const text = textarea.value.trim();
+
+        if (!text) {
+            alert('Isi teksnya dulu sebelum diperbaiki AI.');
+            return;
+        }
+
+        const originalBtnText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '⏳ Memproses...';
+        textarea.disabled = true;
+
+        try {
+            const csrfInput = document.querySelector('input[name="<?= csrf_token() ?>"]');
+
+            const formData = new URLSearchParams();
+            formData.append('text', text);
+            formData.append('label', label);
+            formData.append(csrfInput.name, csrfInput.value);
+
+            const response = await fetch('<?= base_url('lessonplan/ai-fix') ?>', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: formData,
+            });
+
+            if (!response.ok) {
+                const err = await response.json().catch(() => null);
+                throw new Error(err?.error || 'Gagal menghubungi AI.');
+            }
+
+            const data = await response.json();
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            textarea.value = data.result;
+
+            // update CSRF token supaya form utama tetap valid saat disubmit
+            if (data.csrf_name && csrfInput.name === data.csrf_name) {
+                csrfInput.value = data.csrf_hash;
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Gagal memperbaiki teks: ' + error.message);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalBtnText;
+            textarea.disabled = false;
+        }
     });
 });
 </script>

@@ -9,6 +9,7 @@ use App\Models\SubunitModel;
 use App\Models\UserModel;
 use App\Models\TujuanModel;
 use App\Models\ObjectiveModel;
+use App\Services\AnthropicService;
 
 class Lessonplan extends BaseController
 {
@@ -56,9 +57,9 @@ public function index()
     if ($user_id != 0) {
         $builder->where('users.id', $user_id);
     }
-
+    
     $data['lessonplans'] = $builder->findAll();
-
+    $data['user']        = $this->userModel->getUserDetailData($user_id);
     return view('lessonplan/index', $data);
 }
 
@@ -250,7 +251,7 @@ public function update($id)
     public function show($id)
     {
         $data = $this->lessonplan->find($id);
-
+       
         if (!$data) {
             return $this->response->setStatusCode(404)
                                   ->setJSON(['message' => 'Data not found']);
@@ -261,7 +262,9 @@ public function update($id)
 
     // DELETE /lessonplan/{id}
     public function delete($id)
-    {
+    {   
+         $subject_id = $this->request->getPost('subject_id');
+
         if (!$this->lessonplan->find($id)) {
             return redirect()->to('/lessonplan')
                              ->with('error', 'Data not found');
@@ -269,7 +272,7 @@ public function update($id)
 
         $this->lessonplan->delete($id);
 
-        return redirect()->to('/')
+        return redirect()->to('/lessonplan?subject_id='.$subject_id)
                          ->with('success', 'Deleted successfully');
     }
 
@@ -317,8 +320,51 @@ public function update($id)
         throw new \RuntimeException('Lesson plan tidak ditemukan');
     }
 
-    return view('lessonplan/print', [
+    if (env('OWNER', '') == 'BrightElly') {
+        return view('lessonplan/printbrightelly', [
         'lessonplan' => $lessonplan
+        ]);
+    }else{
+        return view('lessonplan/print', [
+        'lessonplan' => $lessonplan
+        ]);
+    }
+    
+}
+
+public function aiFix()
+{
+    $text  = trim((string) $this->request->getPost('text'));
+    $label = $this->request->getPost('label') ?? 'teks rencana pembelajaran';
+
+    if ($text === '') {
+        return $this->response->setStatusCode(400)->setJSON([
+            'error' => 'Teks masih kosong.',
+        ]);
+    }
+
+    // Batasi panjang input supaya tidak menyalahgunakan endpoint / boros token
+    if (mb_strlen($text) > 3000) {
+        return $this->response->setStatusCode(400)->setJSON([
+            'error' => 'Teks terlalu panjang untuk diperbaiki sekaligus.',
+        ]);
+    }
+
+    $systemPrompt = "Kamu membantu guru merapikan bagian '{$label}' dari sebuah rencana pembelajaran (lesson plan) "
+        . "sekolah dasar, ditulis dalam Bahasa Indonesia. Perbaiki ejaan, tata bahasa, dan kejelasan kalimat "
+        . "tanpa mengubah maksud atau menambah informasi baru. Jika teks aslinya berupa daftar berformat '- item' "
+        . "per baris, pertahankan format tersebut. Balas HANYA dengan teks hasil perbaikan — tanpa penjelasan, "
+        . "tanpa tanda kutip, tanpa markdown, tanpa awalan seperti 'Berikut hasilnya:'.";
+
+    $ai = new AnthropicService();
+    $result = $ai->chat($systemPrompt, [
+        ['role' => 'user', 'content' => $text],
+    ]);
+
+    return $this->response->setJSON([
+        'result'    => trim($result),
+        'csrf_name' => csrf_token(),
+        'csrf_hash' => csrf_hash(),
     ]);
 }
 }

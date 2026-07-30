@@ -53,10 +53,13 @@
                         <td><?= esc($lp['dpl'] ?? '-') ?></td>
 
                         <td class="text-end pe-3">
+
+                              <?php if (!in_array($user[0]['role'], ['superadmin'])): ?>
                             <a href="<?= base_url('lessonplan/edit/'.$lp['id'])."?subject_id=".$_GET['subject_id'] ?>"
                                class="btn btn-sm btn-glass-edit">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
+                        <?php endif ?>
                             <a href="<?= base_url('lessonplan/print/'.$lp['id']) ?>"
                                target="_blank"
                                class="btn btn-sm btn-secondary">
@@ -66,6 +69,7 @@
                             <form action="<?= base_url('lessonplan/'.$lp['id']) ?>" method="post" class="d-inline">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="subject_id" value="<?php echo $_GET['subject_id'] ?>">
                                 <button type="submit"
                                         onclick="return confirm('Hapus data ini?')"
                                         class="btn btn-sm btn-outline-danger ms-1">
