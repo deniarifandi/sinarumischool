@@ -82,8 +82,9 @@ class StudentController extends BaseController
 
     // 5. Data untuk Tabel/List Siswa Per Kelas
     $studentsPerClass = $db->table('classes c')
-        ->select('c.grade, c.class_name, COUNT(s.id) total')
+        ->select('c.grade, g.grade_name, c.class_name, COUNT(s.id) total')
         ->join('students s', 's.class_id = c.id AND s.deleted_at IS NULL', 'left', false)
+        ->join('grades g','g.id = c.grade')
         ->where('c.deleted_at', null)
         ->when($divisionId > 0, static function ($q) use ($divisionId) {
             $q->where('c.division_id', $divisionId);

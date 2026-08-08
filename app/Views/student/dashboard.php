@@ -119,7 +119,7 @@
                                 <?php if (!empty($studentsPerClass)): ?>
                                     <?php foreach ($studentsPerClass as $row): ?>
                                     <tr>
-                                        <td class="ps-3"><span class="badge bg-secondary"><?= esc($row['grade']) ?></span></td>
+                                        <td class="ps-3"><span class="badge bg-secondary"><?= esc($row['grade_name']) ?></span></td>
                                         <td><?= esc($row['class_name']) ?></td>
                                         <td class="text-end pe-3 fw-semibold"><?= number_format($row['total']) ?></td>
                                     </tr>
