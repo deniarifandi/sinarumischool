@@ -11,7 +11,7 @@ $inputClass  = "form-control form-control-sm bg-white text-dark border-secondary
 $selectClass = "form-select form-select-sm bg-white text-dark border-secondary";
 ?>
 
-<div class="glass-card mx-auto shadow p-4 rounded">
+<div class="bg-secondary mx-auto shadow p-4 rounded">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary">
         <div>
