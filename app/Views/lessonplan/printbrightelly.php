@@ -266,7 +266,7 @@ $selectedInti = isset($lessonplan['inti']) ? (int)$lessonplan['inti'] : 0;
             background-repeat: no-repeat;
             background-position: center;
             background-size: contain;
-            opacity: 0.5;
+            opacity: 0.3;
             z-index: 0;
             pointer-events: none;
         }
@@ -755,7 +755,7 @@ $selectedInti = isset($lessonplan['inti']) ? (int)$lessonplan['inti'] : 0;
             background-repeat: no-repeat;
             background-position: center;
             background-size: contain;
-            opacity: 0.5;
+            opacity: 0.2;
             z-index: 0;
             pointer-events: none;
         }

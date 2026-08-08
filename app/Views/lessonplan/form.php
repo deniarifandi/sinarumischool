@@ -54,14 +54,14 @@ $fields = ['pedagogis', 'kemitraan', 'alatbahan', 'sumber', 'pembukaan', 'penutu
                 <h3 class="fw-bold mb-1 text-dark"><?= isset($lessonplan) ? 'Ubah' : 'Buat' ?> Rencana Pembelajaran (Lesson Plan)</h3>
                 <p class="text-muted mb-0 fs-6">Silakan isi formulir di bawah ini dengan lengkap. Tanda pilihan sudah disediakan untuk mempermudah Anda.</p>
             </div>
-            <a href="<?= base_url('lessonplan') ?>" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-medium">◀ Kembali</a>
+            <a href="<?= base_url('lessonplan') ?>?subject_id=<?= esc(request()->getGet('subject_id')) ?>" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-medium">◀ Kembali</a>
         </div>
 
         <div class="card-body p-4 bg-light-gradient">
             <form action="<?= isset($lessonplan) ? base_url('lessonplan/update/'.$lessonplan['id']) : base_url('lessonplan/store') ?>" method="post">
                 <?= csrf_field() ?>
 
-                <input type="hidden" name="class_id" value="<?= esc($mainClass['id']) ?>">
+                
                 
                 <input type="hidden" name="subject_id" value="<?= esc(request()->getGet('subject_id')) ?>">
 
@@ -70,6 +70,34 @@ $fields = ['pedagogis', 'kemitraan', 'alatbahan', 'sumber', 'pembukaan', 'penutu
                     <div class="col-lg-5">
                         <div class="bg-white p-4 rounded-3 shadow-sm border border-light h-100">
                             <h5 class="fw-bold text-primary mb-4 pb-2 border-bottom">1. Informasi Utama</h5>
+
+                            <div class="mb-3">
+                            <label for="class_id" class="form-label fw-bold text-dark mb-1">
+                                Pilih Kelas
+                            </label>
+
+                            <select name="class_id"
+                                    id="class_id"
+                                    class="form-select form-select-lg text-dark"
+                                    required>
+
+                                <option value="">-- Pilih Kelas --</option>
+
+                                <?php foreach ($classes as $class): ?>
+
+                                    <?php
+                                        $selectedClass = $lessonplan['class_id'] ?? $mainClass['id'];
+                                    ?>
+
+                                    <option value="<?= esc($class['id']) ?>"
+                                        <?= $selectedClass == $class['id'] ? 'selected' : '' ?>>
+                                        <?= esc($class['class_name']) ?>
+                                    </option>
+
+                                <?php endforeach ?>
+
+                            </select>
+                        </div>
                             
                             <!-- Topik -->
                             <div class="mb-3">

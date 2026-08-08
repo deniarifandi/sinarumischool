@@ -11,6 +11,9 @@ use App\Models\TujuanModel;
 use App\Models\ObjectiveModel;
 use App\Services\AnthropicService;
 
+use App\Models\LessonplanAssessmentModel;
+use App\Models\StudentModel;
+
 class Lessonplan extends BaseController
 {
     protected $lessonplan;
@@ -20,6 +23,9 @@ class Lessonplan extends BaseController
     protected $tujuanModel;
     protected $objectiveModel;
 
+    protected $assessmentModel;
+    protected $studentModel;
+
     public function __construct()
     {
         $this->lessonplan   = new LessonplanModel();
@@ -28,6 +34,9 @@ class Lessonplan extends BaseController
         $this->userModel    = new UserModel();
         $this->tujuanModel  = new TujuanModel();
         $this->objectiveModel = new ObjectiveModel();
+        
+        $this->assessmentModel = new LessonplanAssessmentModel();
+        $this->studentModel    = new StudentModel();
     }
 
     // GET /lessonplan
@@ -71,21 +80,24 @@ public function index()
 
     $mainClass = $this->userModel->getUserMainClass($user_id);
 
-    if (empty($mainClass)) {
-        throw new \RuntimeException('User has no main class');
-    }
+    // if (empty($mainClass)) {
+    //     throw new \RuntimeException('User has no main class');
+    // }
 
-    if (!$subject_id) {
-        throw new \RuntimeException('Subject ID required');
-    }
-
+    // if (!$subject_id) {
+    //     throw new \RuntimeException('Subject ID required');
+    // }
+    // print_r($sub)
     // print_r($this->objectiveModel->getAgamaBySubject($subject_id));
     // exit();
+
+    $classes = $this->userModel->getUserClasses($user_id);
 
     return view('lessonplan/form', [
         'units'     => $this->unitModel->getUnitBySubject($subject_id),
         'subunits'  => [],
         'mainClass' => $mainClass[0],
+        'classes'   => $classes,
 
         'agama'     => $this->objectiveModel->getAgamaBySubject($subject_id),
         'jati'      => $this->objectiveModel->getJatiBySubject($subject_id),
@@ -119,15 +131,18 @@ public function getSubunits($unitId)
         throw new \RuntimeException('Data tidak ditemukan');
     }
 
-    return view('lessonplan/form', [
-        'lessonplan'  => $lessonplan,
-        'units'       => $this->unitModel->findAll(),
-        'subunits'    => $this->subunitModel->findAll(),
-        'mainClass'   => $mainClass[0],
+    $classes = $this->userModel->getUserClasses($user_id);
 
-        'agama'       => $this->objectiveModel->getAgamaBySubject($subject_id),
-        'jati'        => $this->objectiveModel->getJatiBySubject($subject_id),
-        'literasi'    => $this->objectiveModel->getLiterasiBySubject($subject_id),
+    return view('lessonplan/form', [
+        'lessonplan' => $lessonplan,
+        'units'      => $this->unitModel->findAll(),
+        'subunits'   => $this->subunitModel->findAll(),
+        'mainClass'  => $mainClass[0],
+        'classes'    => $classes,
+
+        'agama'      => $this->objectiveModel->getAgamaBySubject($subject_id),
+        'jati'       => $this->objectiveModel->getJatiBySubject($subject_id),
+        'literasi'   => $this->objectiveModel->getLiterasiBySubject($subject_id),
     ]);
 }
 
@@ -365,6 +380,225 @@ public function aiFix()
         'result'    => trim($result),
         'csrf_name' => csrf_token(),
         'csrf_hash' => csrf_hash(),
+    ]);
+    }
+
+    public function assessment($id)
+{
+    $lessonplan = $this->lessonplan
+        ->select('
+            lessonplan.*,
+            classes.class_name,
+            units.name AS unit_name,
+            subunits.subunit_name,
+            subjects.subject_name,
+            users.name AS teacher_name,
+
+            agama1_obj.objective_name AS agama1_name,
+            agama2_obj.objective_name AS agama2_name,
+
+            jati1_obj.objective_name AS jati1_name,
+            jati2_obj.objective_name AS jati2_name,
+
+            dasar1_obj.objective_name AS dasar1_name,
+            dasar2_obj.objective_name AS dasar2_name
+        ')
+        ->join('classes', 'classes.id = lessonplan.class_id', 'left')
+        ->join('units', 'units.id = lessonplan.unit_id', 'left')
+        ->join('subunits', 'subunits.id = lessonplan.subunit_id', 'left')
+        ->join('subjects', 'subjects.id = lessonplan.subject_id', 'left')
+        ->join('users', 'users.id = classes.classteacher_id', 'left')
+
+        ->join(
+            'objectives as agama1_obj',
+            'agama1_obj.id = lessonplan.agama1',
+            'left'
+        )
+        ->join(
+            'objectives as agama2_obj',
+            'agama2_obj.id = lessonplan.agama2',
+            'left'
+        )
+        ->join(
+            'objectives as jati1_obj',
+            'jati1_obj.id = lessonplan.jati1',
+            'left'
+        )
+        ->join(
+            'objectives as jati2_obj',
+            'jati2_obj.id = lessonplan.jati2',
+            'left'
+        )
+        ->join(
+            'objectives as dasar1_obj',
+            'dasar1_obj.id = lessonplan.dasar1',
+            'left'
+        )
+        ->join(
+            'objectives as dasar2_obj',
+            'dasar2_obj.id = lessonplan.dasar2',
+            'left'
+        )
+        ->find($id);
+
+    if (!$lessonplan) {
+        throw new \RuntimeException('Lesson plan tidak ditemukan');
+    }
+
+    /*
+     * Ambil semua siswa berdasarkan kelas
+     */
+    $students = $this->studentModel
+        ->where('class_id', $lessonplan['class_id'])
+        ->orderBy('name', 'ASC')
+        ->findAll();
+
+    /*
+     * Ambil penilaian yang sudah tersimpan
+     */
+    $assessments = $this->assessmentModel
+        ->where('lessonplan_id', $id)
+        ->findAll();
+
+    /*
+     * Ubah menjadi:
+     *
+     * $assessmentMap[student_id] = [
+     *     score => 3,
+     *     notes => '...'
+     * ]
+     */
+    $assessmentMap = [];
+
+    foreach ($assessments as $assessment) {
+        $assessmentMap[$assessment['student_id']] = $assessment;
+    }
+
+    return view('lessonplan/assessment', [
+        'lessonplan'    => $lessonplan,
+        'students'      => $students,
+        'assessmentMap' => $assessmentMap,
+    ]);
+    }
+
+    public function saveAssessment($id)
+{
+    $lessonplan = $this->lessonplan->find($id);
+
+    if (!$lessonplan) {
+        throw new \RuntimeException('Lesson plan tidak ditemukan');
+    }
+
+    $scores = $this->request->getPost('score') ?? [];
+    $notes  = $this->request->getPost('notes') ?? [];
+
+    foreach ($scores as $studentId => $score) {
+
+        $data = [
+            'lessonplan_id' => $id,
+            'student_id'    => $studentId,
+            'score'         => $score !== '' ? $score : null,
+            'notes'         => $notes[$studentId] ?? null,
+        ];
+
+        $existing = $this->assessmentModel
+            ->where('lessonplan_id', $id)
+            ->where('student_id', $studentId)
+            ->first();
+
+        if ($existing) {
+            $this->assessmentModel->update($existing['id'], $data);
+        } else {
+            $this->assessmentModel->insert($data);
+        }
+    }
+
+    return redirect()
+        ->to('/lessonplan/assessment/' . $id)
+        ->with('success', 'Penilaian berhasil disimpan.');
+}
+
+public function printAssessment($id)
+{
+    $lessonplan = $this->lessonplan
+        ->select('
+            lessonplan.*,
+            classes.class_name,
+            units.name AS unit_name,
+            subunits.subunit_name,
+            subjects.subject_name,
+            users.name AS teacher_name,
+
+            agama1_obj.objective_name AS agama1_name,
+            agama2_obj.objective_name AS agama2_name,
+
+            jati1_obj.objective_name AS jati1_name,
+            jati2_obj.objective_name AS jati2_name,
+
+            dasar1_obj.objective_name AS dasar1_name,
+            dasar2_obj.objective_name AS dasar2_name
+        ')
+        ->join('classes', 'classes.id = lessonplan.class_id', 'left')
+        ->join('units', 'units.id = lessonplan.unit_id', 'left')
+        ->join('subunits', 'subunits.id = lessonplan.subunit_id', 'left')
+        ->join('subjects', 'subjects.id = lessonplan.subject_id', 'left')
+        ->join('users', 'users.id = classes.classteacher_id', 'left')
+
+        ->join(
+            'objectives as agama1_obj',
+            'agama1_obj.id = lessonplan.agama1',
+            'left'
+        )
+        ->join(
+            'objectives as agama2_obj',
+            'agama2_obj.id = lessonplan.agama2',
+            'left'
+        )
+        ->join(
+            'objectives as jati1_obj',
+            'jati1_obj.id = lessonplan.jati1',
+            'left'
+        )
+        ->join(
+            'objectives as jati2_obj',
+            'jati2_obj.id = lessonplan.jati2',
+            'left'
+        )
+        ->join(
+            'objectives as dasar1_obj',
+            'dasar1_obj.id = lessonplan.dasar1',
+            'left'
+        )
+        ->join(
+            'objectives as dasar2_obj',
+            'dasar2_obj.id = lessonplan.dasar2',
+            'left'
+        )
+        ->find($id);
+
+    if (!$lessonplan) {
+        throw new \RuntimeException('Lesson plan tidak ditemukan');
+    }
+
+    $students = $this->studentModel
+        ->where('class_id', $lessonplan['class_id'])
+        ->orderBy('name', 'ASC')
+        ->findAll();
+
+    $assessments = $this->assessmentModel
+        ->where('lessonplan_id', $id)
+        ->findAll();
+
+    $assessmentMap = [];
+
+    foreach ($assessments as $assessment) {
+        $assessmentMap[$assessment['student_id']] = $assessment;
+    }
+
+    return view('lessonplan/assessment_print', [
+        'lessonplan'    => $lessonplan,
+        'students'      => $students,
+        'assessmentMap' => $assessmentMap,
     ]);
 }
 }

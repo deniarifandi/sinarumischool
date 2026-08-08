@@ -32,7 +32,8 @@
                         <th>Subunit</th>
                         <th>Semester</th>
                         <th>Bulan</th>
-                        <th>DPL</th>
+                        <th>Penilaian</th>
+                        <th style="display:none">DPL</th>
                         <th class="text-end pe-3">Aksi</th>
                     </tr>
                 </thead>
@@ -50,8 +51,13 @@
                         <td><?= esc($lp['subunit_name'] ?? '-') ?></td> <!-- FIX -->
                         <td><?= esc($lp['semester'] ?? '-') ?></td>
                         <td><?= esc($lp['bulan'] ?? '-') ?></td>
-                        <td><?= esc($lp['dpl'] ?? '-') ?></td>
-
+                        <td style="display:none"><?= esc($lp['dpl'] ?? '-') ?></td>
+                        <td>
+                            <a href="<?= base_url('lessonplan/assessment/'.$lp['id'])."?subject_id=".$_GET['subject_id'] ?>"
+   class="btn btn-sm btn-success">
+    <i class="bi bi-clipboard-check me-1"></i> Penilaian
+</a>
+                         </td>
                         <td class="text-end pe-3">
 
                               <?php if (!in_array($user[0]['role'], ['superadmin'])): ?>
@@ -59,6 +65,9 @@
                                class="btn btn-sm btn-glass-edit">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
+
+                             
+
                         <?php endif ?>
                             <a href="<?= base_url('lessonplan/print/'.$lp['id']) ?>"
                                target="_blank"

@@ -116,4 +116,14 @@ class UserModel extends Model
         ->where('users.id', $user_id)
         ->findAll();
 }
+
+public function getUserClasses($userId)
+{
+    return $this->db->table('classes')
+        ->where('classteacher_id', $userId)
+        ->where('classes.deleted_at',null)
+        ->orderBy('class_name', 'ASC')
+        ->get()
+        ->getResultArray();
+}
 }

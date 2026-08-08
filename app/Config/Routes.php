@@ -202,6 +202,10 @@ $routes->group('lessonplan', function($routes) {
     $routes->get('subunits/(:num)', 'Lessonplan::getSubunits/$1');
      $routes->post('ai-fix', 'Lessonplan::aiFix'); // <-- baru
 
+    $routes->get('assessment/(:num)', 'Lessonplan::assessment/$1');
+    $routes->post('assessment/(:num)', 'Lessonplan::saveAssessment/$1');
+    $routes->get('assessment/print/(:num)', 'Lessonplan::printAssessment/$1');
+
 });
 $routes->get('lessonplan/print/(:num)', 'Lessonplan::print/$1');
 
