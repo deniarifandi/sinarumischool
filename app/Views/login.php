@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,203 +11,182 @@
 
     <style>
         :root {
-            /* Logo Pastel Colors */
-            --logo-blue: #71C9E6; 
-            --logo-pink: #F49AC2; 
-            
-            /* Glow Effects */
-            --logo-blue-glow: rgba(113, 201, 230, 0.4);
-            --logo-pink-glow: rgba(244, 154, 194, 0.4);
-
-            /* Light Glass Effects */
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(255, 255, 255, 1);
-            
-            /* Text Colors */
-            --text-main: #334155; 
-            --text-light: #64748b; 
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.125);
+            --accent-color: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.5);
         }
 
-        
-        <?php if (env('OWNER', '') == "BrightElly"): ?>
-           body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* Soft pastel gradient blending dengan logo di tengah dan ukuran besar */
-    background: 
-        linear-gradient(rgba(224, 242, 254, 0.85), rgba(252, 231, 243, 0.85)),
-        url("<?= base_url('logobrightelly.png') ?>") 
-        center center / 60% auto no-repeat,
-        linear-gradient(135deg, #e0f2fe 0%, #fce7f3 100%);
-    overflow: hidden;
-    color: var(--text-main);
-}
-        <?php else: ?>
-            body {
-                font-family: 'Plus Jakarta Sans', sans-serif;
-                margin: 0;
-                height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                /* Soft pastel gradient blending with a subtle white overlay for readability */
-                background:
-                    linear-gradient(rgba(224, 242, 254, 0.8), rgba(252, 231, 243, 0.8)),
-                    url("<?= base_url('logo.png') ?>") 
-                    right -150px bottom -150px / 600px auto no-repeat,
-                    linear-gradient(135deg, #e0f2fe 0%, #fce7f3 100%);
-                overflow: hidden;
-                color: var(--text-main);
-            }
-        <?php endif ?>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+              background:
+            linear-gradient(rgba(15,23,42,.8), rgba(15,23,42,.8)),
+            url("<?= base_url('logo.png') ?>") 
+                right -150px bottom -150px / 600px auto no-repeat,
+            radial-gradient(circle at top left, #0f172a, #1e293b);
+            overflow: hidden;
+            color: #ffffff;
+        }
 
         body::before {
             content: "";
             position: absolute;
-            width: 350px;
-            height: 350px;
-            background: var(--logo-pink);
-            filter: blur(120px);
-            border-radius: 50%;
-            z-index: -1;
-            top: 5%;
-            right: 15%;
-            opacity: 0.3;
-        }
-        
-        body::after {
-            content: "";
-            position: absolute;
             width: 300px;
             height: 300px;
-            background: var(--logo-blue);
-            filter: blur(120px);
+            background: var(--accent-color);
+            filter: blur(150px);
             border-radius: 50%;
             z-index: -1;
-            bottom: 10%;
-            left: 15%;
-            opacity: 0.3;
+            top: 10%;
+            right: 10%;
+            opacity: 0.2;
+        }
+
+        /* === WRAPPER === */
+        .login-wrapper{
+            display:flex;
+            align-items:center;
+            gap:0px;
+            z-index:1;
+        }
+
+        /* === COVER IMAGE === */
+        .cover-image{
+            width:420px;
+            height:540px;
+            border-top-left-radius: 24px;
+            border-bottom-left-radius: 24px;
+            background:
+                linear-gradient(rgba(15,23,42,.7), rgba(15,23,42,.1)),
+                url("<?= base_url('logoghibli.jpeg') ?>") center / cover no-repeat;
+            box-shadow:0 25px 50px -12px rgba(0,0,0,.9);
         }
 
         /* === LOGIN CARD === */
         .login-card {
             background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            border-radius: 24px; /* Sudut membulat di semua sisi */
+            border-top-right-radius: 24px;
+            border-bottom-right-radius: 24px;
             padding: 40px;
             width: 420px;
-            box-shadow: 0 15px 35px rgba(113, 201, 230, 0.15); /* Shadow lebih seimbang ke tengah */
-            z-index: 1;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
         
+
         .brand-logo {
             letter-spacing: 2px;
-            font-weight: 800;
-            background: linear-gradient(to right, var(--logo-blue), var(--logo-pink));
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, #94a3b8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .system-subtitle {
             font-size: 0.85rem;
-            color: var(--text-light);
+            color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 600;
-        }
-
-        .form-label {
-            font-weight: 600;
+            letter-spacing: 1px;
         }
 
         .form-control {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
-            color: var(--text-main);
+            color: #fff;
             padding: 12px 16px;
             border-radius: 12px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-            transition: all 0.3s ease;
         }
 
         .form-control:focus {
-            background: #ffffff;
-            border-color: var(--logo-blue);
-            box-shadow: 0 0 0 4px var(--logo-blue-glow);
-            color: var(--text-main);
-        }
-
-        .form-control::placeholder {
-            color: #94a3b8;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+            color: #fff;
         }
 
         .input-group-text {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
-            color: var(--logo-pink);
+            color: #94a3b8;
             border-radius: 12px;
-            font-size: 1.1rem;
         }
 
         .btn-login {
-            background: var(--logo-blue);
+            background: var(--accent-color);
             border: none;
             border-radius: 12px;
             padding: 12px;
-            font-weight: 700;
-            color: #fff;
-            box-shadow: 0 8px 20px var(--logo-blue-glow);
-            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px var(--accent-glow);
         }
 
         .btn-login:hover {
-            background: var(--logo-pink);
+            background: #2563eb;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px var(--logo-pink-glow);
-            color: #fff;
         }
 
         .footer-link {
-            color: var(--text-light);
+            color: #94a3b8;
             text-decoration: none;
             font-size: 0.85rem;
-            font-weight: 600;
-            transition: 0.3s;
         }
 
         .footer-link:hover {
-            color: var(--logo-blue);
-        }
-
-        .form-check-input:checked {
-            background-color: var(--logo-blue);
-            border-color: var(--logo-blue);
+            color: #fff;
         }
 
         .alert-custom {
-            background: rgba(244, 154, 194, 0.15);
-            border: 1px solid var(--logo-pink);
-            color: #be185d;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
             border-radius: 12px;
             font-size: 0.9rem;
-            font-weight: 500;
         }
 
         /* === MOBILE === */
-        @media (max-width: 576px){
-            body {
-                padding: 20px;
+        @media (max-width: 992px){
+
+                body{
+                    height: 95vh;
+                }
+
+                body::before {
+                content: "";
+                position: absolute;
+                width: 300px;
+                height: 300px;
+                background: var(--accent-color);
+                filter: blur(150px);
+                border-radius: 50%;
+                z-index: -1;
+                top: 10%;
+                bottom: 10%;
+                right: 10%;
+                opacity: 0.2;
             }
 
-            .login-card {
-                padding: 30px;
-                width: 100%;
+            .login-wrapper{
+                flex-direction:column;
+            }
+            .cover-image{
+                display:none;
+            }
+               .login-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             }
         }
     </style>
@@ -215,15 +194,14 @@
 
 <body>
 
+<div class="login-wrapper">
+
+    <div class="cover-image"></div>
+
     <div class="login-card">
         <div class="text-center mb-5">
-            <?php if (env('OWNER', '') == "BrightElly"): ?>
-                <h2 class="brand-logo mb-1">BrightElly</h2>
-                <p class="system-subtitle">BrightElly Management System</p>
-            <?php else: ?>
-                <h2 class="brand-logo mb-1">S I N A R U M I</h2>
-                <p class="system-subtitle">My Little Island Management System</p>
-            <?php endif ?>
+            <h2 class="brand-logo mb-1">SINARUMI</h2>
+            <p class="system-subtitle">CBIS v4.0.0</p>
         </div>
 
         <?php if(session()->getFlashdata('error')): ?>
@@ -236,28 +214,28 @@
             <div class="mb-3">
                 <label class="form-label small text-secondary">Identification</label>
                 <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                    <input type="text" name="username" class="form-control" placeholder="Username" required>
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    <input type="text" name="username" class="text-dark bg-white form-control" placeholder="Username" required>
                 </div>
             </div>
 
             <div class="mb-4">
                 <label class="form-label small text-secondary">Security Key</label>
                 <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-shield-lock-fill"></i></span>
-                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                    <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
+                    <input type="password" name="password" class="text-dark bg-white form-control" placeholder="Password" required>
                 </div>
             </div>
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="remember" name="remember" checked>
-                    <label class="form-check-label small text-secondary fw-semibold" for="remember">Remember me</label>
+                    <label class="form-check-label small text-secondary" for="remember">Remember me</label>
                 </div>
                 <a href="javascript:void(0)" onclick="forgotPassword()" class="footer-link">Forgot?</a>
             </div>
 
-            <button type="submit" class="btn btn-login w-100 mb-4">
+            <button type="submit" class="btn btn-primary btn-login w-100 mb-4">
                 Authorize Access
             </button>
         </form>
@@ -265,11 +243,13 @@
         <div class="text-center">
             <div class="d-flex justify-content-center gap-3">
                 <a href="#" class="footer-link"><i class="bi bi-qr-code-scan me-1"></i> QR Scan</a>
-                <span class="text-muted opacity-50">|</span>
+                <span class="text-muted">|</span>
                 <a href="#" class="footer-link"><i class="bi bi-cpu me-1"></i> Scanner</a>
             </div>
         </div>
     </div>
+
+</div>
 
 <script>
 function forgotPassword() {
