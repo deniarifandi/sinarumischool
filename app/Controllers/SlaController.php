@@ -263,7 +263,7 @@ private function exportExcel(array $slas, array $division)
 /**
  * Export Student Late Arrival Resume
  */
-private function exportResume(array $slas, array $division)
+private function exportResumeOLD(array $slas, array $division)
 {
     $divisionName = $division['name']
         ?? $division['division_name']
@@ -292,6 +292,159 @@ private function exportResume(array $slas, array $division)
     }
 
     usort($resume, function ($a, $b) {
+
+        $classCompare = strcmp(
+            $a['class_name'],
+            $b['class_name']
+        );
+
+        if ($classCompare !== 0) {
+            return $classCompare;
+        }
+
+        return strcmp(
+            $a['student_name'],
+            $b['student_name']
+        );
+    });
+
+    $filename = 'student_late_arrival_resume_' . date('Y-m-d_H-i-s') . '.xls';
+
+    $html = '
+    <html>
+    <head>
+        <meta charset="UTF-8">
+
+        <style>
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            th, td {
+                border: 1px solid #000;
+                padding: 6px;
+            }
+
+            th {
+                background-color: #eeeeee;
+                font-weight: bold;
+            }
+
+            .title {
+                font-size: 18px;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <table>
+
+            <tr>
+                <td colspan="6" class="title">
+                    STUDENT LATE ARRIVAL RESUME
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="6">
+                    Division: ' . esc($divisionName) . '
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="6"></td>
+            </tr>
+
+            <tr>
+                <th>No.</th>
+                <th>Student</th>
+                <th>Student Code</th>
+                <th>Class</th>
+                <th>Total Late Arrival</th>
+                <th>Total Point Reduction</th>
+            </tr>
+    ';
+
+    foreach ($resume as $index => $student) {
+
+        $html .= '
+            <tr>
+
+                <td>' . ($index + 1) . '</td>
+
+                <td>' . esc($student['student_name']) . '</td>
+
+                <td>' . esc($student['student_code']) . '</td>
+
+                <td>' . esc($student['class_name']) . '</td>
+
+                <td>' . $student['total_late'] . '</td>
+
+                <td>' . $student['total_reduction'] . '</td>
+
+            </tr>
+        ';
+    }
+
+    $html .= '
+        </table>
+
+    </body>
+    </html>
+    ';
+
+    return $this->response
+        ->setHeader(
+            'Content-Type',
+            'application/vnd.ms-excel; charset=UTF-8'
+        )
+        ->setHeader(
+            'Content-Disposition',
+            'attachment; filename="' . $filename . '"'
+        )
+        ->setBody($html);
+}
+
+private function exportResume(array $slas, array $division)
+{
+    $divisionName = $division['name']
+        ?? $division['division_name']
+        ?? 'Division';
+
+    $resume = [];
+
+    foreach ($slas as $sla) {
+
+        $studentId = $sla['student_id'];
+
+        if (!isset($resume[$studentId])) {
+            $resume[$studentId] = [
+                'student_name'    => $sla['student_name'] ?? '',
+                'student_code'    => $sla['student_code'] ?? '',
+                'class_name'      => $sla['class_name'] ?? '',
+                'total_late'      => 0,
+                'total_reduction' => 0,
+            ];
+        }
+
+        $resume[$studentId]['total_late']++;
+
+        $resume[$studentId]['total_reduction'] +=
+            (float) ($sla['reduction'] ?? 0);
+    }
+
+    // Sort by most late arrivals first
+    // If the total is the same:
+    // 1. Sort by class
+    // 2. Sort by student name
+    usort($resume, function ($a, $b) {
+
+        if ($a['total_late'] !== $b['total_late']) {
+            return $b['total_late'] <=> $a['total_late'];
+        }
 
         $classCompare = strcmp(
             $a['class_name'],
