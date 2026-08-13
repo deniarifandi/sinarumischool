@@ -298,60 +298,106 @@ if (!function_exists('safe_url')) {
             <div><i class="bi bi-building-gear me-2 text-primary"></i>Division Operational Control</div>
             <span class="badge bg-secondary text-white small px-2 py-1 division-badge-label">Loading Workspace...</span>
         </div>
-        <div class="dashboard-card-body">
-            
-            <!-- Contextual items tied to current selected division -->
-            <?php foreach ($divisions as $d): ?>
-                <div class="division-pane" data-division-id="<?= esc($d['id']) ?>" style="display:none;">
-                    <div class="nav-grid">
+      <div class="dashboard-card-body">
 
-                         <?php if (!in_array('brightelly', array_map('strtolower', $names))):  ?>
-                            <a href="<?= base_url('sla?division='.$d['id']) ?>" class="nav-item-btn">
-                               <i class="bi bi-clock-history"></i>
-                                <span>Students Late Arrival Slip</span>
-                            </a>
+    <?php foreach ($divisions as $d): ?>
+
+        <div class="division-pane"
+             data-division-id="<?= esc($d['id']) ?>"
+             style="display:none;">
+
+            <!-- ==============================
+                 REGULAR ACCESS
+            =============================== -->
+            <div class="mb-4">
+
+                <div class="small text-muted fw-semibold mb-2">
+                    <i class="bi bi-grid me-1"></i>
+                    Regular Access
+                </div>
+
+                <div class="nav-grid">
+
+                    <?php if (!in_array('brightelly', array_map('strtolower', $names))): ?>
+
+                        <a href="<?= base_url('sla?division=' . $d['id']) ?>"   
+                           class="nav-item-btn">
+                            <i class="bi bi-clock-history"></i>
+                            <span>Students Late Arrival Slip</span>
+                        </a>
+
                         <?php if (in_array($user['role'], ['superadmin', 'teacher', 'teacher_admin'])): ?>
-                           
-                            <a href="<?= base_url('socioreport?divisi='.$d['id']) ?>" class="nav-item-btn">
+
+                            <a href="<?= base_url('socioreport?divisi=' . $d['id']) ?>"
+                               class="nav-item-btn">
                                 <i class="bi bi-heart-pulse"></i>
                                 <span>Socio-Emotional Report</span>
                             </a>
+
                         <?php endif; ?>
 
-                    <?php endif ?>
+                    <?php endif; ?>
 
-                        <?php if ($user['role'] == "superadmin" || $user['role'] == "admin"): ?>
-                        <a href="<?= base_url('grade?divisi='.$d['id']) ?>" class="nav-item-btn">
+                    <a href="<?= base_url('student/dashboard?division=' . $d['id']) ?>"
+                       class="nav-item-btn">
+                        <i class="bi bi-people"></i>
+                        <span>Student Registry</span>
+                    </a>
+
+                    <a href="<?= base_url('user-subject?division=' . $d['id']) ?>"
+                       class="nav-item-btn">
+                        <i class="bi bi-person-lines-fill"></i>
+                        <span>User Subject Assignments</span>
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==============================
+                 ADMINISTRATIVE ACCESS
+            =============================== -->
+            <?php if (in_array($user['role'], ['superadmin', 'admin','teacher_admin'])): ?>
+
+                <div>
+
+                    <div class="small text-muted fw-semibold mb-2">
+                        <i class="bi bi-shield-lock me-1"></i>
+                        Administrative Access
+                    </div>
+
+                    <div class="nav-grid">
+
+                        <a href="<?= base_url('grade?divisi=' . $d['id']) ?>"
+                           class="nav-item-btn">
                             <i class="bi bi-award"></i>
                             <span>Grades Management</span>
                         </a>
 
-                        <a href="<?= base_url('class?divisi='.$d['id']) ?>" class="nav-item-btn">
+                        <a href="<?= base_url('class?divisi=' . $d['id']) ?>"
+                           class="nav-item-btn">
                             <i class="bi bi-diagram-3"></i>
                             <span>Classes Structure</span>
                         </a>
-                        <?php endif ?>
 
-                        <a href="<?= base_url('student/dashboard?division='.$d['id']) ?>" class="nav-item-btn">
-                            <i class="bi bi-people"></i>
-                            <span>Student Registry</span>
-                        </a>
-                         <?php if ($user['role'] == "superadmin" || $user['role'] == "admin"): ?>
-                        <a href="<?= base_url('subject?division='.$d['id']) ?>" class="nav-item-btn">
+                        <a href="<?= base_url('subject?division=' . $d['id']) ?>"
+                           class="nav-item-btn">
                             <i class="bi bi-book-half"></i>
                             <span>Subject Management</span>
                         </a>
-                    <?php endif ?>
-                        <a href="<?= base_url('user-subject?division='.$d['id']) ?>" class="nav-item-btn">
-                            <i class="bi bi-person-lines-fill"></i>
-                            <span>User Subject Assignments</span>
-                        </a>
 
                     </div>
+
                 </div>
-            <?php endforeach; ?>
-            
+
+            <?php endif; ?>
+
         </div>
+
+    <?php endforeach; ?>
+
+</div>
     </div>
     <?php endif ?>
 

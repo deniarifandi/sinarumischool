@@ -262,14 +262,14 @@ $routes->group('roles', function($routes) {
     $routes->post('delete/(:num)', 'Role::delete/$1');
 });
 
-$routes->group('user-subject', function($routes) {
-    $routes->get('/', 'UserSubject::index');
-    $routes->get('create', 'UserSubject::create');   // show form
-    $routes->post('store', 'UserSubject::store');
-    $routes->post('delete/(:num)', 'UserSubject::delete/$1');
-    $routes->get('assign/(:num)', 'UserSubject::assign/$1');
-    $routes->post('store', 'UserSubject::store');
-});
+// $routes->group('user-subject', function($routes) {
+//     $routes->get('/', 'UserSubject::index');
+//     $routes->get('create', 'UserSubject::create');   // show form
+//     $routes->post('store', 'UserSubject::store');
+//     $routes->post('delete/(:num)', 'UserSubject::delete/$1');
+//     $routes->get('assign/(:num)', 'UserSubject::assign/$1');
+//     $routes->post('store', 'UserSubject::store');
+// });
 
 
 //REKAPP
@@ -287,3 +287,15 @@ $routes->group('rekap', ['filter' => 'auth'], function ($routes) {
 
     $routes->get('printcomplete','RekapController::printComplete');
 });
+
+$routes->get('user-subject', 'UserSubjectController::index');
+
+$routes->get(
+    'user-subject/edit/(:num)',
+    'UserSubjectController::edit/$1'
+);
+
+$routes->post(
+    'user-subject/update/(:num)',
+    'UserSubjectController::update/$1'
+);
