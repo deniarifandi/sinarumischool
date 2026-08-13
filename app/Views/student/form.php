@@ -93,7 +93,23 @@ $selectClass = "form-select form-select-sm bg-white text-dark border-secondary";
                     </div>
                     <div class="col-md-4">
                         <label class="form-label small text-white-50 mb-1">Nationality</label>
-                        <input type="text" name="nationality" value="<?= old('nationality', $student['nationality'] ?? '') ?>" class="<?= $inputClass ?>" placeholder="Kewarganegaraan">
+
+                        <?php
+                        $nationality = old(
+                            'nationality',
+                            $student['nationality'] ?? ''
+                        );
+                        ?>
+
+                        <select name="nationality" class="<?= $inputClass ?>">
+                            <option value="">Select Nationality</option>
+                            <option value="WNI" <?= $nationality === 'WNI' ? 'selected' : '' ?>>
+                                WNI
+                            </option>
+                            <option value="WNA" <?= $nationality === 'WNA' ? 'selected' : '' ?>>
+                                WNA
+                            </option>
+                        </select>
                     </div>
                    <div class="col-md-4">
                         <label class="form-label small text-white-50 mb-1">Religion</label>
