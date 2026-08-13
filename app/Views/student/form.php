@@ -95,9 +95,35 @@ $selectClass = "form-select form-select-sm bg-white text-dark border-secondary";
                         <label class="form-label small text-white-50 mb-1">Nationality</label>
                         <input type="text" name="nationality" value="<?= old('nationality', $student['nationality'] ?? '') ?>" class="<?= $inputClass ?>" placeholder="Kewarganegaraan">
                     </div>
-                    <div class="col-md-4">
+                   <div class="col-md-4">
                         <label class="form-label small text-white-50 mb-1">Religion</label>
-                        <input type="text" name="murid_agama" value="<?= old('murid_agama', $student['murid_agama'] ?? '') ?>" class="<?= $inputClass ?>" placeholder="Agama">
+
+                        <select name="murid_agama" class="<?= $inputClass ?>">
+                            <option value="">Select Religion</option>
+
+                            <?php
+                            $religions = [
+                                'ISLAM',
+                                'CHRISTIAN',
+                                'CATHOLIC',
+                                'HINDU',
+                                'BUDDHA'
+                            ];
+
+                            $selectedReligion = old(
+                                'murid_agama',
+                                $student['murid_agama'] ?? ''
+                            );
+                            ?>
+
+                            <?php foreach ($religions as $religion): ?>
+                                <option value="<?= esc($religion) ?>"
+                                    <?= $selectedReligion === $religion ? 'selected' : '' ?>>
+                                    <?= esc($religion) ?>
+                                </option>
+                            <?php endforeach; ?>
+
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label small text-white-50 mb-1">Blood Type</label>

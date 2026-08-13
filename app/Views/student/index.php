@@ -64,6 +64,7 @@
                     <th>Name</th>
                     <th>NIS</th>
                     <th>Gender</th>
+                    <th>Religion</th>
                     <th>Birthdate</th>
                     <th>Class</th>
                     <th class="text-end pe-3">Actions</th>
@@ -92,7 +93,11 @@
                         </td>
 
                         <td><?= esc($s['gender']) ?></td>
-
+                        <td>
+                            <div class="fw-bold text-dark">
+                                <?= esc($s['murid_agama']) ?>
+                            </div>
+                        </td>
                         <td><?= esc($s['birthdate']) ?></td>
 
                         <td><?= esc($s['class_name']) ?></td>
