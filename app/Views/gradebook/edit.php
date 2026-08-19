@@ -81,9 +81,9 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
             
         </div>
         <div>
-            <a href="<?= esc($backUrl) ?>" id="backBtn" class="btn btn-outline-light rounded-pill px-4 py-2 shadow-sm" style="border-color: rgba(255,255,255,0.3);">
-                <i class="bi bi-arrow-left me-1"></i> Back
-            </a>
+            <button type="button" onclick="window.close();" id="closeBtn" class="btn btn-outline-light rounded-pill px-4 py-2 shadow-sm" style="border-color: rgba(255,255,255,0.3);">
+                <i class="bi bi-x-lg me-1"></i> Close Tab
+            </button>
         </div>
     </div>
 
@@ -226,7 +226,7 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
                 <?php endif; ?>
             </div>
             <div>
-                <a href="<?= esc($backUrl) ?>" id="cancelBtn" class="btn btn-sm btn-secondary rounded-pill px-3 me-2">Cancel</a>
+                <!-- <a href="<?= esc($backUrl) ?>" id="cancelBtn" class="btn btn-sm btn-secondary rounded-pill px-3 me-2">Cancel</a> -->
                 <?php if (!$isLocked): ?>
                     <button type="submit" id="saveBtn" class="btn btn-sm btn-primary rounded-pill px-4"><i class="bi bi-save me-1"></i> Save</button>
                 <?php else: ?>
