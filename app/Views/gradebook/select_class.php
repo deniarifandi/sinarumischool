@@ -320,7 +320,9 @@ $subjectName = $subjectDetailc[0]->subject_name ?? '-';
                         <a href="#"
                            class="class-card"
                            data-base-href="<?= esc($baseHref) ?>"
-                           style="--accent: <?= $theme['color'] ?>; --glow: <?= $theme['glow'] ?>;">
+                           style="--accent: <?= $theme['color'] ?>; --glow: <?= $theme['glow'] ?>;"
+                           target="_blank"
+                           >
                             <div class="card-top">
                                 <div class="icon-badge"><i class="bi <?= $theme['icon'] ?>"></i></div>
                                 <div class="arrow-btn"><i class="bi bi-arrow-right"></i></div>

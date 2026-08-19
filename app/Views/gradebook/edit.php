@@ -24,21 +24,64 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
 }
 ?>
 
+<style>
+    /* Neon Glow Text Effect - Bright Yellow */
+    .neon-title {
+        background: linear-gradient(90deg, #ffff00 0%, #ffcc00 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        /* Using pure yellow RGB (255, 255, 0) for the intense glow */
+        text-shadow: 0 0 12px rgba(255, 255, 0, 0.7), 0 0 25px rgba(255, 255, 0, 0.4);
+        font-size: 1.4rem; 
+        letter-spacing: 0.5px;
+    }
+
+    /* Thicker glowing line next to the text */
+    .neon-accent {
+        border-left: 5px solid #ffff00; 
+        padding-left: 15px; 
+        box-shadow: -5px 0 12px -2px rgba(255, 255, 0, 0.7);
+        border-radius: 3px;
+    }
+
+    /* Neon Badge for Subtitles - Bright Yellow */
+    .neon-badge {
+        display: inline-block;
+        padding: 0.35rem 0.85rem; 
+        margin-right: 0.4rem;
+        margin-top: 0.4rem;
+        font-size: 0.8rem; 
+        font-weight: 600;
+        color: #fffde7; /* Very pale yellow/white text for readability */
+        background: rgba(255, 255, 0, 0.12); /* Faint yellow background */
+        border: 1px solid rgba(255, 255, 0, 0.6); /* Bright yellow border */
+        border-radius: 50px;
+        box-shadow: 0 0 10px rgba(255, 255, 0, 0.4), inset 0 0 5px rgba(255, 255, 0, 0.2);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+</style>
+
 <div class="glass-card p-3">
 
     <!-- HEADER -->
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-            <h6 class="mb-0 fw-bold">Gradebook - <?= esc($subject['subject_name'] ?? '-') ?></h6>
-            <small class="text-white-50" style="font-size: 0.75rem;">
-                <?= esc($class['class_name'] ?? '-') ?> |
-                <?= esc($term['name'] ?? '-') ?> |
-                <?= esc($semester['name'] ?? '-') ?> |
-                <?= esc($academicYear['name'] ?? '-') ?>
-            </small>
+    <div class="d-flex justify-content-between align-items-center mb-3 pb-3" style="border-bottom: 1px solid rgba(255,255,255,0.08);">
+        <div class="neon-accent">
+            <h5 class="m-2 mt-3 mx-2 fw-bold neon-title" style="margin-right: 10px;">
+                <i class="bi bi-journal-check me-2"></i> Gradebook - <?= esc($subject['subject_name'] ?? '-') ?>
+            </h5>
+            
+            <!-- Glowing Yellow Badges -->
+            <div class="d-flex flex-wrap mt-1 mb-3" style="margin-right: 10px">
+                <span class="neon-badge"><i class="bi bi-people-fill me-1"></i> <?= esc($class['class_name'] ?? '-') ?></span>
+                <span class="neon-badge"><i class="bi bi-bookmark-fill me-1"></i> <?= esc($term['name'] ?? '-') ?></span>
+                <span class="neon-badge"><i class="bi bi-calendar3 me-1"></i> <?= esc($semester['name'] ?? '-') ?></span>
+                <span class="neon-badge"><i class="bi bi-clock-history me-1"></i> <?= esc($academicYear['name'] ?? '-') ?></span>
+            </div>
+            
         </div>
         <div>
-            <a href="<?= esc($backUrl) ?>" id="backBtn" class="btn btn-sm btn-secondary rounded-pill px-3">
+            <a href="<?= esc($backUrl) ?>" id="backBtn" class="btn btn-outline-light rounded-pill px-4 py-2 shadow-sm" style="border-color: rgba(255,255,255,0.3);">
                 <i class="bi bi-arrow-left me-1"></i> Back
             </a>
         </div>
