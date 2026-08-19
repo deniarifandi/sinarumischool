@@ -383,10 +383,10 @@ if (!function_exists('safe_url')) {
                             <span>Academic Year</span>
                         </a>
 
-                        <a href="<?= base_url('lock/terms?division=' . $d['id'])?>"
+                        <a href="<?= base_url('gradebook/curriculum?division=' . $d['id'])?>"
                            class="nav-item-btn">
-                            <i class="bi bi-pencil-square"></i>
-                            <span>Lock Terms</span>
+                            <i class="bi bi-eye-fill"></i>
+                            <span>Gradebook Verivication</span>
                         </a>
 
                     </div>

@@ -305,6 +305,7 @@ $routes->post(
 
 $routes->get('gradebook', 'GradebookController::index');
 $routes->post('gradebook/save', 'GradebookController::save');
+$routes->get('gradebook/curriculum', 'GradebookController::curriculum');
 
 $routes->group('lock', ['filter' => 'curriculum'], function ($routes) {
     $routes->get('terms', 'TermLockController::index');
@@ -313,6 +314,8 @@ $routes->group('lock', ['filter' => 'curriculum'], function ($routes) {
     $routes->get('terms/(:num)', 'TermLockController::termDetail/$1');
     $routes->post('gradebooks/(:num)/override', 'TermLockController::overrideGradebook/$1');
 });
+
+
 
 $routes->group('academic-year', ['filter' => 'curriculum'], function ($routes) {
     $routes->get('/', 'AcademicYearController::index');

@@ -12,6 +12,7 @@ use App\Models\GradebookModel;
 use App\Models\UserSubjectModel;
 use App\Models\GradebookScoreModel;
 use App\Models\StudentModel;
+use App\Models\GradeModel;
 
 class GradebookController extends BaseController
 {
@@ -24,6 +25,7 @@ class GradebookController extends BaseController
     protected $gradebookModel;
     protected $studentModel;
     protected $gradebookScoreModel;
+    protected $gradeModel;
 
     public function __construct()
     {
@@ -36,6 +38,7 @@ class GradebookController extends BaseController
         $this->gradebookModel      = new GradebookModel();
         $this->studentModel        = new StudentModel();
         $this->gradebookScoreModel = new GradebookScoreModel();
+        $this->gradeModel          = new GradeModel();
     }
 
     /**
@@ -293,4 +296,341 @@ class GradebookController extends BaseController
         session()->setFlashdata('success', 'Nilai berhasil disimpan.');
         return redirect()->to($backUrl);
     }
+
+    public function curriculum()
+{
+    $divisionId        = $this->request->getGet('division');
+    $classId        = $this->request->getGet('class_id');
+    $academicYearId = $this->request->getGet('academic_year_id');
+    $termId         = $this->request->getGet('term_id');
+
+    // ============================================================
+    // STEP 1: BELUM PILIH CLASS
+    // Show Academic Year / Term / Grade / Class selection
+    // ============================================================
+    if (!$classId) {
+
+        // Semua classes
+        $classes = $this->classModel
+            ->select('classes.*, grades.grade_name, grades.division_id')
+            ->join('grades', 'grades.id = classes.grade')
+            ->where('grades.deleted_at', null)
+            ->where('classes.division_id',$divisionId)
+            ->orderBy('grades.grade_name')
+            ->orderBy('classes.class_name')
+            ->findAll();
+
+        // Semua academic years
+        $academicYears = $this->academicYearModel
+            ->where('academic_years.division_id',$divisionId)
+            ->orderBy('start_date', 'DESC')
+            ->findAll();
+
+        // Semua terms + academic year
+        $terms = $this->termModel
+            ->select('
+                terms.*,
+                semesters.academic_year_id,
+                semesters.name as semester_name
+            ')
+            ->join('semesters', 'semesters.id = terms.semester_id')
+            ->orderBy('terms.start_date', 'DESC')
+            ->findAll();
+
+        return view('gradebook/curriculum_select', [
+            'classes'                => $classes,
+            'academicYears'          => $academicYears,
+            'terms'                  => $terms,
+            'selectedAcademicYearId' => $academicYearId,
+            'selectedTermId'         => $termId,
+        ]);
+    }
+
+    // ============================================================
+    // STEP 2: CLASS SUDAH DIPILIH
+    // Show all subjects + grades
+    // ============================================================
+
+    if (!$termId) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException(
+            'term_id wajib diisi.'
+        );
+    }
+
+    // Class
+    $class = $this->classModel
+        ->select('classes.*, grades.grade_name, grades.division_id')
+        ->join('grades', 'grades.id = classes.grade')
+        ->where('classes.id', $classId)
+        ->first();
+
+    if (!$class) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException(
+            'Class not found.'
+        );
+    }
+
+    // Term
+    $term = $this->termModel->find($termId);
+
+    if (!$term) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException(
+            'Term not found.'
+        );
+    }
+
+    // Semester
+    $semester = $this->semesterModel->find($term['semester_id']);
+
+    if (!$semester) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException(
+            'Semester not found.'
+        );
+    }
+
+    // Academic year derived from term
+    $academicYearId = $semester['academic_year_id'];
+
+    $academicYear = $this->academicYearModel->find($academicYearId);
+
+    // ============================================================
+    // STUDENTS
+    // ============================================================
+
+    $students = $this->studentModel
+        ->where('class_id', $classId)
+        ->where('deleted_at', null)
+        ->orderBy('name', 'ASC')
+        ->findAll();
+
+    // ============================================================
+    // SUBJECTS
+    // ============================================================
+
+    $subjects = $this->subjectModel
+        ->where('division_id', $class['division_id'])
+        ->orderBy('subject_name', 'ASC')
+        ->findAll();
+
+    // ============================================================
+    // GRADEBOOKS
+    // ============================================================
+
+    $gradebooks = $this->gradebookModel
+        ->where('class_id', $classId)
+        ->where('term_id', $termId)
+        ->findAll();
+
+    $gradebookMap = [];
+
+    foreach ($gradebooks as $gradebook) {
+        $gradebookMap[$gradebook['subject_id']] = $gradebook;
+    }
+
+    // ============================================================
+    // SCORES
+    // ============================================================
+
+    $scores = [];
+
+    if (!empty($gradebooks)) {
+
+        $gradebookIds = array_column($gradebooks, 'id');
+
+        $rawScores = $this->gradebookScoreModel
+            ->whereIn('gradebook_id', $gradebookIds)
+            ->findAll();
+
+        foreach ($rawScores as $score) {
+
+            $scores[$score['gradebook_id']][$score['student_id']] = $score;
+        }
+    }
+
+    // ============================================================
+    // SUBJECT + SCORE DATA
+    // ============================================================
+
+    $subjectGrades = [];
+
+    foreach ($subjects as $subject) {
+
+        $gradebook = $gradebookMap[$subject['id']] ?? null;
+
+        $subjectGrades[] = [
+            'subject'   => $subject,
+            'gradebook' => $gradebook,
+            'scores'    => $gradebook
+                ? ($scores[$gradebook['id']] ?? [])
+                : [],
+        ];
+    }
+
+    return view('gradebook/curriculum', [
+        'class'          => $class,
+        'students'       => $students,
+        'subjects'       => $subjectGrades,
+        'term'           => $term,
+        'semester'       => $semester,
+        'academicYear'   => $academicYear,
+        'classId'        => $classId,
+        'termId'         => $termId,
+        'academicYearId' => $academicYearId,
+    ]);
+}
+
+private function curriculumGradeReport($classId, $academicYearId, $termId)
+{
+    // ============================================================
+    // Validate Class
+    // ============================================================
+
+    $class = $this->classModel
+        ->select('
+            classes.*,
+            grades.grade_name
+        ')
+        ->join('grades', 'grades.id = classes.grade')
+        ->where('classes.id', $classId)
+        ->first();
+
+    if (!$class) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException(
+            'Class not found.'
+        );
+    }
+
+    // ============================================================
+    // Validate Academic Year
+    // ============================================================
+
+    $academicYear = $this->academicYearModel->find($academicYearId);
+
+    if (!$academicYear) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException(
+            'Academic year not found.'
+        );
+    }
+
+    // ============================================================
+    // Validate Term
+    // ============================================================
+
+    $term = $this->termModel->find($termId);
+
+    if (!$term) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException(
+            'Term not found.'
+        );
+    }
+
+    // Make sure term actually belongs to selected academic year
+    $semester = $this->semesterModel->find($term['semester_id']);
+
+    if (!$semester || $semester['academic_year_id'] != $academicYearId) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException(
+            'Term does not belong to this academic year.'
+        );
+    }
+
+    // ============================================================
+    // Students
+    // ============================================================
+
+    $students = $this->studentModel
+        ->where('class_id', $classId)
+        ->where('deleted_at', null)
+        ->orderBy('name', 'ASC')
+        ->findAll();
+
+    // ============================================================
+    // Subjects
+    // ============================================================
+
+    $subjects = $this->subjectModel
+        ->orderBy('subject_name', 'ASC')
+        ->findAll();
+
+    // ============================================================
+    // Gradebooks
+    // ============================================================
+
+    $gradebooks = $this->gradebookModel
+        ->where('term_id', $termId)
+        ->where('class_id', $classId)
+        ->findAll();
+
+    // Map:
+    // [subject_id] => gradebook
+    $gradebookMap = [];
+
+    foreach ($gradebooks as $gradebook) {
+        $gradebookMap[$gradebook['subject_id']] = $gradebook;
+    }
+
+    // ============================================================
+    // Scores
+    // ============================================================
+
+    $scores = [];
+
+    if (!empty($gradebooks)) {
+
+        $gradebookIds = array_column($gradebooks, 'id');
+
+        $rawScores = $this->gradebookScoreModel
+            ->whereIn('gradebook_id', $gradebookIds)
+            ->findAll();
+
+        foreach ($rawScores as $score) {
+            $scores[$score['student_id']][$score['gradebook_id']] = $score;
+        }
+    }
+
+    // ============================================================
+    // Build final report
+    // ============================================================
+
+    $report = [];
+
+    foreach ($students as $student) {
+
+        $studentId = $student['id'];
+
+        $report[$studentId] = [
+            'student' => $student,
+            'subjects' => []
+        ];
+
+        foreach ($subjects as $subject) {
+
+            $subjectId = $subject['id'];
+
+            $gradebook = $gradebookMap[$subjectId] ?? null;
+
+            $score = null;
+
+            if ($gradebook) {
+                $score = $scores[$studentId][$gradebook['id']] ?? null;
+            }
+
+            $report[$studentId]['subjects'][$subjectId] = [
+                'subject' => $subject,
+                'score'   => $score
+            ];
+        }
+    }
+
+    return view('curriculum/grade_report', [
+        'class'          => $class,
+        'academicYear'   => $academicYear,
+        'semester'       => $semester,
+        'term'           => $term,
+        'students'       => $students,
+        'subjects'       => $subjects,
+        'gradebooks'     => $gradebookMap,
+        'scores'         => $scores,
+        'report'         => $report,
+    ]);
+}
 }
