@@ -299,3 +299,30 @@ $routes->post(
     'user-subject/update/(:num)',
     'UserSubjectController::update/$1'
 );
+
+
+// GRADEBOOK
+
+$routes->get('gradebook', 'GradebookController::index');
+$routes->post('gradebook/save', 'GradebookController::save');
+
+$routes->group('lock', ['filter' => 'curriculum'], function ($routes) {
+    $routes->get('terms', 'TermLockController::index');
+    $routes->post('terms/(:num)/lock', 'TermLockController::lockTerm/$1');
+    $routes->post('terms/(:num)/unlock', 'TermLockController::unlockTerm/$1');
+    $routes->get('terms/(:num)', 'TermLockController::termDetail/$1');
+    $routes->post('gradebooks/(:num)/override', 'TermLockController::overrideGradebook/$1');
+});
+
+$routes->group('academic-year', ['filter' => 'curriculum'], function ($routes) {
+    $routes->get('/', 'AcademicYearController::index');
+    $routes->post('create', 'AcademicYearController::create');
+    $routes->post('(:num)/update', 'AcademicYearController::update/$1');
+    $routes->post('(:num)/set-active', 'AcademicYearController::setActive/$1');
+
+    $routes->get('(:num)', 'AcademicYearController::detail/$1');
+    $routes->post('(:num)/semester/add', 'AcademicYearController::addSemester/$1');
+    $routes->post('semester/(:num)/update', 'AcademicYearController::updateSemester/$1');
+    $routes->post('semester/(:num)/term/add', 'AcademicYearController::addTerm/$1');
+    $routes->post('term/(:num)/update', 'AcademicYearController::updateTerm/$1');
+});

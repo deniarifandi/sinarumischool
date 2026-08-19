@@ -326,16 +326,6 @@ if (!function_exists('safe_url')) {
                             <span>Students Late Arrival Slip</span>
                         </a>
 
-                        <?php if (in_array($user['role'], ['superadmin', 'teacher', 'teacher_admin'])): ?>
-
-                            <a href="<?= base_url('socioreport?divisi=' . $d['id']) ?>"
-                               class="nav-item-btn">
-                                <i class="bi bi-heart-pulse"></i>
-                                <span>Socio-Emotional Report</span>
-                            </a>
-
-                        <?php endif; ?>
-
                     <?php endif; ?>
 
                     <a href="<?= base_url('student/dashboard?division=' . $d['id']) ?>"
@@ -387,6 +377,18 @@ if (!function_exists('safe_url')) {
                             <span>Subject Management</span>
                         </a>
 
+                        <a href="<?= base_url('academic-year?division=' . $d['id']) ?>"
+                           class="nav-item-btn">
+                            <i class="bi bi-pencil-square"></i>
+                            <span>Academic Year</span>
+                        </a>
+
+                        <a href="<?= base_url('lock/terms?division=' . $d['id'])?>"
+                           class="nav-item-btn">
+                            <i class="bi bi-pencil-square"></i>
+                            <span>Lock Terms</span>
+                        </a>
+
                     </div>
 
                 </div>
@@ -411,10 +413,14 @@ if (!function_exists('safe_url')) {
                     <i class="bi bi-check2-square"></i>
                     <span>Take Student Presence</span>
                 </a>
-              <!--   <a href="<?= base_url('student/attendance/list/class/'.$mainClass["id"]) ?>" class="nav-item-btn">
-                    <i class="bi bi-list-check"></i>
-                    <span>Attendance Overview</span>
-                </a> -->
+                            <a href="<?= base_url('socioreport?divisi=' . $d['id']) ?>"
+                               class="nav-item-btn">
+                                <i class="bi bi-heart-pulse"></i>
+                                <span>Socio-Emotional Report</span>
+                            </a>
+
+                        
+
             </div>
         </div>
     </div>
@@ -439,7 +445,10 @@ if (!function_exists('safe_url')) {
                                                 <i class="bi bi-collection me-1"></i> Units & Sub-Units
                                             </a>
                                             <a href="<?= base_url('outcome?subject_id='.$sub['subject_id']) ?>" class="btn btn-sm btn-outline-secondary flex-grow-1">
-                                                <i class="bi bi-bullseye me-1"></i> Outcom. & Objectives
+                                                <i class="bi bi-bullseye me-1"></i> Outcome & Objectives
+                                            </a>
+                                            <a href="<?= base_url('gradebook?subject_id='.$sub['subject_id']) ?>" class="btn btn-sm btn-outline-secondary flex-grow-1">
+                                                <i class="bi bi-pencil me-1"></i> GradeBook
                                             </a>
                                         </div>
                                     </div>

@@ -93,4 +93,17 @@ class StudentModel extends Model
                     ->where('deleted_at', null)
                     ->findAll();
     }
+
+    public function getStudentsWithScores($classId, $gradebookId)
+{
+    return $this->select('students.id, students.name, students.student_code,
+                           gs.id as score_id, gs.ct1, gs.ct1_remedial,
+                           gs.ct2, gs.ct2_remedial,
+                           gs.individual_project, gs.group_project')
+        ->join('gradebook_scores gs', "gs.student_id = students.id AND gs.gradebook_id = {$gradebookId}", 'left')
+        ->where('students.class_id', $classId)
+        ->where('students.deleted_at', null)
+        ->orderBy('students.name', 'ASC')
+        ->findAll();
+}
 }
