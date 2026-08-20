@@ -45,9 +45,19 @@
                     <i class="bi bi-x-lg me-1"></i>
                     Close
                 </button>
+
+                 <button type="button" onclick="exportGradebookToExcel()" class="btn btn-outline-success rounded-pill px-4">
+                    <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+                </button>
             </div>
 
         </div>
+
+        <br>
+
+        <button type="button" onclick="toggleStudentNames()" id="toggleNameBtn" class="btn btn-outline-warning rounded-pill px-4">
+            <i class="bi bi-eye-slash me-1"></i> Hide Names
+        </button>
 
     </div>
 
@@ -379,5 +389,93 @@
     <?php endif; ?>
 
 </div>
+
+<?= $this->endSection() ?>
+
+<?= $this->section('script') ?>
+
+<script>
+function exportGradebookToExcel() {
+    const wb = XLSX.utils.book_new();
+
+    document.querySelectorAll('.glass-card').forEach(card => {
+        const titleEl = card.querySelector('h5');
+        const table = card.querySelector('table');
+
+        if (!titleEl || !table) return;
+
+        let sheetName = titleEl.innerText.trim().replace(/[:\\\/\?\*\[\]]/g, '-').substring(0, 31);
+        if (!sheetName) sheetName = 'Subject';
+
+        const ws = XLSX.utils.table_to_sheet(table, { raw: false });
+
+        // ---- Auto-fit column widths ----
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        const colWidths = [];
+
+        for (let col = range.s.c; col <= range.e.c; col++) {
+            let maxLen = 5; // minimum width
+
+            for (let row = range.s.r; row <= range.e.r; row++) {
+                const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
+                const cell = ws[cellRef];
+
+                if (cell && cell.v != null) {
+                    const len = String(cell.v).length;
+                    if (len > maxLen) maxLen = len;
+                }
+            }
+
+            colWidths.push({ wch: maxLen + 2 }); // padding
+        }
+
+        ws['!cols'] = colWidths;
+
+        XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    });
+
+    const className = document.querySelector('.badge.bg-primary')?.innerText.trim() || 'Class';
+    const termName  = document.querySelector('.badge.bg-info')?.innerText.trim() || 'Term';
+
+    XLSX.writeFile(wb, `Gradebook_${className}_${termName}.xlsx`.replace(/\s+/g, '_'));
+}
+</script>
+
+<script>
+const STORAGE_KEY = 'gradebook_names_hidden';
+let namesHidden = localStorage.getItem(STORAGE_KEY) === 'true';
+
+function applyNameVisibility() {
+    document.querySelectorAll('table tbody tr').forEach(row => {
+        const nameCell = row.children[1]; // 2nd column = Student
+        if (!nameCell) return;
+
+        const strongEl = nameCell.querySelector('strong');
+        if (!strongEl) return;
+
+        if (!strongEl.dataset.originalName) {
+            strongEl.dataset.originalName = strongEl.innerText;
+        }
+
+        strongEl.innerText = namesHidden ? '••••••••' : strongEl.dataset.originalName;
+    });
+
+    const btn = document.getElementById('toggleNameBtn');
+    if (btn) {
+        btn.innerHTML = namesHidden
+            ? '<i class="bi bi-eye me-1"></i> Show Names'
+            : '<i class="bi bi-eye-slash me-1"></i> Hide Names';
+    }
+}
+
+function toggleStudentNames() {
+    namesHidden = !namesHidden;
+    localStorage.setItem(STORAGE_KEY, namesHidden);
+    applyNameVisibility();
+}
+
+// Run on page load, before user clicks anything
+document.addEventListener('DOMContentLoaded', applyNameVisibility);
+</script>
 
 <?= $this->endSection() ?>
