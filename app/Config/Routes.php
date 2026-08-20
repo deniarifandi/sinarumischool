@@ -306,6 +306,8 @@ $routes->post(
 $routes->get('gradebook', 'GradebookController::index');
 $routes->post('gradebook/save', 'GradebookController::save');
 $routes->get('gradebook/curriculum', 'GradebookController::curriculum');
+$routes->get('gradebook/directory', 'StudentDashboardController::directory');
+$routes->get('student/dashboard/(:num)', 'StudentDashboardController::dashboard/$1');
 
 $routes->group('lock', ['filter' => 'curriculum'], function ($routes) {
     $routes->get('terms', 'TermLockController::index');

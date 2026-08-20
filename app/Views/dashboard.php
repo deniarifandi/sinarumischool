@@ -340,6 +340,12 @@ if (!function_exists('safe_url')) {
                         <span>User Subject Assignments</span>
                     </a>
 
+                    <a href="<?= base_url('gradebook/directory?division=' . $d['id'])?>"
+                           class="nav-item-btn">
+                            <i class="bi bi-person-workspace"></i>
+                            <span>Student History</span>
+                        </a>
+
                 </div>
 
             </div>
