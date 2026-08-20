@@ -46,7 +46,7 @@
                     Close
                 </button>
 
-                 <button type="button" onclick="exportGradebookToExcel()" class="btn btn-outline-success rounded-pill px-4">
+                 <button type="button" onclick="exportGradebookToExcel()" class="btn btn-success rounded-pill px-4">
                     <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
                 </button>
             </div>
