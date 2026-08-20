@@ -106,4 +106,42 @@ class StudentModel extends Model
         ->orderBy('students.name', 'ASC')
         ->findAll();
 }
+
+public function getAttendanceSummary(int $studentId, int $classId, string $startDate, string $endDate): array
+{
+    $totalMeetings = $this->db->table('absensi')
+        ->select('tanggal')
+        ->where('murid_id', $studentId)
+        ->where('tanggal >=', $startDate)
+        ->where('tanggal <=', $endDate)
+        ->groupBy('tanggal')
+        ->countAllResults();
+
+    $rows = $this->db->table('absensi')
+        ->select('status, COUNT(*) as total')
+        ->where('murid_id', $studentId)
+        ->where('tanggal >=', $startDate)
+        ->where('tanggal <=', $endDate)
+        ->where('deleted_at', null)
+        ->groupBy('status')
+        ->get()
+        ->getResultArray();
+
+    $counts = ['sickness' => 0, 'authorized' => 0, 'unauthorized' => 0];
+
+    foreach ($rows as $row) {
+        switch ((int) $row['status']) {
+            case 2: $counts['authorized']   = (int) $row['total']; break; // Izin
+            case 3: $counts['sickness']     = (int) $row['total']; break; // Sakit
+            case 4: $counts['unauthorized'] = (int) $row['total']; break; // Alpha
+        }
+    }
+
+    return [
+        'sickness'       => $counts['sickness'],
+        'authorized'     => $counts['authorized'],
+        'unauthorized'   => $counts['unauthorized'],
+        'total_meetings' => $totalMeetings,
+    ];
+}
 }

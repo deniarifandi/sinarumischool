@@ -71,6 +71,8 @@ class ReportCardController extends BaseController
     ]);
 }
 
+
+
     public function student($studentId)
 {
     $classId        = $this->request->getGet('class_id');
@@ -306,12 +308,12 @@ class ReportCardController extends BaseController
     |
     */
 
-    $attendance = [
-        'sickness'       => 0,
-        'authorized'     => 0,
-        'unauthorized'   => 0,
-        'total_meetings' => 0,
-    ];
+    $attendance = $this->studentModel->getAttendanceSummary(
+    (int) $studentId,
+    (int) $classId,
+    $term['start_date'],
+    $term['end_date']
+);
 
 
     /*
