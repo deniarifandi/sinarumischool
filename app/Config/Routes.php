@@ -313,7 +313,11 @@ $routes->group('lock', ['filter' => 'curriculum'], function ($routes) {
     $routes->post('terms/(:num)/unlock', 'TermLockController::unlockTerm/$1');
     $routes->get('terms/(:num)', 'TermLockController::termDetail/$1');
     $routes->post('gradebooks/(:num)/override', 'TermLockController::overrideGradebook/$1');
+
 });
+
+$routes->get('report-card/class/(:num)', 'ReportCardController::class/$1');
+$routes->get('report-card/student/(:num)', 'ReportCardController::student/$1');
 
 
 

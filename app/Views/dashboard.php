@@ -386,7 +386,7 @@ if (!function_exists('safe_url')) {
                         <a href="<?= base_url('gradebook/curriculum?division=' . $d['id'])?>"
                            class="nav-item-btn">
                             <i class="bi bi-eye-fill"></i>
-                            <span>Gradebook Verivication</span>
+                            <span>Gradebook Verification</span>
                         </a>
 
                     </div>
@@ -406,24 +406,35 @@ if (!function_exists('safe_url')) {
     <!-- Class Context Action Modules -->
     <?php if (in_array($user['role'], ['superadmin', 'teacher', 'teacher_admin']) && isset($mainClass['id'])): ?>
     <div class="dashboard-card">
-        <div class="dashboard-card-header"><i class="bi bi-door-closed me-2 text-success"></i>Class Room Management</div>
-        <div class="dashboard-card-body">
-            <div class="nav-grid">
-                <a href="<?= base_url('student/attendance/class/'.$mainClass["id"]) ?>" class="nav-item-btn">
-                    <i class="bi bi-check2-square"></i>
-                    <span>Take Student Presence</span>
-                </a>
-                            <a href="<?= base_url('socioreport?divisi=' . $d['id']) ?>"
-                               class="nav-item-btn">
-                                <i class="bi bi-heart-pulse"></i>
-                                <span>Socio-Emotional Report</span>
-                            </a>
+    <div class="dashboard-card-header">
+        <i class="bi bi-door-closed me-2 text-success"></i>
+        Class Room Management
+    </div>
 
-                        
+    <div class="dashboard-card-body">
+        <div class="nav-grid">
 
-            </div>
+            <a href="<?= base_url('student/attendance/class/' . $mainClass['id']) ?>"
+               class="nav-item-btn">
+                <i class="bi bi-check2-square"></i>
+                <span>Take Student Presence</span>
+            </a>
+
+            <a href="<?= base_url('socioreport?divisi=' . $d['id']) ?>"
+               class="nav-item-btn">
+                <i class="bi bi-heart-pulse"></i>
+                <span>Socio-Emotional Report</span>
+            </a>
+
+            <a href="<?= base_url('report-card/class/' . $mainClass['id']) ?>"
+               class="nav-item-btn">
+                <i class="bi bi-file-earmark-person-fill"></i>
+                <span>Report Card</span>
+            </a>
+
         </div>
     </div>
+</div>
     <?php endif ?>
 
     <!-- Subject Strategy Elements filtered by Active Selected Division Name matching -->

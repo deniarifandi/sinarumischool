@@ -65,8 +65,61 @@
         <?php foreach ($subjects as $subjectData): ?>
 
             <?php
+            // =====================================================
+            // SUBJECT DATA
+            // =====================================================
+
             $subject = $subjectData['subject'];
             $scores  = $subjectData['scores'];
+
+            $subjectName = trim($subject['subject_name'] ?? '');
+
+
+            // =====================================================
+            // RELIGION MAPPING
+            // =====================================================
+
+            $religionMap = [
+                'islam'     => 'islam',
+
+                'christian' => 'christian',
+                'kristen'   => 'christian',
+
+                'catholic'  => 'catholic',
+                'katolik'   => 'catholic',
+
+                'buddhist'  => 'buddhist',
+                'buddha'    => 'buddhist',
+                'budha'     => 'buddhist',
+
+                'hindu'     => 'hindu',
+            ];
+
+
+            // =====================================================
+            // DETECT RELIGION SUBJECT
+            // =====================================================
+
+            $isReligionSubject = false;
+            $subjectReligion   = null;
+
+            if (
+                preg_match(
+                    '/^Religion\s*:\s*(.+)$/i',
+                    $subjectName,
+                    $matches
+                )
+            ) {
+
+                $isReligionSubject = true;
+
+                $subjectReligion = strtolower(
+                    trim($matches[1])
+                );
+
+                $subjectReligion =
+                    $religionMap[$subjectReligion] ?? null;
+            }
             ?>
 
             <div class="glass-card p-3 mb-4">
@@ -76,16 +129,23 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
 
                     <div>
+
                         <h5 class="fw-bold text-light mb-1">
+
                             <i class="bi bi-book-half text-warning me-2"></i>
-                            <?= esc($subject['subject_name']) ?>
+
+                            <?= esc($subjectName) ?>
+
                         </h5>
 
                         <?php if (!empty($subject['subject_code'])): ?>
+
                             <small class="text-white-50">
                                 <?= esc($subject['subject_code']) ?>
                             </small>
+
                         <?php endif; ?>
+
                     </div>
 
                 </div>
@@ -118,14 +178,17 @@
                                 </th>
 
                                 <th rowspan="2" class="text-center">
-                                    Individual<br>Project
+                                    Individual<br>
+                                    Project
                                 </th>
 
                                 <th rowspan="2" class="text-center">
-                                    Group<br>Project
+                                    Group<br>
+                                    Project
                                 </th>
 
                             </tr>
+
 
                             <tr>
 
@@ -149,54 +212,159 @@
 
                         </thead>
 
+
                         <tbody>
 
-                        <?php foreach ($students as $index => $student): ?>
-
-                            <?php
-                            $studentId = $student['id'];
-                            $score = $scores[$studentId] ?? [];
-                            ?>
+                        <?php if (empty($students)): ?>
 
                             <tr>
 
-                                <td class="text-center">
-                                    <?= $index + 1 ?>
-                                </td>
-
-                                <td>
-                                    <strong>
-                                        <?= esc($student['name']) ?>
-                                    </strong>
-                                </td>
-
-                                <td class="text-center">
-                                    <?= esc($score['ct1'] ?? '-') ?>
-                                </td>
-
-                                <td class="text-center">
-                                    <?= esc($score['ct1_remedial'] ?? '-') ?>
-                                </td>
-
-                                <td class="text-center">
-                                    <?= esc($score['ct2'] ?? '-') ?>
-                                </td>
-
-                                <td class="text-center">
-                                    <?= esc($score['ct2_remedial'] ?? '-') ?>
-                                </td>
-
-                                <td class="text-center">
-                                    <?= esc($score['individual_project'] ?? '-') ?>
-                                </td>
-
-                                <td class="text-center">
-                                    <?= esc($score['group_project'] ?? '-') ?>
+                                <td
+                                    colspan="8"
+                                    class="text-center text-muted"
+                                >
+                                    No students found.
                                 </td>
 
                             </tr>
 
-                        <?php endforeach; ?>
+                        <?php else: ?>
+
+                            <?php foreach ($students as $index => $student): ?>
+
+                                <?php
+                                // =================================================
+                                // STUDENT
+                                // =================================================
+
+                                $studentId = $student['id'];
+
+                                $score = $scores[$studentId] ?? [];
+
+
+                                // =================================================
+                                // STUDENT RELIGION
+                                // =================================================
+
+                                $studentReligion = strtolower(
+                                    trim(
+                                        $student['murid_agama'] ?? ''
+                                    )
+                                );
+
+                                $studentReligion =
+                                    $religionMap[$studentReligion] ?? null;
+
+
+                                // =================================================
+                                // RELIGION MISMATCH
+                                // =================================================
+
+                                $religionMismatch = (
+                                    $isReligionSubject &&
+                                    $subjectReligion !== null &&
+                                    $studentReligion !== $subjectReligion
+                                );
+
+
+                                // Grey row
+                                $rowClass = $religionMismatch
+                                    ? 'table-secondary text-muted'
+                                    : '';
+                                ?>
+
+                                <tr class="<?= $rowClass ?>">
+
+                                    <!-- NUMBER -->
+
+                                    <td class="text-center">
+
+                                        <?= $index + 1 ?>
+
+                                    </td>
+
+
+                                    <!-- STUDENT -->
+
+                                    <td>
+
+                                        <strong>
+                                            <?= esc($student['name']) ?>
+                                        </strong>
+
+                                    </td>
+
+
+                                    <!-- CT1 -->
+
+                                    <td class="text-center">
+
+                                        <?= esc(
+                                            $score['ct1'] ?? '-'
+                                        ) ?>
+
+                                    </td>
+
+
+                                    <!-- CT1 REMEDIAL -->
+
+                                    <td class="text-center">
+
+                                        <?= esc(
+                                            $score['ct1_remedial'] ?? '-'
+                                        ) ?>
+
+                                    </td>
+
+
+                                    <!-- CT2 -->
+
+                                    <td class="text-center">
+
+                                        <?= esc(
+                                            $score['ct2'] ?? '-'
+                                        ) ?>
+
+                                    </td>
+
+
+                                    <!-- CT2 REMEDIAL -->
+
+                                    <td class="text-center">
+
+                                        <?= esc(
+                                            $score['ct2_remedial'] ?? '-'
+                                        ) ?>
+
+                                    </td>
+
+
+                                    <!-- INDIVIDUAL PROJECT -->
+
+                                    <td class="text-center">
+
+                                        <?= esc(
+                                            $score['individual_project'] ?? '-'
+                                        ) ?>
+
+                                    </td>
+
+
+                                    <!-- GROUP PROJECT -->
+
+                                    <td class="text-center">
+
+                                        <?= esc(
+                                            $score['group_project'] ?? '-'
+                                        ) ?>
+
+                                    </td>
+
+                                </tr>
+
+                            <?php endforeach; ?>
+
+                        <?php endif; ?>
 
                         </tbody>
 
