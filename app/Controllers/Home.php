@@ -75,11 +75,21 @@ class Home extends BaseController
     }
 public function whatsappWebhook()
 {
-    return $this->response->setJSON([
-        'query_string' => $_SERVER['QUERY_STRING'] ?? null,
-        'get'          => $_GET,
-        'uri'          => current_url(true)->getQuery(),
-    ]);
+    $mode      = $_GET['hub_mode'] ?? null;
+    $token     = $_GET['hub_verify_token'] ?? null;
+    $challenge = $_GET['hub_challenge'] ?? null;
+
+    $verifyToken = 'sinarumi_whatsapp_webhook_8f92Kx2026';
+
+    if ($mode === 'subscribe' && $token === $verifyToken) {
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody($challenge);
+    }
+
+    return $this->response
+        ->setStatusCode(403)
+        ->setBody('Verification failed');
 }
 
 
