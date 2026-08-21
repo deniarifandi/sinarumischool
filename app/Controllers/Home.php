@@ -123,10 +123,6 @@ public function whatsappWebhook()
         $data['entry'][0]['changes'][0]['value']['messages'][0]
         ?? null;
 
-    /*
-     * WhatsApp can also send webhook events
-     * that don't contain a message.
-     */
     if (!$messageData) {
         return $this->response
             ->setStatusCode(200)
@@ -135,7 +131,7 @@ public function whatsappWebhook()
 
 
     // ==========================================
-    // Sender
+    // Sender Phone
     // ==========================================
 
     $phone = $messageData['from'] ?? null;
@@ -146,22 +142,15 @@ public function whatsappWebhook()
             ->setBody('No sender');
     }
 
-
-    // Remove +, spaces, -, etc.
+    // Keep numbers only
     $phone = preg_replace('/[^0-9]/', '', $phone);
 
 
     // ==========================================
-    // Normalize Indonesian Phone Number
+    // Normalize Indonesia Phone Number
+    // WhatsApp: 628123456789
+    // Database: 08123456789
     // ==========================================
-
-    /*
-     * WhatsApp:
-     * 628123456789
-     *
-     * Database:
-     * 08123456789
-     */
 
     $phoneSearch = $phone;
 
@@ -190,7 +179,7 @@ public function whatsappWebhook()
 
 
     // ==========================================
-    // User Not Found
+    // User Not Registered
     // ==========================================
 
     if (!$user) {
@@ -198,19 +187,14 @@ public function whatsappWebhook()
         $responseText =
             'Nomor WhatsApp Anda belum terdaftar.' .
             "\n\n" .
-            'Nomor yang diterima: ' . $phone .
-            "\n" .
-            'Nomor yang dicari: ' . $phoneSearch;
+            'Nomor: ' . $phoneSearch;
 
         $db->table('absen_wa_test')->insert([
             'user_id'      => null,
             'phone'        => $phone,
             'message_type' => $messageData['type'] ?? null,
-            'latitude'     => null,
-            'longitude'    => null,
             'status'       => null,
-            'message'      => $messageData['text']['body']
-                ?? '[location]',
+            'message'      => $messageData['text']['body'] ?? '',
             'response'     => $responseText
         ]);
 
@@ -221,180 +205,82 @@ public function whatsappWebhook()
 
 
     // ==========================================
-    // Message Type
+    // Only Process Text Messages
     // ==========================================
 
-    $messageType = $messageData['type'] ?? null;
+    if (($messageData['type'] ?? '') !== 'text') {
+
+        $responseText =
+            'Silakan kirim salah satu perintah:' .
+            "\n\n" .
+            'absen' .
+            "\n" .
+            'izin' .
+            "\n" .
+            'sakit';
+
+        $db->table('absen_wa_test')->insert([
+            'user_id'      => $user['id'],
+            'phone'        => $phone,
+            'message_type' => $messageData['type'] ?? null,
+            'status'       => null,
+            'message'      => '[non-text]',
+            'response'     => $responseText
+        ]);
+
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody($responseText);
+    }
 
 
-    // =====================================================
-    // CASE 1: TEXT MESSAGE
-    // =====================================================
+    // ==========================================
+    // Get Message
+    // ==========================================
 
-    if ($messageType === 'text') {
-
-        $message = strtolower(trim(
-            $messageData['text']['body'] ?? ''
-        ));
+    $message = strtolower(trim(
+        $messageData['text']['body'] ?? ''
+    ));
 
 
-        // ==========================================
-        // Attendance Status
-        // ==========================================
+    // ==========================================
+    // Attendance Status
+    // ==========================================
 
-        $statusMap = [
-            'absen' => 1, // Hadir
-            'izin'  => 2, // Izin
-            'sakit' => 3, // Sakit
-        ];
-
-
-        // ==========================================
-        // Invalid Command
-        // ==========================================
-
-        if (!isset($statusMap[$message])) {
-
-            $responseText =
-                'Perintah tidak dikenali.' .
-                "\n\n" .
-                'Gunakan:' .
-                "\n" .
-                'absen = Hadir' .
-                "\n" .
-                'izin = Izin' .
-                "\n" .
-                'sakit = Sakit';
-
-            $db->table('absen_wa_test')->insert([
-                'user_id'      => $user['id'],
-                'phone'        => $phone,
-                'message_type' => 'text',
-                'latitude'     => null,
-                'longitude'    => null,
-                'status'       => null,
-                'message'      => $message,
-                'response'     => $responseText
-            ]);
-
-            return $this->response
-                ->setStatusCode(200)
-                ->setBody($responseText);
-        }
+    $statusMap = [
+        'absen' => 1,
+        'izin'  => 2,
+        'sakit' => 3,
+    ];
 
 
-        // ==========================================
-        // Get Requested Status
-        // ==========================================
+    // ==========================================
+    // Invalid Command
+    // ==========================================
 
-        $status = $statusMap[$message];
-
-
-        // ==========================================
-        // Check Today's Attendance
-        // ==========================================
-
-        $today = date('Y-m-d');
-
-        $existing = $db->table('presensidata')
-            ->where('guru_id', $user['id'])
-            ->where('presensidata_tanggal', $today)
-            ->where('deleted_at IS NULL', null, false)
-            ->get()
-            ->getRowArray();
-
-
-        // ==========================================
-        // Already Attended
-        // ==========================================
-
-        if ($existing) {
-
-            $existingStatus = (int) $existing['status'];
-
-            $statusNames = [
-                1 => 'Hadir',
-                2 => 'Izin',
-                3 => 'Sakit'
-            ];
-
-            $existingStatusName =
-                $statusNames[$existingStatus]
-                ?? 'Unknown';
-
-
-            $responseText =
-                'Anda sudah melakukan absensi hari ini.' .
-                "\n\n" .
-                'Status: ' . $existingStatusName;
-
-
-            $db->table('absen_wa_test')->insert([
-                'user_id'      => $user['id'],
-                'phone'        => $phone,
-                'message_type' => 'text',
-                'latitude'     => null,
-                'longitude'    => null,
-                'status'       => $status,
-                'message'      => $message,
-                'response'     => $responseText
-            ]);
-
-
-            return $this->response
-                ->setStatusCode(200)
-                ->setBody($responseText);
-        }
-
-
-        // ==========================================
-        // Ask User to Send Location
-        // ==========================================
-
-        $statusNames = [
-            1 => 'Hadir',
-            2 => 'Izin',
-            3 => 'Sakit'
-        ];
-
-        $statusName = $statusNames[$status];
-
+    if (!isset($statusMap[$message])) {
 
         $responseText =
             'Halo ' . $user['name'] . '.' .
             "\n\n" .
-            'Status absensi: ' . $statusName .
+            'Perintah tidak dikenali.' .
             "\n\n" .
-            'Silakan kirim lokasi Anda melalui WhatsApp untuk melanjutkan absensi.';
-
-
-        // ==========================================
-        // Save Waiting State
-        // ==========================================
+            'Gunakan:' .
+            "\n" .
+            'absen = Hadir' .
+            "\n" .
+            'izin = Izin' .
+            "\n" .
+            'sakit = Sakit';
 
         $db->table('absen_wa_test')->insert([
             'user_id'      => $user['id'],
             'phone'        => $phone,
             'message_type' => 'text',
-            'latitude'     => null,
-            'longitude'    => null,
-            'status'       => $status,
+            'status'       => null,
             'message'      => $message,
-            'response'     => 'WAITING_LOCATION'
+            'response'     => $responseText
         ]);
-
-
-        /*
-         * IMPORTANT:
-         *
-         * This currently only returns the response
-         * to Meta.
-         *
-         * It does NOT send a WhatsApp message to the user.
-         *
-         * WhatsApp Cloud API sending will be added separately.
-         */
-
 
         return $this->response
             ->setStatusCode(200)
@@ -402,316 +288,63 @@ public function whatsappWebhook()
     }
 
 
-    // =====================================================
-    // CASE 2: LOCATION MESSAGE
-    // =====================================================
+    // ==========================================
+    // Get Status
+    // ==========================================
 
-    if ($messageType === 'location') {
+    $status = $statusMap[$message];
 
-        $latitude =
-            $messageData['location']['latitude']
-            ?? null;
+    $statusNames = [
+        1 => 'Hadir',
+        2 => 'Izin',
+        3 => 'Sakit'
+    ];
 
-        $longitude =
-            $messageData['location']['longitude']
-            ?? null;
+    $statusName = $statusNames[$status];
 
 
-        // ==========================================
-        // Invalid Location
-        // ==========================================
+    // ==========================================
+    // Check Today's Attendance
+    // ==========================================
 
-        if ($latitude === null || $longitude === null) {
+    $today = date('Y-m-d');
 
-            $responseText =
-                'Lokasi tidak dapat dibaca.' .
-                "\n\n" .
-                'Silakan kirim lokasi Anda kembali.';
+    $existing = $db->table('presensidata')
+        ->where('guru_id', $user['id'])
+        ->where('presensidata_tanggal', $today)
+        ->where('deleted_at IS NULL', null, false)
+        ->get()
+        ->getRowArray();
 
 
-            $db->table('absen_wa_test')->insert([
-                'user_id'      => $user['id'],
-                'phone'        => $phone,
-                'message_type' => 'location',
-                'latitude'     => $latitude,
-                'longitude'    => $longitude,
-                'status'       => null,
-                'message'      => '[location]',
-                'response'     => $responseText
-            ]);
+    // ==========================================
+    // Already Recorded
+    // ==========================================
 
+    if ($existing) {
 
-            return $this->response
-                ->setStatusCode(200)
-                ->setBody($responseText);
-        }
+        $existingStatus = (int) $existing['status'];
 
-
-        // ==========================================
-        // Find Waiting Attendance
-        // ==========================================
-
-        $waiting = $db->table('absen_wa_test')
-            ->where('user_id', $user['id'])
-            ->where('phone', $phone)
-            ->where('response', 'WAITING_LOCATION')
-            ->orderBy('id', 'DESC')
-            ->get()
-            ->getRowArray();
-
-
-        // ==========================================
-        // No Waiting Attendance
-        // ==========================================
-
-        if (!$waiting) {
-
-            $responseText =
-                'Tidak ada proses absensi yang sedang menunggu lokasi.' .
-                "\n\n" .
-                'Ketik "absen", "izin", atau "sakit" terlebih dahulu.';
-
-
-            $db->table('absen_wa_test')->insert([
-                'user_id'      => $user['id'],
-                'phone'        => $phone,
-                'message_type' => 'location',
-                'latitude'     => $latitude,
-                'longitude'    => $longitude,
-                'status'       => null,
-                'message'      => '[location]',
-                'response'     => $responseText
-            ]);
-
-
-            return $this->response
-                ->setStatusCode(200)
-                ->setBody($responseText);
-        }
-
-
-        // ==========================================
-        // Get Requested Attendance Status
-        // ==========================================
-
-        $status = (int) $waiting['status'];
-
-
-        // ==========================================
-        // School Location
-        // ==========================================
-
-        /*
-         * CHANGE THESE COORDINATES
-         * to your actual school coordinates.
-         */
-
-        $schoolLatitude  = -7.9702370;
-        $schoolLongitude = 112.6030000;
-
-
-        // Maximum allowed distance in meters
-        $allowedRadius = 100;
-
-
-        // ==========================================
-        // Calculate Distance
-        // Haversine Formula
-        // ==========================================
-
-        $earthRadius = 6371000;
-
-        $latFrom = deg2rad($schoolLatitude);
-        $latTo   = deg2rad($latitude);
-
-        $latDelta =
-            deg2rad($latitude - $schoolLatitude);
-
-        $lonDelta =
-            deg2rad($longitude - $schoolLongitude);
-
-        $a =
-            sin($latDelta / 2) ** 2 +
-            cos($latFrom) *
-            cos($latTo) *
-            sin($lonDelta / 2) ** 2;
-
-        $c = 2 * atan2(
-            sqrt($a),
-            sqrt(1 - $a)
-        );
-
-        $distance = $earthRadius * $c;
-
-
-        // ==========================================
-        // Location Too Far
-        // ==========================================
-
-        if ($distance > $allowedRadius) {
-
-            $responseText =
-                'Absensi ditolak.' .
-                "\n\n" .
-                'Jarak Anda dari sekolah: ' .
-                round($distance) .
-                ' meter.' .
-                "\n" .
-                'Batas maksimal: ' .
-                $allowedRadius .
-                ' meter.';
-
-
-            $db->table('absen_wa_test')->insert([
-                'user_id'      => $user['id'],
-                'phone'        => $phone,
-                'message_type' => 'location',
-                'latitude'     => $latitude,
-                'longitude'    => $longitude,
-                'status'       => $status,
-                'message'      => '[location]',
-                'response'     => $responseText
-            ]);
-
-
-            return $this->response
-                ->setStatusCode(200)
-                ->setBody($responseText);
-        }
-
-
-        // ==========================================
-        // Check Today's Attendance Again
-        // ==========================================
-
-        $today = date('Y-m-d');
-
-        $existing = $db->table('presensidata')
-            ->where('guru_id', $user['id'])
-            ->where('presensidata_tanggal', $today)
-            ->where('deleted_at IS NULL', null, false)
-            ->get()
-            ->getRowArray();
-
-
-        if ($existing) {
-
-            $responseText =
-                'Anda sudah melakukan absensi hari ini.';
-
-
-            $db->table('absen_wa_test')->insert([
-                'user_id'      => $user['id'],
-                'phone'        => $phone,
-                'message_type' => 'location',
-                'latitude'     => $latitude,
-                'longitude'    => $longitude,
-                'status'       => $status,
-                'message'      => '[location]',
-                'response'     => $responseText
-            ]);
-
-
-            return $this->response
-                ->setStatusCode(200)
-                ->setBody($responseText);
-        }
-
-
-        // ==========================================
-        // Insert Attendance
-        // ==========================================
-
-        $insertData = [
-            'guru_id'              => $user['id'],
-            'longitude'            => $longitude,
-            'latitude'             => $latitude,
-            'address'              => null,
-            'presensidata_tanggal' => $today,
-            'status'               => $status,
-            'created_at'           => date('Y-m-d H:i:s')
-        ];
-
-
-        $inserted = $db->table('presensidata')
-            ->insert($insertData);
-
-
-        // ==========================================
-        // Insert Failed
-        // ==========================================
-
-        if (!$inserted) {
-
-            $responseText =
-                'Absensi gagal disimpan ke database.';
-
-
-            $db->table('absen_wa_test')->insert([
-                'user_id'      => $user['id'],
-                'phone'        => $phone,
-                'message_type' => 'location',
-                'latitude'     => $latitude,
-                'longitude'    => $longitude,
-                'status'       => $status,
-                'message'      => '[location]',
-                'response'     => $responseText
-            ]);
-
-
-            return $this->response
-                ->setStatusCode(200)
-                ->setBody($responseText);
-        }
-
-
-        // ==========================================
-        // Success
-        // ==========================================
-
-        $statusNames = [
-            1 => 'Hadir',
-            2 => 'Izin',
-            3 => 'Sakit'
-        ];
-
-        $statusName = $statusNames[$status]
+        $existingStatusName =
+            $statusNames[$existingStatus]
             ?? 'Unknown';
 
-
         $responseText =
-            'Absensi berhasil.' .
+            'Absensi hari ini sudah tercatat.' .
             "\n\n" .
             'Nama: ' . $user['name'] .
             "\n" .
-            'Status: ' . $statusName .
-            "\n" .
-            'Jarak: ' . round($distance) . ' meter' .
-            "\n" .
-            'Tanggal: ' . date('d-m-Y') .
-            "\n" .
-            'Waktu: ' . date('H:i');
+            'Status: ' . $existingStatusName;
 
-
-        // ==========================================
-        // Save Log
-        // ==========================================
 
         $db->table('absen_wa_test')->insert([
             'user_id'      => $user['id'],
             'phone'        => $phone,
-            'message_type' => 'location',
-            'latitude'     => $latitude,
-            'longitude'    => $longitude,
+            'message_type' => 'text',
             'status'       => $status,
-            'message'      => '[location]',
+            'message'      => $message,
             'response'     => $responseText
         ]);
-
-
-        // ==========================================
-        // Return
-        // ==========================================
 
         return $this->response
             ->setStatusCode(200)
@@ -719,25 +352,86 @@ public function whatsappWebhook()
     }
 
 
-    // =====================================================
-    // UNSUPPORTED MESSAGE TYPE
-    // =====================================================
+    // ==========================================
+    // Insert Attendance
+    // ==========================================
+
+    $insertData = [
+        'guru_id'              => $user['id'],
+        'longitude'            => null,
+        'latitude'             => null,
+        'address'              => null,
+        'presensidata_tanggal' => $today,
+        'status'               => $status,
+        'created_at'            => date('Y-m-d H:i:s')
+    ];
+
+    $inserted = $db->table('presensidata')
+        ->insert($insertData);
+
+
+    // ==========================================
+    // Failed
+    // ==========================================
+
+    if (!$inserted) {
+
+        $responseText =
+            'Absensi gagal disimpan.' .
+            "\n\n" .
+            'Nama: ' . $user['name'] .
+            "\n" .
+            'Status: ' . $statusName;
+
+
+        $db->table('absen_wa_test')->insert([
+            'user_id'      => $user['id'],
+            'phone'        => $phone,
+            'message_type' => 'text',
+            'status'       => $status,
+            'message'      => $message,
+            'response'     => $responseText
+        ]);
+
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody($responseText);
+    }
+
+
+    // ==========================================
+    // Success Response
+    // ==========================================
 
     $responseText =
-        'Message type tidak didukung: ' . $messageType;
+        'Absensi berhasil.' .
+        "\n\n" .
+        'Nama: ' . $user['name'] .
+        "\n" .
+        'Status: ' . $statusName .
+        "\n" .
+        'Tanggal: ' . date('d-m-Y') .
+        "\n" .
+        'Waktu: ' . date('H:i');
 
+
+    // ==========================================
+    // Save Log
+    // ==========================================
 
     $db->table('absen_wa_test')->insert([
         'user_id'      => $user['id'],
         'phone'        => $phone,
-        'message_type' => $messageType,
-        'latitude'     => null,
-        'longitude'    => null,
-        'status'       => null,
-        'message'      => '[unsupported]',
+        'message_type' => 'text',
+        'status'       => $status,
+        'message'      => $message,
         'response'     => $responseText
     ]);
 
+
+    // ==========================================
+    // Return
+    // ==========================================
 
     return $this->response
         ->setStatusCode(200)
