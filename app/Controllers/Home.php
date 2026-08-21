@@ -16,10 +16,10 @@ class Home extends BaseController
 
     public function __construct()
     {
-        $this->presence          = new PresenceModel();
-        $this->userDivision      = new UserDivisionModel();
-        $this->userModel         = new UserModel();
-        $this->UserSubjectModel  = new UserSubjectModel();
+        $this->presence         = new PresenceModel();
+        $this->userDivision     = new UserDivisionModel();
+        $this->userModel        = new UserModel();
+        $this->UserSubjectModel = new UserSubjectModel();
     }
 
     public function index(): string
@@ -92,10 +92,13 @@ class Home extends BaseController
     {
         $db = \Config\Database::connect();
 
-        $verifyToken = 'sinarumi_whatsapp_webhook_8f92Kx2026';
+        $verifyToken = env(
+            'whatsapp.verifyToken',
+            'sinarumi_whatsapp_webhook_8f92Kx2026'
+        );
 
         // =====================================================
-        // GET - META WEBHOOK VERIFICATION
+        // GET - META VERIFICATION
         // =====================================================
 
         if ($this->request->getMethod() === 'GET') {
@@ -124,29 +127,12 @@ class Home extends BaseController
 
         $rawData = file_get_contents('php://input');
 
-        // =====================================================
-        // SAVE RAW WEBHOOK FIRST
-        // =====================================================
+        if (!$rawData) {
+            log_message('warning', 'WA WEBHOOK: Empty payload');
 
-        try {
-
-            $db->table('absen_wa_test')->insert([
-                'user_id'      => null,
-                'phone'        => null,
-                'message_type' => 'webhook',
-                'status'       => null,
-                'message'      => 'WEBHOOK_RECEIVED',
-                'response'     => null,
-                'raw_payload'  => $rawData,
-                'created_at'   => date('Y-m-d H:i:s')
-            ]);
-
-        } catch (\Throwable $e) {
-
-            log_message(
-                'error',
-                'WA LOG ERROR: ' . $e->getMessage()
-            );
+            return $this->response
+                ->setStatusCode(200)
+                ->setBody('OK');
         }
 
         // =====================================================
@@ -157,20 +143,10 @@ class Home extends BaseController
 
         if (!is_array($data)) {
 
-            try {
-                $db->table('absen_wa_test')->insert([
-                    'user_id'      => null,
-                    'phone'        => null,
-                    'message_type' => 'error',
-                    'status'       => null,
-                    'message'      => 'INVALID_JSON',
-                    'response'     => json_last_error_msg(),
-                    'raw_payload'  => $rawData,
-                    'created_at'   => date('Y-m-d H:i:s')
-                ]);
-            } catch (\Throwable $e) {
-                log_message('error', $e->getMessage());
-            }
+            log_message(
+                'error',
+                'WA WEBHOOK INVALID JSON: ' . json_last_error_msg()
+            );
 
             return $this->response
                 ->setStatusCode(200)
@@ -178,33 +154,106 @@ class Home extends BaseController
         }
 
         // =====================================================
-        // GET MESSAGE
+        // ONLY PROCESS WHATSAPP BUSINESS ACCOUNT
         // =====================================================
 
-        $messageData =
-            $data['entry'][0]['changes'][0]['value']['messages'][0]
-            ?? null;
-
-        if (!$messageData) {
-
-            try {
-                $db->table('absen_wa_test')->insert([
-                    'user_id'      => null,
-                    'phone'        => null,
-                    'message_type' => 'webhook',
-                    'status'       => null,
-                    'message'      => 'NO_MESSAGE',
-                    'response'     => null,
-                    'raw_payload'  => $rawData,
-                    'created_at'   => date('Y-m-d H:i:s')
-                ]);
-            } catch (\Throwable $e) {
-                log_message('error', $e->getMessage());
-            }
-
+        if (
+            ($data['object'] ?? '') !==
+            'whatsapp_business_account'
+        ) {
             return $this->response
                 ->setStatusCode(200)
                 ->setBody('OK');
+        }
+
+        // =====================================================
+        // LOOP ALL ENTRIES
+        // =====================================================
+
+        foreach ($data['entry'] ?? [] as $entry) {
+
+            foreach ($entry['changes'] ?? [] as $change) {
+
+                // =================================================
+                // ONLY PROCESS "messages"
+                // Ignore statuses, account updates, etc.
+                // =================================================
+
+                if (($change['field'] ?? '') !== 'messages') {
+                    continue;
+                }
+
+                $value = $change['value'] ?? [];
+
+                // =================================================
+                // NO MESSAGE
+                // =================================================
+
+                if (empty($value['messages'])) {
+                    continue;
+                }
+
+                // =================================================
+                // PROCESS EVERY MESSAGE
+                // =================================================
+
+                foreach ($value['messages'] as $messageData) {
+
+                    $this->processWhatsAppMessage(
+                        $db,
+                        $messageData,
+                        $rawData
+                    );
+                }
+            }
+        }
+
+        // =====================================================
+        // ALWAYS RETURN 200 TO META
+        // =====================================================
+
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody('OK');
+    }
+
+    // =========================================================
+    // PROCESS WHATSAPP MESSAGE
+    // =========================================================
+
+    private function processWhatsAppMessage(
+        $db,
+        array $messageData,
+        string $rawData
+    ) {
+        $now = date('Y-m-d H:i:s');
+
+        // =====================================================
+        // MESSAGE ID
+        // =====================================================
+
+        $messageId = $messageData['id'] ?? null;
+
+        /*
+         * Meta may retry the same webhook.
+         * Prevent duplicate processing.
+         */
+
+        if ($messageId) {
+
+            $alreadyProcessed = $db->table('absen_wa_test')
+                ->where('message_id', $messageId)
+                ->countAllResults();
+
+            if ($alreadyProcessed > 0) {
+
+                log_message(
+                    'info',
+                    'WA DUPLICATE IGNORED: ' . $messageId
+                );
+
+                return;
+            }
         }
 
         // =====================================================
@@ -221,30 +270,18 @@ class Home extends BaseController
 
         if (!$phone) {
 
-            try {
-                $db->table('absen_wa_test')->insert([
-                    'user_id'      => null,
-                    'phone'        => null,
-                    'message_type' => $messageType,
-                    'status'       => null,
-                    'message'      => 'NO_PHONE',
-                    'response'     => null,
-                    'raw_payload'  => $rawData,
-                    'created_at'   => date('Y-m-d H:i:s')
-                ]);
-            } catch (\Throwable $e) {
-                log_message('error', $e->getMessage());
-            }
+            log_message(
+                'warning',
+                'WA MESSAGE WITHOUT PHONE'
+            );
 
-            return $this->response
-                ->setStatusCode(200)
-                ->setBody('OK');
+            return;
         }
 
         $phone = preg_replace('/[^0-9]/', '', $phone);
 
         // =====================================================
-        // CONVERT 62XXXXXXXXX -> 0XXXXXXXXX
+        // CONVERT 62XXXXXXXX -> 0XXXXXXXX
         // =====================================================
 
         $phoneSearch = $phone;
@@ -254,7 +291,7 @@ class Home extends BaseController
         }
 
         // =====================================================
-        // MESSAGE
+        // MESSAGE TEXT
         // =====================================================
 
         $message = '';
@@ -266,6 +303,20 @@ class Home extends BaseController
                     $messageData['text']['body'] ?? ''
                 )
             );
+        }
+
+        // =====================================================
+        // ONLY ACCEPT TEXT COMMANDS
+        // =====================================================
+
+        if ($messageType !== 'text') {
+
+            log_message(
+                'info',
+                'WA NON TEXT MESSAGE: ' . $messageType
+            );
+
+            return;
         }
 
         // =====================================================
@@ -294,39 +345,38 @@ class Home extends BaseController
                 $responseText
             );
 
-            try {
-
-                $db->table('absen_wa_test')->insert([
+            $this->saveWhatsAppLog(
+                $db,
+                [
                     'user_id'      => null,
                     'phone'        => $phone,
+                    'message_id'   => $messageId,
                     'message_type' => $messageType,
                     'status'       => null,
                     'message'      => $message,
                     'response'     => $responseText,
                     'raw_payload'  => $rawData,
-                    'created_at'   => date('Y-m-d H:i:s')
-                ]);
-
-            } catch (\Throwable $e) {
-
-                log_message(
-                    'error',
-                    'WA LOG ERROR: ' . $e->getMessage()
-                );
-            }
+                    'created_at'   => $now
+                ]
+            );
 
             log_message(
                 'info',
-                'WA SEND RESPONSE: ' . json_encode($waResponse)
+                'WA USER NOT FOUND: ' .
+                $phoneSearch
             );
 
-            return $this->response
-                ->setStatusCode(200)
-                ->setBody('OK');
+            log_message(
+                'info',
+                'WA SEND RESPONSE: ' .
+                json_encode($waResponse)
+            );
+
+            return;
         }
 
         // =====================================================
-        // COMMAND
+        // COMMAND MAP
         // =====================================================
 
         $statusMap = [
@@ -360,45 +410,37 @@ class Home extends BaseController
                 $responseText
             );
 
-            try {
-
-                $db->table('absen_wa_test')->insert([
+            $this->saveWhatsAppLog(
+                $db,
+                [
                     'user_id'      => $user['id'],
                     'phone'        => $phone,
+                    'message_id'   => $messageId,
                     'message_type' => $messageType,
                     'status'       => null,
                     'message'      => $message,
                     'response'     => $responseText,
                     'raw_payload'  => $rawData,
-                    'created_at'   => date('Y-m-d H:i:s')
-                ]);
-
-            } catch (\Throwable $e) {
-
-                log_message(
-                    'error',
-                    'WA LOG ERROR: ' . $e->getMessage()
-                );
-            }
+                    'created_at'   => $now
+                ]
+            );
 
             log_message(
                 'info',
-                'WA SEND RESPONSE: ' . json_encode($waResponse)
+                'WA INVALID COMMAND: ' .
+                $message
             );
 
-            return $this->response
-                ->setStatusCode(200)
-                ->setBody('OK');
+            return;
         }
 
         // =====================================================
-        // ATTENDANCE DATA
+        // ATTENDANCE
         // =====================================================
 
         $status     = $statusMap[$message];
         $statusName = $statusNames[$status];
         $today      = date('Y-m-d');
-        $now        = date('Y-m-d H:i:s');
 
         // =====================================================
         // CHECK EXISTING ATTENDANCE
@@ -406,17 +448,29 @@ class Home extends BaseController
 
         $existing = $db->table('presensidata')
             ->where('guru_id', $user['id'])
-            ->where('presensidata_tanggal', $today)
-            ->where('deleted_at IS NULL', null, false)
+            ->where(
+                'presensidata_tanggal',
+                $today
+            )
+            ->where(
+                'deleted_at IS NULL',
+                null,
+                false
+            )
             ->get()
             ->getRowArray();
+
+        // =====================================================
+        // ALREADY ATTENDED
+        // =====================================================
 
         if ($existing) {
 
             $existingStatus = (int) $existing['status'];
 
             $existingStatusName =
-                $statusNames[$existingStatus] ?? 'Unknown';
+                $statusNames[$existingStatus]
+                ?? 'Unknown';
 
             $responseText =
                 "Absensi hari ini sudah tercatat.\n\n" .
@@ -428,39 +482,26 @@ class Home extends BaseController
                 $responseText
             );
 
-            try {
-
-                $db->table('absen_wa_test')->insert([
+            $this->saveWhatsAppLog(
+                $db,
+                [
                     'user_id'      => $user['id'],
                     'phone'        => $phone,
+                    'message_id'   => $messageId,
                     'message_type' => $messageType,
                     'status'       => $status,
                     'message'      => $message,
                     'response'     => $responseText,
                     'raw_payload'  => $rawData,
                     'created_at'   => $now
-                ]);
-
-            } catch (\Throwable $e) {
-
-                log_message(
-                    'error',
-                    'WA LOG ERROR: ' . $e->getMessage()
-                );
-            }
-
-            log_message(
-                'info',
-                'WA SEND RESPONSE: ' . json_encode($waResponse)
+                ]
             );
 
-            return $this->response
-                ->setStatusCode(200)
-                ->setBody('OK');
+            return;
         }
 
         // =====================================================
-        // INSERT ATTENDANCE
+        // INSERT PRESENCE
         // =====================================================
 
         $insertData = [
@@ -493,11 +534,12 @@ class Home extends BaseController
                 $responseText
             );
 
-            try {
-
-                $db->table('absen_wa_test')->insert([
+            $this->saveWhatsAppLog(
+                $db,
+                [
                     'user_id'      => $user['id'],
                     'phone'        => $phone,
+                    'message_id'   => $messageId,
                     'message_type' => $messageType,
                     'status'       => $status,
                     'message'      => $message,
@@ -507,15 +549,8 @@ class Home extends BaseController
                         json_encode($dbError),
                     'raw_payload'  => $rawData,
                     'created_at'   => $now
-                ]);
-
-            } catch (\Throwable $e) {
-
-                log_message(
-                    'error',
-                    'WA LOG ERROR: ' . $e->getMessage()
-                );
-            }
+                ]
+            );
 
             log_message(
                 'error',
@@ -523,13 +558,11 @@ class Home extends BaseController
                 json_encode($dbError)
             );
 
-            return $this->response
-                ->setStatusCode(200)
-                ->setBody('OK');
+            return;
         }
 
         // =====================================================
-        // SUCCESS RESPONSE
+        // SUCCESS
         // =====================================================
 
         $responseText =
@@ -538,10 +571,6 @@ class Home extends BaseController
             "Status: " . $statusName . "\n" .
             "Tanggal: " . date('d-m-Y') . "\n" .
             "Waktu: " . date('H:i');
-
-        // =====================================================
-        // SEND WHATSAPP RESPONSE
-        // =====================================================
 
         $waResponse = $this->sendWhatsAppMessage(
             $phone,
@@ -552,35 +581,58 @@ class Home extends BaseController
         // SAVE LOG
         // =====================================================
 
-        try {
-
-            $db->table('absen_wa_test')->insert([
+        $this->saveWhatsAppLog(
+            $db,
+            [
                 'user_id'      => $user['id'],
                 'phone'        => $phone,
+                'message_id'   => $messageId,
                 'message_type' => $messageType,
                 'status'       => $status,
                 'message'      => $message,
                 'response'     => $responseText,
                 'raw_payload'  => $rawData,
                 'created_at'   => $now
-            ]);
+            ]
+        );
+
+        log_message(
+            'info',
+            'WA ABSENCE SUCCESS: ' .
+            json_encode([
+                'user_id' => $user['id'],
+                'phone'   => $phone,
+                'status'  => $status,
+                'message' => $message
+            ])
+        );
+
+        log_message(
+            'info',
+            'WA SEND RESPONSE: ' .
+            json_encode($waResponse)
+        );
+    }
+
+    // =========================================================
+    // SAVE WHATSAPP LOG
+    // =========================================================
+
+    private function saveWhatsAppLog($db, array $data)
+    {
+        try {
+
+            $db->table('absen_wa_test')
+                ->insert($data);
 
         } catch (\Throwable $e) {
 
             log_message(
                 'error',
-                'WA LOG ERROR: ' . $e->getMessage()
+                'WA LOG ERROR: ' .
+                $e->getMessage()
             );
         }
-
-        log_message(
-            'info',
-            'WA SEND RESPONSE: ' . json_encode($waResponse)
-        );
-
-        return $this->response
-            ->setStatusCode(200)
-            ->setBody('OK');
     }
 
     // =========================================================
@@ -591,14 +643,30 @@ class Home extends BaseController
         string $to,
         string $message
     ) {
-        /*
-         * Put your NEW access token here,
-         * or preferably move these values to .env
-         */
+        $phoneNumberId = "718496908011318";
 
-        $phoneNumberId = '718496908011318';
-        $accessToken   = 'EAAcbbjv93u0BSeOZA66DE42hxkzY5qytL2KK8ZBkHsVkc1dvFcyzXg89UkS9VPj0bJHpqNtVZB0KzNX7QYmRrcCxl20bcXya0xL2sP8P3XSsU1DUHgI8DV9hRBhEupvmfEDzDBZAHqZCmQTVqWBaufOg8cuO39ETZBBxpZCDNe4ia0lWZAxiehQQCsivFZC5ArtUdwwwRysWxxa7o7lrd77k9yFzr6OJQ54jfglprP5wCzIKssG5KhDlHNFaS4zXQFj3fTQsVSA0rhj00ZAn58MaYtBmonRSz5gOMlzICx4ZCsZD';
-        $apiVersion    = 'v26.0';
+        $accessToken = "EAAcbbjv93u0BSfWvZAZCCjlwS7yZB6lYB8ADFrI5Qzd9GF7LUSIfxxnKabewxTvQCMkTe2uOQcNZBGTWdVablukGqrr3ABLEbbfuDbkRopXz4bf0fiZBatia2o8EWodu2cOUZBFWPA0T2azIqHH6kuPamdd5TtidrZA8NoctDSnZCwoLuIUbZBLbdMtqwcxvDcMtqO0cZC7h9R29ZAvmFVpPev46c8Hnj2bSPHUEAByhoN9gyz6ZBTdUHuYTBlVzlg6AEAVhGd2UPABrbkdH5w9ySxZAYgrhtsEACzYxZAZCInwTwZDZD";
+
+        $apiVersion = env(
+            'whatsapp.apiVersion',
+            'v26.0'
+        );
+
+        if (!$phoneNumberId || !$accessToken) {
+
+            log_message(
+                'error',
+                'WhatsApp API credentials are not configured.'
+            );
+
+            return [
+                'status' => 500,
+                'body' => [
+                    'error' =>
+                        'WhatsApp API credentials not configured'
+                ]
+            ];
+        }
 
         $url =
             "https://graph.facebook.com/" .
@@ -633,7 +701,10 @@ class Home extends BaseController
                     json_encode($payload),
 
                 'http_errors' =>
-                    false
+                    false,
+
+                'timeout' =>
+                    10
             ]);
 
             $body = $response->getBody();
@@ -647,6 +718,12 @@ class Home extends BaseController
             ];
 
         } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'WA SEND ERROR: ' .
+                $e->getMessage()
+            );
 
             return [
                 'status' => 500,
