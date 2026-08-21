@@ -1257,64 +1257,6 @@ public function whatsappWebhookeee()
 /**
  * Send text message through WhatsApp Cloud API
  */
-private function sendWhatsAppMessage(
-    string $to,
-    string $message,
-    string $phoneNumberId,
-    string $accessToken,
-    string $apiVersion = 'v26.0'
-) {
-    $url =
-        "https://graph.facebook.com/" .
-        $apiVersion .
-        "/" .
-        $phoneNumberId .
-        "/messages";
-
-
-    $payload = [
-        'messaging_product' => 'whatsapp',
-        'to'                => $to,
-        'type'              => 'text',
-        'text'              => [
-            'body' => $message
-        ]
-    ];
-
-
-    $client = \Config\Services::curlrequest();
-
-
-    try {
-
-        $response = $client->post($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $accessToken,
-                'Content-Type'  => 'application/json'
-            ],
-            'body' => json_encode($payload),
-            'http_errors' => false
-        ]);
-
-
-        return [
-            'status' => $response->getStatusCode(),
-            'body'   => json_decode(
-                $response->getBody(),
-                true
-            )
-        ];
-
-    } catch (\Throwable $e) {
-
-        return [
-            'status' => 500,
-            'body'   => [
-                'error' => $e->getMessage()
-            ]
-        ];
-    }
-}
 
 private function sendWhatsAppMessage(string $to, string $message)
 {
