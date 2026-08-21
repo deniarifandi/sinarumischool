@@ -647,10 +647,7 @@ class Home extends BaseController
 
         $accessToken = "EAAcbbjv93u0BSfWvZAZCCjlwS7yZB6lYB8ADFrI5Qzd9GF7LUSIfxxnKabewxTvQCMkTe2uOQcNZBGTWdVablukGqrr3ABLEbbfuDbkRopXz4bf0fiZBatia2o8EWodu2cOUZBFWPA0T2azIqHH6kuPamdd5TtidrZA8NoctDSnZCwoLuIUbZBLbdMtqwcxvDcMtqO0cZC7h9R29ZAvmFVpPev46c8Hnj2bSPHUEAByhoN9gyz6ZBTdUHuYTBlVzlg6AEAVhGd2UPABrbkdH5w9ySxZAYgrhtsEACzYxZAZCInwTwZDZD";
 
-        $apiVersion = env(
-            'whatsapp.apiVersion',
-            'v26.0'
-        );
+        $apiVersion = 'v26.0';
 
         if (!$phoneNumberId || !$accessToken) {
 
