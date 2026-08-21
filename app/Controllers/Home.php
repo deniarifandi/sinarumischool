@@ -73,8 +73,19 @@ class Home extends BaseController
             'attendanceMissing' => $attendanceMissing,
         ]);
     }
+public function whatsappWebhook()
+{
+    $mode      = $_GET['hub.mode'] ?? null;
+    $token     = $_GET['hub.verify_token'] ?? null;
+    $challenge = $_GET['hub.challenge'] ?? null;
 
-        public function whatsappWebhook()
+    return $this->response->setJSON([
+        'mode'      => $mode,
+        'token'     => $token,
+        'challenge' => $challenge,
+    ]);
+}
+        public function whatsappWebhook22()
 {
     // =========================
     // GET = Meta Webhook Verification
