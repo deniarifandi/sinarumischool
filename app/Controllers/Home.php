@@ -73,4 +73,59 @@ class Home extends BaseController
             'attendanceMissing' => $attendanceMissing,
         ]);
     }
+
+    public function whatsappWebhook()
+{
+    // Get raw webhook data
+    $rawData = file_get_contents('php://input');
+
+    // Decode JSON
+    $data = json_decode($rawData, true);
+
+    // If JSON is invalid
+    if (!$data) {
+        return $this->response
+            ->setStatusCode(400)
+            ->setJSON([
+                'success' => false,
+                'message' => 'Invalid JSON'
+            ]);
+    }
+
+    /*
+     * Adjust this part according to your WhatsApp API.
+     *
+     * For testing, let's assume the API sends:
+     *
+     * {
+     *     "message": "John is absent today"
+     * }
+     */
+
+    $message = $data['message'] ?? null;
+
+    if (!$message) {
+        return $this->response
+            ->setStatusCode(400)
+            ->setJSON([
+                'success' => false,
+                'message' => 'Message not found'
+            ]);
+    }
+
+    // Connect database
+    $db = \Config\Database::connect();
+
+    // Insert message
+    $db->table('absen_wa_test')->insert([
+        'message' => $message
+    ]);
+
+    return $this->response
+        ->setStatusCode(200)
+        ->setJSON([
+            'success' => true,
+            'message' => 'WhatsApp message recorded'
+        ]);
+}
  }
