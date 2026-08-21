@@ -596,8 +596,8 @@ class Home extends BaseController
          * or preferably move these values to .env
          */
 
-        $phoneNumberId = 'YOUR_PHONE_NUMBER_ID';
-        $accessToken   = 'YOUR_NEW_ACCESS_TOKEN';
+        $phoneNumberId = '718496908011318';
+        $accessToken   = 'EAAcbbjv93u0BSeOZA66DE42hxkzY5qytL2KK8ZBkHsVkc1dvFcyzXg89UkS9VPj0bJHpqNtVZB0KzNX7QYmRrcCxl20bcXya0xL2sP8P3XSsU1DUHgI8DV9hRBhEupvmfEDzDBZAHqZCmQTVqWBaufOg8cuO39ETZBBxpZCDNe4ia0lWZAxiehQQCsivFZC5ArtUdwwwRysWxxa7o7lrd77k9yFzr6OJQ54jfglprP5wCzIKssG5KhDlHNFaS4zXQFj3fTQsVSA0rhj00ZAn58MaYtBmonRSz5gOMlzICx4ZCsZD';
         $apiVersion    = 'v26.0';
 
         $url =
