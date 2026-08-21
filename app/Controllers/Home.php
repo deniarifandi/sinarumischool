@@ -74,15 +74,39 @@ class Home extends BaseController
         ]);
     }
 
-    public function whatsappWebhook()
+        public function whatsappWebhook()
 {
-    // Get raw webhook data
+    // =========================
+    // GET = Meta Webhook Verification
+    // =========================
+    if ($this->request->getMethod() === 'GET') {
+
+        $mode      = $this->request->getGet('hub.mode');
+        $token     = $this->request->getGet('hub.verify_token');
+        $challenge = $this->request->getGet('hub.challenge');
+
+        $verifyToken = 'sinarumi_whatsapp_webhook_8f92Kx2026';
+
+        if ($mode === 'subscribe' && $token === $verifyToken) {
+            return $this->response
+                ->setStatusCode(200)
+                ->setBody($challenge);
+        }
+
+        return $this->response
+            ->setStatusCode(403)
+            ->setBody('Verification failed');
+    }
+
+
+    // =========================
+    // POST = WhatsApp Webhook
+    // =========================
+
     $rawData = file_get_contents('php://input');
 
-    // Decode JSON
     $data = json_decode($rawData, true);
 
-    // If JSON is invalid
     if (!$data) {
         return $this->response
             ->setStatusCode(400)
@@ -92,40 +116,17 @@ class Home extends BaseController
             ]);
     }
 
-    /*
-     * Adjust this part according to your WhatsApp API.
-     *
-     * For testing, let's assume the API sends:
-     *
-     * {
-     *     "message": "John is absent today"
-     * }
-     */
-
-    $message = $data['message'] ?? null;
-
-    if (!$message) {
-        return $this->response
-            ->setStatusCode(400)
-            ->setJSON([
-                'success' => false,
-                'message' => 'Message not found'
-            ]);
-    }
-
-    // Connect database
+    // Temporary: save the entire incoming JSON
     $db = \Config\Database::connect();
 
-    // Insert message
     $db->table('absen_wa_test')->insert([
-        'message' => $message
+        'message' => $rawData
     ]);
 
     return $this->response
         ->setStatusCode(200)
         ->setJSON([
-            'success' => true,
-            'message' => 'WhatsApp message recorded'
+            'success' => true
         ]);
 }
  }
