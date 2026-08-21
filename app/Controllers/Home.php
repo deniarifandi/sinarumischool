@@ -73,7 +73,8 @@ class Home extends BaseController
             'attendanceMissing' => $attendanceMissing,
         ]);
     }
-public function whatsappWebhook()
+
+    public function whatsappWebhook()
 {
     // ==========================================
     // GET: Meta webhook verification
@@ -105,15 +106,147 @@ public function whatsappWebhook()
 
     $rawData = file_get_contents('php://input');
 
+    $data = json_decode($rawData, true);
+
+    if (!$data) {
+        return $this->response
+            ->setStatusCode(400)
+            ->setBody('Invalid JSON');
+    }
+
+
+    // ==========================================
+    // Get WhatsApp message
+    // ==========================================
+
+    $messageData =
+        $data['entry'][0]['changes'][0]['value']['messages'][0]
+        ?? null;
+
+    if (!$messageData) {
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody('No message');
+    }
+
+
+    // Only process text messages
+    if (($messageData['type'] ?? null) !== 'text') {
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody('Not a text message');
+    }
+
+
+    // ==========================================
+    // Get sender and message
+    // ==========================================
+
+    $phone   = $messageData['from'] ?? null;
+    $message = trim($messageData['text']['body'] ?? '');
+
+    if (!$phone || !$message) {
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody('Missing sender or message');
+    }
+
+
+    // ==========================================
+    // Only process "absen"
+    // ==========================================
+
+    if (strtolower($message) !== 'absen') {
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody('Command not recognized');
+    }
+
+
+    // ==========================================
+    // Find user by WhatsApp phone
+    // ==========================================
+
     $db = \Config\Database::connect();
 
-    $db->table('absen_wa_test')->insert([
-        'message' => $rawData
+    $user = $db->table('users')
+        ->select('id, name, phone')
+        ->where('phone', $phone)
+        ->where('deleted_at IS NULL', null, false)
+        ->get()
+        ->getRowArray();
+
+
+    // ==========================================
+    // User not found
+    // ==========================================
+
+    if (!$user) {
+        return $this->response
+            ->setStatusCode(200)
+            ->setJSON([
+                'success' => false,
+                'message' => 'User not registered',
+                'phone'   => $phone
+            ]);
+    }
+
+
+    // ==========================================
+    // Check today's attendance
+    // ==========================================
+
+    $today = date('Y-m-d');
+
+    $existing = $db->table('presensidata')
+        ->where('guru_id', $user['id'])
+        ->where('presensidata_tanggal', $today)
+        ->where('deleted_at IS NULL', null, false)
+        ->get()
+        ->getRowArray();
+
+
+    if ($existing) {
+        return $this->response
+            ->setStatusCode(200)
+            ->setJSON([
+                'success' => false,
+                'message' => 'Already attended today',
+                'user_id' => $user['id'],
+                'name'    => $user['name'],
+                'date'    => $today
+            ]);
+    }
+
+
+    // ==========================================
+    // Insert attendance
+    // ==========================================
+
+    $db->table('presensidata')->insert([
+        'guru_id'             => $user['id'],
+        'longitude'           => null,
+        'latitude'            => null,
+        'address'             => null,
+        'presensidata_tanggal' => $today,
+        'status'              => 1,
+        'created_at'          => date('Y-m-d H:i:s')
     ]);
+
+
+    // ==========================================
+    // Response
+    // ==========================================
 
     return $this->response
         ->setStatusCode(200)
-        ->setBody('EVENT_RECEIVED');
+        ->setJSON([
+            'success' => true,
+            'message' => 'Attendance recorded',
+            'user_id' => $user['id'],
+            'name'    => $user['name'],
+            'date'    => $today
+        ]);
 }
 
 
