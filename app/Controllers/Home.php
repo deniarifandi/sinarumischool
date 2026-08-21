@@ -75,21 +75,45 @@ class Home extends BaseController
     }
 public function whatsappWebhook()
 {
-    $mode      = $_GET['hub_mode'] ?? null;
-    $token     = $_GET['hub_verify_token'] ?? null;
-    $challenge = $_GET['hub_challenge'] ?? null;
+    // ==========================================
+    // GET: Meta webhook verification
+    // ==========================================
 
-    $verifyToken = 'sinarumi_whatsapp_webhook_8f92Kx2026';
+    if ($this->request->getMethod() === 'GET') {
 
-    if ($mode === 'subscribe' && $token === $verifyToken) {
+        $mode      = $_GET['hub_mode'] ?? null;
+        $token     = $_GET['hub_verify_token'] ?? null;
+        $challenge = $_GET['hub_challenge'] ?? null;
+
+        $verifyToken = 'sinarumi_whatsapp_webhook_8f92Kx2026';
+
+        if ($mode === 'subscribe' && $token === $verifyToken) {
+            return $this->response
+                ->setStatusCode(200)
+                ->setBody($challenge);
+        }
+
         return $this->response
-            ->setStatusCode(200)
-            ->setBody($challenge);
+            ->setStatusCode(403)
+            ->setBody('Verification failed');
     }
 
+
+    // ==========================================
+    // POST: WhatsApp webhook
+    // ==========================================
+
+    $rawData = file_get_contents('php://input');
+
+    $db = \Config\Database::connect();
+
+    $db->table('absen_wa_test')->insert([
+        'message' => $rawData
+    ]);
+
     return $this->response
-        ->setStatusCode(403)
-        ->setBody('Verification failed');
+        ->setStatusCode(200)
+        ->setBody('EVENT_RECEIVED');
 }
 
 
