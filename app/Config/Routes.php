@@ -336,4 +336,4 @@ $routes->group('academic-year', ['filter' => 'curriculum'], function ($routes) {
     $routes->post('term/(:num)/update', 'AcademicYearController::updateTerm/$1');
 });
 
-$routes->post('webhook/whatsapp', 'Home::whatsappWebhook');
+$routes->get('webhook/whatsapp', 'Home::whatsappWebhook');
