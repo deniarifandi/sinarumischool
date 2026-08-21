@@ -75,16 +75,14 @@ class Home extends BaseController
     }
 public function whatsappWebhook()
 {
-    $mode      = $_GET['hub.mode'] ?? null;
-    $token     = $_GET['hub.verify_token'] ?? null;
-    $challenge = $_GET['hub.challenge'] ?? null;
-
     return $this->response->setJSON([
-        'mode'      => $mode,
-        'token'     => $token,
-        'challenge' => $challenge,
+        'query_string' => $_SERVER['QUERY_STRING'] ?? null,
+        'get'          => $_GET,
+        'uri'          => current_url(true)->getQuery(),
     ]);
 }
+
+
         public function whatsappWebhook22()
 {
     // =========================
