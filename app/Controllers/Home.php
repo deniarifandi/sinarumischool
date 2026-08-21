@@ -116,7 +116,7 @@ class Home extends BaseController
 
 
     // ==========================================
-    // Get WhatsApp message
+    // Get message
     // ==========================================
 
     $messageData =
@@ -130,17 +130,16 @@ class Home extends BaseController
     }
 
 
+    // ==========================================
     // Only process text messages
+    // ==========================================
+
     if (($messageData['type'] ?? null) !== 'text') {
         return $this->response
             ->setStatusCode(200)
             ->setBody('Not a text message');
     }
 
-
-    // ==========================================
-    // Get sender and message
-    // ==========================================
 
     $phone   = $messageData['from'] ?? null;
     $message = trim($messageData['text']['body'] ?? '');
@@ -153,21 +152,36 @@ class Home extends BaseController
 
 
     // ==========================================
+    // Database
+    // ==========================================
+
+    $db = \Config\Database::connect();
+
+
+    // ==========================================
     // Only process "absen"
     // ==========================================
 
     if (strtolower($message) !== 'absen') {
+
+        $responseText = 'Command not recognized';
+
+        $db->table('absen_wa_test')->insert([
+            'user_id'  => null,
+            'phone'    => $phone,
+            'message'  => $message,
+            'response' => $responseText
+        ]);
+
         return $this->response
             ->setStatusCode(200)
-            ->setBody('Command not recognized');
+            ->setBody($responseText);
     }
 
 
     // ==========================================
-    // Find user by WhatsApp phone
+    // Find user
     // ==========================================
-
-    $db = \Config\Database::connect();
 
     $user = $db->table('users')
         ->select('id, name, phone')
@@ -182,13 +196,19 @@ class Home extends BaseController
     // ==========================================
 
     if (!$user) {
+
+        $responseText = 'User not registered';
+
+        $db->table('absen_wa_test')->insert([
+            'user_id'  => null,
+            'phone'    => $phone,
+            'message'  => $message,
+            'response' => $responseText
+        ]);
+
         return $this->response
             ->setStatusCode(200)
-            ->setJSON([
-                'success' => false,
-                'message' => 'User not registered',
-                'phone'   => $phone
-            ]);
+            ->setBody($responseText);
     }
 
 
@@ -206,16 +226,25 @@ class Home extends BaseController
         ->getRowArray();
 
 
+    // ==========================================
+    // Already attended
+    // ==========================================
+
     if ($existing) {
+
+        $responseText =
+            'Already attended today: ' . $user['name'];
+
+        $db->table('absen_wa_test')->insert([
+            'user_id'  => $user['id'],
+            'phone'    => $phone,
+            'message'  => $message,
+            'response' => $responseText
+        ]);
+
         return $this->response
             ->setStatusCode(200)
-            ->setJSON([
-                'success' => false,
-                'message' => 'Already attended today',
-                'user_id' => $user['id'],
-                'name'    => $user['name'],
-                'date'    => $today
-            ]);
+            ->setBody($responseText);
     }
 
 
@@ -224,29 +253,39 @@ class Home extends BaseController
     // ==========================================
 
     $db->table('presensidata')->insert([
-        'guru_id'             => $user['id'],
-        'longitude'           => null,
-        'latitude'            => null,
-        'address'             => null,
+        'guru_id'              => $user['id'],
+        'longitude'            => null,
+        'latitude'             => null,
+        'address'              => null,
         'presensidata_tanggal' => $today,
-        'status'              => 1,
-        'created_at'          => date('Y-m-d H:i:s')
+        'status'               => 1,
+        'created_at'            => date('Y-m-d H:i:s')
     ]);
 
 
     // ==========================================
-    // Response
+    // Success
     // ==========================================
+
+    $responseText =
+        'Attendance recorded successfully for ' . $user['name'];
+
+
+    // ==========================================
+    // Log response
+    // ==========================================
+
+    $db->table('absen_wa_test')->insert([
+        'user_id'  => $user['id'],
+        'phone'    => $phone,
+        'message'  => $message,
+        'response' => $responseText
+    ]);
+
 
     return $this->response
         ->setStatusCode(200)
-        ->setJSON([
-            'success' => true,
-            'message' => 'Attendance recorded',
-            'user_id' => $user['id'],
-            'name'    => $user['name'],
-            'date'    => $today
-        ]);
+        ->setBody($responseText);
 }
 
 
