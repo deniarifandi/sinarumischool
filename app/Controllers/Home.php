@@ -74,7 +74,7 @@ class Home extends BaseController
         ]);
     }
 
-public function whatsappWebhook()
+public function whatsappWebhookestu()
 {
     // ==========================================
     // GET: Meta Webhook Verification
@@ -439,6 +439,377 @@ public function whatsappWebhook()
 }
 
 public function whatsappWebhook()
+{
+    $db = \Config\Database::connect();
+
+    $verifyToken  = 'sinarumi_whatsapp_webhook_8f92Kx2026';
+    $phoneNumberId = '718496908011318';
+    $accessToken   = 'EAAcbbjv93u0BSeOZA66DE42hxkzY5qytL2KK8ZBkHsVkc1dvFcyzXg89UkS9VPj0bJHpqNtVZB0KzNX7QYmRrcCxl20bcXya0xL2sP8P3XSsU1DUHgI8DV9hRBhEupvmfEDzDBZAHqZCmQTVqWBaufOg8cuO39ETZBBxpZCDNe4ia0lWZAxiehQQCsivFZC5ArtUdwwwRysWxxa7o7lrd77k9yFzr6OJQ54jfglprP5wCzIKssG5KhDlHNFaS4zXQFj3fTQsVSA0rhj00ZAn58MaYtBmonRSz5gOMlzICx4ZCsZD';
+    $apiVersion    = 'v26.0';
+
+    // ==========================================
+    // GET - META VERIFICATION
+    // ==========================================
+
+    if ($this->request->getMethod() === 'GET') {
+
+        $mode      = $this->request->getGet('hub_mode');
+        $token     = $this->request->getGet('hub_verify_token');
+        $challenge = $this->request->getGet('hub_challenge');
+
+        if ($mode === 'subscribe' && $token === $verifyToken) {
+            return $this->response
+                ->setStatusCode(200)
+                ->setBody($challenge);
+        }
+
+        return $this->response
+            ->setStatusCode(403)
+            ->setBody('Verification failed');
+    }
+
+    // ==========================================
+    // POST - RECEIVE WEBHOOK
+    // ==========================================
+
+    $rawData = file_get_contents('php://input');
+
+    // SAVE RAW WEBHOOK FIRST
+    $db->table('absen_wa_test')->insert([
+        'message'     => 'WEBHOOK_RECEIVED',
+        'raw_payload' => $rawData,
+        'created_at'  => date('Y-m-d H:i:s')
+    ]);
+
+    // ==========================================
+    // DECODE JSON
+    // ==========================================
+
+    $data = json_decode($rawData, true);
+
+    if (!$data) {
+
+        $db->table('absen_wa_test')->insert([
+            'message'     => 'INVALID_JSON',
+            'raw_payload' => $rawData,
+            'response'    => json_last_error_msg(),
+            'created_at'  => date('Y-m-d H:i:s')
+        ]);
+
+        return $this->response
+            ->setStatusCode(400)
+            ->setBody('Invalid JSON');
+    }
+
+    // ==========================================
+    // GET MESSAGE
+    // ==========================================
+
+    $messageData =
+        $data['entry'][0]['changes'][0]['value']['messages'][0]
+        ?? null;
+
+    if (!$messageData) {
+
+        $db->table('absen_wa_test')->insert([
+            'message'     => 'NO_MESSAGE',
+            'raw_payload' => $rawData,
+            'created_at'  => date('Y-m-d H:i:s')
+        ]);
+
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody('No message');
+    }
+
+    // ==========================================
+    // SENDER
+    // ==========================================
+
+    $phone = $messageData['from'] ?? null;
+
+    if (!$phone) {
+
+        $db->table('absen_wa_test')->insert([
+            'message'     => 'NO_PHONE',
+            'raw_payload' => $rawData,
+            'created_at'  => date('Y-m-d H:i:s')
+        ]);
+
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody('No sender');
+    }
+
+    $phone = preg_replace('/[^0-9]/', '', $phone);
+
+    // 628123456789 -> 08123456789
+    $phoneSearch = $phone;
+
+    if (str_starts_with($phone, '62')) {
+        $phoneSearch = '0' . substr($phone, 2);
+    }
+
+    // ==========================================
+    // MESSAGE
+    // ==========================================
+
+    $messageType = $messageData['type'] ?? null;
+
+    $message = '';
+
+    if ($messageType === 'text') {
+        $message = strtolower(
+            trim($messageData['text']['body'] ?? '')
+        );
+    }
+
+    // ==========================================
+    // FIND USER
+    // ==========================================
+
+    $user = $db->table('users')
+        ->select('id, name, phone')
+        ->where('phone', $phoneSearch)
+        ->where('deleted_at IS NULL', null, false)
+        ->get()
+        ->getRowArray();
+
+    // ==========================================
+    // USER NOT FOUND
+    // ==========================================
+
+    if (!$user) {
+
+        $responseText =
+            "Nomor WhatsApp Anda belum terdaftar.\n\n" .
+            "Nomor: " . $phoneSearch;
+
+        $db->table('absen_wa_test')->insert([
+            'user_id'      => null,
+            'phone'        => $phone,
+            'message_type' => $messageType,
+            'status'       => null,
+            'message'      => $message,
+            'response'     => $responseText,
+            'raw_payload'  => $rawData,
+            'created_at'   => date('Y-m-d H:i:s')
+        ]);
+
+        $this->sendWhatsAppMessage(
+            $phone,
+            $responseText,
+            $phoneNumberId,
+            $accessToken,
+            $apiVersion
+        );
+
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody('OK');
+    }
+
+    // ==========================================
+    // COMMAND
+    // ==========================================
+
+    $statusMap = [
+        'absen' => 1,
+        'izin'  => 2,
+        'sakit' => 3
+    ];
+
+    $statusNames = [
+        1 => 'Hadir',
+        2 => 'Izin',
+        3 => 'Sakit'
+    ];
+
+    // ==========================================
+    // INVALID COMMAND
+    // ==========================================
+
+    if (!isset($statusMap[$message])) {
+
+        $responseText =
+            "Halo " . $user['name'] . ".\n\n" .
+            "Perintah tidak dikenali.\n\n" .
+            "Gunakan:\n" .
+            "absen = Hadir\n" .
+            "izin = Izin\n" .
+            "sakit = Sakit";
+
+        $db->table('absen_wa_test')->insert([
+            'user_id'      => $user['id'],
+            'phone'        => $phone,
+            'message_type' => 'text',
+            'status'       => null,
+            'message'      => $message,
+            'response'     => $responseText,
+            'raw_payload'  => $rawData,
+            'created_at'   => date('Y-m-d H:i:s')
+        ]);
+
+        $this->sendWhatsAppMessage(
+            $phone,
+            $responseText,
+            $phoneNumberId,
+            $accessToken,
+            $apiVersion
+        );
+
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody('OK');
+    }
+
+    // ==========================================
+    // ATTENDANCE
+    // ==========================================
+
+    $status     = $statusMap[$message];
+    $statusName = $statusNames[$status];
+    $today      = date('Y-m-d');
+
+    // Check existing
+    $existing = $db->table('presensidata')
+        ->where('guru_id', $user['id'])
+        ->where('presensidata_tanggal', $today)
+        ->where('deleted_at IS NULL', null, false)
+        ->get()
+        ->getRowArray();
+
+    if ($existing) {
+
+        $existingStatus = (int) $existing['status'];
+
+        $existingStatusName =
+            $statusNames[$existingStatus] ?? 'Unknown';
+
+        $responseText =
+            "Absensi hari ini sudah tercatat.\n\n" .
+            "Nama: " . $user['name'] . "\n" .
+            "Status: " . $existingStatusName;
+
+        $db->table('absen_wa_test')->insert([
+            'user_id'      => $user['id'],
+            'phone'        => $phone,
+            'message_type' => 'text',
+            'status'       => $status,
+            'message'      => $message,
+            'response'     => $responseText,
+            'raw_payload'  => $rawData,
+            'created_at'   => date('Y-m-d H:i:s')
+        ]);
+
+        $this->sendWhatsAppMessage(
+            $phone,
+            $responseText,
+            $phoneNumberId,
+            $accessToken,
+            $apiVersion
+        );
+
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody('OK');
+    }
+
+    // ==========================================
+    // INSERT PRESENCE
+    // ==========================================
+
+    $insertData = [
+        'guru_id'              => $user['id'],
+        'longitude'            => null,
+        'latitude'             => null,
+        'address'              => null,
+        'presensidata_tanggal' => $today,
+        'status'               => $status,
+        'created_at'            => date('Y-m-d H:i:s')
+    ];
+
+    $inserted = $db->table('presensidata')
+        ->insert($insertData);
+
+    // ==========================================
+    // FAILED
+    // ==========================================
+
+    if (!$inserted) {
+
+        $responseText =
+            "Absensi gagal disimpan.\n\n" .
+            "Nama: " . $user['name'];
+
+        $db->table('absen_wa_test')->insert([
+            'user_id'      => $user['id'],
+            'phone'        => $phone,
+            'message_type' => 'text',
+            'status'       => $status,
+            'message'      => $message,
+            'response'     => $responseText,
+            'raw_payload'  => $rawData,
+            'created_at'   => date('Y-m-d H:i:s')
+        ]);
+
+        $this->sendWhatsAppMessage(
+            $phone,
+            $responseText,
+            $phoneNumberId,
+            $accessToken,
+            $apiVersion
+        );
+
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody('OK');
+    }
+
+    // ==========================================
+    // SUCCESS
+    // ==========================================
+
+    $responseText =
+        "Absensi berhasil.\n\n" .
+        "Nama: " . $user['name'] . "\n" .
+        "Status: " . $statusName . "\n" .
+        "Tanggal: " . date('d-m-Y') . "\n" .
+        "Waktu: " . date('H:i');
+
+    // ==========================================
+    // LOG
+    // ==========================================
+
+    $db->table('absen_wa_test')->insert([
+        'user_id'      => $user['id'],
+        'phone'        => $phone,
+        'message_type' => 'text',
+        'status'       => $status,
+        'message'      => $message,
+        'response'     => $responseText,
+        'raw_payload'  => $rawData,
+        'created_at'   => date('Y-m-d H:i:s')
+    ]);
+
+    // ==========================================
+    // SEND WHATSAPP RESPONSE
+    // ==========================================
+
+    $this->sendWhatsAppMessage(
+        $phone,
+        $responseText,
+        $phoneNumberId,
+        $accessToken,
+        $apiVersion
+    );
+
+    return $this->response
+        ->setStatusCode(200)
+        ->setBody('OK');
+}
+
+public function whatsappWebhookeee()
 {
     $db = \Config\Database::connect();
 
