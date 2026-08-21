@@ -116,13 +116,14 @@ class Home extends BaseController
 
 
     // ==========================================
-    // Get message
+    // Get WhatsApp message
     // ==========================================
 
     $messageData =
         $data['entry'][0]['changes'][0]['value']['messages'][0]
         ?? null;
 
+    // This can happen for status updates, etc.
     if (!$messageData) {
         return $this->response
             ->setStatusCode(200)
@@ -141,8 +142,16 @@ class Home extends BaseController
     }
 
 
-    $phone   = $messageData['from'] ?? null;
-    $message = trim($messageData['text']['body'] ?? '');
+    // ==========================================
+    // Get sender and message
+    // ==========================================
+
+    $phone = $messageData['from'] ?? null;
+
+    $message = trim(
+        $messageData['text']['body'] ?? ''
+    );
+
 
     if (!$phone || !$message) {
         return $this->response
@@ -156,6 +165,28 @@ class Home extends BaseController
     // ==========================================
 
     $db = \Config\Database::connect();
+
+
+    // ==========================================
+    // Normalize phone number
+    // ==========================================
+
+    // Remove spaces, +, -, etc.
+    $phone = preg_replace('/[^0-9]/', '', $phone);
+
+    // Meta:
+    // 628123456789
+    //
+    // Database:
+    // 08123456789
+    //
+    // Convert 62xxxxxxxx to 0xxxxxxxx
+
+    $phoneSearch = $phone;
+
+    if (str_starts_with($phone, '62')) {
+        $phoneSearch = '0' . substr($phone, 2);
+    }
 
 
     // ==========================================
@@ -185,7 +216,7 @@ class Home extends BaseController
 
     $user = $db->table('users')
         ->select('id, name, phone')
-        ->where('phone', $phone)
+        ->where('phone', $phoneSearch)
         ->where('deleted_at IS NULL', null, false)
         ->get()
         ->getRowArray();
@@ -197,7 +228,8 @@ class Home extends BaseController
 
     if (!$user) {
 
-        $responseText = 'User not registered';
+        $responseText =
+            'User not registered | searched phone: ' . $phoneSearch;
 
         $db->table('absen_wa_test')->insert([
             'user_id'  => null,
@@ -218,7 +250,7 @@ class Home extends BaseController
 
     $today = date('Y-m-d');
 
-    $existing = $db->table('presensidata')
+    $existing = $db->table('Presensidata')
         ->where('guru_id', $user['id'])
         ->where('presensidata_tanggal', $today)
         ->where('deleted_at IS NULL', null, false)
@@ -259,8 +291,30 @@ class Home extends BaseController
         'address'              => null,
         'presensidata_tanggal' => $today,
         'status'               => 1,
-        'created_at'            => date('Y-m-d H:i:s')
+        'created_at'           => date('Y-m-d H:i:s')
     ]);
+
+
+    // ==========================================
+    // Check insert result
+    // ==========================================
+
+    if ($db->affectedRows() <= 0) {
+
+        $responseText =
+            'Failed to record attendance';
+
+        $db->table('absen_wa_test')->insert([
+            'user_id'  => $user['id'],
+            'phone'    => $phone,
+            'message'  => $message,
+            'response' => $responseText
+        ]);
+
+        return $this->response
+            ->setStatusCode(200)
+            ->setBody($responseText);
+    }
 
 
     // ==========================================
@@ -268,11 +322,14 @@ class Home extends BaseController
     // ==========================================
 
     $responseText =
-        'Attendance recorded successfully for ' . $user['name'];
+        'Attendance recorded successfully for ' .
+        $user['name'] .
+        ' on ' .
+        date('d-m-Y');
 
 
     // ==========================================
-    // Log response
+    // Save webhook activity/log
     // ==========================================
 
     $db->table('absen_wa_test')->insert([
@@ -282,6 +339,10 @@ class Home extends BaseController
         'response' => $responseText
     ]);
 
+
+    // ==========================================
+    // Return response to Meta
+    // ==========================================
 
     return $this->response
         ->setStatusCode(200)
