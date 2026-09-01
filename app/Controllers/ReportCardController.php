@@ -38,10 +38,10 @@ class ReportCardController extends BaseController
    public function class($classId)
 {
     $class = $this->classModel
-        ->select('classes.*, grades.grade_name')
-        ->join('grades', 'grades.id = classes.grade')
-        ->where('classes.id', $classId)
-        ->first();
+            ->select('classes.*, grades.grade_name, grades.division_id')
+            ->join('grades', 'grades.id = classes.grade')
+            ->where('classes.id', $classId)
+            ->first();
 
     if (!$class) {
         throw new \CodeIgniter\Exceptions\PageNotFoundException('Class not found.');
@@ -53,13 +53,24 @@ class ReportCardController extends BaseController
         ->orderBy('name', 'ASC')
         ->findAll();
 
+    // Academic years milik divisi kelas ini saja
     $academicYears = $this->academicYearModel
-        ->orderBy('start_date', 'DESC')
-        ->findAll();
+        ->getByDivision($class['division_id']);
 
-    $terms = $this->termModel
+    $divisionAyIds = array_column($academicYears, 'id');
+
+    // Term juga dibatasi ke academic years divisi yang sama
+    $termQuery = $this->termModel
         ->select('terms.*, semesters.academic_year_id, semesters.name as semester_name')
-        ->join('semesters', 'semesters.id = terms.semester_id')
+        ->join('semesters', 'semesters.id = terms.semester_id');
+
+    if (!empty($divisionAyIds)) {
+        $termQuery->whereIn('semesters.academic_year_id', $divisionAyIds);
+    } else {
+        $termQuery->where('1 = 0');
+    }
+
+    $terms = $termQuery
         ->orderBy('terms.start_date', 'DESC')
         ->findAll();
 
