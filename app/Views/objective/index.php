@@ -37,7 +37,7 @@
                         <th class="ps-3">ID</th>
                         <th>Objective</th>
                         <th>Outcome</th>
-                      
+                        <th>Term</th>
                         <th class="text-end pe-3">Actions</th>
                     </tr>
                 </thead>
@@ -58,6 +58,16 @@
                             <div class="fw-bold text-dark">
                                 <?= esc($u['outcome_name']) ?>
                             </div>
+                        </td>
+
+                        <td>
+                            <?php if (!empty($u['term_id'])): ?>
+                                <span class="badge bg-info bg-opacity-25 text-dark">
+                                    Term <?= esc($u['term_id']) ?>
+                                </span>
+                            <?php else: ?>
+                                <span class="text-muted small">-</span>
+                            <?php endif; ?>
                         </td>
 
                         <td class="text-end pe-3">

@@ -12,6 +12,7 @@ class ObjectiveModel extends Model
     protected $allowedFields = [
         'id',
         'outcome_id',
+        'term_id',
         'objective_name',
         'description'
     ];

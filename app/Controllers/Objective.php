@@ -12,13 +12,17 @@ use App\Models\OutcomeModel;
 class Objective extends BaseController
 {
     protected $unitModel;
+    protected $subjectModel;
+    protected $gradeModel;
+    protected $outcomeModel;
+    protected $objectiveModel;
 
     public function __construct()
     {
-        $this->unitModel = new UnitModel();
-        $this->subjectModel = new SubjectModel();
-        $this->gradeModel = new GradeModel();
-         $this->outcomeModel = new OutcomeModel();
+        $this->unitModel      = new UnitModel();
+        $this->subjectModel   = new SubjectModel();
+        $this->gradeModel     = new GradeModel();
+        $this->outcomeModel   = new OutcomeModel();
         $this->objectiveModel = new ObjectiveModel();
     }
 
@@ -27,14 +31,14 @@ class Objective extends BaseController
         $outcome_id = $this->request->getGet('outcome_id');
 
         $builder = $this->objectiveModel->select('objectives.*, outcomes.outcome_name')
-        ->join('outcomes','outcomes.id = objectives.outcome_id');
+            ->join('outcomes', 'outcomes.id = objectives.outcome_id', 'left');
 
         if ($outcome_id) {
-            $builder = $builder->where('outcome_id', $outcome_id);
+            $builder = $builder->where('objectives.outcome_id', $outcome_id);
         }
 
         return view('objective/index', [
-            'objective'     => $builder->findAll(),
+            'objective'  => $builder->findAll(),
             'outcome_id' => $outcome_id
         ]);
     }
@@ -44,27 +48,33 @@ class Objective extends BaseController
         $outcome_id = $this->request->getGet('outcome_id');
 
         return view('objective/form', [
-            'outcome_id'    => $outcome_id
+            'outcome_id' => $outcome_id
         ]);
     }
 
     public function edit($id)
     {
         $objective = $this->objectiveModel->find($id);
+        if (!$objective) {
+            return redirect()->to('/outcome')->with('error', 'Objective tidak ditemukan.');
+        }
 
         $outcome_id = $objective['outcome_id'];
 
         return view('objective/form', [
-            'objective' => $this->objectiveModel->find($id),
-            'outcome_id'    => $outcome_id
+            'objective'  => $objective,
+            'outcome_id' => $outcome_id
         ]);
     }
 
     public function store()
     {
+        $term = $this->request->getPost('term_id');
+
         $this->objectiveModel->insert([
-            'outcome_id' => $this->request->getPost('outcome_id'),
-            'objective_name'       => $this->request->getPost('objective_name'),
+            'outcome_id'     => $this->request->getPost('outcome_id'),
+            'term_id'        => $term ? (int)$term : null,
+            'objective_name' => $this->request->getPost('objective_name'),
         ]);
 
         return redirect()->to('/objective?outcome_id=' .
@@ -73,8 +83,11 @@ class Objective extends BaseController
 
     public function update($id)
     {
+        $term = $this->request->getPost('term_id');
+
         $this->objectiveModel->update($id, [
-            'objective_name'      => $this->request->getPost('objective_name'),
+            'term_id'        => $term ? (int)$term : null,
+            'objective_name' => $this->request->getPost('objective_name'),
         ]);
 
          return redirect()->to('/objective?outcome_id=' .

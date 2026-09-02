@@ -22,6 +22,20 @@
 
                     <input type="hidden" name="outcome_id" value="<?= esc($outcome_id) ?>">
 
+                    <?php $selectedTerm = old('term_id', $objective['term_id'] ?? ''); ?>
+                    <div class="mb-4">
+                        <label for="term_id" class="form-label fw-semibold">Term</label>
+                        <select name="term_id" id="term_id" class="form-select form-select-lg <?= session('errors.term_id') ? 'is-invalid' : '' ?>">
+                            <option value="">-- Pilih Term --</option>
+                            <?php for ($i = 1; $i <= 4; $i++): ?>
+                                <option value="<?= $i ?>" <?= (string)$selectedTerm === (string)$i ? 'selected' : '' ?>>
+                                    Term <?= $i ?>
+                                </option>
+                            <?php endfor; ?>
+                        </select>
+                        <div class="form-text">Pilih Term (1 - 4) untuk objective ini.</div>
+                    </div>
+
                     <div class="mb-4">
                         <label for="objective_name" class="form-label fw-semibold">Objective Name</label>
                         <input type="text" 
