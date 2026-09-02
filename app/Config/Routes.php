@@ -229,6 +229,23 @@ $routes->group('subunit', function($routes) {
     $routes->post('delete/(:num)', 'Subunit::delete/$1');
 });
 
+$routes->group('journal', function($routes) {
+    $routes->get('/', 'TeachingJournalController::index');
+    $routes->get('create', 'TeachingJournalController::create');
+    $routes->get('show/(:num)', 'TeachingJournalController::show/$1');
+    $routes->get('edit/(:num)', 'TeachingJournalController::edit/$1');
+    $routes->get('print/(:num)', 'TeachingJournalController::print/$1');
+
+    $routes->post('store', 'TeachingJournalController::store');
+    $routes->post('update/(:num)', 'TeachingJournalController::update/$1');
+    $routes->post('delete/(:num)', 'TeachingJournalController::delete/$1');
+
+    // AJAX endpoints
+    $routes->get('classes', 'TeachingJournalController::classes');
+    $routes->get('units', 'TeachingJournalController::units');
+    $routes->get('subunits', 'TeachingJournalController::subunits');
+});
+
 
 $routes->group('outcome', function($routes) {
     $routes->get('/', 'Outcome::index');

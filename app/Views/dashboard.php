@@ -457,7 +457,7 @@ if (!function_exists('safe_url')) {
                                 <div class="col-12 col-md-6">
                                     <div class="p-3 border rounded-3 bg-light-subtle">
                                         <div class="fw-bold text-dark mb-2"><i class="bi bi-bookmark-fill text-danger me-2"></i><?= esc($sub['subject_name']) ?></div>
-                                        <div class="d-flex gap-2">
+                                        <div class="d-flex gap-2 flex-wrap">
                                             <a href="<?= base_url('unit?subject_id='.$sub['subject_id']) ?>" class="btn btn-sm btn-outline-secondary flex-grow-1">
                                                 <i class="bi bi-collection me-1"></i> Units & Sub-Units
                                             </a>
@@ -466,6 +466,12 @@ if (!function_exists('safe_url')) {
                                             </a>
                                             <a href="<?= base_url('gradebook?subject_id='.$sub['subject_id']) ?>" class="btn btn-sm btn-outline-secondary flex-grow-1">
                                                 <i class="bi bi-pencil me-1"></i> GradeBook
+                                            </a>
+                                            <a href="<?= base_url('journal?subject_id='.$sub['subject_id']) ?>" class="btn btn-sm btn-outline-secondary flex-grow-1">
+                                                <i class="bi bi-journal-text me-1"></i> My Journal
+                                            </a>
+                                            <a href="<?= base_url('journal/create?subject_id='.$sub['subject_id']) ?>" class="btn btn-sm btn-primary flex-grow-1">
+                                                <i class="bi bi-plus-lg me-1"></i> Add Journal
                                             </a>
                                         </div>
                                     </div>
