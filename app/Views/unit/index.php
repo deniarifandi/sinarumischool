@@ -53,6 +53,7 @@
                         <th>Name</th>
                         <th>Subject</th>
                         <th>Grade</th>
+                        <th>Term</th>
                         <th>Subunit</th>
                         <th class="text-end pe-3">Actions</th>
                     </tr>
@@ -78,6 +79,10 @@
 
                         <td class="text-dark-50 small">
                             <?= esc($u['grade_name']) ?>
+                        </td>
+
+                        <td class="text-dark-50 small">
+                            <?= esc($u['term_name'] ?? '-') ?>
                         </td>
 
                         <td class="text-dark-50 small">

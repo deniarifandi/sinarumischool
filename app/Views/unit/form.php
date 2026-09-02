@@ -4,7 +4,7 @@
 <div class="glass-card">
     <h5 class="mb-4">
         <?= isset($unit) ? 'Edit Unit' : 'Add Unit' ?>
-            <?php $subjectId = esc( $subject_id ?? $_GET['subject_id'] ?? '-') ?>
+        <?php $subjectId = esc($subject_id ?? $_GET['subject_id'] ?? '-') ?>
     </h5>
 
     <form action="<?= isset($unit)
@@ -18,27 +18,26 @@
                name="subject_id"
                value="<?php echo $subjectId ?>">
 
-    <?php 
-$selectedGrade = old('grade_id') 
-    ?? ($unit['grade_id'] ?? ($_GET['grade'] ?? ''));
-?>
+        <?php 
+        $selectedGrade = old('grade_id') ?? ($unit['grade_id'] ?? ($_GET['grade'] ?? ''));
+        $selectedTerm  = old('term_id') ?? ($unit['term_id'] ?? '');
+        ?>
 
-<?php if ($grades[0]['subject_name'] != 'All Subject'): ?>
+        <?php if (!empty($grades) && isset($grades[0]['subject_name']) && $grades[0]['subject_name'] != 'All Subject'): ?>
+        <div class="mb-3">
+            <label class="form-label">Grade</label>
+            <select name="grade_id" class="form-control" required>
+                <option value="">-- Select Grade --</option>
+                <?php foreach ($grades as $grade): ?>
+                    <option value="<?= $grade['id'] ?>"
+                        <?= $selectedGrade == $grade['id'] ? 'selected' : '' ?>>
+                        <?= $grade['grade_name'] ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <?php endif ?>
 
-<div class="mb-3">
-    <label class="form-label">Grade</label>
-    <select name="grade_id" class="form-control" required>
-        <option value="">-- Select Grade --</option>
-        <?php foreach ($grades as $grade): ?>
-            <option value="<?= $grade['id'] ?>"
-                <?= $selectedGrade == $grade['id'] ? 'selected' : '' ?>>
-                <?= $grade['grade_name'] ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-</div>
-
-<?php endif ?>
         <div class="mb-3">
             <label class="form-label">Unit Name</label>
             <input type="text"

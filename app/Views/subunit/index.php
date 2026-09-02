@@ -8,8 +8,8 @@
             <small class="text-white-50">
                 <?php $unit_id = esc($_GET['unit_id'] ?? '-') ?>
                 <?php $division_id = esc($_GET['division_id'] ?? $_GET['divisi'] ?? '-') ?>
-                Unit ID: <?= esc($subjectId ?? '-') ?> |
-                Grade ID: <?= esc($gradeId ?? '-') ?>
+                Unit ID: <?= esc($unit_id ?? '-') ?> |
+                Grade ID: <?= esc('-') ?>
             </small>
         </div>
 

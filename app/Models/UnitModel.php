@@ -12,6 +12,7 @@ class UnitModel extends Model
     protected $allowedFields = [
         'subject_id',
         'grade_id',
+        'term_id',
         'name'
     ];
 
