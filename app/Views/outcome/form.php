@@ -24,6 +24,18 @@ $selectedGrade = old('grade_id')
 ?>
 
         <div class="mb-3">
+            <label class="form-label">Grade</label>
+            <select name="grade_id" class="form-select" required>
+                <option value="">-- Choose Grade --</option>
+                <?php foreach ($grades as $g): ?>
+                    <option value="<?= $g['id'] ?>" <?= (isset($outcome) && $outcome['grade_id'] == $g['id']) ? 'selected' : '' ?>>
+                        <?= esc($g['grade_name']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <div class="mb-3">
             <label class="form-label">Outcome Name</label>
             <input type="text"
                    name="outcome_name"

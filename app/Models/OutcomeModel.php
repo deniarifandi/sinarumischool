@@ -12,6 +12,8 @@ class OutcomeModel extends Model
     protected $allowedFields = [
         'id',
         'subject_id',
+        'grade_id',
+        'term_id',
         'outcome_name',
         'description'
     ];

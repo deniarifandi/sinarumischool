@@ -327,6 +327,7 @@ $routes->post(
 
 $routes->get('gradebook', 'GradebookController::index');
 $routes->post('gradebook/save', 'GradebookController::save');
+$routes->post('gradebook/objective-save', 'GradebookController::saveObjective');
 $routes->get('gradebook/curriculum', 'GradebookController::curriculum');
 $routes->get('gradebook/directory', 'StudentDashboardController::directory');
 $routes->get('student/dashboard/(:num)', 'StudentDashboardController::dashboard/$1');

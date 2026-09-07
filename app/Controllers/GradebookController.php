@@ -11,6 +11,9 @@ use App\Models\SubjectModel;
 use App\Models\GradebookModel;
 use App\Models\UserSubjectModel;
 use App\Models\GradebookScoreModel;
+use App\Models\GradebookObjectiveScoreModel;
+use App\Models\OutcomeModel;
+use App\Models\ObjectiveModel;
 use App\Models\StudentModel;
 use App\Models\GradeModel;
 
@@ -25,21 +28,27 @@ class GradebookController extends BaseController
     protected $gradebookModel;
     protected $studentModel;
     protected $gradebookScoreModel;
-    protected $gradeModel;
+        protected $gradebookObjectiveScoreModel;
+        protected $outcomeModel;
+        protected $objectiveModel;
+        protected $gradeModel;
 
-    public function __construct()
-    {
-        $this->userSubjectModel    = new UserSubjectModel();
-        $this->subjectModel        = new SubjectModel();
-        $this->classModel          = new ClassModel();
-        $this->academicYearModel   = new AcademicYearModel();
-        $this->semesterModel       = new SemesterModel();
-        $this->termModel           = new TermModel();
-        $this->gradebookModel      = new GradebookModel();
-        $this->studentModel        = new StudentModel();
-        $this->gradebookScoreModel = new GradebookScoreModel();
-        $this->gradeModel          = new GradeModel();
-    }
+        public function __construct()
+        {
+            $this->userSubjectModel    = new UserSubjectModel();
+            $this->subjectModel        = new SubjectModel();
+            $this->classModel          = new ClassModel();
+            $this->academicYearModel   = new AcademicYearModel();
+            $this->semesterModel       = new SemesterModel();
+            $this->termModel           = new TermModel();
+            $this->gradebookModel      = new GradebookModel();
+            $this->studentModel        = new StudentModel();
+            $this->gradebookScoreModel = new GradebookScoreModel();
+            $this->gradebookObjectiveScoreModel = new GradebookObjectiveScoreModel();
+            $this->outcomeModel        = new OutcomeModel();
+            $this->objectiveModel      = new ObjectiveModel();
+            $this->gradeModel          = new GradeModel();
+        }
 
     /**
      * Guard: pastikan user yang login memang punya akses ke subject ini.
@@ -354,32 +363,66 @@ class GradebookController extends BaseController
 
     unset($student);
 
-    // ============================================================
-    // 11. RETURN VIEW
-    // ============================================================
+        // ============================================================
+        // 11. OBJECTIVE-BASED (TAB 2) DATA
+        // ============================================================
+        //
+        // Kolom objektif AUTO-generate dari objectives:
+        //   - subject  : via outcome.subject_id
+        //   - term     : objective.term_id == term gradebook (NULL = tidak muncul)
+        // Guru tidak perlu memilih/menambah kolom lagi.
 
-    return view('gradebook/edit', [
+        $objectives = $this->objectiveModel
+            ->select(
+                'objectives.id as objective_id,
+                 objectives.objective_name,
+                 outcomes.id as outcome_id,
+                 outcomes.outcome_name'
+            )
+            ->join('outcomes', 'outcomes.id = objectives.outcome_id')
+            ->join('terms', 'terms.id = objectives.term_id')
+            ->where('outcomes.subject_id', $subjectId)
+            ->where('outcomes.grade_id', $class['grade'])
+            ->where('terms.name', $term['name'])
+            ->orderBy('outcomes.outcome_name', 'ASC')
+            ->orderBy('objectives.objective_name', 'ASC')
+            ->findAll();
 
-        'termId'         => $termId,
-        'classId'        => $classId,
-        'subjectId'      => $subjectId,
+        $objectiveScores = $this->gradebookObjectiveScoreModel
+            ->getByGradebook($gradebook['id']);
 
-        'academicYear'   => $academicYear,
-        'semester'       => $semester,
-        'term'           => $term,
-        'class'          => $class,
+        // ============================================================
+        // 12. RETURN VIEW
+        // ============================================================
 
-        'subject'        => (array) $subject,
+        return view('gradebook/edit', [
 
-        'students'       => $students,
-        'scores'         => $scores,
+            'termId'         => $termId,
+            'classId'        => $classId,
+            'subjectId'      => $subjectId,
 
-        'isLocked'       => (bool) $gradebook['is_locked'],
+            'gradebookId'    => $gradebook['id'],
 
-        // Important for the view
-        'religionSubject' => $religionSubject,
-    ]);
-}
+            'academicYear'   => $academicYear,
+            'semester'       => $semester,
+            'term'           => $term,
+            'class'          => $class,
+
+            'subject'        => (array) $subject,
+
+            'students'       => $students,
+            'scores'         => $scores,
+
+            // Objective-based (TAB 2) — kolom AUTO dari objectives (term + subject)
+                        'objectives'        => $objectives,
+                        'objectiveScores'   => $objectiveScores,
+
+            'isLocked'       => (bool) $gradebook['is_locked'],
+
+            // Important for the view
+            'religionSubject' => $religionSubject,
+        ]);
+    }
 
     public function indexOLD()
     {
@@ -673,11 +716,160 @@ class GradebookController extends BaseController
         $this->gradebookScoreModel->upsertBatch($data);
 
         session()->setFlashdata('success', 'Nilai berhasil disimpan.');
+    return redirect()->to($backUrl);
+    }
+
+    // ============================================================
+    // OBJECTIVE-BASED GRADEBOOK (TAB 2)
+    // ============================================================
+
+    /**
+     * Helper: back-url gradebook
+     */
+    private function objectiveBackUrl($subjectId, $classId, $termId)
+    {
+        return base_url('gradebook') . '?' . http_build_query([
+            'subject_id' => $subjectId,
+            'class_id'   => $classId,
+            'term_id'    => $termId,
+        ]);
+    }
+
+    /**
+     * Simpan score objektif semua student per kolom (per objective_id).
+     * Kolom objektif AUTO dari objectives, jadi cukup score[objective_id][student_id].
+     * OPT: POST gradebook_id, subject_id, class_id, term_id,
+     *      student_id[], objective_id[], score[objective_id][student_id]
+     */
+    public function saveObjective()
+    {
+        $req = $this->request;
+
+        $gradebookId = (int) $req->getPost('gradebook_id');
+        $subjectId   = $req->getPost('subject_id');
+        $classId     = $req->getPost('class_id');
+        $termId      = $req->getPost('term_id');
+
+        $studentIds = $req->getPost('student_id') ?? [];
+
+        // Kolom objektif yang dirender di form (per objektif)
+        $objectiveIds = $req->getPost('objective_id') ?? [];
+
+        $backUrl = $this->objectiveBackUrl($subjectId, $classId, $termId);
+
+        $gradebook = $this->gradebookModel->find($gradebookId);
+
+        if (!$gradebook) {
+            session()->setFlashdata('error', 'Gradebook tidak ditemukan.');
+            return redirect()->to($backUrl);
+        }
+
+        $term = $this->termModel->find($termId);
+        if (!$term) {
+            session()->setFlashdata('error', 'Term tidak ditemukan.');
+            return redirect()->to($backUrl);
+        }
+
+        if ($gradebook['is_locked']) {
+            session()->setFlashdata('error', 'Gradebook ini sudah terkunci.');
+            return redirect()->to($backUrl);
+        }
+
+        // Validasi: hanya objektif yang memang milik subject+term ini
+        // (sama dengan aturan auto-generate kolom).
+        $validObjectives = [];
+
+        $objectives = $this->objectiveModel
+            ->select('objectives.id')
+            ->join('outcomes', 'outcomes.id = objectives.outcome_id')
+            ->join('terms', 'terms.id = objectives.term_id')
+            ->where('outcomes.subject_id', $subjectId)
+            ->where('terms.name', $term['name'])
+            ->whereIn('objectives.id', $objectiveIds)
+            ->findAll();
+
+        foreach ($objectives as $o) {
+            $validObjectives[(int) $o['id']] = true;
+        }
+
+        $posted    = $req->getPost('score') ?? [];
+
+        $studentNames = $this->studentModel->whereIn('id', $studentIds)->findAll();
+        $nameMap      = array_column($studentNames, 'name', 'id');
+
+        // ---- Validate 0-100 all columns x students ----
+        $errors = [];
+
+        foreach ($objectiveIds as $oid) {
+
+            if (!isset($validObjectives[$oid])) {
+                continue;
+            }
+
+            $postedCol = $posted[$oid] ?? [];
+
+            foreach ($studentIds as $studentId) {
+
+                $raw = trim($postedCol[$studentId] ?? '');
+
+                if ($raw === '' || $raw === '-') {
+                    continue;
+                }
+
+                $normalized = str_replace(',', '.', $raw);
+
+                if (!is_numeric($normalized) || $normalized < 0 || $normalized > 100) {
+
+                    $errors[] = ($nameMap[$studentId] ?? "ID {$studentId}")
+                        . " - \"{$raw}\"";
+                }
+            }
+        }
+
+        if (!empty($errors)) {
+            session()->setFlashdata('error', 'Beberapa nilai tidak valid (0-100), tidak ada yang tersimpan.');
+            session()->setFlashdata('validation_errors', $errors);
+            session()->setFlashdata('old_input', $req->getPost());
+            return redirect()->to($backUrl);
+        }
+
+        // ---- Save per kolom objektif ----
+        foreach ($objectiveIds as $oid) {
+
+            if (!$validObjectives[$oid]) {
+                continue;
+            }
+
+            $postedCol = $posted[$oid] ?? [];
+
+            $data = [];
+
+            foreach ($studentIds as $studentId) {
+
+                $raw = trim($postedCol[$studentId] ?? '');
+
+                $data[] = [
+                    'gradebook_id' => $gradebookId,
+                    'objective_id' => (int) $oid,
+                    'student_id'   => $studentId,
+                    'score'        => ($raw === '' || $raw === '-')
+                        ? null
+                        : str_replace(',', '.', $raw),
+                ];
+            }
+
+            if (!empty($data)) {
+                $this->gradebookObjectiveScoreModel->upsertBatch($data);
+            }
+        }
+
+        session()->setFlashdata('success', 'Nilai objektif berhasil disimpan.');
         return redirect()->to($backUrl);
     }
 
-public function curriculum()
-{
+
+    public function curriculum()
+    {
     $divisionId    = $this->request->getGet('division');
     $classId      = $this->request->getGet('class_id');
     $academicYearId = $this->request->getGet('academic_year_id');

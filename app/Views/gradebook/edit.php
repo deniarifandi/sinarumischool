@@ -318,6 +318,50 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
 
 
     <!-- ============================================================
+         TABS: CT <-> Objective-Based
+         ============================================================ -->
+
+    <ul class="nav nav-tabs mb-3" id="gbTabs" role="tablist">
+
+        <li class="nav-item" role="presentation">
+            <button
+                class="nav-link active"
+                id="tab-ct-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#tab-ct"
+                type="button"
+                role="tab"
+                aria-controls="tab-ct"
+                aria-selected="true"
+            >
+                <i class="bi bi-file-earmark-text me-1"></i>
+                Chapter Test (CT)
+            </button>
+        </li>
+
+        <li class="nav-item" role="presentation">
+            <button
+                class="nav-link"
+                id="tab-objective-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#tab-objective"
+                type="button"
+                role="tab"
+                aria-controls="tab-objective"
+                aria-selected="false"
+            >
+                <i class="bi bi-list-check me-1"></i>
+                Objective-Based
+            </button>
+        </li>
+
+    </ul>
+
+    <div class="tab-content" id="gbTabContent">
+
+    <div class="tab-pane fade show active" id="tab-ct" role="tabpanel" aria-labelledby="tab-ct-tab">
+
+    <!-- ============================================================
          FILTER
          ============================================================ -->
 
@@ -873,7 +917,196 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
 
     </form>
 
-</div>
+        </div><!-- /.tab-ct -->
+
+        <!-- ============================================================
+             TAB 2: OBJECTIVE-BASED
+             ============================================================ -->
+
+        <div class="tab-pane fade" id="tab-objective" role="tabpanel" aria-labelledby="tab-objective-tab">
+
+            <div class="alert alert-info py-2 mb-3 small">
+                <i class="bi bi-info-circle me-1"></i>
+                Kolom objektif <strong>otomatis</strong> muncul berdasarkan
+                <strong>term</strong> gradebook ini (objective.term_id = term).
+                Cukup isi nilai setiap siswa per kolom.
+            </div>
+
+            <?php if ($isLocked): ?>
+
+                <div class="alert alert-warning py-2 mb-3 small">
+                    <i class="bi bi-lock-fill me-1"></i>
+                    This gradebook is locked. Objective scores cannot be edited.
+                </div>
+
+            <?php endif; ?>
+
+            <?php if (!empty($objectives)): ?>
+
+            <form
+                method="post"
+                action="<?= base_url('gradebook/objective-save') ?>"
+                id="objForm"
+            >
+
+                <?= csrf_field() ?>
+
+                <input type="hidden" name="gradebook_id" value="<?= esc($gradebookId) ?>">
+                <input type="hidden" name="subject_id" value="<?= esc($subjectId) ?>">
+                <input type="hidden" name="class_id" value="<?= esc($classId) ?>">
+                <input type="hidden" name="term_id" value="<?= esc($termId) ?>">
+
+                <?php foreach ($objectives as $obj): ?>
+
+                    <input type="hidden" name="objective_id[]" value="<?= esc($obj['objective_id']) ?>">
+
+                <?php endforeach; ?>
+
+                <div class="table-responsive" style="border-radius:8px; overflow:auto; max-height:72vh; border:1px solid rgba(255,255,255,0.1);">
+
+                    <table class="table table-sm table-bordered align-middle mb-0" id="objTable" style="font-size:0.85rem;">
+
+                        <thead class="table-light" style="position:sticky; top:0; z-index:10;">
+
+                            <tr>
+
+                                <th class="text-center py-1" style="width:40px; min-width:40px;">
+                                    No
+                                </th>
+
+                                <th class="py-1" style="min-width:180px; position:sticky; left:0; z-index:11; background:#f8f9fa;">
+                                    Student
+                                </th>
+
+                                <?php foreach ($objectives as $obj): ?>
+
+                                    <th class="text-center py-1" style="min-width:120px; line-height:1.1;">
+
+                                        <div class="small fw-bold">
+                                            <?= esc($obj['objective_name'] ?? '-') ?>
+                                        </div>
+
+                                        <div class="small text-muted" style="font-size:0.7rem;">
+                                            <?= esc($obj['outcome_name'] ?? '') ?>
+                                        </div>
+
+                                    </th>
+
+                                <?php endforeach; ?>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <?php if (!empty($students)): ?>
+
+                            <?php foreach ($students as $index => $student): ?>
+
+                                <?php
+
+                                $studentId = $student['id'];
+
+                                $rowClass = 'obj-student-row';
+                                ?>
+
+                                <tr class="<?= $rowClass ?>">
+
+                                    <td class="text-center text-muted py-1">
+                                        <?= $index + 1 ?>
+                                    </td>
+
+                                    <td class="py-1" style="position:sticky; left:0; z-index:5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;">
+
+                                        <input type="hidden" name="student_id[]" value="<?= esc($studentId) ?>">
+
+                                        <div class="fw-bold text-truncate" title="<?= esc($student['name']) ?>">
+                                            <?= esc($student['name']) ?>
+                                        </div>
+
+                                    </td>
+
+                                    <?php foreach ($objectives as $colIndex => $obj): ?>
+
+                                        <td class="p-1">
+
+                                            <input
+                                                type="text"
+                                                inputmode="decimal"
+                                                name="score[<?= esc($obj['objective_id']) ?>][<?= esc($studentId) ?>]"
+                                                value="<?= esc(
+                                                    $objectiveScores[$obj['objective_id']][$studentId] ?? ''
+                                                ) ?>"
+                                                class="form-control form-control-sm px-1 text-center obj-cell"
+                                                data-col="<?= $colIndex ?>"
+                                                autocomplete="off"
+                                                spellcheck="false"
+                                                <?= $isLocked ? 'readonly' : '' ?>
+                                            >
+
+                                        </td>
+
+                                    <?php endforeach; ?>
+
+                                </tr>
+
+                            <?php endforeach; ?>
+
+                        <?php else: ?>
+
+                            <tr>
+                                <td colspan="<?= 2 + count($objectives) ?>" class="text-center py-4">
+                                    No students found in this class.
+                                </td>
+                            </tr>
+
+                        <?php endif; ?>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="d-flex justify-content-end mt-2">
+
+                    <?php if (!$isLocked): ?>
+
+                        <button type="submit" id="objSaveBtn" class="btn btn-sm btn-primary rounded-pill px-4">
+                            <i class="bi bi-save me-1"></i>
+                            Save Objective Scores
+                        </button>
+
+                    <?php else: ?>
+
+                        <span class="btn btn-sm btn-warning rounded-pill px-4">
+                            <i class="bi bi-lock-fill me-1"></i>
+                            Locked
+                        </span>
+
+                    <?php endif; ?>
+
+                </div>
+
+            </form>
+
+            <?php else: ?>
+
+                <div class="alert alert-secondary py-2 mb-2 small">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Belum ada objektif untuk term ini. Tambahkan objektif
+                    (dengan term) di menu Objective.
+                </div>
+
+            <?php endif; ?>
+
+
+        </div><!-- /.tab-objective -->
+
+        </div><!-- /.tab-content -->
+
+    </div>
 
 
 <?= $this->endSection() ?>
@@ -1570,5 +1803,82 @@ Swal.fire({
 
 <?php endif; ?>
 
+<script>
+$(document).ready(function () {
+
+    // ============================================================
+    // VALIDATION score objektif 0-100
+    // ============================================================
+
+    const kkm = parseFloat($('#gradebookTable').data('kkm')) || 75;
+
+    function validateObjCell($cell) {
+        let value = $cell.val().trim();
+
+        if (value === '-' || value === '') {
+            $cell.val('').removeClass('is-invalid text-danger fw-bold');
+            return true;
+        }
+
+        value = value.replace(',', '.');
+        $cell.val(value);
+
+        let number = parseFloat(value);
+
+        if (isNaN(number) || number < 0 || number > 100) {
+            $cell.addClass('is-invalid').removeClass('text-danger fw-bold');
+            return false;
+        }
+
+        $cell.removeClass('is-invalid');
+
+        if (number < kkm) {
+            $cell.addClass('text-danger fw-bold');
+        } else {
+            $cell.removeClass('text-danger fw-bold');
+        }
+
+        return true;
+    }
+
+    $('.obj-cell').each(function () {
+        validateObjCell($(this));
+    });
+
+    const isLocked = <?= $isLocked ? 'true' : 'false' ?>;
+
+    if (!isLocked) {
+
+        $('.obj-cell:not([readonly])').on('input', function () {
+            validateObjCell($(this));
+        });
+
+        $('#objForm').on('submit', function (e) {
+            let invalid = false;
+
+            $('.obj-cell:visible:not([readonly])').each(function () {
+                if (!validateObjCell($(this))) {
+                    invalid = true;
+                }
+            });
+
+            if (invalid) {
+                e.preventDefault();
+
+                alert('Some objective scores are invalid. Scores must be between 0 and 100.');
+
+                $('.obj-cell.is-invalid:visible').first().focus();
+                return false;
+            }
+
+            $('#objSaveBtn')
+                .prop('disabled', true)
+                .html(
+                    '<span class="spinner-border spinner-border-sm me-1"></span> Saving...'
+                );
+        });
+    }
+});
+</script>
 
 <?= $this->endSection() ?>

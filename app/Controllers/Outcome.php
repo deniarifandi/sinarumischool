@@ -43,41 +43,53 @@ class Outcome extends BaseController
     {
         $subject_id = $this->request->getGet('subject_id');
 
-        $grade_list = $this->gradeModel->builder();
-        $grades = $grade_list
+        $grades = $this->gradeModel->builder()
             ->select('grades.*')
-            ->join('divisions','grades.division_id = divisions.id','left')
-            ->join('subjects','subjects.division_id = divisions.id','left')
+            ->join('divisions', 'grades.division_id = divisions.id', 'left')
+            ->join('subjects', 'subjects.division_id = divisions.id')
             ->where('subjects.id', $subject_id)
+            ->where('grades.deleted_at', null)
+            ->distinct()
             ->get()
             ->getResultArray();
 
-        // return json_encode($grades);
-
         return view('outcome/form', [
-            'subjectId' => $this->request->getGet('subject'),
-            'gradeId'   => $this->request->getGet('grade'),
-            'grades'    => $grades
+            'subjectId'  => $subject_id,
+            'grades'     => $grades
         ]);
     }
 
     public function edit($id)
     {
-        $subject_id = $this->outcomeModel->find($id);
+        $outcome = $this->outcomeModel->find($id);
+        if (!$outcome) {
+            return redirect()->to('/outcome')->with('error', 'Outcome tidak ditemukan.');
+        }
 
-        $subject_id = $subject_id['subject_id'];
+        $subject_id = $outcome['subject_id'];
+
+        $grades = $this->gradeModel->builder()
+            ->select('grades.*')
+            ->join('divisions', 'grades.division_id = divisions.id', 'left')
+            ->join('subjects', 'subjects.division_id = divisions.id', 'left')
+            ->where('subjects.id', $subject_id)
+            ->where('grades.deleted_at', null)
+            ->get()
+            ->getResultArray();
 
         return view('outcome/form', [
-            'outcome' => $this->outcomeModel->find($id),
-            'subject_id'    => $subject_id
+            'outcome'    => $outcome,
+            'subjectId'  => $subject_id,
+            'grades'     => $grades
         ]);
     }
 
     public function store()
     {
         $this->outcomeModel->insert([
-            'subject_id' => $this->request->getPost('subject_id'),
-            'outcome_name'       => $this->request->getPost('outcome_name'),
+            'subject_id'   => $this->request->getPost('subject_id'),
+            'grade_id'     => $this->request->getPost('grade_id'),
+            'outcome_name' => $this->request->getPost('outcome_name'),
         ]);
 
         return redirect()->to('/outcome?subject_id=' .
@@ -87,7 +99,8 @@ class Outcome extends BaseController
     public function update($id)
     {
         $this->outcomeModel->update($id, [
-            'outcome_name'      => $this->request->getPost('outcome_name'),
+            'grade_id'     => $this->request->getPost('grade_id'),
+            'outcome_name' => $this->request->getPost('outcome_name'),
         ]);
 
          return redirect()->to('/outcome?subject_id=' .
