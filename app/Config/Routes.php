@@ -236,6 +236,11 @@ $routes->group('journal', function($routes) {
     $routes->get('edit/(:num)', 'TeachingJournalController::edit/$1');
     $routes->get('print/(:num)', 'TeachingJournalController::print/$1');
 
+    // Class teacher: read-only list of journals created for a given class.
+    $routes->get('class/(:num)', 'TeachingJournalController::classList/$1');
+    // Class teacher: print combined recap (one or many dates) for a given class.
+    $routes->get('class/(:num)/print', 'TeachingJournalController::classPrint/$1');
+
     $routes->post('store', 'TeachingJournalController::store');
     $routes->post('update/(:num)', 'TeachingJournalController::update/$1');
     $routes->post('delete/(:num)', 'TeachingJournalController::delete/$1');

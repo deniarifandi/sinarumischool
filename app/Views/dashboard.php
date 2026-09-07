@@ -438,6 +438,12 @@ if (!function_exists('safe_url')) {
                 <span>Report Card</span>
             </a>
 
+            <a href="<?= base_url('journal/class/' . $mainClass['id']) ?>"
+               class="nav-item-btn">
+                <i class="bi bi-journal-text"></i>
+                <span>Class Journals</span>
+            </a>
+
         </div>
     </div>
 </div>

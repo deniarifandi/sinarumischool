@@ -479,6 +479,152 @@ class TeachingJournalController extends BaseController
     }
 
     /**
+     * Class-teacher view: read-only listing of every journal
+     * that has been created for a given class (across subjects and teachers).
+     *
+     * Same gate as the dashboard "Class Room Management" card:
+     * superadmin / teacher / teacher_admin. The class teacher is NOT required
+     * to be the creator of the journals — this is a viewer.
+     */
+    public function classList($classId)
+    {
+        $classId = (int) $classId;
+        if (! $classId) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Class id required.');
+        }
+
+        // Same role gate as dashboard's Class Room Management card.
+        $role = $this->currentRole();
+        if (! in_array($role, ['superadmin', 'teacher', 'teacher_admin'], true)) {
+            return redirect()->to('/')
+                ->with('error', 'You are not allowed to view class journals.');
+        }
+
+        // Class + grade (joined for display).
+        $class = $this->classModel
+            ->select('classes.*, grades.grade_name, grades.division_id')
+            ->join('grades', 'grades.id = classes.grade', 'left')
+            ->where('classes.id', $classId)
+            ->first();
+
+        if (! $class) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Class not found.');
+        }
+
+        // Optional filters from query string: subject_id, teacher_id, date range.
+        $filters = [
+            'class_id'  => $classId,
+            'subject_id' => $this->request->getGet('subject_id'),
+            'teacher_id' => $this->request->getGet('teacher_id'),
+            'date_from'  => $this->request->getGet('date_from'),
+            'date_to'    => $this->request->getGet('date_to'),
+        ];
+
+        $journals = $this->journalModel->getList($filters);
+
+        // Dropdowns for filter bar: subjects in this division + teachers.
+        $subjects = $this->subjectModel
+            ->where('division_id', (int) ($class['division_id'] ?? 0))
+            ->where('deleted_at', null)
+            ->orderBy('subject_name', 'ASC')
+            ->findAll();
+
+        $teachers = $this->userModel
+            ->whereIn('role', ['guru', 'teacher', 'teacher_admin'])
+            ->orderBy('name', 'ASC')
+            ->findAll();
+
+        return view('journal/class_list', [
+            'class'    => $class,
+            'journals' => $journals,
+            'subjects' => $subjects,
+            'teachers' => $teachers,
+            'filters'  => $filters,
+        ]);
+    }
+
+    /**
+     * Class-teacher view: combined print recap for a given class over a date range.
+     *
+     * Query string:
+     *   - date_from  (Y-m-d, optional; falls back to today)
+     *   - date_to    (Y-m-d, optional; falls back to date_from / today)
+     *   - subject_id (optional, narrows the recap to one subject)
+     *   - teacher_id (optional, narrows the recap to one teacher)
+     *
+     * Renders ALL matching journals in one printable page, each using the
+     * same layout as journal/print.php so the recap prints cleanly.
+     */
+    public function classPrint($classId)
+    {
+        $classId = (int) $classId;
+        if (! $classId) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Class id required.');
+        }
+
+        $role = $this->currentRole();
+        if (! in_array($role, ['superadmin', 'teacher', 'teacher_admin'], true)) {
+            return redirect()->to('/')
+                ->with('error', 'You are not allowed to view class journals.');
+        }
+
+        $class = $this->classModel
+            ->select('classes.*, grades.grade_name, grades.division_id')
+            ->join('grades', 'grades.id = classes.grade', 'left')
+            ->where('classes.id', $classId)
+            ->first();
+
+        if (! $class) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Class not found.');
+        }
+
+        $today    = date('Y-m-d');
+        $dateFrom = $this->request->getGet('date_from') ?: $today;
+        $dateTo   = $this->request->getGet('date_to')   ?: $dateFrom;
+        // Guard: keep range monotonic.
+        if (strtotime($dateTo) < strtotime($dateFrom)) {
+            $dateTo = $dateFrom;
+        }
+
+        $filters = [
+            'class_id'   => $classId,
+            'subject_id' => $this->request->getGet('subject_id') ?: null,
+            'teacher_id' => $this->request->getGet('teacher_id') ?: null,
+            'date_from'  => $dateFrom,
+            'date_to'    => $dateTo,
+        ];
+
+        $journals = $this->journalModel->getList($filters);
+
+        // Recap aggregates.
+        $totalJp       = 0;
+        $subjectNames  = [];
+        $teacherNames  = [];
+        foreach ($journals as $j) {
+            if (isset($j['periods']) && is_numeric($j['periods'])) {
+                $totalJp += (int) $j['periods'];
+            }
+            if (!empty($j['subject_name']) && !in_array($j['subject_name'], $subjectNames, true)) {
+                $subjectNames[] = $j['subject_name'];
+            }
+            if (!empty($j['teacher_name']) && !in_array($j['teacher_name'], $teacherNames, true)) {
+                $teacherNames[] = $j['teacher_name'];
+            }
+        }
+
+        return view('journal/class_print', [
+            'class'        => $class,
+            'journals'     => $journals,
+            'filters'      => $filters,
+            'dateFrom'     => $dateFrom,
+            'dateTo'       => $dateTo,
+            'totalJp'      => $totalJp,
+            'subjectNames' => $subjectNames,
+            'teacherNames' => $teacherNames,
+        ]);
+    }
+
+    /**
      * Build the post data array from request, normalising empty values.
      */
     private function collectPostData(): array
