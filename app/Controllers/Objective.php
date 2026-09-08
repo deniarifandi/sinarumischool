@@ -29,26 +29,50 @@ class Objective extends BaseController
     public function index()
     {
         $outcome_id = $this->request->getGet('outcome_id');
+        $subject_id = $this->request->getGet('subject_id');
 
-        $builder = $this->objectiveModel->select('objectives.*, outcomes.outcome_name')
+        $builder = $this->objectiveModel->select('objectives.*, outcomes.outcome_name, outcomes.subject_id')
             ->join('outcomes', 'outcomes.id = objectives.outcome_id', 'left');
 
         if ($outcome_id) {
             $builder = $builder->where('objectives.outcome_id', $outcome_id);
         }
 
+        // Subject name untuk ditampilkan di header
+        $subject_name = null;
+        if ($subject_id) {
+            $subject = $this->subjectModel->find($subject_id);
+            if ($subject) {
+                $subject_name = $subject['subject_name'];
+            }
+        }
+
+        // Outcome name untuk ditampilkan di header
+        $outcome_name = null;
+        if ($outcome_id) {
+            $outcome = $this->outcomeModel->find($outcome_id);
+            if ($outcome) {
+                $outcome_name = $outcome['outcome_name'];
+            }
+        }
+
         return view('objective/index', [
-            'objective'  => $builder->findAll(),
-            'outcome_id' => $outcome_id
+            'objective'    => $builder->findAll(),
+            'outcome_id'   => $outcome_id,
+            'outcome_name' => $outcome_name,
+            'subject_id'   => $subject_id,
+            'subject_name' => $subject_name
         ]);
     }
 
     public function create()
     {
         $outcome_id = $this->request->getGet('outcome_id');
+        $subject_id = $this->request->getGet('subject_id');
 
         return view('objective/form', [
-            'outcome_id' => $outcome_id
+            'outcome_id' => $outcome_id,
+            'subject_id' => $subject_id
         ]);
     }
 

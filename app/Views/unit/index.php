@@ -59,62 +59,78 @@
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($units as $u): ?>
-                    <tr>
-                        <td class="ps-3">
-                            <span class="badge bg-primary bg-opacity-25 text-primary">
-                                <?= esc($u['id']) ?>
-                            </span>
-                        </td>
+                                <?php
+                                // Group units by grade_name
+                                $grouped = [];
+                                foreach ($units as $u) {
+                                    $g = $u['grade_name'] ?? 'No Grade';
+                                    $grouped[$g][] = $u;
+                                }
+                                ksort($grouped);
+                                ?>
+                                <?php foreach ($grouped as $gradeName => $items): ?>
+                                    <tr class="grade-divider">
+                                        <td colspan="7" class="ps-3 bg-warning bg-opacity-100 fw-bold text-dark">
+                                            <i class="bi bi-collection me-1"></i> Grade: <?= esc($gradeName) ?>
+                                        </td>
+                                    </tr>
+                                    <?php foreach ($items as $u): ?>
+                                    <tr>
+                                        <td class="ps-3">
+                                            <span class="badge bg-primary bg-opacity-25 text-primary">
+                                                <?= esc($u['id']) ?>
+                                            </span>
+                                        </td>
 
-                        <td>
-                            <div class="fw-bold text-dark">
-                                <?= esc($u['name']) ?>
-                            </div>
-                        </td>
+                                        <td>
+                                            <div class="fw-bold text-dark">
+                                                <?= esc($u['name']) ?>
+                                            </div>
+                                        </td>
 
-                        <td class="text-dark-50 small">
-                            <?= esc($u['subject_name']) ?>
-                        </td>
+                                        <td class="text-dark-50 small">
+                                            <?= esc($u['subject_name']) ?>
+                                        </td>
 
-                        <td class="text-dark-50 small">
-                            <?= esc($u['grade_name']) ?>
-                        </td>
+                                        <td class="text-dark-50 small">
+                                            <?= esc($u['grade_name']) ?>
+                                        </td>
 
-                        <td class="text-dark-50 small">
-                            <?= esc($u['term_name'] ?? '-') ?>
-                        </td>
+                                        <td class="text-dark-50 small">
+                                            <?= esc($u['term_name'] ?? '-') ?>
+                                        </td>
 
-                        <td class="text-dark-50 small">
-                            <a href="<?= base_url('subunit?unit_id='.$u['id']) ?>"
-                               class="btn btn-sm btn-glass-edit">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                        </td>
+                                        <td class="text-dark-50 small">
+                                            <a href="<?= base_url('subunit?unit_id='.$u['id']) ?>"
+                                               class="btn btn-sm btn-glass-edit">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                        </td>
 
-                        <td class="text-end pe-3">
-                            <a href="<?= base_url('unit/edit/'.$u['id']) ?>"
-                               class="btn btn-sm btn-glass-edit">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
+                                        <td class="text-end pe-3">
+                                            <a href="<?= base_url('unit/edit/'.$u['id']) ?>"
+                                               class="btn btn-sm btn-glass-edit">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
 
-                            <form action="<?= base_url('unit/delete/'.$u['id']) ?>"
-                                  method="post"
-                                  class="d-inline">
-                                <?= csrf_field() ?>
-                                <input type="hidden" name="subject_id" value="<?= esc($subjectId) ?>">
+                                            <form action="<?= base_url('unit/delete/'.$u['id']) ?>"
+                                                  method="post"
+                                                  class="d-inline">
+                                                <?= csrf_field() ?>
+                                                <input type="hidden" name="subject_id" value="<?= esc($subjectId) ?>">
                                
-                                <button type="submit"
-                                        onclick="return confirm('Delete this unit?')"
-                                        class="btn btn-sm btn-outline-danger ms-1"
-                                        style="border-color:rgba(220,53,69,.3)">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                <?php endforeach ?>
-                </tbody>
+                                                <button type="submit"
+                                                        onclick="return confirm('Delete this unit?')"
+                                                        class="btn btn-sm btn-outline-danger ms-1"
+                                                        style="border-color:rgba(220,53,69,.3)">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                <?php endforeach; ?>
+                                </tbody>
             </table>
         </div>
     <?php endif; ?>

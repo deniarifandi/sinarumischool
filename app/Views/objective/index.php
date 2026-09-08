@@ -5,16 +5,30 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h5 class="mb-0">Objective Management</h5>
-            <small class="text-white-50">
-                
-                <?php $outcome_id = esc($_GET['outcome_id'] ?? '-') ?>
-                <?php $subject_id = esc($_GET['subject_id'] ?? '-') ?>
+                        <div class="mt-2">
+                                                    <?php $outcome_id = esc($_GET['outcome_id'] ?? '-') ?>
+                                                    <?php $subject_id = esc($_GET['subject_id'] ?? '-') ?>
 
-                Outcome ID: <?= esc($outcome_id ?? '-') ?>
-                <?php if ($subject_id): ?>
-                    | Subject ID: <?= esc($subject_id) ?>
-                <?php endif; ?>
-            </small>
+                                                    <?php if ($outcome_name): ?>
+                                                        <span class="badge bg-info text-dark fs-6 px-3 py-2 rounded-pill shadow-sm me-2">
+                                                            <i class="bi bi-journal-text me-1"></i>
+                                                            <?= esc($outcome_name) ?>
+                                                            <small class="text-dark opacity-75">(ID: <?= esc($outcome_id) ?>)</small>
+                                                        </span>
+                                                    <?php endif; ?>
+
+                                                    <?php if ($subject_name): ?>
+                                                        <span class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill shadow-sm">
+                                                            <i class="bi bi-book me-1"></i>
+                                                            <?= esc($subject_name) ?>
+                                                            <small class="text-dark opacity-75">(ID: <?= esc($subject_id) ?>)</small>
+                                                        </span>
+                                                    <?php else: ?>
+                                                        <small class="text-white-50">
+                                                            Outcome ID: <?= esc($outcome_id) ?> | Subject ID: <?= esc($subject_id) ?>
+                                                        </small>
+                                                    <?php endif; ?>
+                                                </div>
         </div>
 
         <div class="d-flex gap-2 align-items-center">

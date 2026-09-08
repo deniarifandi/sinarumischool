@@ -54,7 +54,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($outcome as $u): ?>
+                <?php
+                // Group outcomes by grade_name
+                $grouped = [];
+                foreach ($outcome as $u) {
+                    $g = $u['grade_name'] ?? 'No Grade';
+                    $grouped[$g][] = $u;
+                }
+                ksort($grouped);
+                $firstRow = true;
+                ?>
+                <?php foreach ($grouped as $gradeName => $items): ?>
+                    <tr class="grade-divider">
+                        <td colspan="6" class="ps-3 bg-warning bg-opacity-100 fw-bold text-dark">
+                            <i class="bi bi-collection me-1"></i> Grade: <?= esc($gradeName) ?>
+                        </td>
+                    </tr>
+                    <?php foreach ($items as $u): ?>
                     <tr data-grade="<?= esc($u['grade_name'] ?? 'No Grade') ?>">
                         <td class="ps-3">
                             <span class="badge bg-primary bg-opacity-25 text-primary">
@@ -77,7 +93,7 @@
                         </td>
 
                          <td class="text-dark-50 small">
-                            <a href="<?= base_url('objective?outcome_id='.$u['id']) ?>"
+                            <a href="<?= base_url('objective?outcome_id='.$u['id'].'&subject_id='.$subject_id) ?>"
                                class="btn btn-sm btn-glass-edit">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
@@ -104,7 +120,8 @@
                             </form>
                         </td>
                     </tr>
-                <?php endforeach ?>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
