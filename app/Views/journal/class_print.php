@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Journal Recap — <?= esc($class['class_name'] ?? 'Class') ?> · <?= esc(date('d M Y', strtotime($dateFrom))) ?></title>
+    <title>Journal Recap — <?= esc($class['class_name'] ?? 'Class') ?><?= $dateFrom ? ' · ' . esc(date('d M Y', strtotime($dateFrom))) : '' ?></title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -157,7 +157,9 @@
             <strong>
                 Kelas: <?= esc(($class['grade_name'] ?? '') . ' ' . ($class['class_name'] ?? '-')) ?>
             </strong>
-            <?php if ($dateFrom === $dateTo): ?>
+            <?php if (!$dateFrom): ?>
+                All periods
+            <?php elseif ($dateFrom === $dateTo): ?>
                 <?= esc(date('l, d F Y', strtotime($dateFrom))) ?>
             <?php else: ?>
                 <?= esc(date('d M Y', strtotime($dateFrom))) ?> — <?= esc(date('d M Y', strtotime($dateTo))) ?>
@@ -177,7 +179,9 @@
         </tr>
         <tr>
             <td>
-                <?php if ($dateFrom === $dateTo): ?>
+                <?php if (!$dateFrom): ?>
+                    All periods
+                <?php elseif ($dateFrom === $dateTo): ?>
                     <?= esc(date('d M Y', strtotime($dateFrom))) ?>
                 <?php else: ?>
                     <?= esc(date('d M Y', strtotime($dateFrom))) ?> s/d <?= esc(date('d M Y', strtotime($dateTo))) ?>
@@ -239,7 +243,7 @@
     <div class="footer">
         Dokumen dicetak otomatis dari sistem Sinarumi School ·
         Kelas: <?= esc($class['class_name'] ?? '-') ?> ·
-        Periode: <?= esc(date('d M Y', strtotime($dateFrom))) ?><?= $dateFrom !== $dateTo ? ' s/d ' . esc(date('d M Y', strtotime($dateTo))) : '' ?>
+        Periode: <?= $dateFrom ? esc(date('d M Y', strtotime($dateFrom))) : 'All periods' ?><?= ($dateFrom && $dateFrom !== $dateTo) ? ' s/d ' . esc(date('d M Y', strtotime($dateTo))) : '' ?>
     </div>
 
     <script>

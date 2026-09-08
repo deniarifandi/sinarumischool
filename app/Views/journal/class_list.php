@@ -101,12 +101,17 @@
             </div>
 
             <div class="d-flex gap-2 flex-wrap">
-                <a href="<?= base_url('journal/class/' . (int)$class['id'] . '/print') ?>"
-                   class="btn btn-sm btn-primary rounded-pill px-3"
-                   target="_blank"
-                   title="Print combined recap for today">
-                    <i class="bi bi-printer me-1"></i> Print Recap (Today)
-                </a>
+                <?php
+                                    $todayStr = date('Y-m-d');
+                                    $todayUrl = base_url('journal/class/' . (int)$class['id'] . '/print')
+                                        . '?date_from=' . $todayStr . '&date_to=' . $todayStr;
+                                ?>
+                                <a href="<?= $todayUrl ?>"
+                                   class="btn btn-sm btn-primary rounded-pill px-3"
+                                   target="_blank"
+                                   title="Print combined recap for today">
+                                    <i class="bi bi-printer me-1"></i> Print Recap (Today)
+                                </a>
                 <?php
                     $qs = [];
                     foreach (['subject_id','teacher_id','date_from','date_to'] as $k) {

@@ -578,11 +578,21 @@ class TeachingJournalController extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Class not found.');
         }
 
-        $today    = date('Y-m-d');
-        $dateFrom = $this->request->getGet('date_from') ?: $today;
-        $dateTo   = $this->request->getGet('date_to')   ?: $dateFrom;
-        // Guard: keep range monotonic.
-        if (strtotime($dateTo) < strtotime($dateFrom)) {
+        $dateFrom = $this->request->getGet('date_from');
+        $dateTo   = $this->request->getGet('date_to');
+
+        // Only apply the date window when BOTH bounds are provided.
+        // If a range is missing, we do NOT restrict by date — otherwise a
+        // "filtered" print with no dates would silently fall back to today
+        // and show nothing.
+        if (!empty($dateFrom) && !empty($dateTo)) {
+            // Guard: keep range monotonic.
+            if (strtotime($dateTo) < strtotime($dateFrom)) {
+                $dateTo = $dateFrom;
+            }
+        } elseif (empty($dateFrom) && !empty($dateTo)) {
+            $dateFrom = $dateTo;
+        } elseif (empty($dateTo) && !empty($dateFrom)) {
             $dateTo = $dateFrom;
         }
 
@@ -590,8 +600,8 @@ class TeachingJournalController extends BaseController
             'class_id'   => $classId,
             'subject_id' => $this->request->getGet('subject_id') ?: null,
             'teacher_id' => $this->request->getGet('teacher_id') ?: null,
-            'date_from'  => $dateFrom,
-            'date_to'    => $dateTo,
+            'date_from'  => $dateFrom ?: null,
+            'date_to'    => $dateTo   ?: null,
         ];
 
         $journals = $this->journalModel->getList($filters);
