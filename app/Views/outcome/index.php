@@ -5,18 +5,32 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h5 class="mb-0">Outcome Management</h5>
-            <small class="text-white-50">
-                <?php $subject_id = esc($_GET['subject_id'] ?? '-') ?>
-                <?php $division_id = esc($_GET['division_id'] ?? $_GET['divisi'] ?? '-') ?>
-                Subject ID: <?= esc($subject_id ?? '-') ?> |
-                Grade ID: <?= esc($gradeId ?? '-') ?>
-            </small>
+            <div class="mt-2">
+                <span class="text-white-50 small me-2">Subject:</span>
+                <span class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill shadow-sm">
+                    <i class="bi bi-book me-1"></i>
+                    <?= esc($subject_name) ?>
+                    <small class="text-dark opacity-75">(ID: <?= esc($subject_id ?? '-') ?>)</small>
+                </span>
+            </div>
         </div>
+        
+        <div class="d-flex gap-2">
+            <select id="gradeFilter" class="form-select rounded-pill" style="width: auto;">
+                <option value="">All Grades</option>
+                <?php
+                $grades = array_unique(array_column($outcome, 'grade_name'));
+                sort($grades);
+                foreach ($grades as $g): if ($g): ?>
+                    <option value="<?= esc($g) ?>"><?= esc($g) ?></option>
+                <?php endif; endforeach; ?>
+            </select>
 
-        <a href="<?= base_url('outcome/create?subject_id='.$subject_id) ?>"
-           class="btn btn-primary rounded-pill px-3">
-            <i class="bi bi-plus-lg me-1"></i> Add outcome
-        </a>
+            <a href="<?= base_url('outcome/create?subject_id='.$subject_id) ?>"
+               class="btn btn-primary rounded-pill px-3">
+                <i class="bi bi-plus-lg me-1"></i> Add outcome
+            </a>
+        </div>
     </div>
 
     <?php if (empty($outcome)): ?>
@@ -28,11 +42,12 @@
         <div class="table-responsive"
              style="border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);">
 
-            <table class="table glass-table align-middle mb-0">
+            <table class="table glass-table align-middle mb-0" id="outcomeTable">
                 <thead>
                     <tr>
                         <th class="ps-3">ID</th>
                         <th>Name</th>
+                        <th>Grade</th>
                         <th>Subject</th>
                         <th>Objective</th>
                         <th class="text-end pe-3">Actions</th>
@@ -40,7 +55,7 @@
                 </thead>
                 <tbody>
                 <?php foreach ($outcome as $u): ?>
-                    <tr>
+                    <tr data-grade="<?= esc($u['grade_name'] ?? 'No Grade') ?>">
                         <td class="ps-3">
                             <span class="badge bg-primary bg-opacity-25 text-primary">
                                 <?= esc($u['id']) ?>
@@ -51,6 +66,10 @@
                             <div class="fw-bold text-dark">
                                 <?= esc($u['outcome_name']) ?>
                             </div>
+                        </td>
+
+                        <td>
+                            <span class="badge bg-secondary"><?= esc($u['grade_name'] ?? '-') ?></span>
                         </td>
 
                         <td class="text-dark-50 small">
@@ -91,5 +110,19 @@
         </div>
     <?php endif; ?>
 </div>
+
+<script>
+    document.getElementById('gradeFilter').addEventListener('change', function() {
+        const grade = this.value;
+        const rows = document.querySelectorAll('#outcomeTable tbody tr');
+        rows.forEach(row => {
+            if (grade === '' || row.getAttribute('data-grade') === grade) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
 
 <?= $this->endSection() ?>

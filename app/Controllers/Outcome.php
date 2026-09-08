@@ -24,18 +24,30 @@ class Outcome extends BaseController
     {
         $subject_id = $this->request->getGet('subject_id');
 
-        $builder = $this->outcomeModel->select('outcomes.*, subjects.subject_name')
-        ->join('subjects','subjects.id = outcomes.subject_id');
+        $builder = $this->outcomeModel->select('outcomes.*, subjects.subject_name, grades.grade_name')
+            ->join('subjects', 'subjects.id = outcomes.subject_id')
+            ->join('grades', 'grades.id = outcomes.grade_id', 'left');
 
         if ($subject_id) {
             $builder = $builder->where('subject_id', $subject_id);
         }
 
-        
+        $outcomes = $builder->orderBy('grades.grade_name', 'ASC')
+            ->orderBy('outcomes.outcome_name', 'ASC')
+            ->findAll();
+
+        $subjectName = '-';
+        if ($subject_id) {
+            $subject = $this->subjectModel->find($subject_id);
+            if ($subject) {
+                $subjectName = $subject['subject_name'];
+            }
+        }
 
         return view('outcome/index', [
-            'outcome'     => $builder->findAll(),
-            'subject_id' => $subject_id
+            'outcome'    => $outcomes,
+            'subject_id' => $subject_id,
+            'subject_name' => $subjectName
         ]);
     }
 
@@ -54,7 +66,7 @@ class Outcome extends BaseController
             ->getResultArray();
 
         return view('outcome/form', [
-            'subjectId'  => $subject_id,
+            'subject_id' => $subject_id,
             'grades'     => $grades
         ]);
     }
@@ -79,7 +91,7 @@ class Outcome extends BaseController
 
         return view('outcome/form', [
             'outcome'    => $outcome,
-            'subjectId'  => $subject_id,
+            'subject_id' => $subject_id,
             'grades'     => $grades
         ]);
     }

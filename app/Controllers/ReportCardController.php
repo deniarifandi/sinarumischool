@@ -11,6 +11,7 @@ use App\Models\SubjectModel;
 use App\Models\StudentModel;
 use App\Models\GradebookModel;
 use App\Models\GradebookScoreModel;
+use App\Models\GradebookObjectiveScoreModel;
 
 class ReportCardController extends BaseController
 {
@@ -22,6 +23,7 @@ class ReportCardController extends BaseController
     protected $studentModel;
     protected $gradebookModel;
     protected $gradebookScoreModel;
+    protected $gradebookObjectiveScoreModel;
 
     public function __construct()
     {
@@ -33,6 +35,7 @@ class ReportCardController extends BaseController
         $this->studentModel        = new StudentModel();
         $this->gradebookModel      = new GradebookModel();
         $this->gradebookScoreModel = new GradebookScoreModel();
+        $this->gradebookObjectiveScoreModel = new GradebookObjectiveScoreModel();
     }
 
    public function class($classId)
@@ -251,14 +254,21 @@ class ReportCardController extends BaseController
     */
 
     $scores = [];
+    $objectiveScores = [];
 
     // Get all gradebook IDs
     $gradebookIds = array_column($gradebooks, 'id');
 
     $scoreRows = [];
+    $objScoreRows = [];
 
     if (!empty($gradebookIds)) {
         $scoreRows = $this->gradebookScoreModel
+            ->whereIn('gradebook_id', $gradebookIds)
+            ->where('student_id', $studentId)
+            ->findAll();
+        
+        $objScoreRows = $this->gradebookObjectiveScoreModel
             ->whereIn('gradebook_id', $gradebookIds)
             ->where('student_id', $studentId)
             ->findAll();
@@ -266,9 +276,32 @@ class ReportCardController extends BaseController
 
     // Map scores by gradebook_id
     $scoreMap = [];
-
     foreach ($scoreRows as $row) {
         $scoreMap[$row['gradebook_id']] = $row;
+    }
+
+    // Map objective scores: [subject_id][objective_id] => score
+    $objScoreMap = [];
+    foreach ($objScoreRows as $row) {
+        $gb = $this->gradebookModel->find($row['gradebook_id']);
+        if ($gb) {
+            $objScoreMap[$gb['subject_id']][$row['objective_id']] = $row['score'];
+        }
+    }
+
+    // Fetch objectives for term & grade
+    $objectiveModel = new \App\Models\ObjectiveModel();
+    $allObjectives = $objectiveModel
+        ->select('objectives.id as objective_id, objectives.objective_name, outcomes.subject_id, outcomes.outcome_name')
+        ->join('outcomes', 'outcomes.id = objectives.outcome_id')
+        ->join('terms', 'terms.id = objectives.term_id')
+        ->where('terms.name', $term['name'])
+        ->where('outcomes.grade_id', $class['grade'])
+        ->findAll();
+        
+    $objectiveMap = [];
+    foreach ($allObjectives as $o) {
+        $objectiveMap[$o['subject_id']][] = $o;
     }
 
     // Build score data for EVERY subject
@@ -276,7 +309,7 @@ class ReportCardController extends BaseController
 
         $subjectId = $subject['id'];
 
-        // Default: no grade
+        // CT Scores
         $scores[$subjectId] = [
             'ct1'               => '-',
             'ct1_remedial'      => '-',
@@ -286,16 +319,10 @@ class ReportCardController extends BaseController
             'group_project'     => '-',
         ];
 
-        // Does this subject have a gradebook?
         if (isset($gradebookMap[$subjectId])) {
-
             $gradebookId = $gradebookMap[$subjectId]['id'];
-
-            // Does this student have a score?
             if (isset($scoreMap[$gradebookId])) {
-
                 $row = $scoreMap[$gradebookId];
-
                 $scores[$subjectId] = [
                     'ct1'                => $row['ct1'] ?? '-',
                     'ct1_remedial'       => $row['ct1_remedial'] ?? '-',
@@ -306,6 +333,9 @@ class ReportCardController extends BaseController
                 ];
             }
         }
+        
+        // Objective Scores
+        $objectiveScores[$subjectId] = $objectiveMap[$subjectId] ?? [];
     }
 
 
@@ -373,7 +403,9 @@ class ReportCardController extends BaseController
 
         'subjects'     => $subjects,
 
-        'scores'       => $scores,
+        'scores'          => $scores,
+        'objectiveScores' => $objScoreMap, // Scores: [subject_id][objective_id] => score
+        'allObjectives'   => $objectiveMap, // Metadata: [subject_id] => array of objectives
 
         'attendance'   => $attendance,
 

@@ -8,18 +8,26 @@
             <small class="text-white-50">
                 
                 <?php $outcome_id = esc($_GET['outcome_id'] ?? '-') ?>
+                <?php $subject_id = esc($_GET['subject_id'] ?? '-') ?>
 
-                <?php $division_id = esc($_GET['division_id'] ?? $_GET['divisi'] ?? '-') ?>
-
-                Outcame ID: <?= esc($outcome_id ?? '-') ?> |
-                Grade ID: <?= esc($gradeId ?? '-') ?>
+                Outcome ID: <?= esc($outcome_id ?? '-') ?>
+                <?php if ($subject_id): ?>
+                    | Subject ID: <?= esc($subject_id) ?>
+                <?php endif; ?>
             </small>
         </div>
 
-        <a href="<?= base_url('objective/create?outcome_id='.$outcome_id) ?>"
-           class="btn btn-primary rounded-pill px-3">
-            <i class="bi bi-plus-lg me-1"></i> Add objective
-        </a>
+        <div class="d-flex gap-2 align-items-center">
+            <a href="<?= base_url('outcome?subject_id='.$subject_id) ?>"
+               class="btn btn-outline-secondary rounded-pill px-3">
+                <i class="bi bi-arrow-left me-1"></i> Back
+            </a>
+
+            <a href="<?= base_url('objective/create?outcome_id='.$outcome_id.'&subject_id='.$subject_id) ?>"
+               class="btn btn-primary rounded-pill px-3">
+                <i class="bi bi-plus-lg me-1"></i> Add objective
+            </a>
+        </div>
     </div>
 
     <?php if (empty($objective)): ?>

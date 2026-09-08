@@ -60,16 +60,20 @@ class Objective extends BaseController
         }
 
         $outcome_id = $objective['outcome_id'];
+        $outcome    = $this->outcomeModel->find($outcome_id);
+        $subject_id = $outcome['subject_id'] ?? null;
 
         return view('objective/form', [
             'objective'  => $objective,
-            'outcome_id' => $outcome_id
+            'outcome_id' => $outcome_id,
+            'subject_id' => $subject_id
         ]);
     }
 
     public function store()
     {
         $term = $this->request->getPost('term_id');
+        $subject_id = $this->request->getPost('subject_id');
 
         $this->objectiveModel->insert([
             'outcome_id'     => $this->request->getPost('outcome_id'),
@@ -78,12 +82,13 @@ class Objective extends BaseController
         ]);
 
         return redirect()->to('/objective?outcome_id=' .
-            $this->request->getPost('outcome_id'));
+            $this->request->getPost('outcome_id') . '&subject_id=' . $subject_id);
     }
 
     public function update($id)
     {
         $term = $this->request->getPost('term_id');
+        $subject_id = $this->request->getPost('subject_id');
 
         $this->objectiveModel->update($id, [
             'term_id'        => $term ? (int)$term : null,
@@ -91,7 +96,7 @@ class Objective extends BaseController
         ]);
 
          return redirect()->to('/objective?outcome_id=' .
-            $this->request->getPost('outcome_id'));
+            $this->request->getPost('outcome_id') . '&subject_id=' . $subject_id);
     }
 
     public function delete($id)

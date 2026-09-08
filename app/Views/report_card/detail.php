@@ -478,6 +478,55 @@ if ($totalMeetings > 0) {
 
 </table>
 
+<br><br><br>
+
+<!-- ========================================================= -->
+<!-- OBJECTIVE-BASED SCORES (PAGE 2) -->
+<!-- ========================================================= -->
+
+<div style="page-break-before: always;">
+    <h2 class="center">Objective-Based Scores</h2>
+    <br>
+    
+    <?php foreach ($subjects as $subject): 
+        $subjectId = $subject['id'];
+        $objList = $allObjectives[$subjectId] ?? [];
+        
+        // Filter religion subjects
+        $subjectName = trim($subject['subject_name'] ?? '');
+        if (preg_match('/^Religion\s*:\s*(.+)$/i', $subjectName, $matches)) {
+            $sRel = strtolower(trim($matches[1]));
+            if ($sRel !== $studentReligion) continue;
+        }
+
+        if (empty($objList)) continue;
+    ?>
+    
+    <h3 style="margin-top:15px; border-bottom:1px solid #000; display:inline-block;"><?= esc($subjectName) ?></h3>
+    <table class="main-table" style="width:100%; margin-top:5px; margin-bottom:10px;">
+        <thead>
+            <tr>
+                <th style="width:5%;">No</th>
+                <th>Objective</th>
+                <th style="width:20%;">Outcome</th>
+                <th style="width:15%;">Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($objList as $index => $obj): ?>
+            <tr>
+                <td class="center"><?= $index + 1 ?></td>
+                <td><?= esc($obj['objective_name'] ?? '-') ?></td>
+                <td><?= esc($obj['outcome_name'] ?? '-') ?></td>
+                <td class="center"><?= esc($objectiveScores[$subjectId][$obj['objective_id']] ?? '-') ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    
+    <?php endforeach; ?>
+</div>
+
 <br><br><br><br>
 
 

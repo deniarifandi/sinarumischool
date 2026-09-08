@@ -21,6 +21,7 @@
                     <?= csrf_field() ?>
 
                     <input type="hidden" name="outcome_id" value="<?= esc($outcome_id) ?>">
+                    <input type="hidden" name="subject_id" value="<?= esc($subject_id) ?>">
 
                     <?php $selectedTerm = old('term_id', $objective['term_id'] ?? ''); ?>
                     <div class="mb-4">
@@ -58,7 +59,7 @@
                     <hr class="my-4 opacity-50">
 
                     <div class="d-flex align-items-center justify-content-between">
-                        <a href="<?= base_url('objective?subject_id='.($subjectId ?? $outcome['subject_id'] ?? '')) ?>" 
+                        <a href="<?= base_url('objective?outcome_id='.$outcome_id.'&subject_id='.$subject_id) ?>" 
                            class="btn btn-link text-decoration-none text-secondary p-0">
                            <i class="bi bi-arrow-left me-1"></i> Cancel
                         </a>

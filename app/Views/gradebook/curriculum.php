@@ -135,6 +135,7 @@
             <div class="glass-card p-3 mb-4">
 
                 <!-- SUBJECT HEADER -->
+                <?php $kkm = $subject['kkm'] ?? 75; ?>
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
 
@@ -307,7 +308,7 @@
 
                                     <!-- CT1 -->
 
-                                    <td class="text-center">
+                                    <td class="text-center <?= (is_numeric($score['ct1'] ?? null) && ($score['ct1'] < $kkm)) ? 'text-danger fw-bold' : '' ?>">
 
                                         <?= esc(
                                             $score['ct1'] ?? '-'
@@ -318,7 +319,7 @@
 
                                     <!-- CT1 REMEDIAL -->
 
-                                    <td class="text-center">
+                                    <td class="text-center <?= (is_numeric($score['ct1_remedial'] ?? null) && ($score['ct1_remedial'] < $kkm)) ? 'text-danger fw-bold' : '' ?>">
 
                                         <?= esc(
                                             $score['ct1_remedial'] ?? '-'
@@ -329,7 +330,7 @@
 
                                     <!-- CT2 -->
 
-                                    <td class="text-center">
+                                    <td class="text-center <?= (is_numeric($score['ct2'] ?? null) && ($score['ct2'] < $kkm)) ? 'text-danger fw-bold' : '' ?>">
 
                                         <?= esc(
                                             $score['ct2'] ?? '-'
@@ -340,7 +341,7 @@
 
                                     <!-- CT2 REMEDIAL -->
 
-                                    <td class="text-center">
+                                    <td class="text-center <?= (is_numeric($score['ct2_remedial'] ?? null) && ($score['ct2_remedial'] < $kkm)) ? 'text-danger fw-bold' : '' ?>">
 
                                         <?= esc(
                                             $score['ct2_remedial'] ?? '-'
@@ -351,7 +352,7 @@
 
                                     <!-- INDIVIDUAL PROJECT -->
 
-                                    <td class="text-center">
+                                    <td class="text-center <?= (is_numeric($score['individual_project'] ?? null) && ($score['individual_project'] < $kkm)) ? 'text-danger fw-bold' : '' ?>">
 
                                         <?= esc(
                                             $score['individual_project'] ?? '-'
@@ -362,7 +363,7 @@
 
                                     <!-- GROUP PROJECT -->
 
-                                    <td class="text-center">
+                                    <td class="text-center <?= (is_numeric($score['group_project'] ?? null) && ($score['group_project'] < $kkm)) ? 'text-danger fw-bold' : '' ?>">
 
                                         <?= esc(
                                             $score['group_project'] ?? '-'
