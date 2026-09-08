@@ -54,11 +54,20 @@ class Unit extends BaseController
                 ->findAll();
         }
 
+        $subjectName = null;
+        if ($subjectId) {
+            $subject = $this->subjectModel->find($subjectId);
+            if ($subject) {
+                $subjectName = $subject['subject_name'];
+            }
+        }
+
         return view('unit/index', [
-            'units'     => $builder->findAll(),
-            'subjectId' => $subjectId,
-            'gradeId'   => $gradeId,
-            'grades'    => $grades,
+            'units'        => $builder->findAll(),
+            'subjectId'    => $subjectId,
+            'subjectName'  => $subjectName,
+            'gradeId'      => $gradeId,
+            'grades'       => $grades,
         ]);
     }
 

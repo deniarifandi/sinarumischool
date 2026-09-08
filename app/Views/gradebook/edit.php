@@ -129,13 +129,15 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
         color: #6c757d !important;
     }
 
-    .religion-disabled .grade-cell {
+    .religion-disabled .grade-cell,
+    .religion-disabled .obj-cell {
         background-color: #dfe2e5 !important;
         color: #6c757d !important;
         cursor: not-allowed;
     }
 
-    .religion-disabled .grade-cell:focus {
+    .religion-disabled .grade-cell:focus,
+    .religion-disabled .obj-cell:focus {
         box-shadow: none;
     }
 
@@ -144,7 +146,8 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
        NORMAL GRADE CELL
        ============================================================ */
 
-    .grade-cell {
+    .grade-cell,
+    .obj-cell {
         min-width: 65px;
     }
 
@@ -153,7 +156,8 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
        LOCKED
        ============================================================ */
 
-    .grade-cell[readonly] {
+    .grade-cell[readonly],
+    .obj-cell[readonly] {
         cursor: not-allowed;
     }
 
@@ -929,7 +933,8 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
                 <i class="bi bi-info-circle me-1"></i>
                 Kolom objektif <strong>otomatis</strong> muncul berdasarkan
                 <strong>term</strong> gradebook ini (objective.term_id = term).
-                Cukup isi nilai setiap siswa per kolom.
+                Cukup isi nilai setiap siswa per kolom. Paste dari Excel juga bisa
+                langsung di sel pertama dengan <strong>Ctrl + V</strong>.
             </div>
 
             <?php if ($isLocked): ?>
@@ -941,7 +946,82 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
 
             <?php endif; ?>
 
+            <?php if ($isReligionSubject): ?>
+
+                <div class="alert alert-secondary py-1 mb-2 small">
+
+                    <i class="bi bi-info-circle me-1"></i>
+
+                    This is a religion subject:
+                    <strong><?= esc($subjectReligion ?? 'Unknown') ?></strong>.
+
+                    Students from other religions are shown in grey
+                    and cannot be edited.
+
+                </div>
+
+            <?php endif; ?>
+
             <?php if (!empty($objectives)): ?>
+
+            <!-- ====================================================
+                 FILTER (OBJECTIVE TAB)
+                 ==================================================== -->
+
+            <div class="row g-2 mb-2 align-items-center">
+
+                <div class="col-auto">
+
+                    <label class="form-label mb-0 small text-white-50">
+                        Religion:
+                    </label>
+
+                </div>
+
+
+                <div class="col-auto">
+
+                    <select
+                        id="objReligionFilter"
+                        class="form-select form-select-sm"
+                        style="width: 150px;"
+                    >
+
+                        <option value="">
+                            All
+                        </option>
+
+                        <?php foreach ($religions as $religion): ?>
+
+                            <option
+                                value="<?= esc(strtolower($religion)) ?>"
+                            >
+                                <?= esc($religion) ?>
+                            </option>
+
+                        <?php endforeach; ?>
+
+                    </select>
+
+                </div>
+
+
+                <div class="col text-end">
+
+                    <span class="badge bg-secondary">
+
+                        <span id="objStudentCount">
+                            <?= count($students) ?>
+                        </span>
+
+                        Students
+
+                    </span>
+
+                </div>
+
+            </div>
+
 
             <form
                 method="post"
@@ -964,7 +1044,7 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
 
                 <div class="table-responsive" style="border-radius:8px; overflow:auto; max-height:72vh; border:1px solid rgba(255,255,255,0.1);">
 
-                    <table class="table table-sm table-bordered align-middle mb-0" id="objTable" style="font-size:0.85rem;">
+                    <table class="table table-sm table-bordered align-middle mb-0" id="objTable" data-kkm="<?= esc($kkm) ?>" style="font-size:0.85rem;">
 
                         <thead class="table-light" style="position:sticky; top:0; z-index:10;">
 
@@ -976,6 +1056,10 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
 
                                 <th class="py-1" style="min-width:180px; position:sticky; left:0; z-index:11; background:#f8f9fa;">
                                     Student
+                                </th>
+
+                                <th class="text-center py-1" style="min-width:90px; position:sticky; left:180px; z-index:11; background:#f8f9fa;">
+                                    Religion
                                 </th>
 
                                 <?php foreach ($objectives as $obj): ?>
@@ -1008,22 +1092,93 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
 
                                 $studentId = $student['id'];
 
-                                $rowClass = 'obj-student-row';
+                                $religion =
+                                    trim(
+                                        $student['murid_agama'] ?? ''
+                                    );
+
+
+                                // =================================================
+                                // NORMALIZE STUDENT RELIGION
+                                // =================================================
+
+                                $normalizedStudentReligion =
+                                    strtolower($religion);
+
+                                $normalizedStudentReligion =
+                                    $religionMap[
+                                        $normalizedStudentReligion
+                                    ] ?? null;
+
+
+                                // =================================================
+                                // RELIGION MISMATCH
+                                // =================================================
+
+                                $religionMismatch = (
+                                    $isReligionSubject &&
+                                    $subjectReligion !== null &&
+                                    $normalizedStudentReligion !==
+                                        $subjectReligion
+                                );
+
+
+                                // =================================================
+                                // ROW CLASS
+                                // =================================================
+
+                                $rowClass = $religionMismatch
+                                    ? 'obj-student-row religion-disabled'
+                                    : 'obj-student-row';
+
+
+                                // =================================================
+                                // READONLY
+                                // =================================================
+
+                                $objReadOnly = (
+                                    $isLocked ||
+                                    $religionMismatch
+                                )
+                                    ? 'readonly'
+                                    : '';
+
                                 ?>
 
-                                <tr class="<?= $rowClass ?>">
+                                <tr
+                                    class="<?= $rowClass ?>"
+                                    data-religion="<?= esc(
+                                        strtolower($religion)
+                                    ) ?>"
+                                >
 
                                     <td class="text-center text-muted py-1">
                                         <?= $index + 1 ?>
                                     </td>
 
-                                    <td class="py-1" style="position:sticky; left:0; z-index:5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;">
+                                    <td class="py-1 student-name-cell" style="position:sticky; left:0; z-index:5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;">
 
                                         <input type="hidden" name="student_id[]" value="<?= esc($studentId) ?>">
 
                                         <div class="fw-bold text-truncate" title="<?= esc($student['name']) ?>">
                                             <?= esc($student['name']) ?>
                                         </div>
+
+                                    </td>
+
+                                    <td class="text-center py-1 religion-cell" style="position:sticky; left:180px; z-index:5;">
+
+                                        <?php if (!empty($religion)): ?>
+
+                                            <?= esc($religion) ?>
+
+                                        <?php else: ?>
+
+                                            <span class="text-muted">
+                                                -
+                                            </span>
+
+                                        <?php endif; ?>
 
                                     </td>
 
@@ -1042,7 +1197,7 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
                                                 data-col="<?= $colIndex ?>"
                                                 autocomplete="off"
                                                 spellcheck="false"
-                                                <?= $isLocked ? 'readonly' : '' ?>
+                                                <?= $objReadOnly ?>
                                             >
 
                                         </td>
@@ -1056,7 +1211,7 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
                         <?php else: ?>
 
                             <tr>
-                                <td colspan="<?= 2 + count($objectives) ?>" class="text-center py-4">
+                                <td colspan="<?= 3 + count($objectives) ?>" class="text-center py-4">
                                     No students found in this class.
                                 </td>
                             </tr>
@@ -1069,23 +1224,43 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
 
                 </div>
 
-                <div class="d-flex justify-content-end mt-2">
+                <div class="d-flex justify-content-between align-items-center mt-2">
 
-                    <?php if (!$isLocked): ?>
+                    <div class="text-muted small" style="font-size:0.75rem;">
 
-                        <button type="submit" id="objSaveBtn" class="btn btn-sm btn-primary rounded-pill px-4">
-                            <i class="bi bi-save me-1"></i>
-                            Save Objective Scores
-                        </button>
+                        <?php if ($isLocked): ?>
 
-                    <?php else: ?>
-
-                        <span class="btn btn-sm btn-warning rounded-pill px-4">
                             <i class="bi bi-lock-fill me-1"></i>
-                            Locked
-                        </span>
+                            Read-only mode.
 
-                    <?php endif; ?>
+                        <?php else: ?>
+
+                            <i class="bi bi-keyboard me-1"></i>
+                            Valid scores: 0-100.
+
+                        <?php endif; ?>
+
+                    </div>
+
+                    <div>
+
+                        <?php if (!$isLocked): ?>
+
+                            <button type="submit" id="objSaveBtn" class="btn btn-sm btn-primary rounded-pill px-4">
+                                <i class="bi bi-save me-1"></i>
+                                Save Objective Scores
+                            </button>
+
+                        <?php else: ?>
+
+                            <span class="btn btn-sm btn-warning rounded-pill px-4">
+                                <i class="bi bi-lock-fill me-1"></i>
+                                Locked
+                            </span>
+
+                        <?php endif; ?>
+
+                    </div>
 
                 </div>
 
@@ -1093,10 +1268,18 @@ function fieldValue($oldInput, $field, $studentId, $dbFallback)
 
             <?php else: ?>
 
-                <div class="alert alert-secondary py-2 mb-2 small">
-                    <i class="bi bi-info-circle me-1"></i>
-                    Belum ada objektif untuk term ini. Tambahkan objektif
-                    (dengan term) di menu Objective.
+                <div class="alert alert-secondary py-2 mb-2 small d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="bi bi-info-circle me-1"></i>
+                        Belum ada objektif untuk term ini. Tambahkan objektif
+                        (dengan term) di menu Outcome-Objective.
+                    </div>
+
+                    <a href="<?= base_url('outcome?subject_id=' . esc($subjectId)) ?>"
+                       class="btn btn-sm btn-primary ms-3 text-nowrap">
+                        <i class="bi bi-bullseye me-1"></i>
+                        Go to Outcome
+                    </a>
                 </div>
 
             <?php endif; ?>
@@ -1131,7 +1314,7 @@ $(document).ready(function () {
 
 
     // ============================================================
-    // RELIGION FILTER
+    // RELIGION FILTER (CT)
     // ============================================================
 
     $('#religionFilter').on('change', function () {
@@ -1810,7 +1993,10 @@ $(document).ready(function () {
     // VALIDATION score objektif 0-100
     // ============================================================
 
-    const kkm = parseFloat($('#gradebookTable').data('kkm')) || 75;
+    const kkm = parseFloat($('#objTable').data('kkm')) || 75;
+
+    // Jumlah kolom objective (dinamis, sesuai term)
+    const totalObjCols = <?= count($objectives) ?>;
 
     function validateObjCell($cell) {
         let value = $cell.val().trim();
@@ -1847,10 +2033,234 @@ $(document).ready(function () {
 
     const isLocked = <?= $isLocked ? 'true' : 'false' ?>;
 
+    // ============================================================
+    // RELIGION FILTER (OBJECTIVE TAB)
+    // ============================================================
+
+    $('#objReligionFilter').on('change', function () {
+
+        const selectedReligion = $(this).val().toLowerCase();
+
+        let visibleCount = 0;
+
+        $('.obj-student-row').each(function () {
+
+            const rowReligion =
+                ($(this).data('religion') || '')
+                .toString()
+                .toLowerCase();
+
+            if (
+                selectedReligion === '' ||
+                rowReligion === selectedReligion
+            ) {
+
+                $(this).show();
+                visibleCount++;
+
+            } else {
+
+                $(this).hide();
+
+            }
+
+        });
+
+        $('#objStudentCount').text(visibleCount);
+
+    });
+
     if (!isLocked) {
 
         $('.obj-cell:not([readonly])').on('input', function () {
             validateObjCell($(this));
+            formDirtyObj = true;
+        });
+
+        let formDirtyObj = false;
+
+        window.addEventListener('beforeunload', function (e) {
+            if (formDirtyObj) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // ========================================================
+        // KEYBOARD NAVIGATION (OBJECTIVE)
+        // ========================================================
+
+        $('.obj-cell:not([readonly])').on('keydown', function (e) {
+
+            const col = parseInt($(this).data('col'));
+            const $currentRow = $(this).closest('tr');
+            let target = null;
+
+            if (e.key === 'Tab' && !e.shiftKey) {
+
+                e.preventDefault();
+
+                target = $currentRow.find(
+                    '.obj-cell:not([readonly])[data-col="' + (col + 1) + '"]'
+                );
+
+                if (!target.length) {
+                    target = $currentRow.nextAll(':visible').first()
+                        .find('.obj-cell:not([readonly])[data-col="0"]');
+                }
+
+            } else if (e.key === 'Tab' && e.shiftKey) {
+
+                e.preventDefault();
+
+                target = $currentRow.find(
+                    '.obj-cell:not([readonly])[data-col="' + (col - 1) + '"]'
+                );
+
+                if (!target.length) {
+                    target = $currentRow.prevAll(':visible').first()
+                        .find('.obj-cell:not([readonly])[data-col="' + (totalObjCols - 1) + '"]');
+                }
+
+            } else if (e.key === 'Enter' || e.key === 'ArrowDown') {
+
+                e.preventDefault();
+
+                target = $currentRow.nextAll(':visible').first()
+                    .find('.obj-cell:not([readonly])[data-col="' + col + '"]');
+
+            } else if (e.key === 'ArrowUp') {
+
+                e.preventDefault();
+
+                target = $currentRow.prevAll(':visible').first()
+                    .find('.obj-cell:not([readonly])[data-col="' + col + '"]');
+
+            } else if (e.key === 'ArrowRight' && this.selectionStart === this.value.length) {
+
+                target = $currentRow.find(
+                    '.obj-cell:not([readonly])[data-col="' + (col + 1) + '"]'
+                );
+
+            } else if (e.key === 'ArrowLeft' && this.selectionStart === 0) {
+
+                target = $currentRow.find(
+                    '.obj-cell:not([readonly])[data-col="' + (col - 1) + '"]'
+                );
+            }
+
+            if (target && target.length) {
+                target.focus();
+                target[0].select();
+            }
+        });
+
+        // ========================================================
+        // PASTE FROM EXCEL (OBJECTIVE)
+        // ========================================================
+
+        $('.obj-cell:not([readonly])').on('paste', function (e) {
+
+            e.preventDefault();
+
+            const text = (e.originalEvent.clipboardData || window.clipboardData).getData('text');
+
+            if (!text) {
+                return;
+            }
+
+            // ------------------------------------------------
+            // Do not allow paste when religion filter active
+            // ------------------------------------------------
+
+            const activeFilter = $('#objReligionFilter').val();
+
+            if (activeFilter !== '') {
+
+                const proceed = confirm(
+                    'Filter Religion sedang aktif ("' +
+                    $('#objReligionFilter option:selected').text() +
+                    '"). Paste akan melompati baris yang tersembunyi dan bisa salah menempatkan nilai.\n\n' +
+                    'Reset filter dan lanjutkan paste?'
+                );
+
+                if (!proceed) {
+                    return;
+                }
+
+                $('#objReligionFilter').val('').trigger('change');
+            }
+
+            const rows = text
+                .replace(/\r\n/g, '\n')
+                .replace(/\r/g, '\n')
+                .split('\n')
+                .filter((r, i, arr) => !(r === '' && i === arr.length - 1));
+
+            const startCol = parseInt($(this).data('col'));
+
+            // ------------------------------------------------
+            // Column mismatch warning
+            // ------------------------------------------------
+
+            const firstRowCols = rows[0] ? rows[0].split('\t').length : 0;
+
+            if (firstRowCols > (totalObjCols - startCol)) {
+
+                const proceed = confirm(
+                    'Data yang di-paste punya ' + firstRowCols +
+                    ' kolom, tapi hanya ' + (totalObjCols - startCol) +
+                    ' kolom nilai tersedia mulai dari sel ini.\n\n' +
+                    'Kolom berlebih akan diabaikan. Lanjutkan?'
+                );
+
+                if (!proceed) {
+                    return;
+                }
+            }
+
+            let $currentRow = $(this).closest('tr');
+
+            rows.forEach(function (rowData) {
+
+                if (!$currentRow.length) {
+                    return;
+                }
+
+                // Skip religion-disabled rows
+
+                while (
+                    $currentRow.length &&
+                    $currentRow.hasClass('religion-disabled')
+                ) {
+
+                    $currentRow = $currentRow.nextAll(':visible').first();
+
+                }
+
+                if (!$currentRow.length) {
+                    return;
+                }
+
+                const columns = rowData.split('\t');
+
+                columns.forEach(function (value, colIndex) {
+
+                    const target = $currentRow.find(
+                        '.obj-cell:not([readonly])[data-col="' + (startCol + colIndex) + '"]'
+                    );
+
+                    if (target.length) {
+                        target.val(value.trim());
+                        validateObjCell(target);
+                        formDirtyObj = true;
+                    }
+                });
+
+                $currentRow = $currentRow.nextAll(':visible').first();
+            });
+
+            $(this).focus();
         });
 
         $('#objForm').on('submit', function (e) {
@@ -1870,6 +2280,8 @@ $(document).ready(function () {
                 $('.obj-cell.is-invalid:visible').first().focus();
                 return false;
             }
+
+            formDirtyObj = false;
 
             $('#objSaveBtn')
                 .prop('disabled', true)

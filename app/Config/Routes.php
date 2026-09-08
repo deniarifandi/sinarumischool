@@ -256,6 +256,8 @@ $routes->group('outcome', function($routes) {
     $routes->get('/', 'Outcome::index');
     $routes->get('create', 'Outcome::create');
     $routes->get('edit/(:num)', 'Outcome::edit/$1');
+    $routes->get('units', 'Outcome::units');
+    $routes->get('subunits', 'Outcome::subunits');
 
     $routes->post('store', 'Outcome::store');
     $routes->post('update/(:num)', 'Outcome::update/$1');

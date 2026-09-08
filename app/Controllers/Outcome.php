@@ -7,14 +7,17 @@ use App\Models\UnitModel;
 use App\Models\SubjectModel;
 use App\Models\GradeModel;
 use App\Models\OutcomeModel;
+use App\Models\SubunitModel;
 
 class Outcome extends BaseController
 {
     protected $unitModel;
+    protected $subunitModel;
 
     public function __construct()
     {
         $this->unitModel = new UnitModel();
+        $this->subunitModel = new SubunitModel();
         $this->subjectModel = new SubjectModel();
         $this->gradeModel = new GradeModel();
         $this->outcomeModel = new OutcomeModel();
@@ -94,6 +97,46 @@ class Outcome extends BaseController
             'subject_id' => $subject_id,
             'grades'     => $grades
         ]);
+    }
+
+    /**
+     * AJAX: units for a subject (optionally filtered by grade).
+     */
+    public function units()
+    {
+        $subjectId = (int) $this->request->getGet('subject_id');
+        $gradeId   = (int) $this->request->getGet('grade_id');
+
+        $builder = $this->unitModel
+            ->select('units.id, units.name')
+            ->join('subjects', 'subjects.id = units.subject_id', 'left')
+            ->groupStart()
+                ->where('units.subject_id', $subjectId)
+                ->orWhere('subjects.subject_name', 'All Subject')
+            ->groupEnd()
+            ->where('units.deleted_at', null);
+
+        if ($gradeId) {
+            $builder->where('units.grade_id', $gradeId);
+        }
+
+        $units = $builder->orderBy('units.name', 'ASC')->findAll();
+
+        return $this->response->setJSON(['units' => $units]);
+    }
+
+    /**
+     * AJAX: subunits for a given unit.
+     */
+    public function subunits()
+    {
+        $unitId = (int) $this->request->getGet('unit_id');
+
+        $subunits = $unitId
+            ? $this->subunitModel->getByUnit($unitId)
+            : [];
+
+        return $this->response->setJSON(['subunits' => $subunits]);
     }
 
     public function store()
