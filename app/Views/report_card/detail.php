@@ -134,6 +134,42 @@ if ($semesterNumber == 1) {
 }
 ?>
 
+
+<!-- ========================================================= -->
+<!-- ATTENDANCE -->
+<!-- ========================================================= -->
+
+<?php
+
+$sickness      = $attendance['sickness'] ?? 0;
+$authorized    = $attendance['authorized'] ?? 0;
+$unauthorized  = $attendance['unauthorized'] ?? 0;
+$totalMeetings = $attendance['total_meetings'] ?? 0;
+
+
+if ($totalMeetings > 0) {
+
+    $sickPct = round(
+        ($sickness / $totalMeetings) * 100
+    );
+
+    $authorizedPct = round(
+        ($authorized / $totalMeetings) * 100
+    );
+
+    $unauthorizedPct = round(
+        ($unauthorized / $totalMeetings) * 100
+    );
+
+} else {
+
+    $sickPct         = 0;
+    $authorizedPct   = 0;
+    $unauthorizedPct = 0;
+}
+
+?>
+
 <!-- ========================================================= -->
 <!-- HEADER -->
 <!-- ========================================================= -->
@@ -160,7 +196,7 @@ if ($semesterNumber == 1) {
     <tr>
         <td>Class</td>
         <td>: <?= esc($className) ?></td>
-        <td>
+        <td style="">
             Term : <?= esc($termName) ?>
         </td>
     </tr>
@@ -177,11 +213,11 @@ if ($semesterNumber == 1) {
 <!-- GRADE TABLE -->
 <!-- ========================================================= -->
 
-<table class="main-table" style="width:100%;">
+<table style="width:100%; border-collapse:collapse;">
 
     <!-- TITLE -->
-    <tr>
-        <td colspan="8" class="center">
+    <tr style="border:1px solid #000; ">
+        <td colspan="8" class="center" style="padding: 5px">
             <h2>
                 <?= strtoupper(esc($termName)) ?> - PROGRESS REPORT
             </h2>
@@ -190,39 +226,39 @@ if ($semesterNumber == 1) {
 
 
     <!-- SUBJECT + TERM -->
-    <tr>
-        <td colspan="2" rowspan="3" class="center">
+    <tr style="border:1px solid #000;">
+        <td colspan="2" rowspan="3" class="center" style="border:1px solid #000;">
             <h2>Subject</h2>
         </td>
 
-        <td colspan="6" class="center">
+        <td colspan="6" class="center" style="padding: 5px;">
             <?= strtoupper(esc($termName)) ?>
         </td>
     </tr>
 
 
     <!-- CATEGORY -->
-    <tr>
-        <td colspan="4" class="center">
+    <tr style="border:1px solid #000;">
+        <td colspan="4" class="center" style="border:1px solid #000; padding:3px">
             Chapter Test
         </td>
 
-        <td colspan="2" class="center">
+        <td colspan="2" class="center" style="border:1px solid #000;">
             Project
         </td>
     </tr>
 
 
     <!-- COLUMN -->
-    <tr>
-        <td class="center">1</td>
-        <td class="center">Remedial</td>
+    <tr style="border:1px solid #000;">
+        <td class="center" style="border:1px solid #000;">1</td>
+        <td class="center" style="border:1px solid #000; padding: 3px">Remedial</td>
 
-        <td class="center">2</td>
-        <td class="center">Remedial</td>
+        <td class="center" style="border:1px solid #000;">2</td>
+        <td class="center" style="border:1px solid #000;">Remedial</td>
 
-        <td class="center">Individual Project</td>
-        <td class="center">Group Project</td>
+        <td class="center" style="border:1px solid #000;">Individual Project</td>
+        <td class="center" style="border:1px solid #000;">Group Project</td>
     </tr>
 
 
@@ -230,7 +266,6 @@ if ($semesterNumber == 1) {
 // =========================================================
 // SUBJECT ROWS
 // =========================================================
-
 
 $counter = 0;
 
@@ -256,21 +291,9 @@ foreach ($subjects as $subject):
 
     $subjectName = trim($subject['subject_name'] ?? '');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Religion Subject Filter
-    |--------------------------------------------------------------------------
-    |
-    | Example:
-    | Religion : Islam
-    | Religion : Christian
-    | Religion : Catholic
-    | Religion : Buddhist
-    | Religion : Hindu
-    |
-    | Only show the religion matching the student.
-    |
-    */
+    // =====================================================
+    // RELIGION SUBJECT FILTER
+    // =====================================================
 
     if (preg_match('/^Religion\s*:\s*(.+)$/i', $subjectName, $matches)) {
 
@@ -310,39 +333,41 @@ foreach ($subjects as $subject):
     ];
 ?>
 
-<tr>
+    <!-- SUBJECT ROW -->
+    <tr>
 
-    <td width="5%" class="center">
-        <?= $counter ?>
-    </td>
-
-    <td width="35%">
-        <?= esc($subjectName) ?>
-    </td>
-
-    <?php foreach ($values as $value): ?>
-
-        <?php
-        if ($value === null || $value === '') {
-            $value = '-';
-        }
-
-        $isLow = (
-            is_numeric($value)
-            && (float) $value < $kkm
-        );
-        ?>
-
-        <td
-            width="10%"
-            class="center <?= $isLow ? 'low-score' : '' ?>"
-        >
-            <?= esc($value) ?>
+        <td width="5%" class="center" style="border:1px solid #000;">
+            <?= $counter ?>
         </td>
 
-    <?php endforeach; ?>
+        <td width="35%" style="border:1px solid #000; padding: 3px">
+            <?= esc($subjectName) ?>
+        </td>
 
-</tr>
+        <?php foreach ($values as $value): ?>
+
+            <?php
+            if ($value === null || $value === '') {
+                $value = '-';
+            }
+
+            $isLow = (
+                is_numeric($value)
+                && (float) $value < $kkm
+            );
+            ?>
+
+            <td
+                width="10%"
+                class="center <?= $isLow ? 'low-score' : '' ?>"
+                style="border:1px solid #000;"
+            >
+                <?= esc($value) ?>
+            </td>
+
+        <?php endforeach; ?>
+
+    </tr>
 
 <?php endforeach; ?>
 
@@ -357,83 +382,70 @@ foreach ($subjects as $subject):
 
 <?php endif; ?>
 
-</table>
 
-<br>
+    <!-- =====================================================
+         SPACER
+         ===================================================== -->
 
-
-<!-- ========================================================= -->
-<!-- ATTENDANCE -->
-<!-- ========================================================= -->
-
-<?php
-
-$sickness      = $attendance['sickness'] ?? 0;
-$authorized    = $attendance['authorized'] ?? 0;
-$unauthorized  = $attendance['unauthorized'] ?? 0;
-$totalMeetings = $attendance['total_meetings'] ?? 0;
+    <tr style="height:20px;">
+        <td colspan="8" style="border:none !important;"></td>
+    </tr>
 
 
-if ($totalMeetings > 0) {
-
-    $sickPct = round(
-        ($sickness / $totalMeetings) * 100
-    );
-
-    $authorizedPct = round(
-        ($authorized / $totalMeetings) * 100
-    );
-
-    $unauthorizedPct = round(
-        ($unauthorized / $totalMeetings) * 100
-    );
-
-} else {
-
-    $sickPct         = 0;
-    $authorizedPct   = 0;
-    $unauthorizedPct = 0;
-}
-
-?>
-
-<table style="width:100%;" class="borderless">
+    <!-- =====================================================
+         ATTENDANCE HEADER
+         ===================================================== -->
 
     <tr>
 
-        <td colspan="3">
-            <h3>Attendance</h3>
+        <td colspan="3" style="border:1px solid #000;">
+            <h3 style="margin:2px;">
+                Attendance
+            </h3>
         </td>
 
-        <td></td>
+        <!-- SEPARATOR -->
+        <td style="border:none !important;"></td>
 
-        <td colspan="2" class="center">
+        <td colspan="2"
+            class="center"
+            style="border:1px solid #000;">
             Teacher
         </td>
 
-        <td colspan="2" class="center">
+        <td colspan="2"
+            class="center"
+            style="border:1px solid #000;">
             Parent
         </td>
 
     </tr>
 
 
+    <!-- =====================================================
+         SICKNESS ABSENCE
+         ===================================================== -->
+
     <tr>
 
-        <td colspan="2">
+        <td colspan="2"
+            style="border:1px solid #000; padding: 3px">
             Sickness Absence
         </td>
 
-        <td class="center">
+        <td class="center"
+            style="border:1px solid #000;">
             <?= $sickPct ?> %
         </td>
 
-        <td></td>
+        <!-- SEPARATOR -->
+        <td style="border:none !important;"></td>
 
         <td
             colspan="2"
             rowspan="3"
             style="
+                border:1px solid #000;
                 text-align:center;
                 vertical-align:bottom;
                 font-size:10px;
@@ -442,37 +454,55 @@ if ($totalMeetings > 0) {
             <?= esc($teacher['name'] ?? '') ?>
         </td>
 
-        <td colspan="2" rowspan="3"></td>
+        <td
+            colspan="2"
+            rowspan="3"
+            style="border:1px solid #000;"
+        ></td>
 
     </tr>
 
 
+    <!-- =====================================================
+         AUTHORIZED ABSENCE
+         ===================================================== -->
+
     <tr>
 
-        <td colspan="2">
+        <td colspan="2"
+            style="border:1px solid #000;  padding: 3px">
             Authorized Absence
         </td>
 
-        <td class="center">
+        <td class="center"
+            style="border:1px solid #000;">
             <?= $authorizedPct ?> %
         </td>
 
-        <td></td>
+        <!-- SEPARATOR -->
+        <td style="border:none !important;"></td>
 
     </tr>
 
 
+    <!-- =====================================================
+         UNAUTHORIZED ABSENCE
+         ===================================================== -->
+
     <tr>
 
-        <td colspan="2">
+        <td colspan="2"
+            style="border:1px solid #000;  padding: 3px">
             Unauthorized Absence
         </td>
 
-        <td class="center">
+        <td class="center"
+            style="border:1px solid #000;">
             <?= $unauthorizedPct ?> %
         </td>
 
-        <td></td>
+        <!-- SEPARATOR -->
+        <td style="border:none !important;"></td>
 
     </tr>
 
@@ -485,49 +515,90 @@ if ($totalMeetings > 0) {
 <!-- ========================================================= -->
 
 <div style="page-break-before: always;">
-    <h2 class="center">Objective-Based Scores</h2>
-    <br>
+    <br><br><br>
+    <h2 class="center">Holistic Progress Report</h2>
     
     <?php foreach ($subjects as $subject): 
-        $subjectId = $subject['id'];
-        $objList = $allObjectives[$subjectId] ?? [];
+        $subjectId   = $subject['id'];
+        $objList     = $allObjectives[$subjectId] ?? [];
+        $subjectName = trim($subject['subject_name'] ?? '');
         
         // Filter religion subjects
-        $subjectName = trim($subject['subject_name'] ?? '');
         if (preg_match('/^Religion\s*:\s*(.+)$/i', $subjectName, $matches)) {
             $sRel = strtolower(trim($matches[1]));
-            if ($sRel !== $studentReligion) continue;
+            if ($sRel !== $studentReligion) {
+                continue;
+            }
         }
 
-        if (empty($objList)) continue;
+        // Skip jika tidak ada objective
+        if (empty($objList)) {
+            continue;
+        }
     ?>
     
-    <h3 style="margin-top:15px; border-bottom:1px solid #000; display:inline-block;"><?= esc($subjectName) ?></h3>
-    <table class="main-table" style="width:100%; margin-top:5px; margin-bottom:10px;">
+    <h3 style="margin-top:15px; display:inline-block;">
+        <?= esc($subjectName) ?>
+    </h3>
+
+    <table class="main-table" style="width:100%; margin-top:5px; margin-bottom:20px;">
         <thead>
             <tr>
                 <th style="width:5%;">No</th>
                 <th>Objective</th>
-                <th style="width:20%;">Outcome</th>
-                <th style="width:15%;">Score</th>
+                <th style="width:10%; display: none;">Score</th>
+                <th style="width:8%;">A</th>
+                <th style="width:8%;">B</th>
+                <th style="width:8%;">C</th>
+                <th style="width:8%;">D</th>
             </tr>
         </thead>
+        
         <tbody>
-            <?php foreach ($objList as $index => $obj): ?>
+            <?php foreach ($objList as $index => $obj): 
+                $score = $objectiveScores[$subjectId][$obj['objective_id']] ?? null;
+                $grade = null;
+
+                // Determine grade
+                if (is_numeric($score)) {
+                    $score = (float) $score;
+                    if ($score >= 91) {
+                        $grade = 'A';
+                    } elseif ($score >= 83) {
+                        $grade = 'B';
+                    } elseif ($score >= 75) {
+                        $grade = 'C';
+                    } else {
+                        $grade = 'D';
+                    }
+                }
+            ?>
             <tr>
                 <td class="center"><?= $index + 1 ?></td>
                 <td><?= esc($obj['objective_name'] ?? '-') ?></td>
-                <td><?= esc($obj['outcome_name'] ?? '-') ?></td>
-                <td class="center"><?= esc($objectiveScores[$subjectId][$obj['objective_id']] ?? '-') ?></td>
+                <td class="center" style="display:none"><?= $score ?? '-' ?></td>
+                <td class="center"><?= $grade === 'A' ? '✓' : '' ?></td>
+                <td class="center"><?= $grade === 'B' ? '✓' : '' ?></td>
+                <td class="center"><?= $grade === 'C' ? '✓' : '' ?></td>
+                <td class="center"><?= $grade === 'D' ? '✓' : '' ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
+
+        <tfoot>
+            <tr>
+                <td colspan="7" style="font-size: 0.85em; padding: 8px; background-color: #f9f9f9; text-align: left;">
+                    <strong>Formative Assessment Conversion Grades:</strong> &nbsp;
+                    A (91-100) &nbsp;|&nbsp; B (83-90) &nbsp;|&nbsp; C (75-82) &nbsp;|&nbsp; D (<75)
+                </td>
+            </tr>
+        </tfoot>
     </table>
     
     <?php endforeach; ?>
 </div>
 
-<br><br><br><br>
+<br>
 
 
 <!-- ========================================================= -->
