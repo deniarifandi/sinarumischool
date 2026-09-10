@@ -60,18 +60,25 @@ class UserController extends BaseController
         }
 
         if (!empty($r['division_id'])) {
-            $users[$uid]['division_ids'][] = (int) $r['division_id'];
-            $users[$uid]['divisions'][]    = $r['division_name'];
-            $users[$uid]['division_settings'][$r['division_id']] = [
-                'nullified'  => $r['nullified'],
-                'fixed'      => $r['fixed']
-            ];
-        }
+                    $did = (int) $r['division_id'];
+                    // Dedupe - the join with user_position can otherwise duplicate divisions
+                    if (!in_array($did, $users[$uid]['division_ids'], true)) {
+                        $users[$uid]['division_ids'][] = $did;
+                        $users[$uid]['divisions'][]    = $r['division_name'];
+                    }
+                    $users[$uid]['division_settings'][$did] = [
+                        'nullified'  => $r['nullified'],
+                        'fixed'      => $r['fixed']
+                    ];
+                }
 
-        if (!empty($r['jabatan_id'])) {
-            $users[$uid]['position_ids'][] = (int) $r['jabatan_id'];
-            $users[$uid]['positions'][]    = $r['jabatan_nama'];
-        }
+                if (!empty($r['jabatan_id'])) {
+                    $jid = (int) $r['jabatan_id'];
+                    if (!in_array($jid, $users[$uid]['position_ids'], true)) {
+                        $users[$uid]['position_ids'][] = $jid;
+                        $users[$uid]['positions'][]    = $r['jabatan_nama'];
+                    }
+                }
     }
 
     return view('users/index', [
