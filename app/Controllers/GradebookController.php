@@ -391,6 +391,13 @@ class GradebookController extends BaseController
         $objectiveScores = $this->gradebookObjectiveScoreModel
             ->getByGradebook($gradebook['id']);
 
+        // Outcomes untuk quick-add objective (subject + grade deze klas)
+        $outcomes = $this->outcomeModel
+            ->where('subject_id', $subjectId)
+            ->where('grade_id', $class['grade'])
+            ->orderBy('outcome_name', 'ASC')
+            ->findAll();
+
         // ============================================================
         // 12. RETURN VIEW
         // ============================================================
@@ -414,8 +421,9 @@ class GradebookController extends BaseController
             'scores'         => $scores,
 
             // Objective-based (TAB 2) — kolom AUTO dari objectives (term + subject)
-                        'objectives'        => $objectives,
-                        'objectiveScores'   => $objectiveScores,
+            'objectives'        => $objectives,
+            'objectiveScores'   => $objectiveScores,
+            'outcomes'          => $outcomes,
 
             'isLocked'       => (bool) $gradebook['is_locked'],
 
@@ -864,6 +872,113 @@ class GradebookController extends BaseController
         }
 
         session()->setFlashdata('success', 'Nilai objektif berhasil disimpan.');
+        return redirect()->to($backUrl);
+    }
+
+
+    /**
+     * Quick-add objective rechtstreeks vanuit gradebook (TAB 2).
+     * POST: gradebook_id, subject_id, class_id, term_id, outcome_id, objective_name
+     *
+     * Huidige term_id van de gradebook wordt aan objective.term_id toegewezen,
+     * zodat de nieuwe kolomm je direct verschijnt in de objective-tab.
+     */
+    public function addObjective()
+    {
+        $req = $this->request;
+
+        $subjectId      = $req->getPost('subject_id');
+        $classId        = $req->getPost('class_id');
+        $termId         = (int) $req->getPost('term_id');
+        $gradebookId    = (int) $req->getPost('gradebook_id');
+        $outcomeId      = (int) $req->getPost('outcome_id');
+        $objectiveName  = trim($req->getPost('objective_name') ?? '');
+
+        $backUrl = $this->objectiveBackUrl($subjectId, $classId, $termId);
+
+        if ($objectiveName === '' || !$outcomeId) {
+            session()->setFlashdata('error', 'Objective name en Outcome zijn verplicht.');
+            return redirect()->to($backUrl);
+        }
+
+        $gradebook = $this->gradebookModel->find($gradebookId);
+
+        if (!$gradebook) {
+            session()->setFlashdata('error', 'Gradebook niet gevonden.');
+            return redirect()->to($backUrl);
+        }
+
+        if ($gradebook['is_locked']) {
+            session()->setFlashdata('error', 'Gradebook is vergrendeld, objective kan niet worden toegevoegd.');
+            return redirect()->to($backUrl);
+        }
+
+        $class = $this->classModel->find($classId);
+
+        if (!$class) {
+            session()->setFlashdata('error', 'Klas niet gevonden.');
+            return redirect()->to($backUrl);
+        }
+
+        // Waarborg dat outcome bij subject + grade van deze klas hoort
+        $outcome = $this->outcomeModel
+            ->where('id', $outcomeId)
+            ->where('subject_id', $subjectId)
+            ->where('grade_id', $class['grade'])
+            ->first();
+
+        if (!$outcome) {
+            session()->setFlashdata('error', 'Outcome niet geldig voor dit subject/klas.');
+            return redirect()->to($backUrl);
+        }
+
+        $this->objectiveModel->insert([
+            'outcome_id'     => $outcomeId,
+            'term_id'        => $termId,
+            'objective_name' => $objectiveName,
+        ]);
+
+        session()->setFlashdata('success', 'Objective "' . $objectiveName . '" succesvol toegevoegd.');
+        return redirect()->to($backUrl);
+    }
+
+    /**
+     * Hapus objective dari gradebook (hapus kolom beserta semua nilai siswa).
+     * POST: gradebook_id, subject_id, class_id, term_id, objective_id
+     * Hanya boleh hapus kalau gradebook belum terkunci.
+     */
+    public function deleteObjective()
+    {
+        $req = $this->request;
+
+        $subjectId      = $req->getPost('subject_id');
+        $classId        = $req->getPost('class_id');
+        $termId         = (int) $req->getPost('term_id');
+        $gradebookId    = (int) $req->getPost('gradebook_id');
+        $objectiveId    = (int) $req->getPost('objective_id');
+
+        $backUrl = $this->objectiveBackUrl($subjectId, $classId, $termId);
+
+        if (!$objectiveId) {
+            session()->setFlashdata('error', 'Objective tidak ditemukan.');
+            return redirect()->to($backUrl);
+        }
+
+        $gradebook = $this->gradebookModel->find($gradebookId);
+
+        if (!$gradebook) {
+            session()->setFlashdata('error', 'Gradebook tidak ditemukan.');
+            return redirect()->to($backUrl);
+        }
+
+        if ($gradebook['is_locked']) {
+            session()->setFlashdata('error', 'Gradebook terkunci, tidak bisa menghapus objective.');
+            return redirect()->to($backUrl);
+        }
+
+        $this->objectiveModel->delete($objectiveId);
+
+        session()->setFlashdata('success', 'Objective berhasil dihapus.');
         return redirect()->to($backUrl);
     }
 

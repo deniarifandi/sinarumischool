@@ -20,6 +20,7 @@ $gradebookId        = $gradebookId        ?? null;
 $subjectId          = $subjectId          ?? null;
 $classId            = $classId            ?? null;
 $termId             = $termId             ?? null;
+$outcomes           = $outcomes           ?? [];
 $kkm                = $kkm                ?? 75;
 $religions          = $religions          ?? [];
 ?>
@@ -31,6 +32,67 @@ $religions          = $religions          ?? [];
             <i class="bi bi-bullseye me-1"></i> Go to Outcome
         </a> untuk mengelola Outcome-Objective. <br>
 </div>
+
+<?php if (!$isLocked): ?>
+<!-- ====================================================
+     QUICK-ADD OBJECTIVE (rechtstreeks vanuit dit tabblad)
+     ==================================================== -->
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <div>
+        <!-- <button class="btn btn-sm btn-success rounded-pill px-3" type="button"
+                data-bs-toggle="collapse" data-bs-target="#addObjForm"
+                aria-expanded="false" aria-controls="addObjForm">
+            <i class="bi bi-plus-lg me-1"></i> Add Objective
+        </button> -->
+    </div>
+</div>
+
+<div class="collapse mb-3" id="addObjForm">
+    <form method="post" action="<?= base_url('gradebook/objective-add') ?>" class="border rounded p-3 bg-white shadow-sm" autocomplete="off">
+        <?= csrf_field() ?>
+        <input type="hidden" name="gradebook_id" value="<?= esc($gradebookId) ?>">
+        <input type="hidden" name="subject_id" value="<?= esc($subjectId) ?>">
+        <input type="hidden" name="class_id" value="<?= esc($classId) ?>">
+        <input type="hidden" name="term_id" value="<?= esc($termId) ?>">
+
+        <div class="row g-2 align-items-end">
+            <div class="col-md-5">
+                <label for="ao_outcome_id" class="form-label small mb-1">Outcome</label>
+                <select name="outcome_id" id="ao_outcome_id" class="form-select form-select-sm" required>
+                    <option value="">-- Pilih Outcome --</option>
+                    <?php foreach ($outcomes as $oc): ?>
+                        <option value="<?= esc($oc['id']) ?>"><?= esc($oc['outcome_name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <?php if (empty($outcomes)): ?>
+                    <div class="form-text small text-danger">
+                        Belum ada outcome voor deze grade.
+                        <a href="<?= base_url('outcome/create?subject_id=' . $subjectId) ?>">Voeg eerst outcome toe</a>.
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="col-md-5">
+                <label for="ao_objective_name" class="form-label small mb-1">Objective Name</label>
+                <input type="text" id="ao_objective_name" name="objective_name"
+                       class="form-control form-control-sm" required
+                       placeholder="e.g. Understand the fundamentals...">
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-sm btn-success w-100" <?= empty($outcomes) ? 'disabled' : '' ?>>
+                    <i class="bi bi-plus-lg me-1"></i> Add
+                </button>
+            </div>
+        </div>
+
+        <div class="form-text mt-1">
+            Objective wordt gekoppeld aan de huidige term van deze gradebook, dus de kolom
+            verschijnt direct zodra de punt toegevoegd is.
+        </div>
+    </form>
+</div>
+<?php endif; ?>
 
 <?php if ($isLocked): ?>
     <div class="alert alert-warning py-2 mb-3 small">
@@ -109,6 +171,21 @@ $religions          = $religions          ?? [];
                             <th class="text-center py-1" style="min-width:120px; line-height:1.1;">
                                 <div class="small fw-bold"><?= esc($obj['objective_name'] ?? '-') ?></div>
                                 <div class="small text-muted" style="font-size:0.7rem;"><?= esc($obj['outcome_name'] ?? '') ?></div>
+                                <div class="d-flex justify-content-between small">
+                                    <!-- <a href="<?= base_url('objective/edit/'.$obj['objective_id'].'?outcome_id='.$obj['outcome_id'].'&subject_id='.$subjectId) ?>" class="text-secondary" title="Edit objective">
+                                        <i class="bi bi-pencil"></i>
+                                    </a> -->
+                                    <!-- <form action="<?= base_url('gradebook/objective-delete/'.$obj['objective_id']) ?>" method="post" class="d-inline"
+                                          onsubmit="return confirm('Hapus objective ini? Kolom ini dan semua nilai siswa untuk kolom ini akan dihapus permanen.');">
+                                        <?= csrf_field() ?>
+                                        <input type="hidden" name="subject_id" value="<?= esc($subjectId) ?>">
+                                        <input type="hidden" name="class_id" value="<?= esc($classId) ?>">
+                                        <input type="hidden" name="term_id" value="<?= esc($termId) ?>">
+                                        <button type="submit" class="text-danger" title="Hapus objective">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form> -->
+                                </div>
                             </th>
                         <?php endforeach; ?>
                     </tr>

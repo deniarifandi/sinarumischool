@@ -118,6 +118,7 @@ $this->setData([
     'kkm'                => $kkm,
     'objectives'         => $objectives,
     'objectiveScores'    => $objectiveScores,
+    'outcomes'           => $outcomes ?? [],
 ]);
 ?>
 
