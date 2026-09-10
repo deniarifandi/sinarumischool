@@ -172,12 +172,14 @@ public function printComplete()
     }
 
     return view('rekap/printcomplete', [
-        'results' => $results,
-        'dates' => $dates,
-        'startMonth' => $startMonthName,
-        'endMonth' => $endMonthName,
-        'division' => $results[0]->division_name,
-    ]);
+            'results' => $results,
+            'dates' => $dates,
+            'startMonth' => $startMonthName,
+            'endMonth' => $endMonthName,
+            'division' => $results[0]->division_name,
+            'dateStart' => $startDateObj->format('d-m-Y'),
+            'dateEnd' => $endDateObj->format('d-m-Y'),
+        ]);
 
 }
 

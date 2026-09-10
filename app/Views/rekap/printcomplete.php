@@ -15,6 +15,38 @@
 
 <table id="tableRekap" style="font-size:10px; width:100%; border-collapse: collapse;" border="1" cellpadding="5">
     <thead>
+    <?php
+    // Helper sederhana untuk mengubah YYYY-MM-DD menjadi format Indonesia
+    if (!function_exists('formatTanggalIndo')) {
+        function formatTanggalIndo($tanggal) {
+            $bulan = [
+                1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ];
+            $pecah = explode('-', $tanggal);
+            // pecah[0] = tahun, pecah[1] = bulan, pecah[2] = tanggal
+            return (int)$pecah[2] . ' ' . $bulan[(int)$pecah[1]] . ' ' . $pecah[0];
+        }
+    }
+
+    // Terapkan ke variabel kamu
+    $formattedStart = formatTanggalIndo($dateStart);
+    $formattedEnd = formatTanggalIndo($dateEnd);
+    ?>
+
+    <tr class="rekap-title-row">
+        <!-- 
+          text-align: center; -> Posisi di tengah
+          font-size: 14px;    -> Sedikit lebih besar (standar tabel biasanya 12px)
+          font-weight: bold;  -> Dibuat tebal
+          padding: 12px;      -> Ruang bernapas yang lebih lega
+          background-color & border -> Memberikan efek "divider" pemisah yang cantik
+        -->
+        <th colspan="<?= count($dates) + 7 ?>" 
+            style="text-align: center; font-size: 14px; font-weight: bold; padding: 12px; background-color: #f8f9fa; border-bottom: 2px solid #dee2e6; color: #333;">
+            PERIODE: <?= $formattedStart ?> - <?= $formattedEnd ?>
+        </th>
+    </tr>
     <tr>
         <th>Nama</th>
         <th>Jabatan</th>
@@ -209,12 +241,12 @@ async function exportToExcel() {
                 wrapText:true
             };
 
-            // header
-            if(rowIndex===0){
-                cell.font={
-                    bold:true
-                };
-            }
+            // title + header rows bold
+                        if(rowIndex===0 || rowIndex===1){
+                            cell.font={
+                                bold:true
+                            };
+                        }
 
             // preserve red font
             const color = getComputedStyle(td).color;
@@ -243,8 +275,12 @@ async function exportToExcel() {
 
     });
 
-    // Auto width
-    worksheet.getRow(1).height = 50;
+    // Merge the title (Periode) row across all columns
+        const lastCol = worksheet.columnCount;
+        worksheet.mergeCells(1, 1, 1, lastCol);
+        worksheet.getCell(1, 1).alignment = { horizontal: 'left', vertical: 'middle' };
+        worksheet.getRow(1).height = 22;
+        worksheet.getRow(2).height = 50;
     worksheet.columns.forEach((column, index) => {
 
     // A = Nama
