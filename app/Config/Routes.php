@@ -310,7 +310,8 @@ $routes->group('rekap', ['filter' => 'auth'], function ($routes) {
     $routes->get('print','RekapController::print');
 
     $routes->get('printcomplete','RekapController::printComplete');
-});
+        $routes->post('update-attendance','RekapController::updateAttendance');
+    });
 
 $routes->get('user-subject', 'UserSubjectController::index');
 

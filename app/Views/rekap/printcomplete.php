@@ -74,10 +74,94 @@
     .btn-export:hover {
         background-color: #157347;
     }
+
+    /* Styling khusus untuk tombol melayang */
+.btn-floating {
+    position: fixed;
+    bottom: 30px;       /* Jarak dari tepi bawah layar */
+    right: 30px;        /* Jarak dari tepi kanan layar */
+    z-index: 9999;      /* Memastikan tombol selalu di posisi paling atas, tidak tertutup tabel */
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4); /* Efek bayangan biru */
+    border-radius: 30px; /* Membuat bentuknya lebih oval/membulat */
+    padding: 12px 25px;
+}
+
+/* Modifikasi warna tombol Edit (Biru) */
+.btn-edit {
+    background-color: #0d6efd;
+}
+.btn-edit:hover {
+    background-color: #0b5ed7;
+    transform: translateY(-2px); /* Efek tombol sedikit terangkat saat disentuh */
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.6);
+}
+
+/* Container Menu Horizontal */
+.edit-menu-container {
+    position: absolute;
+    z-index: 9999;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 8px 12px;
+    display: flex;           /* Membuat elemen sejajar ke samping */
+    align-items: center;     /* Memastikan semua berada di tengah secara vertikal */
+    gap: 8px;                /* Jarak seragam antar tombol */
+}
+
+/* Teks Label Status */
+.edit-menu-label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #495057;
+    margin-right: 4px;
+}
+
+/* Styling Dasar Tombol */
+.edit-menu-btn {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid transparent;
+    transition: all 0.2s ease-in-out; /* Animasi halus saat disentuh */
+}
+
+/* Warna Masing-masing Tombol & Efek Hover */
+.btn-hadir { color: #198754; border-color: #198754; }
+.btn-hadir:hover { background: #198754; color: #fff; }
+
+.btn-izin { color: #fd7e14; border-color: #fd7e14; }
+.btn-izin:hover { background: #fd7e14; color: #fff; }
+
+.btn-sakit { color: #dc3545; border-color: #dc3545; }
+.btn-sakit:hover { background: #dc3545; color: #fff; }
+
+.btn-hapus { color: #6c757d; border-color: #6c757d; }
+.btn-hapus:hover { background: #6c757d; color: #fff; }
+
+/* Garis Pembatas (Divider) */
+.edit-menu-divider {
+    border-left: 1px solid #dee2e6;
+    height: 24px;
+    margin: 0 2px;
+}
+
 </style>
 
-<button class="btn-export" onclick="exportToExcel()">
-    📊 Export to Excel
+<!-- Tombol Export tetap di tempat asalnya -->
+<div class="action-buttons">
+    <button class="btn-export" onclick="exportToExcel()">
+        📊 Export to Excel
+    </button>
+</div>
+
+<!-- Tombol Edit sekarang melayang di pojok kanan bawah -->
+<button id="btnEditMode" class="btn-export btn-edit btn-floating" onclick="toggleEditMode()">
+    ✏️ Edit Mode: UIT
 </button>
 
 <br><br>
@@ -173,67 +257,70 @@ $bulanIndoSingkat = [
                 $sumTotalNominal = 0;
 
                 foreach ($div['rows'] as $row):
-                    $countPresent = 0;
-                    $countIzin = 0;
-                    $countSakit = 0;
-                    $total = 0;
-                    $nullified = (isset($row->nullified) ? (int)$row->nullified : 0);
-                    $fixedValue = (isset($row->fixed) ? (float)$row->fixed : 0);
-            ?>
-                <tr>
-                    <td><?= $row->name ?></td>
-                    <td><?= $row->jabatan_nama ?></td>
-                    <td><?= $row->division_name ?></td>
-                    <?php foreach ($dates as $d):
-                        $status = $row->$d ?? ' ';
-                        $dayOfWeek = date('w', strtotime($d));
-                        $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6);
+                                    $countPresent = 0;
+                                    $countIzin = 0;
+                                    $countSakit = 0;
+                                    $total = 0;
+                                    $nullified = (isset($row->nullified) ? (int)$row->nullified : 0);
+                                    $fixedValue = (isset($row->fixed) ? (float)$row->fixed : 0);
+                                    $guruId = (int)$row->id;
+                            ?>
+                                <tr data-guru-id="<?= $guruId ?>" data-nullified="<?= $nullified ?>" data-fixed="<?= $fixedValue ?>">
+                                    <td><?= $row->name ?></td>
+                                    <td><?= $row->jabatan_nama ?></td>
+                                    <td><?= $row->division_name ?></td>
+                                    <?php foreach ($dates as $d):
+                                        $status = $row->$d ?? ' ';
+                                        $realDate = isset($dateMap[$d]) ? $dateMap[$d] : '';
+                                        $dayOfWeek = date('w', strtotime($d));
+                                        $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6);
                         
-                        $cellStyle = $isWeekend ? 'style="color:#dc3545; background-color:#fef4f5; text-align:center;"' : 'style="text-align:center;"';
+                                        $cellStyle = $isWeekend ? 'style="color:#dc3545; background-color:#fef4f5; text-align:center;"' : 'style="text-align:center;"';
 
-                        switch ($status) {
-                            case 1:
-                            case 4:
-                                $countPresent++;
-                                if ($nullified == 0) {
-                                    $total += 15000;
-                                }
-                                break;
-                            case 2:
-                                $countIzin++;
-                                break;
-                            case 3:
-                                $countSakit++;
-                                break;
-                        }
-                    ?>
-                    <td <?= $cellStyle ?>>
-                        <?php
-                            switch ($status) {
-                                case 1:
-                                case 4:
-                                    echo "<span style='color: #198754; font-weight: bold;'>✔</span>";
-                                    break;
-                                case 2:
-                                    echo "I";
-                                    break;
-                                case 3:
-                                    echo "S";
-                                    break;
-                                default:
-                                    echo "&nbsp;";
-                            }
-                        ?>
-                    </td>
-                    <?php endforeach; ?>
+                                        switch ($status) {
+                                            case 1:
+                                            case 4:
+                                                $countPresent++;
+                                                if ($nullified == 0) {
+                                                    $total += 15000;
+                                                }
+                                                break;
+                                            case 2:
+                                                $countIzin++;
+                                                break;
+                                            case 3:
+                                                $countSakit++;
+                                                break;
+                                        }
+                                    ?>
+                                    <td class="edit-cell" data-date="<?= $realDate ?>" data-status="<?= esc($status) ?>" <?= $cellStyle ?>>
+                                        <?php
+                                            switch ($status) {
+                                                case 1:
+                                                case 4:
+                                                    echo "<span class='cell-tick' style='color: #198754; font-weight: bold;'>✔</span>";
+                                                    break;
+                                                case 2:
+                                                    echo "<span class='cell-izin'>I</span>";
+                                                    break;
+                                                case 3:
+                                                    echo "<span class='cell-sakit'>S</span>";
+                                                    break;
+                                                default:
+                                                    echo "&nbsp;";
+                                            }
+                                        ?>
+                                    </td>
+                                    <?php endforeach; ?>
                     
-                    <td style="text-align:center; font-weight:bold; background-color:#f8f9fa;"><?= $countPresent ?></td>
-                    <td style="text-align:center; background-color:#f8f9fa;"><?= $countIzin ?></td>
-                    <td style="text-align:center; background-color:#f8f9fa;"><?= $countSakit ?></td>
-                    <td
-                        style="text-align:right; font-weight: bold; background-color:#e9ecef;"
-                        data-value="<?= $nullified == 1 ? 0 : ($nullified == 2 ? $fixedValue : $total); ?>"
-                    >
+                                    <td class="row-masuk" style="text-align:center; font-weight:bold; background-color:#f8f9fa;"><?= $countPresent ?></td>
+                                                                        <td class="row-izin"  style="text-align:center; background-color:#f8f9fa;"><?= $countIzin ?></td>
+                                                                        <td class="row-sakit" style="text-align:center; background-color:#f8f9fa;"><?= $countSakit ?></td>
+                                                        <td
+                                                            class="row-nominal"
+                                                            style="text-align:right; font-weight: bold; background-color:#e9ecef;"
+                                                            data-value="<?= $nullified == 1 ? 0 : ($nullified == 2 ? $fixedValue : $total); ?>"
+                                                        >
                         <?php
                             // Menghitung nominal valid untuk karyawan ini
                             $rowNominal = ($nullified == 1) ? 0 : (($nullified == 2) ? $fixedValue : $total);
@@ -259,10 +346,10 @@ $bulanIndoSingkat = [
                 <td colspan="<?= 3 + count($dates) ?>" style="text-align: right; padding-right: 15px; font-weight: bold; font-size: 13px;">
                     TOTAL KESELURUHAN
                 </td>
-                <td style="text-align: center; font-weight: bold; font-size: 12px; color: #198754;"><?= $sumPresent ?></td>
-                <td style="text-align: center; font-weight: bold; font-size: 12px;"><?= $sumIzin ?></td>
-                <td style="text-align: center; font-weight: bold; font-size: 12px;"><?= $sumSakit ?></td>
-                <td style="text-align: right; font-weight: bold; font-size: 13px; color: #0d6efd;" data-value="<?= $sumTotalNominal ?>">
+                <td class="foot-masuk" style="text-align: center; font-weight: bold; font-size: 12px; color: #198754;"><?= $sumPresent ?></td>
+                                        <td class="foot-izin"  style="text-align: center; font-weight: bold; font-size: 12px;"><?= $sumIzin ?></td>
+                                        <td class="foot-sakit" style="text-align: center; font-weight: bold; font-size: 12px;"><?= $sumSakit ?></td>
+                                        <td class="foot-nominal" style="text-align: right; font-weight: bold; font-size: 13px; color: #0d6efd;" data-value="<?= $sumTotalNominal ?>">
                     Rp <?= number_format($sumTotalNominal, 0, ',', '.') ?>
                 </td>
             </tr>
@@ -270,6 +357,201 @@ $bulanIndoSingkat = [
     </table>
 </div>
 <?php endforeach; ?>
+
+<!-- Export function -->
+<!-- Export function -->
+<script>
+var editMode = false;
+
+var MENU_HTML = 
+'<div id="editMenu" class="edit-menu-container">' +
+'  <div class="edit-menu-label">Status:</div>' +
+'  <button data-st="1" class="edit-menu-btn btn-hadir">✔ Hadir</button>' +
+'  <button data-st="2" class="edit-menu-btn btn-izin">I Izin</button>' +
+'  <button data-st="3" class="edit-menu-btn btn-sakit">S Sakit</button>' +
+'  <div class="edit-menu-divider"></div>' +
+'  <button data-st="" class="edit-menu-btn btn-hapus">✖ Hapus</button>' +
+'</div>';
+
+function toggleEditMode() {
+    editMode = !editMode;
+    var btn = document.getElementById('btnEditMode');
+    btn.textContent = editMode ? '✏️ Edit Mode: ON' : '✏️ Wijzig Mode: UIT';
+    btn.style.backgroundColor = editMode ? '#198754' : '#0d6efd';
+    closeMenu();
+    if (editMode) alert("Klik pada kotak centang (✔/I/S) untuk mengubah status. Klik di luar menu untuk menutup.");
+}
+
+function openMenu(cell) {
+    closeMenu();
+    var menu = document.createElement('div');
+    menu.innerHTML = MENU_HTML;
+    menu.id = 'editMenu';
+    // place near cell (position:fixed is viewport-relative, no scroll offset)
+    var rect = cell.getBoundingClientRect();
+    var menuW = 200;   // estimated menu width
+    var menuH = 150;   // estimated menu height
+    var left = rect.left;
+    var top  = rect.bottom + 6;
+    // keep within viewport
+    if (left + menuW > window.innerWidth - 8) left = Math.max(8, window.innerWidth - menuW - 8);
+    if (left < 8) left = 8;
+    if (top + menuH > window.innerHeight - 8) top = Math.max(8, rect.top - menuH - 6);
+    if (top < 8) top = 8;
+    menu.style.position = 'fixed';
+    menu.style.left = left + 'px';
+    menu.style.top  = top + 'px';
+    document.body.appendChild(menu);
+
+    // store cell ref via closure
+    menu.dataset.cellId = null;
+    // We'll find target cell from click again since menu overlays
+    menu._cell = cell;
+
+    menu.querySelectorAll('button').forEach(function (b) {
+        b.addEventListener('click', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var st = b.getAttribute('data-st');
+            var cell = menu._cell;
+            closeMenu();
+            if (cell) {
+                saveStatus(cell, st);
+            }
+        });
+    });
+    cell.classList.add('edit-active');
+}
+
+function closeMenu() {
+    var m = document.getElementById('editMenu');
+    if (m) m.remove();
+    document.querySelectorAll('.edit-active').forEach(function (c) { c.classList.remove('edit-active'); });
+}
+
+function cellPos(m) {
+    var cells = Array.prototype.slice.call(document.querySelectorAll('.edit-cell'));
+    return cells.indexOf(m);
+}
+
+function saveStatus(cell, status) {
+    var tr = cell.closest('tr');
+    var guruId = tr.getAttribute('data-guru-id');
+    var date = cell.getAttribute('data-date');
+    var url = "<?= base_url('rekap/update-attendance') ?>";
+
+    var body = new URLSearchParams();
+    body.append('guru_id', guruId);
+    body.append('date', date);
+    body.append('status', status);
+
+    cell.style.opacity = '0.4';
+
+    fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+        body: body.toString()
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+        cell.style.opacity = '1';
+        if (data.success) {
+            cell.setAttribute('data-status', status);
+            renderCell(cell, status);
+            recomputeRow(tr);
+            recomputeFooter(tr.closest('table'));
+        } else {
+            alert('Fout: ' + (data.message || 'onbekend'));
+        }
+    })
+    .catch(function (err) {
+        cell.style.opacity = '1';
+        alert('Netwerkfout: ' + err);
+    });
+}
+
+function renderCell(cell, status) {
+    var html = '';
+    switch (status) {
+        case '1': case '4':
+            html = "<span class='cell-tick' style='color: #198754; font-weight: bold;'>✔</span>";
+            break;
+        case '2':
+            html = "<span class='cell-izin'>I</span>";
+            break;
+        case '3':
+            html = "<span class='cell-sakit'>S</span>";
+            break;
+        default:
+            html = '&nbsp;';
+    }
+    cell.innerHTML = html;
+}
+
+function recomputeRow(tr) {
+    var cells = Array.prototype.slice.call(tr.querySelectorAll('.edit-cell'));
+    var a = parseInt(tr.getAttribute('data-nullified'), 10) || 0;
+    var f = parseFloat(tr.getAttribute('data-fixed')) || 0;
+
+    var masuk = 0, izin = 0, sakit = 0, total = 0;
+    cells.forEach(function (c) {
+        var st = c.getAttribute('data-status');
+        if (st === '1' || st === '4') { masuk++; if (a === 0) total += 15000; }
+        else if (st === '2') { izin++; }
+        else if (st === '3') { sakit++; }
+    });
+
+    tr.querySelector('.row-masuk').textContent = masuk;
+    tr.querySelector('.row-izin').textContent = izin;
+    tr.querySelector('.row-sakit').textContent = sakit;
+
+    var nominal = (a === 1) ? 0 : (a === 2 ? f : total);
+    var nomCell = tr.querySelector('.row-nominal');
+    nomCell.setAttribute('data-value', nominal);
+    nomCell.textContent = (a === 1) ? '-' : (a === 2 ? 'Rp ' + fmtRp(f) : 'Rp ' + fmtRp(total));
+}
+
+function recomputeFooter(table) {
+    var sumMasuk = 0, sumIzin = 0, sumSakit = 0, sumNom = 0;
+    Array.prototype.slice.call(table.querySelectorAll('tbody tr')).forEach(function (tr) {
+        sumMasuk += parseInt(tr.querySelector('.row-masuk').textContent, 10) || 0;
+        sumIzin  += parseInt(tr.querySelector('.row-izin').textContent, 10) || 0;
+        sumSakit += parseInt(tr.querySelector('.row-sakit').textContent, 10) || 0;
+        sumNom   += parseFloat(tr.querySelector('.row-nominal').getAttribute('data-value')) || 0;
+    });
+    var foot = table.querySelector('tfoot .rekap-footer-row');
+    if (!foot) return;
+    var fMasuk = foot.querySelector('.foot-masuk');
+    var fIzin  = foot.querySelector('.foot-izin');
+    var fSakit = foot.querySelector('.foot-sakit');
+    var fNom   = foot.querySelector('.foot-nominal');
+    if (fMasuk) fMasuk.textContent = sumMasuk;
+    if (fIzin) fIzin.textContent = sumIzin;
+    if (fSakit) fSakit.textContent = sumSakit;
+    if (fNom) {
+        fNom.setAttribute('data-value', sumNom);
+        fNom.textContent = 'Rp ' + fmtRp(sumNom);
+    }
+}
+
+function fmtRp(n) {
+    return n.toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+document.addEventListener('click', function (e) {
+    var menu = document.getElementById('editMenu');
+    if (menu && e.target !== menu && !menu.contains(e.target)) {
+        closeMenu();
+        return;
+    }
+    if (!editMode) return;
+    // clicked a cell?
+    var cell = e.target.closest ? e.target.closest('.edit-cell') : null;
+    if (cell) {
+        openMenu(cell);
+    }
+});
+</script>
 
 <!-- Export function -->
 <!-- Export function -->

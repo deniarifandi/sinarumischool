@@ -116,6 +116,7 @@ public function printComplete()
 
     // Generate dynamic columns
     $dates = [];
+    $dateMap = [];
     $columns = [];
     $period = new \DatePeriod(
         new \DateTime($startDate),
@@ -127,6 +128,7 @@ public function printComplete()
         $label = $date->format('M d');
         $dateString = $date->format('Y-m-d');
         $dates[] = $label;
+        $dateMap[$label] = $dateString;
         $columns[] = "
             MAX(
                 CASE 
@@ -179,14 +181,81 @@ public function printComplete()
     }
 
     return view('rekap/printcomplete', [
-            'divisions' => array_values($divisions),
-            'dates' => $dates,
-            'startMonth' => $startMonthName,
-            'endMonth' => $endMonthName,
-            'dateStart' => $startDateObj->format('d-m-Y'),
-            'dateEnd' => $endDateObj->format('d-m-Y'),
-        ]);
+                'divisions' => array_values($divisions),
+                'dates' => $dates,
+                'dateMap' => $dateMap,
+                'startMonth' => $startMonthName,
+                'endMonth' => $endMonthName,
+                'dateStart' => $startDateObj->format('d-m-Y'),
+                'dateEnd' => $endDateObj->format('d-m-Y'),
+            ]);
 
+}
+
+/**
+ * Update attendance (presensi) for one teacher on one date.
+ * Called via AJAX from the inline edit cells.
+ */
+public function updateAttendance()
+{
+    if (!$this->request->isAJAX()) {
+        return $this->response->setJSON(['success' => false, 'message' => 'Not AJAX']);
+    }
+
+    $guruId = (int) $this->request->getPost('guru_id');
+    $date   = $this->request->getPost('date');
+    $statusRaw = $this->request->getPost('status'); // may be '' (empty) to clear
+
+    if (!$guruId || !$date || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+        return $this->response->setJSON(['success' => false, 'message' => 'Invalid params']);
+    }
+
+    // status: '' empty -> delete existing; 0 -> delete; else 1,2,3,4
+    if ($statusRaw === '' || $statusRaw === null || $statusRaw == 0) {
+        $status = null;
+    } else {
+        $status = (int) $statusRaw;
+        if (!in_array($status, [1, 2, 3, 4], true)) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Invalid status']);
+        }
+    }
+
+    $db = \Config\Database::connect();
+
+    // look for existing record on that date
+    $existing = $db->table('presensidata')
+        ->where('guru_id', $guruId)
+        ->where('presensidata_tanggal', $date)
+        ->where('deleted_at IS NULL')
+        ->get()
+        ->getRow();
+
+    if ($status === null) {
+        // delete existing (soft or hard): hard delete the row
+        if ($existing) {
+            $db->table('presensidata')->delete(['presensidata_id' => $existing->presensidata_id]);
+        }
+        return $this->response->setJSON(['success' => true, 'status' => null, 'message' => 'Cleared']);
+    }
+
+    $data = [
+        'guru_id'              => $guruId,
+        'presensidata_tanggal' => $date,
+        'status'               => $status,
+        'address'              => 'Admin Injected',
+        'created_at'           => $date . ' 08:00:00',
+        'updated_at'           => date('Y-m-d H:i:s'),
+    ];
+
+    if ($existing) {
+        $db->table('presensidata')
+            ->where('presensidata_id', $existing->presensidata_id)
+            ->update(['status' => $status, 'updated_at' => date('Y-m-d H:i:s')]);
+    } else {
+        $db->table('presensidata')->insert($data);
+    }
+
+    return $this->response->setJSON(['success' => true, 'status' => $status, 'message' => 'Saved']);
 }
 
 public function print()
