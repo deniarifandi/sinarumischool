@@ -111,7 +111,7 @@
                         <th style="width: 15%;">System Role</th>
                         <th>Divisions</th>
                         <th>Positions</th>
-                        <th>Subject Assign</th>
+                        
                         <th class="text-end" style="width: 100px;">Actions</th>
                     <?php endif ?>
                 </tr>
@@ -194,12 +194,7 @@
         </a>
     </div>
 </td>
-                    <td>
-                        <a href="<?= base_url('user-subject/assign/'.$u['id']) ?>"
-                           class="btn btn-sm btn-primary">
-                            <i class="bi bi-link-45deg me-1"></i> Assign Subject
-                        </a>
-                    </td>
+
                     <td class="text-end">
                         <div class="d-flex justify-content-end gap-1">
                             <a href="<?= base_url('users/edit/'.$u['id']) ?>" class="btn-flat" title="Edit User">
@@ -591,7 +586,7 @@ divisionModal.addEventListener('show.bs.modal', function (event) {
 $(function () {
 
     $('#usersTable').DataTable({
-        pageLength: 10,
+        pageLength: 15,
         language: {
             paginate: {
                 previous: '‹',
