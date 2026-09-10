@@ -52,6 +52,8 @@ class UserController extends BaseController
                 'role'         => $r['role'],
                 'divisions'    => [],
                 'division_ids' => [],
+                'primary_division_id' => null,
+                'division_settings' => [],
                 'positions'    => [],
                 'position_ids' => [],
             ];
@@ -60,6 +62,14 @@ class UserController extends BaseController
         if (!empty($r['division_id'])) {
             $users[$uid]['division_ids'][] = (int) $r['division_id'];
             $users[$uid]['divisions'][]    = $r['division_name'];
+            $users[$uid]['division_settings'][$r['division_id']] = [
+                'is_primary' => $r['is_primary'],
+                'nullified'  => $r['nullified'],
+                'fixed'      => $r['fixed']
+            ];
+            if ($r['is_primary'] == 1) {
+                $users[$uid]['primary_division_id'] = (int) $r['division_id'];
+            }
         }
 
         if (!empty($r['jabatan_id'])) {
@@ -520,7 +530,10 @@ public function dashboard()
     ========================== */
     public function updateDivision($userId)
     {
-        $divisions = $this->request->getPost('divisi') ?? [];
+        $active   = $this->request->getPost('active') ?? [];
+        $primary  = $this->request->getPost('primary_division_id');
+        $nullified = $this->request->getPost('nullified') ?? [];
+        $fixed    = $this->request->getPost('fixed') ?? [];
 
         // reset
         $this->userDivisionModel
@@ -528,10 +541,13 @@ public function dashboard()
              ->delete();
 
         // insert new
-        foreach ($divisions as $divisionId) {
+        foreach ($active as $divisionId => $value) {
             $this->userDivisionModel->insert([
                 'user_id'     => $userId,
                 'division_id' => $divisionId,
+                'is_primary'  => ($primary == $divisionId) ? 1 : 0,
+                'nullified'   => $nullified[$divisionId] ?? 0,
+                'fixed'       => $fixed[$divisionId] ?? 0,
             ]);
         }
 

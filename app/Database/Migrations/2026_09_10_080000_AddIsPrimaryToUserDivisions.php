@@ -1,0 +1,1 @@
+<?php namespace App\Database\Migrations; use CodeIgniter\Database\Migration; class AddIsPrimaryToUserDivisions extends Migration { public function up() { $this->forge->addColumn('user_divisions', ['is_primary' => ['type'=>'TINYINT', 'constraint'=>1, 'default'=>0, 'after'=>'division_id']]); } public function down() { $this->forge->dropColumn('user_divisions', 'is_primary'); } }

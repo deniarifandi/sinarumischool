@@ -166,7 +166,9 @@
                                data-bs-target="#divisionModal"
                                data-user-id="<?= $u['id'] ?>"
                                data-user-name="<?= esc($u['name']) ?>"
-                               data-user-divisions='<?= json_encode($u['division_ids']) ?>'>
+                               data-user-divisions='<?= json_encode($u['division_ids']) ?>'
+                               data-user-primary='<?= $u['primary_division_id'] ?? '' ?>'
+                               data-user-settings='<?= json_encode($u['division_settings'] ?? []) ?>'>
                                 <i class="bi bi-diagram-3"></i>
                             </a>
 
@@ -413,14 +415,31 @@
                     <label class="form-label-sm mb-2">Available Divisions</label>
                     <div class="row g-1">
                         <?php foreach ($divisions as $d): ?>
-                        <div class="col-6">
-                            <label class="division-item">
-                                <input type="checkbox" 
-                                       class="form-check-input mt-0 division-checkbox" 
-                                       name="divisi[]" 
-                                       value="<?= $d['id'] ?>">
-                                <span class="small text-dark text-truncate"><?= esc($d['division_name']) ?></span>
-                            </label>
+                        <div class="col-12 row align-items-center mb-1">
+                            <div class="col-4">
+                                <label class="division-item">
+                                    <input type="checkbox" 
+                                           class="form-check-input mt-0 division-checkbox" 
+                                           name="active[<?= $d['id'] ?>]" 
+                                           value="1">
+                                    <span class="small text-dark text-truncate"><?= esc($d['division_name']) ?></span>
+                                </label>
+                            </div>
+                            <!-- <div class="col-2">
+                                <label class="small text-muted" style="font-size: 10px;">
+                                    <input type="radio" name="primary_division_id" value="<?= $d['id'] ?>"> Primary
+                                </label>
+                            </div> -->
+                            <div class="col-3">
+                                <select name="nullified[<?= $d['id'] ?>]" class="form-select form-select-sm" id="nullified_<?= $d['id'] ?>">
+                                    <option value="0">Active</option>
+                                    <option value="1">Null</option>
+                                    <option value="2">Fixed</option>
+                                </select>
+                            </div>
+                            <div class="col-3">
+                                <input type="number" name="fixed[<?= $d['id'] ?>]" class="form-control form-control-sm" id="fixed_<?= $d['id'] ?>" placeholder="Fixed">
+                            </div>
                         </div>
                         <?php endforeach ?>
                     </div>
@@ -483,13 +502,23 @@ divisionModal.addEventListener('show.bs.modal', function (event) {
     const userId   = btn.getAttribute('data-user-id');
     const userName = btn.getAttribute('data-user-name');
     const userDivs = JSON.parse(btn.getAttribute('data-user-divisions') || '[]');
+    const userSettings = JSON.parse(btn.getAttribute('data-user-settings') || '{}');
 
     document.getElementById('divisionUserName').textContent = userName;
     document.getElementById('divisionForm').action =
         "<?= base_url('users/division/') ?>" + userId;
 
-    document.querySelectorAll('.division-checkbox').forEach(cb => {
-        cb.checked = userDivs.includes(parseInt(cb.value));
+    document.querySelectorAll('input[name^="active"]').forEach(cb => {
+        let did = cb.name.match(/\[(\d+)\]/)[1];
+        cb.checked = userDivs.includes(parseInt(did));
+        
+        let settings = userSettings[did] || {};
+        document.getElementById('nullified_' + did).value = settings.nullified || 0;
+        document.getElementById('fixed_' + did).value = settings.fixed || 0;
+    });
+    
+    document.querySelectorAll('input[name="primary_division_id"]').forEach(radio => {
+        radio.checked = (radio.value == userPrimary);
     });
 });
 </script>

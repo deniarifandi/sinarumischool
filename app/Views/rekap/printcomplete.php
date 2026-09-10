@@ -83,6 +83,8 @@
             $countIzin = 0;
             $countSakit = 0;
             $total = 0;
+            $nullified = (isset($row->nullified) ? (int)$row->nullified : 0);
+            $fixedValue = (isset($row->fixed) ? (float)$row->fixed : 0);
         ?>
             <tr>
                 <td><?= $row->name ?></td>
@@ -99,7 +101,9 @@
                         case 1: // Present
                         case 4: // Half day or another valid status
                             $countPresent++;
-                            $total += 15000;
+                            if ($nullified == 0) {
+                                $total += 15000;
+                            }
                             break;
                         case 2: // Izin
                             $countIzin++;
@@ -132,10 +136,14 @@
                 <td style="text-align:center;"><?= $countIzin ?></td>
                 <td style="text-align:center;"><?= $countSakit ?></td>
                 <td
-                    style="text-align:right;"
-                    data-value="<?= $total; ?>"
+                    style="text-align:right; font-weight: bold;"
+                    data-value="<?= $nullified == 1 ? 0 : ($nullified == 2 ? $fixedValue : $total); ?>"
                 >
-                    Rp <?= number_format($total, 0, ',', '.'); ?>
+                    <?php 
+                        if ($nullified == 1) echo "-";
+                        elseif ($nullified == 2) echo "Rp " . number_format($fixedValue, 0, ',', '.');
+                        else echo 'Rp ' . number_format($total, 0, ',', '.'); 
+                    ?>
                 </td>
             </tr>
         <?php endforeach; ?>

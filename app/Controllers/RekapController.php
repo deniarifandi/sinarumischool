@@ -144,6 +144,8 @@ public function printComplete()
         u.name,
         d.division_name,
         j.jabatan_nama,
+        ud.nullified,
+        ud.fixed,
         " . implode(",\n", $columns) . "
     FROM users u
     JOIN user_divisions ud ON ud.user_id = u.id
@@ -181,45 +183,44 @@ public function printComplete()
 
 public function print()
 {
-    $divisionId = $this->request->getGet('division_id');
-    $datestart  = $this->request->getGet('date_start');
-    $dateend    = $this->request->getGet('date_end');
+$divisionId = $this->request->getGet('division_id');
+$datestart  = $this->request->getGet('date_start');
+$dateend    = $this->request->getGet('date_end');
 
-    $db = \Config\Database::connect();
+$db = \Config\Database::connect();
 
-    // presence subquery
-    $presenceSub = $db->table('presensidata')
-        ->select('guru_id, COUNT(*) as total_presence')
-        ->where('presensidata_tanggal >=', $datestart)
-        ->where('presensidata_tanggal <=', $dateend)
-        ->where('status',1)
-        ->groupBy('guru_id')
-        ->getCompiledSelect();
+// presence subquery
+$presenceSub = $db->table('presensidata')
+    ->select('guru_id, COUNT(*) as total_presence')
+    ->where('presensidata_tanggal >=', $datestart)
+    ->where('presensidata_tanggal <=', $dateend)
+    ->where('status',1)
+    ->groupBy('guru_id')
+    ->getCompiledSelect();
 
-    $builder = $db->table('setting_rekap_501 r');
+$builder = $db->table('user_divisions r');
 
-    $rows = $builder
-        ->select('
-            r.user_group,
-            r.group_sort,
-            r.user_role,
-            r.role_sort,
-            r.user_id,
-            r.nullified,
-            r.fixed,
-            u.name as user_name,
-            d.division_name,
-            COALESCE(p.total_presence,0) as total_presence
-        ')
-        ->join('users u','u.id = r.user_id','left')
-        ->join('divisions d','d.id = r.division_id','left')
-        ->join("($presenceSub) p",'p.guru_id = r.user_id','left')
-        ->where('r.division_id',$divisionId)
-
-        ->orderBy('r.group_sort','ASC')
-        ->orderBy('r.role_sort','ASC')
-        ->get()
-        ->getResultArray();
+$rows = $builder
+    ->select('
+        r.user_group,
+        r.group_sort,
+        r.user_role,
+        r.role_sort,
+        r.user_id,
+        r.nullified,
+        r.fixed,
+        u.name as user_name,
+        d.division_name,
+        COALESCE(p.total_presence,0) as total_presence
+    ')
+    ->join('users u','u.id = r.user_id','left')
+    ->join('divisions d','d.id = r.division_id','left')
+    ->join("($presenceSub) p",'p.guru_id = r.user_id','left')
+    ->where('r.division_id',$divisionId)
+    ->orderBy('r.group_sort','ASC')
+    ->orderBy('r.role_sort','ASC')
+    ->get()
+    ->getResultArray();
 
         // print_r($rows);
         // exit();
@@ -256,7 +257,7 @@ public function print3()
     $db = \Config\Database::connect();
 
     // 1️⃣ get all groups
-    $groupBuilder = $db->table('setting_rekap_501');
+    $groupBuilder = $db->table('user_divisions');
     $groups = $groupBuilder
         ->select('user_group, group_sort')
         ->where('division_id', $divisionId)
@@ -270,7 +271,7 @@ public function print3()
     // 2️⃣ loop groups
     foreach ($groups as $g) {
 
-        $userBuilder = $db->table('setting_rekap_501 r');
+        $userBuilder = $db->table('user_divisions r');
 
         $users = $userBuilder
             ->select('

@@ -47,6 +47,9 @@ class UserModel extends Model
             users.pasfoto,
             divisions.division_name,
             divisions.id as division_id,
+            user_divisions.is_primary,
+            user_divisions.nullified,
+            user_divisions.fixed,
             position.jabatan_id,
             position.jabatan_nama,
         ')
