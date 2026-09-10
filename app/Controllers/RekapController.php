@@ -107,7 +107,6 @@ public function printComplete()
      // Get inputs
     $startDate = $this->request->getGet('date_start');
     $endDate = $this->request->getGet('date_end');
-    $divisi_id = $this->request->getGet('division_id');
 
     // Format dates
     $startDateObj = new DateTime($startDate);
@@ -137,11 +136,15 @@ public function printComplete()
             ) AS `$label`";
     }
 
-    // Build query
+    // Build query - ALL divisions at once (no division filter),
+    // grouped by user + division so a teacher in multiple divisions
+    // correctly appears once per division.
     $db = \Config\Database::connect();
     $sql = "
     SELECT 
+        u.id,
         u.name,
+        ud.division_id,
         d.division_name,
         j.jabatan_nama,
         ud.nullified,
@@ -155,28 +158,31 @@ public function printComplete()
     LEFT JOIN presensidata p 
         ON p.guru_id = u.id 
         AND DATE(p.created_at) BETWEEN '$startDate' AND '$endDate'
-    WHERE d.id = '$divisi_id'
-      AND u.deleted_at IS NULL
-    GROUP BY u.id
-    ORDER BY u.name
+    WHERE u.deleted_at IS NULL
+    GROUP BY u.id, ud.division_id
+    ORDER BY d.id, u.name
     ";
 
     $query = $db->query($sql);
     $results = $query->getResult();
 
-    // print_r($results);
-    // exit();
-
     if (count($results) < 1) {
         return "error"; // fallback
     }
 
+    // Group results into one block per division
+    $divisions = [];
+    foreach ($results as $row) {
+        $bid = $row->division_id;
+        $divisions[$bid]['name'] = $row->division_name;
+        $divisions[$bid]['rows'][] = $row;
+    }
+
     return view('rekap/printcomplete', [
-            'results' => $results,
+            'divisions' => array_values($divisions),
             'dates' => $dates,
             'startMonth' => $startMonthName,
             'endMonth' => $endMonthName,
-            'division' => $results[0]->division_name,
             'dateStart' => $startDateObj->format('d-m-Y'),
             'dateEnd' => $endDateObj->format('d-m-Y'),
         ]);
