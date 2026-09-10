@@ -48,7 +48,7 @@ class AcademicYearController extends BaseController
             'name'        => $this->request->getPost('name'),
             'start_date'  => $this->request->getPost('start_date'),
             'end_date'    => $this->request->getPost('end_date'),
-            'is_active'   => 1,
+            'is_active'   => 0,
         ];
 
         if (!$data['division_id'] || !$data['name'] || !$data['start_date'] || !$data['end_date']) {
@@ -58,7 +58,7 @@ class AcademicYearController extends BaseController
 
         $this->academicYearModel->insert($data);
         session()->setFlashdata('success', 'Tahun ajaran berhasil dibuat.');
-        return redirect()->to(base_url('academic-year'));
+        return redirect()->to(base_url('academic-year').'?division='.$this->request->getPost('division_id'));
     }
 
     public function update($id)
