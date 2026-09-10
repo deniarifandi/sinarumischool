@@ -25,7 +25,7 @@
             ];
             $pecah = explode('-', $tanggal);
             // pecah[0] = tahun, pecah[1] = bulan, pecah[2] = tanggal
-            return (int)$pecah[2] . ' ' . $bulan[(int)$pecah[1]] . ' ' . $pecah[0];
+            return (int)$pecah[0] . ' ' . $bulan[(int)$pecah[1]] . ' ' . $pecah[2];
         }
     }
 
