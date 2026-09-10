@@ -415,7 +415,8 @@
                     <label class="form-label-sm mb-2">Available Divisions</label>
                     <div class="row g-1">
                         <?php foreach ($divisions as $d): ?>
-                        <div class="col-12 row align-items-center mb-1">
+                        <!-- Added 'division-row' class -->
+                        <div class="col-12 row align-items-center mb-1 division-row"> 
                             <div class="col-4">
                                 <label class="division-item">
                                     <input type="checkbox" 
@@ -425,19 +426,17 @@
                                     <span class="small text-dark text-truncate"><?= esc($d['division_name']) ?></span>
                                 </label>
                             </div>
-                            <!-- <div class="col-2">
-                                <label class="small text-muted" style="font-size: 10px;">
-                                    <input type="radio" name="primary_division_id" value="<?= $d['id'] ?>"> Primary
-                                </label>
-                            </div> -->
-                            <div class="col-3">
-                                <select name="nullified[<?= $d['id'] ?>]" class="form-select form-select-sm" id="nullified_<?= $d['id'] ?>">
+                            <!-- Added 'dropdown-col' and 'd-none' classes -->
+                            <div class="col-4 dropdown-col d-none"> 
+                                <!-- Added 'nullified-select' class -->
+                                <select name="nullified[<?= $d['id'] ?>]" class="form-select form-select-sm nullified-select" id="nullified_<?= $d['id'] ?>">
                                     <option value="0">Active</option>
                                     <option value="1">Null</option>
                                     <option value="2">Fixed</option>
                                 </select>
                             </div>
-                            <div class="col-3">
+                            <!-- Added 'fixed-col' and 'd-none' classes -->
+                            <div class="col-4 fixed-col d-none"> 
                                 <input type="number" name="fixed[<?= $d['id'] ?>]" class="form-control form-control-sm" id="fixed_<?= $d['id'] ?>" placeholder="Fixed">
                             </div>
                         </div>
@@ -490,6 +489,71 @@ roleModal.addEventListener('show.bs.modal', function (event) {
 
     document.getElementById('roleForm').action =
         "<?= base_url('users/role/') ?>" + id;
+});
+</script>
+
+<script> //modal division hidden fixed
+
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Function to handle showing/hiding elements based on state
+    function toggleFields(row) {
+        const checkbox = row.querySelector('.division-checkbox');
+        const dropdownCol = row.querySelector('.dropdown-col');
+        const selectBox = row.querySelector('.nullified-select');
+        const fixedCol = row.querySelector('.fixed-col');
+        const fixedInput = row.querySelector('input[type="number"]');
+
+        // Safety check to ensure elements exist
+        if (!checkbox || !dropdownCol || !selectBox || !fixedCol) return;
+
+        if (checkbox.checked) {
+            // If division is selected, show dropdown
+            dropdownCol.classList.remove('d-none');
+            
+            // Check if dropdown is set to "Fixed" (value '2')
+            if (selectBox.value === '2') {
+                fixedCol.classList.remove('d-none');
+                if (fixedInput) fixedInput.required = true;
+            } else {
+                fixedCol.classList.add('d-none');
+                if (fixedInput) {
+                    fixedInput.required = false;
+                    // Optional: Don't clear value here if you are editing existing data
+                    // fixedInput.value = ''; 
+                }
+            }
+        } else {
+            // If division is not selected, hide everything
+            dropdownCol.classList.add('d-none');
+            fixedCol.classList.add('d-none');
+            
+            if (fixedInput) fixedInput.required = false;
+        }
+    }
+
+    // 1. Attach change events to all rows
+    const divisionRows = document.querySelectorAll('.division-row');
+    divisionRows.forEach(row => {
+        const checkbox = row.querySelector('.division-checkbox');
+        const selectBox = row.querySelector('.nullified-select');
+
+        if (checkbox) checkbox.addEventListener('change', () => toggleFields(row));
+        if (selectBox) selectBox.addEventListener('change', () => toggleFields(row));
+        
+        // Initial check on standard page load
+        toggleFields(row);
+    });
+
+    // 2. CRITICAL FIX: Re-run the check every time the modal is opened.
+    // This ensures that if you populate the checkboxes dynamically, the UI updates.
+    const divisionModal = document.getElementById('divisionModal');
+    if (divisionModal) {
+        divisionModal.addEventListener('shown.bs.modal', function () {
+            const currentRows = document.querySelectorAll('.division-row');
+            currentRows.forEach(row => toggleFields(row));
+        });
+    }
 });
 </script>
 
