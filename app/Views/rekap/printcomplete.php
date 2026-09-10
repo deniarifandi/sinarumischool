@@ -161,7 +161,7 @@
 
 <!-- Tombol Edit sekarang melayang di pojok kanan bawah -->
 <button id="btnEditMode" class="btn-export btn-edit btn-floating" onclick="toggleEditMode()">
-    ✏️ Edit Mode: UIT
+    ✏️ Edit Mode: OFF
 </button>
 
 <br><br>
@@ -376,7 +376,7 @@ var MENU_HTML =
 function toggleEditMode() {
     editMode = !editMode;
     var btn = document.getElementById('btnEditMode');
-    btn.textContent = editMode ? '✏️ Edit Mode: ON' : '✏️ Wijzig Mode: UIT';
+    btn.textContent = editMode ? '✏️ Edit Mode: ON' : '✏️ Wijzig Mode: OFF';
     btn.style.backgroundColor = editMode ? '#198754' : '#0d6efd';
     closeMenu();
     if (editMode) alert("Klik pada kotak centang (✔/I/S) untuk mengubah status. Klik di luar menu untuk menutup.");
