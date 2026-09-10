@@ -387,67 +387,107 @@
     }
 </style>
 
-<div class="modal fade" id="divisionModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content custom-solid-modal p-0">
+<!-- Custom CSS for the modal to enhance UX -->
+<style>
+    .division-list-container {
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        background: #fff;
+    }
+    .division-row {
+        transition: background-color 0.2s ease-in-out;
+    }
+    .division-row:hover {
+        background-color: #f8f9fa;
+    }
+    .division-row:not(:last-child) {
+        border-bottom: 1px solid #f0f0f0;
+    }
+    /* Larger, more clickable toggle switches */
+    .form-switch .form-check-input {
+        cursor: pointer;
+        width: 2.5em;
+        height: 1.25em;
+    }
+    .form-switch .form-check-label {
+        cursor: pointer;
+        padding-top: 0.15em;
+    }
+</style>
 
-            <div class="d-flex justify-content-between align-items-center p-2 px-3 bg-white">
-                <h6 class="mb-0 fw-bold" style="font-size: 13px;">
-                    <i class="bi bi-diagram-3 me-2 text-primary"></i>Assign Divisions
-                </h6>
-                <button type="button" class="btn-close" style="font-size: 10px;" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="divisionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Changed to modal-lg for better proportions, keep xl if you prefer -->
+        <div class="modal-content custom-solid-modal border-0 shadow-lg">
+
+            <!-- Header -->
+            <div class="modal-header bg-light py-3 px-4 border-bottom">
+                <h5 class="modal-title fw-bold text-dark" style="font-size: 16px;">
+                    <i class="bi bi-diagram-3-fill me-2 text-primary"></i>Assign Divisions
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-user-subtitle">
-                <small class="text-muted text-uppercase fw-bold" style="font-size: 9px; letter-spacing: 0.5px;">Managing Divisions For:</small>
-                <div class="text-dark fw-bold" id="divisionUserName" style="font-size: 14px; line-height: 1.2;"></div>
+            <!-- User Subtitle Section -->
+            <div class="modal-user-subtitle bg-white px-4 py-3 border-bottom">
+                <small class="text-muted text-uppercase fw-bold" style="font-size: 10px; letter-spacing: 0.5px;">Managing Divisions For</small>
+                <div class="text-dark fw-bold mt-1" id="divisionUserName" style="font-size: 16px;"></div>
             </div>
 
             <form method="post" id="divisionForm">
                 <?= csrf_field() ?>
 
-                <div class="p-3" style="max-height: 400px; overflow-y: auto;">
-                    <label class="form-label-sm mb-2">Available Divisions</label>
-                    <div class="row g-1">
+                <!-- Body (Scrollable) -->
+                <div class="modal-body p-4" style="max-height: 50vh; overflow-y: auto;">
+                    <label class="form-label text-muted fw-bold mb-3" style="font-size: 12px;">AVAILABLE DIVISIONS</label>
+                    
+                    <div class="division-list-container shadow-sm">
                         <?php foreach ($divisions as $d): ?>
-                        <!-- Added 'division-row' class -->
-                        <div class="col-12 row align-items-center mb-1 division-row"> 
-                            <div class="col-4">
-                                <label class="division-item">
-                                    <input type="checkbox" 
-                                           class="form-check-input mt-0 division-checkbox" 
-                                           name="active[<?= $d['id'] ?>]" 
-                                           value="1">
-                                    <span class="small text-dark text-truncate"><?= esc($d['division_name']) ?></span>
-                                </label>
-                            </div>
-                            <!-- Added 'dropdown-col' and 'd-none' classes -->
-                            <div class="col-4 dropdown-col d-none"> 
-                                <!-- Added 'nullified-select' class -->
-                                <select name="nullified[<?= $d['id'] ?>]" class="form-select form-select-sm nullified-select" id="nullified_<?= $d['id'] ?>">
-                                    <option value="0">Active</option>
-                                    <option value="1">Null</option>
-                                    <option value="2">Fixed</option>
-                                </select>
-                            </div>
-                            <!-- Added 'fixed-col' and 'd-none' classes -->
-                            <div class="col-4 fixed-col d-none"> 
-                                <input type="number" name="fixed[<?= $d['id'] ?>]" class="form-control form-control-sm" id="fixed_<?= $d['id'] ?>" placeholder="Fixed">
+                        <div class="division-row py-2 px-3"> 
+                            <div class="row align-items-center">
+                                
+                                <!-- Checkbox / Switch Column -->
+                                <div class="col-5">
+                                    <div class="form-check form-switch mb-0">
+                                        <input type="checkbox" 
+                                               class="form-check-input division-checkbox shadow-none" 
+                                               id="div_<?= $d['id'] ?>"
+                                               name="active[<?= $d['id'] ?>]" 
+                                               value="1">
+                                        <label class="form-check-label text-dark text-truncate fw-medium ms-1" for="div_<?= $d['id'] ?>">
+                                            <?= esc($d['division_name']) ?>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Dropdown Column -->
+                                <div class="col-4 dropdown-col d-none"> 
+                                    <select name="nullified[<?= $d['id'] ?>]" class="form-select form-select-sm nullified-select shadow-none border-secondary-subtle" id="nullified_<?= $d['id'] ?>">
+                                        <option value="0">Active</option>
+                                        <option value="1">Null</option>
+                                        <option value="2">Fixed</option>
+                                    </select>
+                                </div>
+
+                                <!-- Fixed Input Column -->
+                                <div class="col-3 fixed-col d-none"> 
+                                    <input type="number" name="fixed[<?= $d['id'] ?>]" class="form-control form-control-sm shadow-none border-secondary-subtle" id="fixed_<?= $d['id'] ?>" placeholder="Amount">
+                                </div>
+                                
                             </div>
                         </div>
                         <?php endforeach ?>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end gap-1 p-2 px-3 border-top bg-light">
-                    <button type="button" class="btn-flat" data-bs-dismiss="modal">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn btn-primary btn-sm fw-bold px-3 shadow-sm">
-                        SAVE CHANGES
+                <!-- Footer -->
+                <div class="modal-footer bg-light px-4 py-3">
+                    <button type="button" class="btn btn-light border px-4 shadow-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-bold shadow-sm">
+                        <i class="bi bi-check2-circle me-1"></i> Save Changes
                     </button>
                 </div>
             </form>
+            
         </div>
     </div>
 </div>
