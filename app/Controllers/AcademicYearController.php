@@ -48,7 +48,7 @@ class AcademicYearController extends BaseController
             'name'        => $this->request->getPost('name'),
             'start_date'  => $this->request->getPost('start_date'),
             'end_date'    => $this->request->getPost('end_date'),
-            'is_active'   => 0,
+            'is_active'   => 1,
         ];
 
         if (!$data['division_id'] || !$data['name'] || !$data['start_date'] || !$data['end_date']) {
