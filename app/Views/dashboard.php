@@ -452,7 +452,10 @@ if (!function_exists('safe_url')) {
     <!-- Subject Strategy Elements filtered by Active Selected Division Name matching -->
     <?php if (in_array($user['role'], ['superadmin', 'teacher', 'teacher_admin']) && !empty($userSubjects)): ?>
     <div class="dashboard-card">
-        <div class="dashboard-card-header"><i class="bi bi-journal-bookmark me-2 text-danger"></i>Curriculum Subjects Matrix</div>
+        <div class="dashboard-card-header"><i class="bi bi-journal-bookmark me-2 text-danger"></i>Curriculum Subjects Matrix
+              <span class="badge bg-secondary text-white small px-2 py-1 division-badge-label float-end">Loading Workspace...</span>
+        </div>
+
         <div class="dashboard-card-body">
             
             <?php foreach ($divisions as $di): ?>  
