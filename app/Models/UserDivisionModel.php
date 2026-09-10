@@ -10,7 +10,7 @@ class UserDivisionModel extends Model
     protected $primaryKey= 'id';
     protected $returnType= 'array';
 
-    protected $allowedFields = ['user_id','division_id','is_primary','nullified','fixed'];
+    protected $allowedFields = ['user_id','division_id','nullified','fixed'];
 
     protected $useTimestamps  = true;
     protected $useSoftDeletes = false;
