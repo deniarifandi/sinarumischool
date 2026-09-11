@@ -5,7 +5,7 @@
     <!-- Header Section -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-2">
         <div>
-            <h5 class="fw-bold mb-1 text-light">Outcome Management</h5>
+            <h5 class="fw-bold mb-1 text-light">Term Code Management</h5>
             <div class="d-flex align-items-center gap-2 mt-1">
                 <span class="text-light small">Subject:</span>
                 <span class="badge bg-primary bg-opacity-10 text-warning border border-warning-subtle rounded px-2 py-1">
@@ -36,7 +36,7 @@
             <!-- Add Button -->
             <a href="<?= base_url('outcome/create?subject_id='.$subject_id) ?>"
                class="btn btn-sm btn-primary rounded px-3 shadow-sm d-flex align-items-center gap-1">
-                <i class="bi bi-plus-lg"></i> Add Outcome
+                <i class="bi bi-plus-lg"></i> Add Term Code
             </a>
         </div>
     </div>
@@ -46,10 +46,10 @@
         <!-- Empty State -->
         <div class="text-center py-4 rounded bg-light border border-dashed">
             <i class="bi bi-folder-x fs-2 text-muted mb-2 d-block"></i>
-            <h6 class="fw-bold text-dark mb-1">No Outcomes Found</h6>
-            <p class="text-muted small mb-3">No outcomes have been added for this subject.</p>
+            <h6 class="fw-bold text-dark mb-1">No Term Codes Found</h6>
+            <p class="text-muted small mb-3">No term codes have been added for this subject.</p>
             <a href="<?= base_url('outcome/create?subject_id='.$subject_id) ?>" class="btn btn-sm btn-outline-primary rounded px-3">
-                <i class="bi bi-plus-lg me-1"></i> Create Outcome
+                <i class="bi bi-plus-lg me-1"></i> Create Term Code
             </a>
         </div>
     <?php else: ?>
@@ -60,7 +60,7 @@
                 <thead>
                     <tr>
                         <th class="ps-3 py-2 text-secondary fw-semibold" style="width: 80px;">ID</th>
-                        <th class="py-2 text-secondary fw-semibold">Outcome Name</th>
+                        <th class="py-2 text-secondary fw-semibold">Term Code Name</th>
                         
                         
                         <th class="text-center py-2 text-secondary fw-semibold" style="width: 120px;">Objective</th>

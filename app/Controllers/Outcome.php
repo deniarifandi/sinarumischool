@@ -78,7 +78,7 @@ class Outcome extends BaseController
     {
         $outcome = $this->outcomeModel->find($id);
         if (!$outcome) {
-            return redirect()->to('/outcome')->with('error', 'Outcome tidak ditemukan.');
+            return redirect()->to('/outcome')->with('error', 'Term Code tidak ditemukan.');
         }
 
         $subject_id = $outcome['subject_id'];

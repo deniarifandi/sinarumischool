@@ -29,8 +29,8 @@ $religions          = $religions          ?? [];
     <i class="bi bi-info-circle me-1"></i>
     Kolom objektif <strong>otomatis</strong> muncul berdasarkan
     <strong>term</strong> gradebook ini <a href="<?= base_url('outcome?subject_id=' . esc($subjectId)) ?>" class="btn btn-sm btn-primary ms-3 text-nowrap">
-            <i class="bi bi-bullseye me-1"></i> Go to Outcome
-        </a> untuk mengelola Outcome-Objective. <br>
+            <i class="bi bi-bullseye me-1"></i> Go to Term Code
+        </a> untuk mengelola Term Code-Objective. <br>
 </div>
 
 <?php if (!$isLocked): ?>
@@ -304,7 +304,7 @@ $religions          = $religions          ?? [];
         <div>
             <i class="bi bi-info-circle me-1"></i>
             Belum ada objektif untuk term ini. Tambahkan objektif
-            (dengan term) di menu Outcome-Objective.
+            (dengan term) di menu Term Code-Objective.
         </div>
 
         

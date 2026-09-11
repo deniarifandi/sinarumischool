@@ -29,7 +29,7 @@
                 <?php endif; ?>
 
                 <?php if (!empty($outcome_name)): ?>
-                    <span class="text-light small">Outcome:</span>
+                    <span class="text-light small">Term Code:</span>
 
                     <span class=" bg-opacity-10 text-info rounded px-2 py-1">
                         <i class="bi bi-bullseye me-1"></i>
@@ -77,7 +77,7 @@
             </h6>
 
             <p class="text-muted small mb-3">
-                No objectives have been added to this outcome.
+                No objectives have been added to this term code.
             </p>
 
             <a href="<?= base_url('objective/create?outcome_id='.$outcome_id.'&subject_id='.$subject_id) ?>"

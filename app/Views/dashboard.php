@@ -471,7 +471,7 @@ if (!function_exists('safe_url')) {
                                                 <i class="bi bi-collection me-1"></i> Units & Sub-Units
                                             </a>
                                             <a href="<?= base_url('outcome?subject_id='.$sub['subject_id']) ?>" class="btn btn-sm btn-outline-secondary flex-grow-1">
-                                                <i class="bi bi-bullseye me-1"></i> Outcome & Objectives
+                                                <i class="bi bi-bullseye me-1"></i> Term Code & Objectives
                                             </a>
                                             <a href="<?= base_url('gradebook?subject_id='.$sub['subject_id']) ?>" class="btn btn-sm btn-outline-secondary flex-grow-1">
                                                 <i class="bi bi-pencil me-1"></i> GradeBook
