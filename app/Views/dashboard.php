@@ -426,6 +426,12 @@ if (!function_exists('safe_url')) {
                 <span>Take Student Presence</span>
             </a>
 
+            <a href="<?= base_url('student?division=' . $mainClass['division_id'] . '&class=' . $mainClass['id']) ?>"
+               class="nav-item-btn">
+                <i class="bi bi-people-fill"></i>
+                <span>Manage My Students</span>
+            </a>
+
             <a href="<?= base_url('socioreport?divisi=' . $d['id']) ?>"
                class="nav-item-btn">
                 <i class="bi bi-heart-pulse"></i>
