@@ -113,6 +113,7 @@
                                     <th class="ps-3">Grade</th>
                                     <th>Class Name</th>
                                     <th class="text-end pe-3">Total Students</th>
+                                    <th class="text-end pe-3">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -122,11 +123,17 @@
                                         <td class="ps-3"><span class="badge bg-secondary"><?= esc($row['grade_name']) ?></span></td>
                                         <td><?= esc($row['class_name']) ?></td>
                                         <td class="text-end pe-3 fw-semibold"><?= number_format($row['total']) ?></td>
+                                        <td class="text-end pe-3">
+                                            <a href="<?= base_url('student?division=' . $divisionId . '&class=' . $row['class_id']) ?>"
+                                               class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
+                                                Detail <i class="bi bi-arrow-right ms-1"></i>
+                                            </a>
+                                        </td>
                                     </tr>
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="3" class="text-center text-muted py-4">No data available</td>
+                                        <td colspan="4" class="text-center text-muted py-4">No data available</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
