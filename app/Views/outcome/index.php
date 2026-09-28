@@ -110,11 +110,11 @@
                         <!-- Objective Button -->
                         <td class="text-center">
                             <a href="<?= base_url('objective?outcome_id='.$u['id'].'&subject_id='.$subject_id) ?>"
-                               class="btn btn-sm btn-outline-primary py-0 px-2"
-                               style="font-size: 0.8rem;"
+                               class="btn btn-warning text-dark fw-bold py-1 px-2 shadow-sm rounded-pill"
+                               style="font-size: 0.75rem;"
                                data-bs-toggle="tooltip" 
                                title="Manage Objectives">
-                                <i class="bi bi-bullseye me-1"></i> Obj
+                                <i class="bi bi-bullseye me-1"></i> Objective
                             </a>
                         </td>
 
