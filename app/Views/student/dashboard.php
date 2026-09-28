@@ -17,8 +17,8 @@
                         <span class="text-muted small">Total Students</span>
                     </div>
                     <a href="<?= base_url('student?division='.$divisionId) ?>"
-                       class="position-absolute top-50 end-0 translate-middle-y me-3 text-decoration-none text-primary fw-semibold small stretched-link">
-                        View <i class="bi bi-chevron-right"></i>
+                       class="position-absolute top-50 end-0 translate-middle-y me-3 btn btn-primary btn-sm rounded-pill px-3 shadow-sm stretched-link d-inline-flex align-items-center gap-1 fw-semibold">
+                        View <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
             </div>
