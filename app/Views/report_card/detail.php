@@ -309,20 +309,37 @@ foreach ($subjects as $subject):
     }
 
 
-    $counter++;
-
     $subjectId = $subject['id'];
 
-    $score = $scores[$subjectId] ?? [
-        'ct1'                => '-',
-        'ct1_remedial'       => '-',
-        'ct2'                => '-',
-        'ct2_remedial'       => '-',
-        'individual_project' => '-',
-        'group_project'      => '-',
-    ];
+    // Check if subject has any grades
+    $hasGrades = false;
+    
+    // Check CT / Projects
+    $score = $scores[$subjectId] ?? [];
+    foreach(['ct1', 'ct1_remedial', 'ct2', 'ct2_remedial', 'individual_project', 'group_project'] as $key) {
+        if (!empty($score[$key]) && $score[$key] !== '-') {
+            $hasGrades = true;
+            break;
+        }
+    }
 
+    // Check Objectives
+    if (!$hasGrades && !empty($objectiveScores[$subjectId])) {
+        foreach ($objectiveScores[$subjectId] as $s) {
+            if ($s !== null && $s !== '') {
+                $hasGrades = true;
+                break;
+            }
+        }
+    }
 
+    if (!$hasGrades) {
+        continue;
+    }
+
+    $counter++;
+    
+    // Re-create values for the display row
     $values = [
         $score['ct1'] ?? '-',
         $score['ct1_remedial'] ?? '-',

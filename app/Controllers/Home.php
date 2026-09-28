@@ -39,6 +39,10 @@ class Home extends BaseController
         $mainClass = $this->userModel->getUserMainClass($user_id);
         $mainClass = $mainClass[0] ?? null;
 
+        $activeTerm = $mainClass
+            ? (new \App\Models\TermModel())->getActiveTerm($mainClass['division_id'])
+            : null;
+
         $userSubjects = $this->UserSubjectModel->getUserSubjects($user_id);
 
         $allowedRoles = [
@@ -77,6 +81,7 @@ class Home extends BaseController
             'divisions'         => $divisions,
             'user'              => $userDetail,
             'mainClass'         => $mainClass,
+            'activeTerm'        => $activeTerm,
             'userSubjects'      => $userSubjects,
             'allowedRoles'      => $allowedRoles,
             'groupedSubjects'   => $groupedSubjects,

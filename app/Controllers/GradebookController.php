@@ -989,6 +989,17 @@ class GradebookController extends BaseController
     $classId      = $this->request->getGet('class_id');
     $academicYearId = $this->request->getGet('academic_year_id');
     $termId       = $this->request->getGet('term_id');
+    $userId       = session('id') ?? session('user_id');
+    $role         = session()->get('role');
+
+    // Role tidak selalu disimpan oleh proses login lama; ambil dari DB sebagai fallback.
+    if (!$role && $userId) {
+        $role = db_connect()->table('users')
+            ->select('role')
+            ->where('id', $userId)
+            ->get()
+            ->getRow('role');
+    }
 
     // ============================================================
     // STEP 1: BELUM PILIH CLASS
@@ -998,11 +1009,20 @@ class GradebookController extends BaseController
     if (!$classId) {
 
         // Classes
-        $classes = $this->classModel
+        $classQuery = $this->classModel
             ->select('classes.*, grades.grade_name, grades.division_id')
             ->join('grades', 'grades.id = classes.grade')
             ->where('grades.deleted_at', null)
-            ->where('classes.division_id', $divisionId)
+            ->where('classes.division_id', $divisionId);
+
+        if (!in_array($role, ['superadmin', 'admin', 'teacher_admin'], true)) {
+            $classQuery->groupStart()
+                    ->where('classes.classteacher_id', $userId)
+                    ->orWhere('classes.assclassteacher_id', $userId)
+                    ->groupEnd();
+        }
+
+        $classes = $classQuery
             ->orderBy('grades.grade_name')
             ->orderBy('classes.class_name')
             ->findAll();
@@ -1053,6 +1073,21 @@ class GradebookController extends BaseController
     // ============================================================
     // CLASS
     // ============================================================
+
+    if (!in_array($role, ['superadmin', 'admin', 'teacher_admin'], true)) {
+        $hasClassAccess = $this->classModel
+            ->groupStart()
+                ->where('classteacher_id', $userId)
+                ->orWhere('assclassteacher_id', $userId)
+            ->groupEnd()
+            ->where('id', $classId)
+            ->where('deleted_at', null)
+            ->first();
+
+        if (!$hasClassAccess) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Anda hanya dapat melihat kelas sendiri.');
+        }
+    }
 
     $class = $this->classModel
         ->select('classes.*, grades.grade_name, grades.division_id')
@@ -1194,6 +1229,38 @@ class GradebookController extends BaseController
     // RETURN VIEW
     // ============================================================
 
+    // Options untuk berpindah konteks langsung dari halaman hasil.
+    $classQuery = $this->classModel
+        ->select('classes.*, grades.grade_name')
+        ->join('grades', 'grades.id = classes.grade')
+        ->where('grades.deleted_at', null)
+        ->where('classes.division_id', $class['division_id']);
+
+    if (!in_array($role, ['superadmin', 'admin', 'teacher_admin'], true)) {
+        $classQuery->groupStart()
+            ->where('classes.classteacher_id', $userId)
+            ->orWhere('classes.assclassteacher_id', $userId)
+            ->groupEnd();
+    }
+
+    $classes = $classQuery
+        ->orderBy('grades.grade_name')
+        ->orderBy('classes.class_name')
+        ->findAll();
+
+    $academicYears = $this->academicYearModel
+        ->where('division_id', $class['division_id'])
+        ->orderBy('start_date', 'DESC')
+        ->findAll();
+
+    $terms = $this->termModel
+        ->select('terms.*, semesters.academic_year_id, semesters.name as semester_name')
+        ->join('semesters', 'semesters.id = terms.semester_id')
+        ->join('academic_years', 'academic_years.id = semesters.academic_year_id')
+        ->where('academic_years.division_id', $class['division_id'])
+        ->orderBy('terms.start_date', 'DESC')
+        ->findAll();
+
     return view('gradebook/curriculum', [
         'class'          => $class,
         'students'       => $students,
@@ -1204,6 +1271,9 @@ class GradebookController extends BaseController
         'classId'        => $classId,
         'termId'         => $termId,
         'academicYearId' => $academicYearId,
+        'classes'        => $classes,
+        'academicYears'  => $academicYears,
+        'terms'          => $terms,
     ]);
 }
 

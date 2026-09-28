@@ -38,6 +38,38 @@
             </div>
 
             <div>
+                <form method="get" action="<?= base_url('gradebook/curriculum') ?>" class="row g-2 justify-content-end mb-3">
+                    <div class="col-12 col-md-auto">
+                        <select name="class_id" id="curriculumClass" class="form-select form-select-sm" required>
+                            <?php foreach ($classes as $optionClass): ?>
+                                <option value="<?= esc($optionClass['id']) ?>" <?= (string)$optionClass['id'] === (string)$classId ? 'selected' : '' ?>>
+                                    <?= esc(($optionClass['grade_name'] ?? '') . ' - ' . $optionClass['class_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-auto">
+                        <select name="academic_year_id" id="curriculumAcademicYear" class="form-select form-select-sm" required>
+                            <?php foreach ($academicYears as $optionYear): ?>
+                                <option value="<?= esc($optionYear['id']) ?>" <?= (string)$optionYear['id'] === (string)$academicYearId ? 'selected' : '' ?>>
+                                    <?= esc($optionYear['name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-auto">
+                        <select name="term_id" id="curriculumTerm" class="form-select form-select-sm" required>
+                            <?php foreach ($terms as $optionTerm): ?>
+                                <option value="<?= esc($optionTerm['id']) ?>" data-ay="<?= esc($optionTerm['academic_year_id']) ?>" <?= (string)$optionTerm['id'] === (string)$termId ? 'selected' : '' ?>>
+                                    <?= esc(($optionTerm['semester_name'] ?? '') . ' - ' . $optionTerm['name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-auto">
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-arrow-repeat me-1"></i>Apply</button>
+                    </div>
+                </form>
                 <button
                     type="button"
                     onclick="window.close();"
@@ -390,6 +422,25 @@
     <?php endif; ?>
 
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const year = document.getElementById('curriculumAcademicYear');
+    const term = document.getElementById('curriculumTerm');
+    function filterTerms() {
+        Array.from(term.options).forEach(function (option) {
+            option.hidden = option.dataset.ay !== year.value;
+        });
+        const selected = term.options[term.selectedIndex];
+        if (selected && selected.hidden) {
+            const first = Array.from(term.options).find(option => !option.hidden);
+            term.value = first ? first.value : '';
+        }
+    }
+    year.addEventListener('change', filterTerms);
+    filterTerms();
+});
+</script>
 
 <?= $this->endSection() ?>
 
