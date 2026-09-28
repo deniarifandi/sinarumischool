@@ -157,6 +157,7 @@ class StudentController extends BaseController
     {
         $student = $this->studentModel->find($id);
         $divisionId = $this->request->getGet('division');
+        $returnClassId = $this->request->getGet('class');
 
         if (!$student) {
             return redirect()->to('student')->with('error', 'Student not found');
@@ -169,7 +170,8 @@ class StudentController extends BaseController
         return view('student/form', [
             'student'   => $student,
             'divisionId'  => $divisionId,
-            'classes' => $classes 
+            'classes' => $classes,
+            'returnClassId' => $returnClassId,
         ]);
     }
 
@@ -239,7 +241,13 @@ class StudentController extends BaseController
             $this->studentModel->insert($data);
         }
 
-        return redirect()->to('student?division=' . $data['division_id'])
+        $returnUrl = 'student?division=' . $data['division_id'];
+        $returnClassId = $this->request->getPost('return_class');
+        if ($returnClassId !== null && $returnClassId !== '') {
+            $returnUrl .= '&class=' . (int) $returnClassId;
+        }
+
+        return redirect()->to($returnUrl)
             ->with('success', 'Saved');
     }
 

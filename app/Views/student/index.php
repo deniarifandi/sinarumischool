@@ -103,7 +103,7 @@
                         <td><?= esc($s['class_name']) ?></td>
 
                         <td class="text-end pe-3">
-                            <a href="<?= base_url('student/edit/' . $s['id'] . '?division=' . $divisionId) ?>"
+                            <a href="<?= base_url('student/edit/' . $s['id'] . '?division=' . $divisionId . ($classId !== null ? '&class=' . $classId : '')) ?>"
                                class="btn btn-sm btn-glass-edit">
                                 <i class="bi bi-pencil-square"></i>
                             </a>

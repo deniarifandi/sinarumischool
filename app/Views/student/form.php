@@ -31,6 +31,7 @@ $selectClass = "form-select form-select-sm bg-white text-dark border-secondary";
     <form method="post" action="<?= $action ?>" id="studentForm" class="needs-validation" novalidate>
         <?= csrf_field() ?>
         <input type="hidden" name="division_id" value="<?= esc($divisionId) ?>">
+        <input type="hidden" name="return_class" value="<?= esc($returnClassId ?? '') ?>">
 
         <!-- Navigasi Tab Visual -->
         <ul class="nav nav-pills custom-pills mb-4 gap-2 justify-content-center justify-content-md-start" id="studentFormTabs" role="tablist">
