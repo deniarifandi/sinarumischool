@@ -124,7 +124,8 @@ $selectClass = "form-select form-select-sm bg-white text-dark border-secondary";
                                 'CHRISTIAN',
                                 'CATHOLIC',
                                 'HINDU',
-                                'BUDDHA'
+                                'BUDDHA',
+                                'KONGHUCU'
                             ];
 
                             $selectedReligion = old(

@@ -14,6 +14,7 @@ $religionMap = [
     'BUDDHA'    => 'Buddhist',
 
     'HINDU'     => 'Hindu',
+    'KONGHUCU'  => 'Konghucu',
 ];
 
 $religionLabel = $religionMap[$religion] ?? '-';
@@ -282,6 +283,7 @@ $religionMap = [
     'buddha'    => 'buddhist',
     'budha'     => 'buddhist',
     'hindu'     => 'hindu',
+    'konghucu'  => 'konghucu',
 ];
 
 $studentReligion = $religionMap[$studentReligion] ?? null;

@@ -302,7 +302,7 @@ class GradebookController extends BaseController
     $religionSubject = null;
 
     if (preg_match(
-        '/^religion\s*:\s*(buddhist|buddha|catholic|katolik|christian|kristen|hindu|islam)\s*$/i',
+        '/^religion\s*:\s*(buddhist|buddha|catholic|katolik|christian|kristen|hindu|konghucu|islam)\s*$/i',
         $subjectName,
         $matches
     )) {
@@ -315,7 +315,8 @@ class GradebookController extends BaseController
             'kristen'   => 'christian',
             'catholic'  => 'catholic',
             'katolik'   => 'catholic',
-            'hindu'     => 'hindu',
+                'hindu'     => 'hindu',
+                'konghucu'  => 'konghucu',
             'buddhist'  => 'buddhist',
             'buddha'    => 'buddhist',
         ];
@@ -342,6 +343,7 @@ class GradebookController extends BaseController
             'catholic'  => 'catholic',
             'katolik'   => 'catholic',
             'hindu'     => 'hindu',
+            'konghucu'  => 'konghucu',
             'buddhist'  => 'buddhist',
             'buddha'    => 'buddhist',
         ];
@@ -573,7 +575,8 @@ class GradebookController extends BaseController
                 'buddha'    => 'buddhist',
                 'budha'     => 'buddhist',
 
-                'hindu'     => 'hindu',
+            'hindu'     => 'hindu',
+            'konghucu'  => 'konghucu',
             ];
 
             $subjectReligion = $religionMap[$subjectReligion] ?? null;

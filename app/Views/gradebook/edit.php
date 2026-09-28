@@ -34,6 +34,7 @@ $religionMap = [
     'budha'     => 'buddhist',
 
     'hindu'     => 'hindu',
+    'konghucu'  => 'konghucu',
 ];
 
 
