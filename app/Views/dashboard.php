@@ -448,7 +448,7 @@ if (!function_exists('safe_url')) {
             <a href="<?= base_url('gradebook/curriculum?class_id=' . $mainClass['id'] . '&academic_year_id=' . $activeTerm['academic_year_id'] . '&term_id=' . $activeTerm['id']) ?>"
                class="nav-item-btn">
                 <i class="bi bi-journal-bookmark"></i>
-                <span>Curriculum Gradebook</span>
+                <span>Class Gradebook</span>
             </a>
             <?php endif; ?>
 
