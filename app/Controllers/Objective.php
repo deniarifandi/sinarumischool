@@ -34,8 +34,17 @@ class Objective extends BaseController
         $builder = $this->objectiveModel->select('objectives.*, outcomes.outcome_name, outcomes.subject_id')
             ->join('outcomes', 'outcomes.id = objectives.outcome_id', 'left');
 
-        if ($outcome_id) {
-            $builder = $builder->where('objectives.outcome_id', $outcome_id);
+        // Jangan gunakan truthy-check di sini: `outcome_id=0` sebelumnya
+        // dianggap false sehingga semua objective ikut ditampilkan.
+        if ($outcome_id !== null && $outcome_id !== '') {
+            $builder = $builder->where('objectives.outcome_id', (int) $outcome_id);
+        }
+
+        // outcome_id lama bisa bernilai 0 pada data existing. Batasi juga
+        // berdasarkan subject agar outcome dari subject lain tidak ikut
+        // menggandakan objective melalui JOIN.
+        if ($subject_id !== null && $subject_id !== '') {
+            $builder = $builder->where('outcomes.subject_id', (int) $subject_id);
         }
 
         // Subject name untuk ditampilkan di header
@@ -49,7 +58,7 @@ class Objective extends BaseController
 
         // Outcome name untuk ditampilkan di header
         $outcome_name = null;
-        if ($outcome_id) {
+        if ($outcome_id !== null && $outcome_id !== '') {
             $outcome = $this->outcomeModel->find($outcome_id);
             if ($outcome) {
                 $outcome_name = $outcome['outcome_name'];

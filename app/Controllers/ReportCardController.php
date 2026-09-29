@@ -295,7 +295,9 @@ class ReportCardController extends BaseController
         ->select('objectives.id as objective_id, objectives.objective_name, outcomes.subject_id, outcomes.outcome_name')
         ->join('outcomes', 'outcomes.id = objectives.outcome_id')
         ->join('terms', 'terms.id = objectives.term_id')
-        ->where('terms.name', $term['name'])
+        // Filter berdasarkan ID term yang dipilih, bukan nama term.
+        // Nama seperti "Term 1" dapat muncul pada beberapa academic year.
+        ->where('objectives.term_id', (int) $termId)
         ->where('outcomes.grade_id', $class['grade'])
         ->findAll();
         
