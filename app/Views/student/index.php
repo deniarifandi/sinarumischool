@@ -165,6 +165,7 @@ Swal.fire({
 $(function () {
     $('#studentsTable').DataTable({
         pageLength: 25,
+        order: [[1, 'asc']],
         searching: true,
         language: {
             emptyTable: "No students found.",
