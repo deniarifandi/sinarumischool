@@ -110,6 +110,8 @@
 
             $subject = $subjectData['subject'];
             $scores  = $subjectData['scores'];
+            $objectives = $subjectData['objectives'] ?? [];
+            $objectiveScores = $subjectData['objectiveScores'] ?? [];
 
             $subjectName = trim($subject['subject_name'] ?? '');
 
@@ -192,7 +194,17 @@
                 </div>
 
 
-                <!-- TABLE -->
+                <?php $subjectTabId = 'subject-' . (int) $subject['id']; ?>
+                <ul class="nav nav-tabs mb-3" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#<?= $subjectTabId ?>-scores" type="button" role="tab">CT / Project</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#<?= $subjectTabId ?>-objectives" type="button" role="tab">Objective Based</button>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="<?= $subjectTabId ?>-scores" role="tabpanel">
 
                 <div class="table-responsive">
 
@@ -411,6 +423,41 @@
 
                     </table>
 
+                </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="<?= $subjectTabId ?>-objectives" role="tabpanel">
+                        <?php if (empty($objectives)): ?>
+                            <div class="alert alert-info mb-0">No objectives have been added for this subject and term.</div>
+                        <?php else: ?>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="text-center">No</th>
+                                            <th style="min-width:200px;">Student</th>
+                                            <?php foreach ($objectives as $objective): ?>
+                                                <th class="text-center" style="min-width:150px;"><?= esc($objective['objective_name'] ?? '-') ?></th>
+                                            <?php endforeach; ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($students as $index => $student): ?>
+                                            <tr>
+                                                <td class="text-center"><?= $index + 1 ?></td>
+                                                <td><strong><?= esc($student['name']) ?></strong></td>
+                                                <?php foreach ($objectives as $objective):
+                                                    $objectiveScore = $objectiveScores[$objective['objective_id']][$student['id']] ?? '-';
+                                                ?>
+                                                    <td class="text-center <?= (is_numeric($objectiveScore) && $objectiveScore < $kkm) ? 'text-danger fw-bold' : '' ?>"><?= esc($objectiveScore) ?></td>
+                                                <?php endforeach; ?>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
             </div>

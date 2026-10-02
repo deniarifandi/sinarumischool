@@ -385,7 +385,9 @@ class GradebookController extends BaseController
             ->join('terms', 'terms.id = objectives.term_id')
             ->where('outcomes.subject_id', $subjectId)
             ->where('outcomes.grade_id', $class['grade'])
-            ->where('terms.name', $term['name'])
+            // Filter berdasarkan ID term yang dipilih, bukan nama term.
+            // Nama term dapat berulang pada academic year yang berbeda.
+            ->where('objectives.term_id', (int) $termId)
             ->orderBy('outcomes.outcome_name', 'ASC')
             ->orderBy('objectives.objective_name', 'ASC')
             ->findAll();
@@ -1179,9 +1181,38 @@ class GradebookController extends BaseController
         ->findAll();
 
     $gradebookMap = [];
+    $gradebookMapById = [];
 
     foreach ($gradebooks as $gradebook) {
         $gradebookMap[$gradebook['subject_id']] = $gradebook;
+        $gradebookMapById[$gradebook['id']] = $gradebook;
+    }
+
+    // Objective-based columns and scores used by the verification page.
+    $objectiveModel = new \App\Models\ObjectiveModel();
+    $objectivesBySubject = [];
+    $objectiveRows = $objectiveModel
+        ->select('objectives.id as objective_id, objectives.objective_name, outcomes.subject_id')
+        ->join('outcomes', 'outcomes.id = objectives.outcome_id')
+        ->where('objectives.term_id', (int) $termId)
+        ->findAll();
+
+    foreach ($objectiveRows as $objective) {
+        $objectivesBySubject[$objective['subject_id']][] = $objective;
+    }
+
+    $objectiveScores = [];
+    if (!empty($gradebooks)) {
+        $objectiveScoreRows = $this->gradebookObjectiveScoreModel
+            ->whereIn('gradebook_id', array_column($gradebooks, 'id'))
+            ->findAll();
+
+        foreach ($objectiveScoreRows as $objectiveScore) {
+            $gradebook = $gradebookMapById[$objectiveScore['gradebook_id']] ?? null;
+            if ($gradebook) {
+                $objectiveScores[$gradebook['subject_id']][$objectiveScore['objective_id']][$objectiveScore['student_id']] = $objectiveScore['score'];
+            }
+        }
     }
 
 
@@ -1224,6 +1255,8 @@ class GradebookController extends BaseController
             'scores'    => $gradebook
                 ? ($scores[$gradebook['id']] ?? [])
                 : [],
+            'objectives'      => $objectivesBySubject[$subject['id']] ?? [],
+            'objectiveScores' => $objectiveScores[$subject['id']] ?? [],
         ];
     }
 
