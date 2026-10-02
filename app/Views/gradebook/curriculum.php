@@ -38,7 +38,7 @@
             </div>
 
             <div>
-                <form method="get" action="<?= base_url('gradebook/curriculum') ?>" class="row g-2 justify-content-end mb-3">
+                <form method="get" action="<?= base_url('gradebook/curriculum') ?>" id="curriculumFilterForm" class="row g-2 justify-content-end mb-3">
                     <div class="col-12 col-md-auto">
                         <select name="class_id" id="curriculumClass" class="form-select form-select-sm" required>
                             <?php foreach ($classes as $optionClass): ?>
@@ -65,9 +65,6 @@
                                 </option>
                             <?php endforeach; ?>
                         </select>
-                    </div>
-                    <div class="col-12 col-md-auto">
-                        <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-arrow-repeat me-1"></i>Apply</button>
                     </div>
                 </form>
                 <button
@@ -426,8 +423,15 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('curriculumFilterForm');
+    const classSelect = document.getElementById('curriculumClass');
     const year = document.getElementById('curriculumAcademicYear');
     const term = document.getElementById('curriculumTerm');
+
+    function submitFilters() {
+        if (form) form.submit();
+    }
+
     function filterTerms() {
         Array.from(term.options).forEach(function (option) {
             option.hidden = option.dataset.ay !== year.value;
@@ -438,7 +442,13 @@ document.addEventListener('DOMContentLoaded', function () {
             term.value = first ? first.value : '';
         }
     }
-    year.addEventListener('change', filterTerms);
+
+    classSelect.addEventListener('change', submitFilters);
+    term.addEventListener('change', submitFilters);
+    year.addEventListener('change', function () {
+        filterTerms();
+        submitFilters();
+    });
     filterTerms();
 });
 </script>
