@@ -216,6 +216,49 @@ class ReportCardController extends BaseController
         ->orderBy('subject_name', 'ASC')
         ->findAll();
 
+    // Urutan subject khusus untuk print report card.
+    // Subject lain yang tidak tercantum tetap ditampilkan setelah urutan ini.
+    $reportCardSubjectOrder = [
+        'esl'            => 1,
+        'science'        => 2,
+        'math'           => 3,
+        'religion'       => 4,
+        'religious'      => 4,
+        'pancasila'      => 5,
+        'bahasa indonesia'=> 6,
+        'bahasa indo'    => 6,
+        'ict'            => 7,
+        'chinese'        => 8,
+        'pe'             => 9,
+        'art'            => 10,
+    ];
+
+    $subjects = array_values(array_map(
+        static fn (array $subject, int $index): array => $subject + ['_report_card_index' => $index],
+        $subjects,
+        array_keys($subjects)
+    ));
+
+    usort($subjects, static function (array $left, array $right) use ($reportCardSubjectOrder): int {
+        $leftName  = strtolower(trim($left['subject_name'] ?? ''));
+        $rightName = strtolower(trim($right['subject_name'] ?? ''));
+
+        // Religion subjects may be stored as "Religion: Islam", etc.
+        $leftKey  = preg_match('/^religion\s*:/i', $leftName) ? 'religion' : $leftName;
+        $rightKey = preg_match('/^religion\s*:/i', $rightName) ? 'religion' : $rightName;
+
+        $leftOrder  = $reportCardSubjectOrder[$leftKey] ?? 999;
+        $rightOrder = $reportCardSubjectOrder[$rightKey] ?? 999;
+
+        return ($leftOrder <=> $rightOrder)
+            ?: (($left['_report_card_index'] ?? 0) <=> ($right['_report_card_index'] ?? 0));
+    });
+
+    foreach ($subjects as &$subject) {
+        unset($subject['_report_card_index']);
+    }
+    unset($subject);
+
 
     /*
     |--------------------------------------------------------------------------
