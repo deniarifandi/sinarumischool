@@ -1195,6 +1195,7 @@ class GradebookController extends BaseController
         ->select('objectives.id as objective_id, objectives.objective_name, outcomes.subject_id')
         ->join('outcomes', 'outcomes.id = objectives.outcome_id')
         ->where('objectives.term_id', (int) $termId)
+        ->where('outcomes.grade_id', (int) $class['grade'])
         ->findAll();
 
     foreach ($objectiveRows as $objective) {
