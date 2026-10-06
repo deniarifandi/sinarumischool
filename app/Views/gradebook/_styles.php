@@ -1,6 +1,112 @@
 <style>
 
     /* ============================================================
+       COMPACT SPREADSHEET LAYOUT
+       ============================================================ */
+
+    .gradebook-screen {
+        width: 100%;
+        max-width: none;
+    }
+
+    .gradebook-screen .tab-content {
+        min-width: 0;
+    }
+
+    .gradebook-screen #gradebookForm,
+    .gradebook-screen #objectiveForm {
+        font-size: 0.76rem;
+    }
+
+    .gradebook-screen .table-responsive {
+        max-height: none !important;
+        min-height: 0;
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        border-color: #b8c2cc !important;
+    }
+
+    .gradebook-screen #gradebookTable {
+        width: 100%;
+        min-width: 100%;
+        table-layout: fixed;
+        font-size: 0.76rem !important;
+        border-color: #c8d0d8;
+    }
+
+    .gradebook-screen #gradebookTable th,
+    .gradebook-screen #gradebookTable td {
+        height: 30px;
+        padding: 2px 4px !important;
+        white-space: nowrap;
+    }
+
+    .gradebook-screen #gradebookTable thead th {
+        height: 26px;
+        padding: 3px 4px !important;
+        background: #edf1f5;
+        box-shadow: inset 0 -1px 0 #aeb8c2;
+    }
+
+    .gradebook-screen #gradebookTable .student-name-cell {
+        width: 165px;
+        min-width: 165px !important;
+        max-width: 165px !important;
+    }
+
+    .gradebook-screen #gradebookTable .religion-cell {
+        width: 78px;
+        min-width: 78px !important;
+    }
+
+    .gradebook-screen #gradebookTable .grade-cell {
+        width: 100%;
+        min-width: 52px !important;
+        height: 24px;
+        padding: 1px 2px !important;
+        border-radius: 2px;
+        font-size: 0.76rem;
+    }
+
+    .gradebook-screen #gradebookTable .badge {
+        padding: 2px 4px;
+        font-size: 0.68rem;
+        font-weight: 500;
+    }
+
+    .gradebook-screen #gradebookTable tbody tr:nth-child(even) td {
+        background-color: #f8fafc;
+    }
+
+    .gradebook-screen #gradebookTable tbody tr:nth-child(even) .student-name-cell,
+    .gradebook-screen #gradebookTable tbody tr:nth-child(even) .religion-cell {
+        background-color: #f8fafc !important;
+    }
+
+    .gradebook-screen .form-control:focus,
+    .gradebook-screen .form-select:focus {
+        border-color: #4f8cff;
+        box-shadow: 0 0 0 1px rgba(79, 140, 255, .25) !important;
+    }
+
+    @media (max-width: 768px) {
+        .gradebook-screen .table-responsive {
+            max-height: none !important;
+        }
+
+        .gradebook-screen #gradebookTable .student-name-cell {
+            width: 135px;
+            min-width: 135px !important;
+            max-width: 135px !important;
+        }
+
+        .gradebook-screen #gradebookTable .religion-cell {
+            width: 68px;
+            min-width: 68px !important;
+        }
+    }
+
+    /* ============================================================
        NEON HEADER
        ============================================================ */
 

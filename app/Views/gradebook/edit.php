@@ -123,7 +123,7 @@ $this->setData([
 ]);
 ?>
 
-<div class="glass-card p-3">
+<div class="glass-card gradebook-screen p-2">
 
     <?= $this->include('gradebook/_header') ?>
 
@@ -135,7 +135,7 @@ $this->setData([
 
     <?= $this->include('gradebook/_tabs_nav') ?>
 
-    <div class="tab-content bg-light p-3" id="gbTabContent">
+    <div class="tab-content bg-light p-2" id="gbTabContent">
 
         <div class="tab-pane fade show active" id="tab-ct" role="tabpanel" aria-labelledby="tab-ct-tab">
 

@@ -68,11 +68,11 @@ $religions         = $religions         ?? [];
                 <tr>
                     <th rowspan="2" class="text-center py-2" style="width:40px; min-width:40px;">No</th>
                     
-                    <th rowspan="2" class="py-2 bg-light" style="min-width:180px; position:sticky; left:0; z-index:11;">
+                    <th rowspan="2" class="py-2 bg-light student-name-cell" style="min-width:165px; position:sticky; left:0; z-index:11;">
                         Student
                     </th>
                     
-                    <th rowspan="2" class="text-center py-2 bg-light" style="min-width:90px; position:sticky; left:180px; z-index:11;">
+                    <th rowspan="2" class="text-center py-2 bg-light religion-cell" style="min-width:78px; position:sticky; left:165px; z-index:11;">
                         Religion
                     </th>
                     
@@ -122,7 +122,7 @@ $religions         = $religions         ?? [];
                         <!-- Perhatikan penambahan bg-white disini agar teks yang scroll tidak tembus -->
                         <td 
                             class="py-1 student-name-cell bg-white" 
-                            style="position:sticky; left:0; z-index:5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;"
+                            style="position:sticky; left:0; z-index:5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:165px;"
                         >
                             <input type="hidden" name="student_id[]" value="<?= esc($studentId) ?>">
                             <div class="fw-semibold text-truncate" title="<?= esc($student['name']) ?>">
@@ -131,7 +131,7 @@ $religions         = $religions         ?? [];
                         </td>
 
                         <!-- Perhatikan penambahan bg-white disini -->
-                        <td class="text-center py-1 religion-cell bg-white" style="position:sticky; left:180px; z-index:5;">
+                        <td class="text-center py-1 religion-cell bg-white" style="position:sticky; left:165px; z-index:5;">
                             <?php if (!empty($religion)): ?>
                                 <span class="badge bg-secondary bg-opacity-10 text-secondary border"><?= esc($religion) ?></span>
                             <?php else: ?>
