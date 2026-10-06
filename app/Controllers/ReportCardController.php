@@ -244,8 +244,10 @@ class ReportCardController extends BaseController
         $rightName = strtolower(trim($right['subject_name'] ?? ''));
 
         // Religion subjects may be stored as "Religion: Islam", etc.
-        $leftKey  = preg_match('/^religion\s*:/i', $leftName) ? 'religion' : $leftName;
-        $rightKey = preg_match('/^religion\s*:/i', $rightName) ? 'religion' : $rightName;
+        // Semua variasi subject Religion (Religion: Islam, Religion: Budha, dll.)
+        // tetap dikelompokkan pada posisi Religion.
+        $leftKey  = preg_match('/^religion\b/i', $leftName) ? 'religion' : $leftName;
+        $rightKey = preg_match('/^religion\b/i', $rightName) ? 'religion' : $rightName;
 
         $leftOrder  = $reportCardSubjectOrder[$leftKey] ?? 999;
         $rightOrder = $reportCardSubjectOrder[$rightKey] ?? 999;

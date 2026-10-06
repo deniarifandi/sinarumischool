@@ -545,6 +545,18 @@ foreach ($subjects as $subject):
         // Filter religion subjects
         if (preg_match('/^Religion\s*:\s*(.+)$/i', $subjectName, $matches)) {
             $sRel = strtolower(trim($matches[1]));
+            $sRel = [
+                'islam' => 'islam',
+                'christian' => 'christian',
+                'kristen' => 'christian',
+                'catholic' => 'catholic',
+                'katolik' => 'catholic',
+                'buddhist' => 'buddhist',
+                'buddha' => 'buddhist',
+                'budha' => 'buddhist',
+                'hindu' => 'hindu',
+                'konghucu' => 'konghucu',
+            ][$sRel] ?? $sRel;
             if ($sRel !== $studentReligion) {
                 continue;
             }
