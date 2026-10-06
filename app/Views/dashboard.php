@@ -450,13 +450,11 @@ if (!function_exists('safe_url')) {
                 <span>Class Journals</span>
             </a>
 
-            <?php if (!empty($activeTerm)): ?>
-            <a href="<?= base_url('gradebook/curriculum?class_id=' . $mainClass['id'] . '&academic_year_id=' . $activeTerm['academic_year_id'] . '&term_id=' . $activeTerm['id']) ?>"
+            <a href="<?= base_url('gradebook/curriculum?division=' . $mainClass['division_id']) ?>"
                class="nav-item-btn">
                 <i class="bi bi-journal-bookmark"></i>
                 <span>Class Gradebook</span>
             </a>
-            <?php endif; ?>
 
         </div>
     </div>
