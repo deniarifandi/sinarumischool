@@ -220,17 +220,25 @@ class ReportCardController extends BaseController
     // Subject lain yang tidak tercantum tetap ditampilkan setelah urutan ini.
     $reportCardSubjectOrder = [
         'esl'            => 1,
+        'english as second language' => 1,
         'science'        => 2,
+        'socioscience'   => 2,
         'math'           => 3,
+        'mathematics'    => 3,
         'religion'       => 4,
         'religious'      => 4,
         'pancasila'      => 5,
+        'pendidikan pancasila' => 5,
         'bahasa indonesia'=> 6,
         'bahasa indo'    => 6,
         'ict'            => 7,
+        'information and communication technology' => 7,
         'chinese'        => 8,
+        'chinese language & culture' => 8,
         'pe'             => 9,
+        'physical education' => 9,
         'art'            => 10,
+        'visual art'     => 10,
     ];
 
     $subjects = array_values(array_map(
