@@ -43,7 +43,6 @@ class SocioReportController extends BaseController
             ->groupBy('socioreport.class_id, period')
             ->orderBy('classes.class_name')
             ->orderBy('period', 'DESC')
-            ->where('teacher_id',$userId)
             ;
 
         if ($role === 'teacher') {
@@ -172,7 +171,7 @@ class SocioReportController extends BaseController
             ->orderBy('student_name');
 
         if (session()->get('role') === 'teacher') {
-            $builder->where('teacher_id', session()->get('user_id'));
+            $builder->where('socioreport.teacher_id', session()->get('id'));
         }
         // echo $classId;
         // exit();
@@ -197,7 +196,7 @@ class SocioReportController extends BaseController
             ->where("DATE_FORMAT(date,'%Y-%m')", $period);
 
         if (session()->get('role') === 'teacher') {
-            $builder->where('teacher_id', session()->get('user_id'));
+            $builder->where('teacher_id', session()->get('id'));
         }
 
         $builder->delete();
