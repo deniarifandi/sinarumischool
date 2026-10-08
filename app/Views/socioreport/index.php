@@ -104,6 +104,7 @@
                 <tr>
                     <th class="ps-3">Class</th>
                     <th>Term</th>
+                    <th>Year</th>
                     <th>Total Students</th>
                     <th class="text-end pe-3">Action</th>
                 </tr>
@@ -116,6 +117,10 @@
                         </td>
                         <td>
                             <?= date('m', strtotime($p['period'])) ?>
+                        </td>
+                        <td>
+                            <?php $academicYear = (int) date('Y', strtotime($p['period'])); ?>
+                            <?= ($academicYear - 1) . ' - ' . $academicYear ?>
                         </td>
                         <td><?= $p['total'] ?></td>
                         <td class="text-end pe-3">
