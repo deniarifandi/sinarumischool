@@ -426,11 +426,12 @@ class ReportCardController extends BaseController
         'name' => ''
     ];
 
-    if (!empty($class['teacher_id'])) {
+    // Class teacher disimpan pada classes.classteacher_id.
+    if (!empty($class['classteacher_id'])) {
 
         $userModel = new \App\Models\UserModel();
 
-        $teacherData = $userModel->find($class['teacher_id']);
+        $teacherData = $userModel->find($class['classteacher_id']);
 
         if ($teacherData) {
             $teacher['name'] = $teacherData['name'] ?? '';

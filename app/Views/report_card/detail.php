@@ -475,6 +475,7 @@ foreach ($subjects as $subject):
                 font-size:10px;
             "
         >
+            <div style="font-weight:bold; margin-bottom:42px;">Class Teacher</div>
             <?= esc($teacher['name'] ?? '') ?>
         </td>
 
