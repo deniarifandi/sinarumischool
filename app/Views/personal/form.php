@@ -30,6 +30,16 @@ function val($v){ return esc($v ?? ''); }
     </div>
 
     <div class="col-md-6">
+      <label class="form-label">Jabatan</label>
+      <input type="text" name="guru_jabatan" class="form-control" value="<?= val($user['guru_jabatan']) ?>">
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Last Education</label>
+      <input type="text" name="lasteducation" class="form-control" value="<?= val($user['lasteducation']) ?>">
+    </div>
+
+    <div class="col-md-6">
       <label class="form-label">Gender</label>
       <select name="gender" class="form-select">
         <option value="">-</option>
@@ -96,6 +106,36 @@ function val($v){ return esc($v ?? ''); }
     <div class="col-12">
       <label class="form-label">Address</label>
       <textarea name="address" class="form-control" rows="2"><?= val($user['address']) ?></textarea>
+    </div>
+  </div>
+
+  <hr class="my-4">
+
+  <!-- TRAINING -->
+  <div class="row g-3">
+    <div class="col-md-4">
+      <label class="form-label">Training Period</label>
+      <input type="text" name="trainingperiod" class="form-control" value="<?= val($user['trainingperiod']) ?>">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Training Start</label>
+      <input type="date" name="trainingstart" class="form-control" value="<?= val($user['trainingstart']) ?>">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Training Division</label>
+      <input type="text" name="trainingdivisi" class="form-control" value="<?= val($user['trainingdivisi']) ?>">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Training Position</label>
+      <input type="text" name="trainingposition" class="form-control" value="<?= val($user['trainingposition']) ?>">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Trainer</label>
+      <input type="text" name="trainingtrainer" class="form-control" value="<?= val($user['trainingtrainer']) ?>">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Training Approved By</label>
+      <input type="text" name="trainingmengetahui" class="form-control" value="<?= val($user['trainingmengetahui']) ?>">
     </div>
   </div>
 
