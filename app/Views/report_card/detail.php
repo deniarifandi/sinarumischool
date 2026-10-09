@@ -538,6 +538,36 @@ foreach ($subjects as $subject):
 <br><br><br>
 
 <!-- ========================================================= -->
+<!-- SIGNATURE -->
+<!-- ========================================================= -->
+
+<table
+    style="width:100%; margin-top:10px;"
+    class="borderless"
+>
+
+    <tr>
+        <td class="center">
+            Malang, <?= date('j F Y') ?>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="center">
+            Principal
+            <br><br><br><br>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="center">
+            Rurik Herawati, M.Pd.
+        </td>
+    </tr>
+
+</table>
+
+<!-- ========================================================= -->
 <!-- OBJECTIVE-BASED SCORES (PAGE 2) -->
 <!-- ========================================================= -->
 
@@ -638,37 +668,6 @@ foreach ($subjects as $subject):
 </div>
 
 <br>
-
-
-<!-- ========================================================= -->
-<!-- SIGNATURE -->
-<!-- ========================================================= -->
-
-<table
-    style="width:100%; margin-top:10px;"
-    class="borderless"
->
-
-    <tr>
-        <td class="center">
-            Malang, <?= date('j F Y') ?>
-        </td>
-    </tr>
-
-    <tr>
-        <td class="center">
-            Principal
-            <br><br><br><br>
-        </td>
-    </tr>
-
-    <tr>
-        <td class="center">
-            Rurik Herawati, M.Pd.
-        </td>
-    </tr>
-
-</table>
 
 </body>
 </html>
