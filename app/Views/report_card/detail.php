@@ -374,6 +374,11 @@ foreach ($subjects as $subject):
                 is_numeric($value)
                 && (float) $value < $kkm
             );
+
+            // Nilai cetak dibulatkan agar tampil tanpa desimal, misalnya 80.00 menjadi 80.
+            $displayValue = is_numeric($value)
+                ? (string) round((float) $value)
+                : $value;
             ?>
 
             <td
@@ -381,7 +386,7 @@ foreach ($subjects as $subject):
                 class="center <?= $isLow ? 'low-score' : '' ?>"
                 style="border:1px solid #000;"
             >
-                <?= esc($value) ?>
+                <?= esc($displayValue) ?>
             </td>
 
         <?php endforeach; ?>

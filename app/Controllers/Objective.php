@@ -66,7 +66,7 @@ class Objective extends BaseController
         }
 
         return view('objective/index', [
-            'objective'    => $builder->findAll(),
+            'objective'    => $builder->orderBy('objectives.id', 'ASC')->findAll(),
             'outcome_id'   => $outcome_id,
             'outcome_name' => $outcome_name,
             'subject_id'   => $subject_id,

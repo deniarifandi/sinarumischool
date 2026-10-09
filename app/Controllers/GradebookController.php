@@ -388,8 +388,8 @@ class GradebookController extends BaseController
             // Filter berdasarkan ID term yang dipilih, bukan nama term.
             // Nama term dapat berulang pada academic year yang berbeda.
             ->where('objectives.term_id', (int) $termId)
-            ->orderBy('outcomes.outcome_name', 'ASC')
-            ->orderBy('objectives.objective_name', 'ASC')
+            // Urutan harus sama dengan halaman Objective: urutan input/ID objective.
+            ->orderBy('objectives.id', 'ASC')
             ->findAll();
 
         $objectiveScores = $this->gradebookObjectiveScoreModel
