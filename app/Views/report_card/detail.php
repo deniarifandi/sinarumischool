@@ -117,6 +117,9 @@ $className   = $class['class_name'] ?? '-';
 
 $academicYearName = $academicYear['name'] ?? '-';
 $termName         = $term['name'] ?? '-';
+$reportDate       = !empty($term['report_date'])
+    ? date('j F Y', strtotime($term['report_date']))
+    : date('j F Y');
 $semesterName     = $semester['name'] ?? '';
 
 $kkm = 75;
@@ -548,7 +551,7 @@ foreach ($subjects as $subject):
 
     <tr>
         <td class="center">
-            Malang, <?= date('j F Y') ?>
+            Malang, <?= esc($reportDate) ?>
         </td>
     </tr>
 

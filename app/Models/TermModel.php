@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class TermModel extends Model
 {
     protected $table = 'terms';
-    protected $allowedFields = ['is_locked','semester_id','name','number','start_date','end_date','is_locked'];
+    protected $allowedFields = ['is_locked','semester_id','name','number','start_date','end_date','report_date','is_locked'];
 
 public function getBySemester($semesterId)
 {

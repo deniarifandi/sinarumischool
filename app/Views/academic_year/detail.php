@@ -72,6 +72,7 @@
                                 <th class="text-center border-secondary" width="5%">#</th>
                                 <th class="border-secondary">Nama Term</th>
                                 <th class="border-secondary">Periode</th>
+                                <th class="border-secondary">Report Date</th>
                                 <th class="border-secondary">Status</th>
                                 <th class="text-end border-secondary" width="25%">Aksi</th>
                             </tr>
@@ -83,6 +84,11 @@
                                 <td class="fw-semibold border-secondary"><?= esc($term['name']) ?></td>
                                 <td class="text-dark-50 small border-secondary">
                                     <?= date('d M Y', strtotime($term['start_date'])) ?> &mdash; <?= date('d M Y', strtotime($term['end_date'])) ?>
+                                </td>
+                                <td class="text-dark-50 small border-secondary">
+                                    <?= !empty($term['report_date'])
+                                        ? date('d M Y', strtotime($term['report_date']))
+                                        : '<span class="text-muted">-</span>' ?>
                                 </td>
                                 <td class="border-secondary">
                                     <?= $term['is_locked']
@@ -224,6 +230,11 @@
                         <div class="col-md-6">
                             <label class="form-label text-dark-50 small">Tanggal Selesai</label>
                             <input type="date" name="end_date" class="form-control bg-light text-dark border-secondary" value="<?= esc($term['end_date']) ?>" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-dark-50 small">Report Date</label>
+                            <input type="date" name="report_date" class="form-control bg-light text-dark border-secondary" value="<?= esc($term['report_date'] ?? '') ?>">
+                            <div class="form-text">Tanggal ini akan muncul pada tanggal raport.</div>
                         </div>
                     </div>
                 </div>

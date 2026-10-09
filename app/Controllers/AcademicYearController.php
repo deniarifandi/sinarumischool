@@ -200,6 +200,7 @@ class AcademicYearController extends BaseController
 
         $startDate = $this->request->getPost('start_date');
         $endDate   = $this->request->getPost('end_date');
+        $reportDate = $this->request->getPost('report_date');
 
         if ($startDate > $endDate) {
             session()->setFlashdata('error', 'Tanggal mulai tidak boleh setelah tanggal selesai.');
@@ -211,6 +212,7 @@ class AcademicYearController extends BaseController
             'number'     => $this->request->getPost('number'),
             'start_date' => $startDate,
             'end_date'   => $endDate,
+            'report_date' => $reportDate ?: null,
         ]);
 
         session()->setFlashdata('success', 'Term berhasil diperbarui.');
