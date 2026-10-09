@@ -14,7 +14,6 @@ $(document).ready(function () {
 
     // Jumlah kolom objective (dinamis, sesuai term)
     const totalObjCols = <?= count($objectives) ?>;
-
     function validateObjCell($cell) {
         let value = $cell.val().trim();
 
@@ -267,11 +266,36 @@ $(document).ready(function () {
                 return false;
             }
 
+            e.preventDefault();
             formDirtyObj = false;
 
-            $('#objSaveBtn')
-                .prop('disabled', true)
+            const $form = $(this);
+            const $button = $('#objSaveBtn');
+            const originalButton = $button.html();
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 15000);
+
+            $button.prop('disabled', true)
                 .html('<span class="spinner-border spinner-border-sm me-1"></span> Saving...');
+
+            fetch($form.attr('action'), {
+                method: 'POST',
+                body: new FormData($form[0]),
+                credentials: 'same-origin',
+                signal: controller.signal
+            }).then(function (response) {
+                if (!response.ok) throw new Error('save-failed');
+                window.location.href = response.url;
+            }).catch(function (error) {
+                alert(error.name === 'AbortError'
+                    ? 'Koneksi terlalu lama atau terputus. Nilai tetap ada di form, silakan klik Save lagi.'
+                    : 'Nilai belum tersimpan karena koneksi bermasalah. Silakan coba lagi.');
+                formDirtyObj = true;
+                $button.prop('disabled', false).html(originalButton);
+            }).finally(function () {
+                clearTimeout(timeout);
+            });
+            return false;
         });
     }
 });

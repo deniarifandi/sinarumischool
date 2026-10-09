@@ -7,7 +7,6 @@ $(document).ready(function () {
 
     const isLocked = <?= $isLocked ? 'true' : 'false' ?>;
     const kkm = parseFloat($('#gradebookTable').data('kkm')) || <?= (float) $kkm ?>;
-
     let formDirty = false;
 
     // ============================================================
@@ -277,11 +276,38 @@ $(document).ready(function () {
                 return false;
             }
 
+            e.preventDefault();
             formDirty = false;
 
-            $('#saveBtn')
-                .prop('disabled', true)
+            const $form = $(this);
+            const $button = $('#saveBtn');
+            const originalButton = $button.html();
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 15000);
+
+            $button.prop('disabled', true)
                 .html('<span class="spinner-border spinner-border-sm me-1"></span> Saving...');
+
+            fetch($form.attr('action'), {
+                method: 'POST',
+                body: new FormData($form[0]),
+                credentials: 'same-origin',
+                signal: controller.signal
+            }).then(function (response) {
+                if (!response.ok) throw new Error('save-failed');
+                window.location.href = response.url;
+            }).catch(function (error) {
+                if (error.name === 'AbortError') {
+                    alert('Koneksi terlalu lama atau terputus. Nilai tetap ada di form, silakan klik Save Changes lagi.');
+                } else {
+                    alert('Nilai belum tersimpan karena koneksi bermasalah. Silakan coba lagi.');
+                }
+                formDirty = true;
+                $button.prop('disabled', false).html(originalButton);
+            }).finally(function () {
+                clearTimeout(timeout);
+            });
+            return false;
         });
     }
 
