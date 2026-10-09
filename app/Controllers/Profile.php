@@ -54,20 +54,31 @@ class Profile extends BaseController
             'phone'       => $this->request->getPost('phone'),
             'address'     => $this->request->getPost('address'),
             'bca'         => $this->request->getPost('bca'),
-            'kkb'         => $this->request->getPost('kkb'),
-            'marital'         => $this->request->getPost('marital'),
-            'kkbstart'         => $this->request->getPost('kkbstart'),
-            'kkbnomor'         => $this->request->getPost('kkbnomor'),
+            'marital'     => $this->request->getPost('marital'),
             'trainingperiod'   => $this->request->getPost('trainingperiod'),
             'trainingstart'    => $this->request->getPost('trainingstart'),
             'trainingdivisi'   => $this->request->getPost('trainingdivisi'),
             'trainingposition' => $this->request->getPost('trainingposition'),
             'trainingtrainer'  => $this->request->getPost('trainingtrainer'),
             'trainingmengetahui' => $this->request->getPost('trainingmengetahui'),
-            'bpjskesehatan'         => $this->request->getPost('bpjskesehatan'),
-            'bpjsketenagakerjaan'         => $this->request->getPost('bpjsketenagakerjaan'),
             'updated_at'  => date('Y-m-d H:i:s')
         ];
+
+        // Field khusus admin hanya diubah jika dikirim oleh form.
+        // Form user biasa tidak menampilkan field ini, sehingga nilainya
+        // harus dipertahankan saat user menyimpan perubahan profil lain.
+        foreach ([
+            'kkb',
+            'kkbstart',
+            'kkbnomor',
+            'bpjskesehatan',
+            'bpjsketenagakerjaan',
+        ] as $optionalField) {
+            $postedValue = $this->request->getPost($optionalField);
+            if ($postedValue !== null) {
+                $data[$optionalField] = $postedValue;
+            }
+        }
 
         // upload handler
         $files = [
