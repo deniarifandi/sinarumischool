@@ -110,7 +110,9 @@ $religionLabel = $religionMap[$religion] ?? '-';
 // BASIC DATA
 // =========================================================
 
-$studentName = $student['name'] ?? '-';
+$studentName = function_exists('mb_strtoupper')
+    ? mb_strtoupper($student['name'] ?? '-', 'UTF-8')
+    : strtoupper($student['name'] ?? '-');
 $className   = $class['class_name'] ?? '-';
 
 $academicYearName = $academicYear['name'] ?? '-';
@@ -475,7 +477,7 @@ foreach ($subjects as $subject):
                 font-size:10px;
             "
         >
-            <div style="font-weight:bold; margin-bottom:42px;">Class Teacher</div>
+            <div style="height:42px;"></div>
             <?= esc($teacher['name'] ?? '') ?>
         </td>
 
