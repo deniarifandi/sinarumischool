@@ -198,7 +198,7 @@ class SocioReportController extends BaseController
         $val = strtolower(trim($cell));
 
         foreach ($aliases as $alias => $key) {
-            if ($columns[$key] === null && strpos($val, $alias) !== false) {
+            if (array_key_exists($key, $columns) && $columns[$key] === null && strpos($val, $alias) !== false) {
                 $columns[$key] = $x;
             }
         }
@@ -207,6 +207,13 @@ class SocioReportController extends BaseController
             if ($idx === null && strpos($val, $key) !== false) {
                 $columns[$key] = $x;
             }
+        }
+    }
+
+    // Some exports omit indicators that were not used. Keep those fields as zero.
+    foreach (array_keys($columns) as $key) {
+        if (!array_key_exists($key, $columns)) {
+            $columns[$key] = null;
         }
     }
 
