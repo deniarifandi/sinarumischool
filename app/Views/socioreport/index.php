@@ -103,8 +103,9 @@
     <?php if (empty($periods)): ?>
         <div class="text-muted">No data available.</div>
     <?php else: ?>
-        <form method="get" action="<?= base_url('socioreport') ?>">
+        <form id="report-filter-form" method="get" action="<?= base_url('socioreport') ?>">
             <input type="hidden" name="divisi" value="<?= esc($_GET['divisi'] ?? '') ?>">
+        </form>
         <div class="table-responsive"
              style="border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.1)">
             <table class="table glass-table mb-0 align-middle">
@@ -118,7 +119,7 @@
                 </tr>
                 <tr>
                     <th class="ps-3">
-                        <select name="filter_class" class="form-select form-select-sm">
+                        <select form="report-filter-form" name="filter_class" class="form-select form-select-sm">
                             <option value="0">All Classes</option>
                             <?php foreach ($classes as $c): ?>
                                 <option value="<?= $c['id'] ?>" <?= ($filterClass ?? 0) == $c['id'] ? 'selected' : '' ?>>
@@ -128,7 +129,7 @@
                         </select>
                     </th>
                     <th>
-                        <select name="filter_month" class="form-select form-select-sm">
+                        <select form="report-filter-form" name="filter_month" class="form-select form-select-sm">
                             <option value="0">All Terms</option>
                             <?php foreach ($months as $k => $m): ?>
                                 <option value="<?= $k ?>" <?= ($filterMonth ?? 0) == $k ? 'selected' : '' ?>><?= $m ?></option>
@@ -136,7 +137,7 @@
                         </select>
                     </th>
                     <th>
-                        <select name="filter_year" class="form-select form-select-sm">
+                        <select form="report-filter-form" name="filter_year" class="form-select form-select-sm">
                             <option value="0">All Years</option>
                             <?php foreach ($periods as $p): $periodYear = (int) date('Y', strtotime($p['period'])); ?>
                                 <option value="<?= $periodYear ?>" <?= ($filterYear ?? 0) == $periodYear ? 'selected' : '' ?>>
@@ -147,7 +148,7 @@
                     </th>
                     <th></th>
                     <th class="text-end pe-3">
-                        <button class="btn btn-primary btn-sm">Filter</button>
+                        <button form="report-filter-form" class="btn btn-primary btn-sm">Filter</button>
                         <a href="<?= base_url('socioreport?divisi=' . urlencode($_GET['divisi'] ?? '')) ?>" class="btn btn-outline-secondary btn-sm">Reset</a>
                     </th>
                 </tr>
@@ -189,7 +190,6 @@
                 </tbody>
             </table>
         </div>
-        </form>
     <?php endif; ?>
 
 </div>
