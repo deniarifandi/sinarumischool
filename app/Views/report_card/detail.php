@@ -96,6 +96,11 @@ $religionLabel = $religionMap[$religion] ?? '-';
             cursor: pointer;
             z-index: 1000;
         }
+
+        .holistic-subject-block {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
     </style>
 </head>
 
@@ -577,6 +582,26 @@ foreach ($subjects as $subject):
 <div style="page-break-before: always;">
     <br><br><br>
     <h2 class="center">Holistic Progress Report</h2>
+
+    <table class="borderless holistic-student-info" style="width:100%; margin-top:18px; margin-bottom:20px;">
+        <tr>
+            <td style="width:20%;">Student's Name</td>
+            <td style="width:50%;">: <?= esc($studentName) ?></td>
+            <td style="width:30%;">
+                <?= esc($semesterLabel) ?> AY <?= esc($academicYearName) ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Class</td>
+            <td>: <?= esc($className) ?></td>
+            <td>Term : <?= esc($termName) ?></td>
+        </tr>
+        <tr>
+            <td>Religion</td>
+            <td>: <?= esc($religionLabel) ?></td>
+            <td></td>
+        </tr>
+    </table>
     
     <?php foreach ($subjects as $subject): 
         $subjectId   = $subject['id'];
@@ -609,6 +634,7 @@ foreach ($subjects as $subject):
         }
     ?>
     
+    <div class="holistic-subject-block">
     <h3 style="margin-top:15px; display:inline-block;">
         <?= esc($subjectName) ?>
     </h3>
@@ -666,6 +692,7 @@ foreach ($subjects as $subject):
             </tr>
         </tfoot>
     </table>
+    </div>
     
     <?php endforeach; ?>
 </div>
