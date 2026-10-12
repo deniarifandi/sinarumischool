@@ -519,8 +519,8 @@ echo "</thead>";
                 <?php
                 $calculationAreas = [
                     ['SELF SKILL', 0, 2, $fin1, $highestArea1],
+                    ['SOCIAL SKILLS', 4, 6, $fin3, $highestArea3],
                     ['BEHAVIOR & DECISION', 2, 4, $fin2, $highestArea2],
-                    ['SOCIAL SKILL', 4, 6, $fin3, $highestArea3],
                     ['LEARNING HABITS', 6, 9, $fin4, $highestArea4],
                 ];
                 foreach ($calculationAreas as [$areaName, $start, $end, $areaResult, $highestScore]):
@@ -721,87 +721,87 @@ echo "</thead>";
 
         <tr>
             <td></td>
-            <td>The student’s ability to manage themselves, demonstrate effort, maintain focus, and develop their personal skills.<br><i>
-Kemampuan siswa dalam mengelola diri, berusaha, fokus, dan mengembangkan kemampuan diri.</i></td>
+            <td>The student’s ability to manage themselves, demonstrate persistence and effort, maintain focus during learning activities, and continuously develop personal skills and independence.<br><br><i>
+Kemampuan siswa dalam mengelola diri, menunjukkan ketekunan dan usaha, mempertahankan fokus selama kegiatan pembelajaran, serta terus mengembangkan kemampuan diri dan kemandirian.</i></td>
             <td colspan="2"><?= $desc1 ?></td>
         </tr>
 
         <!-- AREA 3 -->
-        <?php 
-        $highest = $highestArea2;
-        $range = ($highest - 0) / 3;
-        $limitA = $range;
-        $limitB = $range * 2;
-
-        $value3 = $fin2;
-
-        if ($value3 <= $limitA) {
-            $grade3 = 'C';
-            $catResult3 = 'DEVELOPING';
-            $desc3 = $finalDescription['Dev']['C'];
-        } elseif ($value3 <= $limitB) {
-            $grade3 = 'B';
-            $catResult3 = 'CONSISTENTLY DEMONSTRATED';
-            $desc3 = $finalDescription['Dev']['B'];
-        } else {
-            $grade3 = 'A';
-            $catResult3 = 'EXCEEDING EXPECTATIONS';
-            $desc3 = $finalDescription['Dev']['A'];
-        }
-        ?>
-
-        <tr>
-            <td>B</td>
-            <td><b>BEHAVIOR & DECISION</b>
-                <br>Perilaku dan Kemampuan Mengambil Keputusan</td>
-            <td>CRITERIA<br>Kriteria</td>
-            <td><?= $catResult3 ?></td>
-        </tr>
-
-        <tr>
-            <td></td>
-            <td>The student’s capacity for interaction, collaboration, communication, and conflict resolution.<br><i>
-Kemampuan siswa dalam berinteraksi, kerja sama, komunikasi, dan menyelesaikan konflik.</i>
-</td>
-            <td colspan="2"><?= $desc3 ?></td>
-        </tr>
-
-        <!-- AREA 2 -->
         <?php 
         $highest = $highestArea3;
         $range = ($highest - 0) / 3;
         $limitA = $range;
         $limitB = $range * 2;
 
-        $value2 = $fin3;
+        $value3 = $fin3;
+
+        if ($value3 <= $limitA) {
+            $grade3 = 'C';
+            $catResult3 = 'DEVELOPING';
+            $desc3 = $finalDescription['Soc']['C'];
+        } elseif ($value3 <= $limitB) {
+            $grade3 = 'B';
+            $catResult3 = 'CONSISTENTLY DEMONSTRATED';
+            $desc3 = $finalDescription['Soc']['B'];
+        } else {
+            $grade3 = 'A';
+            $catResult3 = 'EXCEEDING EXPECTATIONS';
+            $desc3 = $finalDescription['Soc']['A'];
+        }
+        ?>
+
+        <tr>
+            <td>B</td>
+            <td><b>SOCIAL SKILLS</b>
+                <br>Keterampilan Interpersonal</td>
+            <td>CRITERIA<br>Kriteria</td>
+            <td><?= $catResult3 ?></td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <td>The student’s ability to interact positively with others, collaborate effectively in group activities, communicate ideas appropriately, and resolve conflicts in a respectful and constructive manner.<br><br><i>
+Kemampuan siswa dalam berinteraksi secara positif dengan orang lain, bekerja sama secara efektif dalam kegiatan kelompok, menyampaikan ide dengan baik, serta menyelesaikan konflik secara sopan dan membangun.</i>
+</td>
+            <td colspan="2"><?= $desc3 ?></td>
+        </tr>
+
+        <!-- AREA 2 -->
+        <?php 
+        $highest = $highestArea2;
+        $range = ($highest - 0) / 3;
+        $limitA = $range;
+        $limitB = $range * 2;
+
+        $value2 = $fin2;
 
         if ($value2 <= $limitA) {
             $grade2 = 'A';
             $catResult2 = 'DEVELOPING';
-            $desc2 = $finalDescription['Soc']['C'];
+            $desc2 = $finalDescription['Dev']['C'];
         } elseif ($value2 <= $limitB) {
             $grade2 = 'B';
             $catResult2 = 'CONSISTENTLY DEMONSTRATED';
-            $desc2 = $finalDescription['Soc']['B'];
+            $desc2 = $finalDescription['Dev']['B'];
         } else {
             $grade2 = 'C';
             $catResult2 = 'EXCEEDING EXPECTATIONS';
-            $desc2 = $finalDescription['Soc']['A'];
+            $desc2 = $finalDescription['Dev']['A'];
         }
         ?>
 
         <tr>
             <td>C</td>
-            <td><b>SOCIAL SKILL</b>
-                <br>Keterampilan Interpersonal</td>
+            <td><b>BEHAVIOR & DECISION</b>
+                <br>Perilaku dan Kemampuan Mengambil Keputusan</td>
             <td>CRITERIA<br>Kriteria</td>
             <td><?= $catResult2 ?></td>
         </tr>
 
         <tr>
             <td></td>
-            <td>The student’s behavior in following rules, demonstrating independence, and taking responsibility<br><i>
-Perilaku siswa dalam mengikuti aturan, kemandirian, dan tanggung jawab.</i></td>
+            <td>The student’s ability to follow rules, demonstrate independence, take responsibility for actions, and manage behavior appropriately in daily learning and social situations.<br><br><i>
+Perilaku siswa dalam mengikuti aturan, menunjukkan kemandirian, bertanggung jawab atas tindakan, serta mengelola perilaku dengan baik dalam kegiatan belajar dan interaksi sehari-hari.</i></td>
             <td colspan="2"><?= $desc2 ?></td>
         </tr>
 
@@ -835,8 +835,8 @@ Perilaku siswa dalam mengikuti aturan, kemandirian, dan tanggung jawab.</i></td>
 
         <tr>
             <td></td>
-            <td>The student’s ability to communicate appropriately in English, prepare learning materials, and keep personal belongings organized.<br><i>
-            Kemampuan siswa berkomunikasi dalam bahasa Inggris, menyiapkan perlengkapan belajar, dan menjaga kerapian barang pribadi.</i></td>
+            <td>The student’s ability to communicate appropriately in English during classroom activities.<br><br><i>
+            Kemampuan siswa untuk berkomunikasi secara tepat dalam bahasa Inggris selama kegiatan di kelas.</i></td>
             <td colspan="2"><?= $desc4 ?></td>
         </tr>
 
