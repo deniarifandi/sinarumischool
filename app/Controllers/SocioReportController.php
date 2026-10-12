@@ -51,9 +51,24 @@ class SocioReportController extends BaseController
 
         $periods = $builder->findAll();
 
+        // Filter hanya untuk data yang ditampilkan, tidak mengubah data laporan.
+        $filterClass = (int) ($this->request->getGet('filter_class') ?? 0);
+        $filterMonth = (int) ($this->request->getGet('filter_month') ?? 0);
+        $filterYear  = (int) ($this->request->getGet('filter_year') ?? 0);
+
+        $periods = array_values(array_filter($periods, static function ($period) use ($filterClass, $filterMonth, $filterYear) {
+            $periodDate = strtotime($period['period']);
+            return (!$filterClass || (int) $period['class_id'] === $filterClass)
+                && (!$filterMonth || (int) date('n', $periodDate) === $filterMonth)
+                && (!$filterYear || (int) date('Y', $periodDate) === $filterYear);
+        }));
+
         return view('socioreport/index', [
             'classes' => $classes,
-            'periods' => $periods
+            'periods' => $periods,
+            'filterClass' => $filterClass,
+            'filterMonth' => $filterMonth,
+            'filterYear' => $filterYear,
         ]);
     }
 

@@ -31,14 +31,19 @@
     $months = [
         1=>'1',2=>'2',3=>'3',4=>'4'
     ];
-    $currentYear = date('Y');
+    $currentYear = (int) date('Y');
+    // Tahun ajaran dimulai pada bulan Juli: Oktober 2026 berada di AY 2026/2027.
+    $academicYearStart = ((int) date('n') >= 7) ? $currentYear : $currentYear - 1;
     ?>
 
-    <form action="<?= base_url('socioreport/import') ?>"
-          method="post"
-          enctype="multipart/form-data"
-          class="mb-4">
-        <?= csrf_field() ?>
+    <div class="border rounded-3 p-3 mb-4 bg-light text-dark">
+        <div class="fw-semibold text-secondary mb-1">Upload New Report</div>
+        <div class="small text-muted mb-3">Gunakan formulir ini untuk mengunggah data laporan siswa dalam format CSV.</div>
+
+        <form action="<?= base_url('socioreport/import') ?>"
+              method="post"
+              enctype="multipart/form-data">
+            <?= csrf_field() ?>
 
         <div class="row g-2 align-items-end">
             <div class="col-md-3">
@@ -66,9 +71,9 @@
             <div class="col-md-2">
                 <label class="form-label small">Year</label>
                 <select name="year" class="form-select form-select-sm" required>
-                    <?php for ($y=$currentYear-3; $y<=$currentYear+1; $y++): ?>
-                        <option value="<?= $y ?>" <?= $y==$currentYear?'selected':'' ?>>
-                            <?php echo ($y-1)." - ".$y ?>
+                    <?php for ($y=$academicYearStart-3; $y<=$academicYearStart+1; $y++): ?>
+                        <option value="<?= $y ?>" <?= $y==$academicYearStart?'selected':'' ?>>
+                            <?php echo $y." - ".($y + 1) ?>
                         </option>
                     <?php endfor ?>
                 </select>
@@ -89,7 +94,8 @@
                 </button>
             </div>
         </div>
-    </form>
+        </form>
+    </div>
 
     <!-- GROUPED DATA -->
     <h6 class="mb-2">Uploaded Reports</h6>
@@ -97,6 +103,8 @@
     <?php if (empty($periods)): ?>
         <div class="text-muted">No data available.</div>
     <?php else: ?>
+        <form method="get" action="<?= base_url('socioreport') ?>">
+            <input type="hidden" name="divisi" value="<?= esc($_GET['divisi'] ?? '') ?>">
         <div class="table-responsive"
              style="border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.1)">
             <table class="table glass-table mb-0 align-middle">
@@ -107,6 +115,41 @@
                     <th>Year</th>
                     <th>Total Students</th>
                     <th class="text-end pe-3">Action</th>
+                </tr>
+                <tr>
+                    <th class="ps-3">
+                        <select name="filter_class" class="form-select form-select-sm">
+                            <option value="0">All Classes</option>
+                            <?php foreach ($classes as $c): ?>
+                                <option value="<?= $c['id'] ?>" <?= ($filterClass ?? 0) == $c['id'] ? 'selected' : '' ?>>
+                                    <?= esc($c['class_name']) ?>
+                                </option>
+                            <?php endforeach ?>
+                        </select>
+                    </th>
+                    <th>
+                        <select name="filter_month" class="form-select form-select-sm">
+                            <option value="0">All Terms</option>
+                            <?php foreach ($months as $k => $m): ?>
+                                <option value="<?= $k ?>" <?= ($filterMonth ?? 0) == $k ? 'selected' : '' ?>><?= $m ?></option>
+                            <?php endforeach ?>
+                        </select>
+                    </th>
+                    <th>
+                        <select name="filter_year" class="form-select form-select-sm">
+                            <option value="0">All Years</option>
+                            <?php foreach ($periods as $p): $periodYear = (int) date('Y', strtotime($p['period'])); ?>
+                                <option value="<?= $periodYear ?>" <?= ($filterYear ?? 0) == $periodYear ? 'selected' : '' ?>>
+                                    <?= $periodYear . ' - ' . ($periodYear + 1) ?>
+                                </option>
+                            <?php endforeach ?>
+                        </select>
+                    </th>
+                    <th></th>
+                    <th class="text-end pe-3">
+                        <button class="btn btn-primary btn-sm">Filter</button>
+                        <a href="<?= base_url('socioreport?divisi=' . urlencode($_GET['divisi'] ?? '')) ?>" class="btn btn-outline-secondary btn-sm">Reset</a>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -120,7 +163,7 @@
                         </td>
                         <td>
                             <?php $academicYear = (int) date('Y', strtotime($p['period'])); ?>
-                            <?= ($academicYear - 1) . ' - ' . $academicYear ?>
+                            <?= $academicYear . ' - ' . ($academicYear + 1) ?>
                         </td>
                         <td><?= $p['total'] ?></td>
                         <td class="text-end pe-3">
@@ -146,6 +189,7 @@
                 </tbody>
             </table>
         </div>
+        </form>
     <?php endif; ?>
 
 </div>
