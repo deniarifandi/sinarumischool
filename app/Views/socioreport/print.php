@@ -475,11 +475,11 @@ echo "</thead>";
                     $negativeFormulaValues = [];
                     $areaRange = $highestScore / 3;
                     if ($areaResult <= $areaRange) {
-                        $calculationCategory = 'DEVELOPING<br><small>Berkembang</small>';
+                        $calculationCategory = 'DEVELOPING';
                     } elseif ($areaResult <= ($areaRange * 2)) {
-                        $calculationCategory = 'CONSISTENT<br><small>Baik</small>';
+                        $calculationCategory = 'CONSISTENTLY DEMONSTRATED';
                     } else {
-                        $calculationCategory = 'ADVANCED<br><small>Sangat Baik</small>';
+                        $calculationCategory = 'EXCEEDING EXPECTATIONS';
                     }
                 ?>
                     <tr>
@@ -643,15 +643,15 @@ echo "</thead>";
 
         if ($value1 <= $limitA) {
             $grade1 = 'C';
-            $catResult1 = 'DEVELOPING <br> Berkembang';
+            $catResult1 = 'DEVELOPING';
             $desc1 = $finalDescription['Life']['C'];
         } elseif ($value1 <= $limitB) {
             $grade1 = 'B';
-            $catResult1 = 'CONSISTENT <br> Baik';
+            $catResult1 = 'CONSISTENTLY DEMONSTRATED';
             $desc1 = $finalDescription['Life']['B'];
         } else {
             $grade1 = 'A';
-            $catResult1 = 'ADVANCE <br> Sangat Baik';
+            $catResult1 = 'EXCEEDING EXPECTATIONS';
             $desc1 = $finalDescription['Life']['A'];
         }
         ?>
@@ -682,15 +682,15 @@ Kemampuan siswa dalam mengelola diri, berusaha, fokus, dan mengembangkan kemampu
 
         if ($value3 <= $limitA) {
             $grade3 = 'C';
-            $catResult3 = 'DEVELOPING <br> Berkembang';
+            $catResult3 = 'DEVELOPING';
             $desc3 = $finalDescription['Dev']['C'];
         } elseif ($value3 <= $limitB) {
             $grade3 = 'B';
-            $catResult3 = 'CONSISTENT <br> Baik';
+            $catResult3 = 'CONSISTENTLY DEMONSTRATED';
             $desc3 = $finalDescription['Dev']['B'];
         } else {
             $grade3 = 'A';
-            $catResult3 = 'ADVANCE <br> Sangat Baik';
+            $catResult3 = 'EXCEEDING EXPECTATIONS';
             $desc3 = $finalDescription['Dev']['A'];
         }
         ?>
@@ -722,15 +722,15 @@ Kemampuan siswa dalam berinteraksi, kerja sama, komunikasi, dan menyelesaikan ko
 
         if ($value2 <= $limitA) {
             $grade2 = 'A';
-            $catResult2 = 'DEVELOPING <br> Berkembang';
+            $catResult2 = 'DEVELOPING';
             $desc2 = $finalDescription['Soc']['C'];
         } elseif ($value2 <= $limitB) {
             $grade2 = 'B';
-            $catResult2 = 'CONSISTENT <br> Baik';
+            $catResult2 = 'CONSISTENTLY DEMONSTRATED';
             $desc2 = $finalDescription['Soc']['B'];
         } else {
             $grade2 = 'C';
-            $catResult2 = 'ADVANCE <br> Sangat Baik';
+            $catResult2 = 'EXCEEDING EXPECTATIONS';
             $desc2 = $finalDescription['Soc']['A'];
         }
         ?>
@@ -759,13 +759,13 @@ Perilaku siswa dalam mengikuti aturan, kemandirian, dan tanggung jawab.</i></td>
         $value4 = $fin4;
 
         if ($value4 <= $limitA) {
-            $catResult4 = 'DEVELOPING <br> Berkembang';
+            $catResult4 = 'DEVELOPING';
             $desc4 = 'The student is developing consistent learning habits and benefits from regular reminders and support.<br><i>Siswa sedang mengembangkan kebiasaan belajar yang konsisten dan masih memerlukan pengingat serta dukungan secara berkala.</i>';
         } elseif ($value4 <= $limitB) {
-            $catResult4 = 'CONSISTENT <br> Konsisten';
+            $catResult4 = 'CONSISTENTLY DEMONSTRATED';
             $desc4 = 'The student usually communicates appropriately, comes prepared, and keeps learning materials organized with occasional reminders.<br><i>Siswa biasanya berkomunikasi dengan baik, membawa perlengkapan, dan menjaga kerapian dengan sesekali pengingat.</i>';
         } else {
-            $catResult4 = 'ADVANCED <br> Sangat Baik';
+            $catResult4 = 'EXCEEDING EXPECTATIONS';
             $desc4 = 'The student consistently uses English, comes prepared, and keeps learning materials organized independently.<br><i>Siswa secara konsisten menggunakan bahasa Inggris, membawa perlengkapan, dan menjaga kerapian secara mandiri.</i>';
         }
         ?>
