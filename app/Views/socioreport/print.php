@@ -134,6 +134,61 @@ Siswa tetap tenang saat menghadapi konflik dan menunjukkan ketangguhan dengan ce
     ]
 ];
 
+// Descriptions for AY 26/27, based on the approved Social Emotional Report Card format.
+$descriptionLower = [
+    'Life' => [
+        'C' => 'DEVELOPING<br>The student is beginning to attempt simple tasks but still needs frequent reminders and encouragement to stay focused and continue trying when tasks become difficult.<br><i>Berkembang<br>Siswa mulai mencoba melakukan tugas-tugas sederhana, namun masih memerlukan banyak pengingat dan dorongan untuk tetap fokus dan terus berusaha ketika tugas terasa sulit.</i>',
+        'B' => 'CONSISTENTLY DEMONSTRATED<br>The student is able to complete tasks, follow instructions, and maintain focus with reasonable independence. Shows persistence when facing challenges and responds positively to guidance.<br><i>Konsisten Ditunjukkan<br>Siswa mampu menyelesaikan tugas, mengikuti instruksi, dan mempertahankan fokus dengan kemandirian yang cukup baik. Menunjukkan ketekunan saat menghadapi tantangan dan merespons arahan dengan positif.</i>',
+        'A' => 'EXCEEDING EXPECTATIONS<br>The student consistently demonstrates strong self-management, independence, focus, and perseverance. Actively takes initiative and remains engaged even during challenging learning activities.<br><i>Melebihi Harapan<br>Siswa secara konsisten menunjukkan kemampuan mengelola diri, kemandirian, fokus, dan ketekunan yang sangat baik. Aktif mengambil inisiatif dan tetap terlibat meskipun kegiatan pembelajaran terasa menantang.</i>',
+    ],
+    'Soc' => [
+        'C' => 'DEVELOPING<br>The student is beginning to interact with peers but still needs support in sharing, communicating appropriately, and managing conflicts during play and group activities.<br><i>Berkembang<br>Siswa mulai berinteraksi dengan teman sebaya, namun masih memerlukan bantuan dalam berbagi, berkomunikasi dengan tepat, dan menyelesaikan konflik saat bermain maupun dalam kegiatan kelompok.</i>',
+        'B' => 'CONSISTENTLY DEMONSTRATED<br>The student interacts positively with peers, shares during group activities, communicates appropriately, and demonstrates cooperative behavior in learning and play situations.<br><i>Konsisten Ditunjukkan<br>Siswa berinteraksi secara positif dengan teman sebaya, berbagi dalam kegiatan kelompok, berkomunikasi dengan baik, serta menunjukkan sikap kerja sama dalam kegiatan belajar dan bermain.</i>',
+        'A' => 'EXCEEDING EXPECTATIONS<br>The student consistently demonstrates strong social skills, communicates respectfully, collaborates well with others, and resolves conflicts calmly and independently.<br><i>Melebihi Harapan<br>Siswa secara konsisten menunjukkan keterampilan sosial yang sangat baik, berkomunikasi dengan sopan, bekerja sama dengan baik dengan orang lain, serta mampu menyelesaikan konflik dengan tenang dan mandiri.</i>',
+    ],
+    'Dev' => [
+        'C' => 'DEVELOPING<br>The student is beginning to follow rules and routines but still needs frequent reminders and support to manage emotions, stay calm, and take responsibility during challenging situations.<br><i>Berkembang<br>Siswa mulai mengikuti aturan dan rutinitas, namun masih memerlukan banyak pengingat dan dukungan untuk mengelola emosi, tetap tenang, dan bertanggung jawab saat menghadapi situasi yang menantang.</i>',
+        'B' => 'CONSISTENTLY DEMONSTRATED<br>The student generally follows rules, demonstrates responsibility, and is able to manage emotions appropriately in most situations. Usually responds positively to guidance and reminders.<br><i>Konsisten Ditunjukkan<br>Siswa umumnya mengikuti aturan, menunjukkan tanggung jawab, dan mampu mengelola emosi dengan baik dalam sebagian besar situasi. Biasanya merespons arahan dan pengingat dengan positif.</i>',
+        'A' => 'EXCEEDING EXPECTATIONS<br>The student consistently demonstrates self-control, responsibility, and independence. Remains calm when corrected, follows rules independently, and quickly refocuses after challenges or conflicts.<br><i>Melebihi Harapan<br>Siswa secara konsisten menunjukkan pengendalian diri, tanggung jawab, dan kemandirian yang sangat baik. Tetap tenang saat diberikan arahan, mengikuti aturan secara mandiri, dan dengan cepat kembali fokus setelah menghadapi tantangan atau konflik.</i>',
+    ],
+];
+
+$descriptionMid = [
+    'Life' => [
+        'C' => 'DEVELOPING<br>The student is beginning to work independently but still becomes easily distracted and may avoid challenging tasks. Frequent reminders and encouragement are needed to maintain focus and persistence.<br><i>Berkembang<br>Siswa mulai bekerja secara mandiri, namun masih mudah terdistraksi dan terkadang menghindari tugas yang menantang. Masih memerlukan banyak pengingat dan dorongan untuk mempertahankan fokus dan ketekunan.</i>',
+        'B' => 'CONSISTENTLY DEMONSTRATED<br>The student remains focused during work time, attempts challenging tasks, and demonstrates reasonable independence in completing activities. Occasionally still benefits from encouragement when difficulties arise.<br><i>Konsisten Ditunjukkan<br>Siswa tetap fokus selama waktu belajar, berusaha mengerjakan tugas yang menantang, dan menunjukkan kemandirian yang cukup baik dalam menyelesaikan kegiatan. Terkadang masih memerlukan dorongan saat menghadapi kesulitan.</i>',
+        'A' => 'EXCEEDING EXPECTATIONS<br>The student consistently works independently, maintains strong focus, and willingly takes on challenging tasks with confidence and persistence. Demonstrates initiative and resilience during learning activities.<br><i>Melebihi Harapan<br>Siswa secara konsisten bekerja secara mandiri, mempertahankan fokus yang sangat baik, dan dengan percaya diri bersedia mengerjakan tugas yang menantang. Menunjukkan inisiatif dan ketekunan selama kegiatan pembelajaran.</i>',
+    ],
+    'Soc' => [
+        'C' => 'DEVELOPING<br>The student may interrupt others or disrupt group work and needs reminders about cooperative behavior.<br><i>Berkembang<br>Siswa terkadang menyela teman atau mengganggu kegiatan kelompok dan masih memerlukan pengingat untuk menunjukkan perilaku kerja sama yang baik.</i>',
+        'B' => 'CONSISTENTLY DEMONSTRATED<br>The student cooperates well with peers, listens respectfully to others’ ideas, and participates positively in group activities and discussions. Occasionally still benefits from reminders in certain situations.<br><i>Konsisten Ditunjukkan<br>Siswa bekerja sama dengan baik dengan teman sebaya, mendengarkan pendapat orang lain dengan sopan, dan berpartisipasi secara positif dalam kegiatan kelompok maupun diskusi. Terkadang masih memerlukan pengingat dalam situasi tertentu.</i>',
+        'A' => 'EXCEEDING EXPECTATIONS<br>The student consistently demonstrates strong collaboration and communication skills, respects others’ perspectives, and contributes positively and responsibly during group discussions and activities.<br><i>Melebihi Harapan<br>Siswa secara konsisten menunjukkan kemampuan kerja sama dan komunikasi yang sangat baik, menghargai sudut pandang orang lain, serta berkontribusi secara positif dan bertanggung jawab dalam diskusi maupun kegiatan kelompok.</i>',
+    ],
+    'Dev' => [
+        'C' => 'DEVELOPING<br>The student is beginning to accept feedback but may still become discouraged or give up when facing difficulties. Frequent guidance and encouragement are needed to try again and improve.<br><i>Berkembang<br>Siswa mulai belajar menerima umpan balik, namun terkadang masih mudah merasa kecewa atau menyerah saat menghadapi kesulitan. Masih memerlukan banyak bimbingan dan dorongan untuk mencoba kembali dan memperbaiki diri.</i>',
+        'B' => 'CONSISTENTLY DEMONSTRATED<br>The student generally accepts feedback positively and attempts to correct mistakes with reasonable independence. Demonstrates responsibility and persistence in improving performance.<br><i>Konsisten Ditunjukkan<br>Siswa umumnya menerima umpan balik dengan sikap positif dan berusaha memperbaiki kesalahan dengan kemandirian yang cukup baik. Menunjukkan tanggung jawab dan ketekunan untuk meningkatkan hasil kerja.</i>',
+        'A' => 'EXCEEDING EXPECTATIONS<br>The student consistently accepts feedback maturely, reflects on mistakes, and independently makes improvements. Demonstrates resilience and a strong willingness to learn from challenges.<br><i>Melebihi Harapan<br>Siswa secara konsisten menerima umpan balik dengan sikap dewasa, mampu merefleksikan kesalahan, dan secara mandiri melakukan perbaikan. Menunjukkan ketangguhan dan kemauan belajar yang sangat baik saat menghadapi tantangan.</i>',
+    ],
+];
+
+$descriptionUpper = [
+    'Life' => [
+        'C' => 'DEVELOPING<br>The student listens to feedback but does not always apply it to improve work and may still avoid new or difficult tasks. Frequent encouragement is needed to build confidence and persistence.<br><i>Berkembang<br>Siswa mendengarkan umpan balik, namun belum selalu menerapkannya untuk memperbaiki hasil kerja dan terkadang masih menghindari tugas yang baru atau sulit. Masih memerlukan banyak dorongan untuk membangun rasa percaya diri dan ketekunan.</i>',
+        'B' => 'CONSISTENTLY DEMONSTRATED<br>The student regularly applies feedback to improve performance, demonstrates effort in solving problems, and is willing to try different strategies with reasonable confidence.<br><i>Konsisten Ditunjukkan<br>Siswa secara teratur menerapkan umpan balik untuk meningkatkan hasil kerja, menunjukkan usaha dalam menyelesaikan masalah, dan bersedia mencoba berbagai strategi dengan rasa percaya diri yang cukup baik.</i>',
+        'A' => 'EXCEEDING EXPECTATIONS<br>The student actively and independently uses feedback to improve performance, confidently explores new strategies, and demonstrates resilience when facing challenging tasks.<br><i>Melebihi Harapan<br>Siswa secara aktif dan mandiri menggunakan umpan balik untuk meningkatkan kinerja, dengan percaya diri mencoba strategi baru, serta menunjukkan ketangguhan saat menghadapi tugas yang menantang.</i>',
+    ],
+    'Soc' => [
+        'C' => 'DEVELOPING<br>The student is beginning to contribute to group work, share ideas, and support peers, although reminders about effective collaboration are still occasionally needed.<br><i>Berkembang<br>Siswa mulai berkontribusi dalam kerja kelompok, berbagi ide, dan mendukung teman, meskipun terkadang masih memerlukan pengingat tentang kerja sama yang baik.</i>',
+        'B' => 'CONSISTENTLY DEMONSTRATED<br>The student contributes positively during group activities, supports peers in completing tasks, and demonstrates cooperative communication and collaboration skills.<br><i>Konsisten Ditunjukkan<br>Siswa berkontribusi secara positif dalam kegiatan kelompok, mendukung teman dalam menyelesaikan tugas, serta menunjukkan kemampuan komunikasi dan kerja sama yang baik.</i>',
+        'A' => 'EXCEEDING EXPECTATIONS<br>The student actively contributes ideas, encourages and supports teammates, and consistently demonstrates mature, respectful, and effective collaboration skills in group settings.<br><i>Melebihi Harapan<br>Siswa secara aktif menyumbangkan ide, memberi semangat dan dukungan kepada teman satu tim, serta secara konsisten menunjukkan keterampilan kolaborasi yang matang, sopan, dan efektif dalam kegiatan kelompok.</i>',
+    ],
+    'Dev' => [
+        'C' => 'DEVELOPING<br>The student is beginning to manage emotions more appropriately and is able to recover after setbacks with occasional guidance and encouragement.<br><i>Berkembang<br>Siswa mulai mampu mengelola emosi dengan lebih baik dan dapat bangkit kembali setelah mengalami kesulitan dengan sesekali arahan dan dorongan.</i>',
+        'B' => 'CONSISTENTLY DEMONSTRATED<br>The student generally manages emotions appropriately, responds calmly in most situations, and is able to continue working after experiencing mistakes or challenges.<br><i>Konsisten Ditunjukkan<br>Siswa umumnya mampu mengelola emosi dengan baik, merespons situasi dengan tenang, dan dapat kembali melanjutkan pekerjaan setelah mengalami kesalahan atau tantangan.</i>',
+        'A' => 'EXCEEDING EXPECTATIONS<br>The student consistently remains calm during conflicts, demonstrates resilience when facing challenges, and quickly recovers from mistakes with a positive attitude and strong self-management skills.<br><i>Melebihi Harapan<br>Siswa secara konsisten tetap tenang saat menghadapi konflik, menunjukkan ketangguhan ketika menghadapi tantangan, dan dengan cepat bangkit dari kesalahan dengan sikap positif serta kemampuan pengelolaan diri yang sangat baik.</i>',
+    ],
+];
+
 // // usage
 // $class   = 'Class2';
 // $category = 'Life'; // Life / Soc / Dev
@@ -760,13 +815,13 @@ Perilaku siswa dalam mengikuti aturan, kemandirian, dan tanggung jawab.</i></td>
 
         if ($value4 <= $limitA) {
             $catResult4 = 'DEVELOPING';
-            $desc4 = 'The student is developing consistent learning habits and benefits from regular reminders and support.<br><i>Siswa sedang mengembangkan kebiasaan belajar yang konsisten dan masih memerlukan pengingat serta dukungan secara berkala.</i>';
+            $desc4 = 'DEVELOPING<br>Is in the process of developing positive learning routines and greater independence in using English, preparing learning materials, and organizing personal belongings. Benefits from regular reminders, encouragement, and structured support.<br><i>Berkembang<br>Sedang dalam proses mengembangkan rutinitas belajar yang positif serta kemandirian dalam menggunakan bahasa Inggris, menyiapkan perlengkapan belajar, dan merapikan barang pribadi. Memerlukan pengingat secara berkala, dorongan, dan dukungan terstruktur.</i>';
         } elseif ($value4 <= $limitB) {
             $catResult4 = 'CONSISTENTLY DEMONSTRATED';
-            $desc4 = 'The student usually communicates appropriately, comes prepared, and keeps learning materials organized with occasional reminders.<br><i>Siswa biasanya berkomunikasi dengan baik, membawa perlengkapan, dan menjaga kerapian dengan sesekali pengingat.</i>';
+            $desc4 = 'CONSISTENTLY DEMONSTRATED<br>Usually uses English when participating in classroom activities, brings the required learning materials, and keeps personal belongings reasonably organized, with occasional reminders.<br><i>Konsisten Ditunjukkan<br>Umumnya menggunakan bahasa Inggris saat berpartisipasi dalam kegiatan kelas, membawa perlengkapan belajar yang diperlukan, dan menjaga kerapian barang pribadi dengan pengingat sesekali.</i>';
         } else {
             $catResult4 = 'EXCEEDING EXPECTATIONS';
-            $desc4 = 'The student consistently uses English, comes prepared, and keeps learning materials organized independently.<br><i>Siswa secara konsisten menggunakan bahasa Inggris, membawa perlengkapan, dan menjaga kerapian secara mandiri.</i>';
+            $desc4 = 'EXCEEDING EXPECTATIONS<br>Consistently uses English during classroom activities, arrives prepared with the required learning materials, and independently maintains an organized desk and personal belongings. Demonstrates responsibility and positive learning routines.<br><i>Melebihi Harapan<br>Secara konsisten menggunakan bahasa Inggris selama kegiatan di kelas, datang dengan perlengkapan belajar yang diperlukan, serta menjaga kerapian meja dan barang pribadi secara mandiri. Menunjukkan tanggung jawab dan rutinitas belajar yang positif.</i>';
         }
         ?>
 
