@@ -38,7 +38,7 @@
 
     <div class="border rounded-3 p-3 mb-4 bg-light text-dark">
         <div class="fw-semibold text-secondary mb-1">Upload New Report</div>
-        <div class="small text-muted mb-3">Gunakan formulir ini untuk mengunggah data laporan siswa dalam format CSV.</div>
+        <div class="small text-muted mb-3">Gunakan formulir ini untuk mengunggah data laporan siswa dalam format CSV atau XLSX.</div>
 
         <form action="<?= base_url('socioreport/import') ?>"
               method="post"
@@ -83,7 +83,7 @@
                 <label class="form-label small">CSV File</label>
                 <input type="file"
                        name="csv_file"
-                       accept=".csv"
+                       accept=".csv,.xlsx"
                        class="form-control form-control-sm"
                        required>
             </div>

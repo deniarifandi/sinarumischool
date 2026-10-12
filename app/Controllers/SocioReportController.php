@@ -73,7 +73,7 @@ class SocioReportController extends BaseController
     }
 
     /* ======================
-       IMPORT CSV
+       IMPORT CSV / XLSX
        ====================== */
     public function import()
 {
@@ -94,17 +94,18 @@ class SocioReportController extends BaseController
     $periodDate = sprintf('%04d-%02d-01', $year, $month);
     $periodKey  = sprintf('%04d-%02d', $year, $month);
 
-    // overwrite existing data (same class + month)
-    $this->reportModel
-        ->where('class_id', $classId)
-        ->where("DATE_FORMAT(date,'%Y-%m')", $periodKey)
-        ->delete();
+    // Read CSV or XLSX using the same normalized row structure.
+    $extension = strtolower($file->getClientExtension());
+    try {
+        $rows = $this->readImportRows($file->getTempName(), $extension);
+    } catch (\Throwable $e) {
+        return redirect()->back()
+            ->with('error', 'File harus berupa CSV atau XLSX yang valid.');
+    }
 
-    // read CSV
-    $csv  = trim(file_get_contents($file->getTempName()));
-    $rows = array_map('str_getcsv', preg_split("/\r\n|\n|\r/", $csv));
     if (count($rows) < 2) {
-        return redirect()->back();
+        return redirect()->back()
+            ->with('error', 'File tidak berisi data yang cukup untuk diimpor.');
     }
 
     /* ======================
@@ -212,8 +213,14 @@ class SocioReportController extends BaseController
     // hard stop if student column missing
     if ($columns['student'] === null) {
         return redirect()->back()
-            ->with('error', 'CSV must contain student column');
+            ->with('error', 'CSV/XLSX must contain student column');
     }
+
+    // Overwrite existing data only after the uploaded file has been validated.
+    $this->reportModel
+        ->where('class_id', $classId)
+        ->where("DATE_FORMAT(date,'%Y-%m')", $periodKey)
+        ->delete();
 
     /* ======================
        INSERT DATA
@@ -245,6 +252,87 @@ class SocioReportController extends BaseController
 
     return redirect()->to('/socioreport?divisi=3');
 }
+
+    private function readImportRows(string $path, string $extension): array
+    {
+        if ($extension === 'csv') {
+            $csv = trim((string) file_get_contents($path));
+            return array_map('str_getcsv', preg_split("/\r\n|\n|\r/", $csv));
+        }
+
+        if ($extension !== 'xlsx' || !class_exists('ZipArchive')) {
+            throw new \RuntimeException('Unsupported import format.');
+        }
+
+        $zip = new \ZipArchive();
+        if ($zip->open($path) !== true) {
+            throw new \RuntimeException('Unable to open XLSX file.');
+        }
+
+        $xml = $zip->getFromName('xl/worksheets/sheet1.xml');
+        if ($xml === false) {
+            $zip->close();
+            throw new \RuntimeException('Worksheet not found.');
+        }
+
+        $sharedStrings = [];
+        $sharedXml = $zip->getFromName('xl/sharedStrings.xml');
+        if ($sharedXml !== false) {
+            $shared = simplexml_load_string($sharedXml);
+            $sharedMain = $shared->children('http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+            foreach ($sharedMain->si as $item) {
+                $itemMain = $item->children('http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+                $text = (string) ($itemMain->t ?? '');
+                if ($text === '') {
+                    foreach ($itemMain->r as $run) {
+                        $runMain = $run->children('http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+                        $text .= (string) ($runMain->t ?? '');
+                    }
+                }
+                $sharedStrings[] = $text;
+            }
+        }
+
+        $sheet = simplexml_load_string($xml);
+        $rows = [];
+        $sheetMain = $sheet->children('http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+        foreach ($sheetMain->sheetData->row as $rowNode) {
+            $row = [];
+            foreach ($rowNode->children('http://schemas.openxmlformats.org/spreadsheetml/2006/main')->c as $cell) {
+                $cellMain = $cell->children('http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+                $attributes = $cell->attributes();
+                $reference = (string) ($attributes['r'] ?? '');
+                $columnLetters = preg_replace('/\d+/', '', $reference);
+                $columnIndex = 0;
+                for ($i = 0; $i < strlen($columnLetters); $i++) {
+                    $columnIndex = ($columnIndex * 26) + (ord(strtoupper($columnLetters[$i])) - 64);
+                }
+                $columnIndex--;
+
+                $value = (string) ($cellMain->v ?? '');
+                $cellType = (string) ($attributes['t'] ?? '');
+                if ($cellType === 's') {
+                    $value = $sharedStrings[(int) $value] ?? '';
+                } elseif ($cellType === 'inlineStr') {
+                    $value = (string) ($cellMain->is->t ?? '');
+                }
+
+                $row[$columnIndex] = $value;
+            }
+
+            if ($row !== []) {
+                $maxColumn = max(array_keys($row));
+                $normalizedRow = array_fill(0, $maxColumn + 1, '');
+                foreach ($row as $columnIndex => $value) {
+                    $normalizedRow[$columnIndex] = $value;
+                }
+                $rows[] = $normalizedRow;
+            }
+        }
+
+        $zip->close();
+        return $rows;
+    }
 
     /* ======================
        PRINT
