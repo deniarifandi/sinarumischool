@@ -33,6 +33,8 @@ class SocioReportModel extends Model
         'quitting','disruptive','interrupting',
         'resisting','avoidance','overreacting',
         'lingering','withdrawing','dominating'
+        ,'speaking_english','prepared','organized'
+        ,'needs_english_practice','unprepared','needs_organization'
     ];
 
     protected $useTimestamps = false;

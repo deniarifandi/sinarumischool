@@ -164,6 +164,41 @@ Siswa tetap tenang saat menghadapi konflik dan menunjukkan ketangguhan dengan ce
             margin-bottom:15px;
         }
 
+        .calculation-table th,
+        .calculation-table td{
+            padding:5px 6px;
+            vertical-align:top;
+        }
+        .calculation-table{
+            font-size:11px;
+        }
+        .calculation-table th{
+            background:#f3f4f6;
+            color:#374151;
+        }
+        .calculation-table .formula{
+            width:180px;
+            text-align:left;
+            line-height:1.45;
+        }
+        .calculation-table .result{
+            width:70px;
+            text-align:center;
+            font-weight:600;
+            color:#4b5563;
+        }
+        .checking-note{
+            margin-top:22px;
+            padding:12px 16px;
+            border:2px solid #6b7280;
+            background:#f3f4f6;
+            color:#374151;
+            text-align:center;
+            font-size:15px;
+            font-weight:700;
+            letter-spacing:.2px;
+        }
+
         .meta-table{
             border-collapse:collapse;
             font-size:11px;
@@ -255,16 +290,27 @@ $colUpper = [
    if (in_array($class['grade_name'], ['Primary 1','Primary 2'])) {
     $cols = $colLower;
     $finalDescription = $descriptionLower;
+    $positiveLabels = ['Trying', 'Following Directions', 'Ready to Learn', 'Self-Control', 'Kind & Respectful', 'Cooperating'];
+    $negativeLabels = ['Giving Up', 'Needs Reminders', 'Disrupting Learning', 'Unsafe Behavior', 'Unkind Behavior', 'Not Cooperating'];
 } elseif (in_array($class['grade_name'], ['Primary 3','Primary 4'])) {
     $cols = $colMid;
     $finalDescription = $descriptionMid;
+    $positiveLabels = ['Focused', 'Attempting', 'Accepting Feedback', 'Recovering', 'Cooperating', 'Listening'];
+    $negativeLabels = ['Distracted', 'Avoiding', 'Rejecting', 'Quitting', 'Disruptive', 'Interrupting'];
 } else {
     $cols = $colUpper;
     $finalDescription = $descriptionUpper;
+    $positiveLabels = ['Self-Motivated', 'Growth Mindset', 'Responsible', 'Respectful', 'Leadership', 'Supportive'];
+    $negativeLabels = ['Avoiding Challenges', 'Needs Encouragement', 'Disrupting Learning', 'Poor Self-Control', 'Not Contributing', 'Disrespectful'];
 }
 
-$positiveCols = array_slice($cols, 0, 6);
-$negativeCols = array_slice($cols, 6);
+$positiveCols = array_merge(array_slice($cols, 0, 6), ['speaking_english', 'prepared', 'organized']);
+$negativeCols = array_merge(array_slice($cols, 6), ['needs_english_practice', 'unprepared', 'needs_organization']);
+$learningOrganizationLabel = in_array($class['grade_name'], ['Primary 5', 'Primary 6'])
+    ? 'Well-Organized'
+    : 'Organized';
+$positiveLabels = array_merge($positiveLabels, ['Speaking English', 'Prepared', $learningOrganizationLabel]);
+$negativeLabels = array_merge($negativeLabels, ['Needs English Practice', 'Unprepared', 'Needs Organization']);
 
 /* ======================
    PRE-CALCULATE HIGHEST
@@ -273,16 +319,18 @@ $negativeCols = array_slice($cols, 6);
    $highestArea1 = PHP_INT_MIN;
    $highestArea2 = PHP_INT_MIN;
    $highestArea3 = PHP_INT_MIN;
+   $highestArea4 = PHP_INT_MIN;
 
    foreach ($reports as $r) {
-    $fin = [0,0,0];
-    for ($i=0; $i<6; $i++) {
-        $group = intdiv($i,2);
+    $fin = [0,0,0,0];
+    for ($i=0; $i<9; $i++) {
+        $group = $i < 6 ? intdiv($i,2) : 3;
         $fin[$group] += (int)$r[$positiveCols[$i]] - (int)$r[$negativeCols[$i]];
     }
     $highestArea1 = max($highestArea1, $fin[0]);
     $highestArea2 = max($highestArea2, $fin[1]);
     $highestArea3 = max($highestArea3, $fin[2]);
+    $highestArea4 = max($highestArea4, $fin[3]);
 }
 ?>
 
@@ -305,7 +353,8 @@ $negativeCols = array_slice($cols, 6);
         <strong>Highest Scores (All Students)</strong><br><br>
         Self Skill : <?= $highestArea1 ?><br>
         Behavior : <?= $highestArea2 ?><br>
-        Social : <?= $highestArea3 ?>
+        Social : <?= $highestArea3 ?><br>
+        Learning Habits : <?= $highestArea4 ?>
     </div>
 
     <?php 
@@ -317,11 +366,11 @@ echo "<tr>";
 echo "<th class='diagonal' style='width: 150px'>Student Name</th>";
 
 for ($z = 0; $z < count($positiveCols); $z++) {
-    echo "<th class='diagonal'><div>{$positiveCols[$z]}</div></th>";
+    echo "<th class='diagonal'><div>{$positiveLabels[$z]}</div></th>";
 }
 
 for ($z = 0; $z < count($negativeCols); $z++) {
-    echo "<th class='diagonal'><div>{$negativeCols[$z]}</div></th>";
+    echo "<th class='diagonal'><div>{$negativeLabels[$z]}</div></th>";
 }
 
 echo "</tr>";
@@ -329,7 +378,7 @@ echo "</thead>";
     echo "<tbody>";
     foreach ($reports as $r) {
         echo "<tr>";
-        $fin = [0,0,0];
+        $fin = [0,0,0,0];
         echo "<td style='white-space:normal'>".$r['student_name']."</td>";
         for ($z=0; $z < count($positiveCols); $z++) { 
             echo  "<td>".$r[$positiveCols[$z]]."</td>";
@@ -339,14 +388,15 @@ echo "</thead>";
             echo  "<td>".$r[$negativeCols[$z]]."</td>";
         }
 
-        for ($i=0; $i<6; $i++) {
-            $group = intdiv($i,2);
+        for ($i=0; $i<9; $i++) {
+            $group = $i < 6 ? intdiv($i,2) : 3;
             $fin[$group] += (int)$r[$positiveCols[$i]] - (int)$r[$negativeCols[$i]];
 
         }
         $highestArea1 = max($highestArea1, $fin[0]);
         $highestArea2 = max($highestArea2, $fin[1]);
         $highestArea3 = max($highestArea3, $fin[2]);
+        $highestArea4 = max($highestArea4, $fin[3]);
 
         echo "</tr>";
     }
@@ -364,13 +414,127 @@ echo "</thead>";
 <?php foreach ($reports as $r): ?>
 
     <?php
-    $fin = [0,0,0];
-    for ($i=0; $i<6; $i++) {
-        $group = intdiv($i,2);
+    $fin = [0,0,0,0];
+    for ($i=0; $i<9; $i++) {
+        $group = $i < 6 ? intdiv($i,2) : 3;
         $fin[$group] += (int)$r[$positiveCols[$i]] - (int)$r[$negativeCols[$i]];
     }
-    $fin1=$fin[0]; $fin2=$fin[1]; $fin3=$fin[2];
+    $fin1=$fin[0]; $fin2=$fin[1]; $fin3=$fin[2]; $fin4=$fin[3];
     ?>
+
+    <div class="page">
+        <div class="header">
+            <img src="<?php echo base_url() ?>header.png" style="max-width: 100%;">
+            <h3 style="margin-top:18px;">DETAIL PERHITUNGAN</h3>
+            <table class="meta-table" style="max-width: 360px">
+                <tr>
+                    <td class="label">Student Name</td>
+                    <td class="colon">:</td>
+                    <td><?= esc($r['student_name']) ?></td>
+                </tr>
+                <tr>
+                    <td class="label">Class</td>
+                    <td class="colon">:</td>
+                    <td><?= esc($class['class_name']) ?></td>
+                </tr>
+                <tr>
+                    <td class="label">Term</td>
+                    <td class="colon">:</td>
+                    <td><?= date('m', strtotime($period)) ?></td>
+                </tr>
+            </table>
+        </div>
+
+        <p style="margin:14px 0 8px; color:#4b5563;">
+            Nilai akhir dihitung dari jumlah skor positif dikurangi jumlah skor yang perlu dikembangkan. <strong>Highest Score</strong> adalah skor tertinggi pada area tersebut yang digunakan sebagai parameter perbandingan.
+        </p>
+
+        <table class="calculation-table">
+            <thead>
+                <tr>
+                    <th style="width:18%;">Area</th>
+                    <th>Skor Positif</th>
+                    <th>Skor Negatif</th>
+                    <th style="width:90px;">Highest Score</th>
+                    <th class="formula">Hasil Perhitungan</th>
+                    <th class="result">Kategori</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $calculationAreas = [
+                    ['SELF SKILL', 0, 2, $fin1, $highestArea1],
+                    ['BEHAVIOR & DECISION', 2, 4, $fin2, $highestArea2],
+                    ['SOCIAL SKILL', 4, 6, $fin3, $highestArea3],
+                    ['LEARNING HABITS', 6, 9, $fin4, $highestArea4],
+                ];
+                foreach ($calculationAreas as [$areaName, $start, $end, $areaResult, $highestScore]):
+                    $positiveTotal = 0;
+                    $negativeTotal = 0;
+                    $positiveFormulaValues = [];
+                    $negativeFormulaValues = [];
+                    $areaRange = $highestScore / 3;
+                    if ($areaResult <= $areaRange) {
+                        $calculationCategory = 'DEVELOPING<br><small>Berkembang</small>';
+                    } elseif ($areaResult <= ($areaRange * 2)) {
+                        $calculationCategory = 'CONSISTENT<br><small>Baik</small>';
+                    } else {
+                        $calculationCategory = 'ADVANCED<br><small>Sangat Baik</small>';
+                    }
+                ?>
+                    <tr>
+                        <td><strong><?= $areaName ?></strong></td>
+                        <td>
+                            <?php for ($i = $start; $i < $end; $i++):
+                                $positiveValue = (int)$r[$positiveCols[$i]];
+                                $positiveTotal += $positiveValue;
+                                $positiveFormulaValues[] = $positiveValue;
+                            ?>
+                                <?= esc($positiveLabels[$i]) ?>: <?= $positiveValue ?><br>
+                            <?php endfor; ?>
+                            <strong>Total: <?= $positiveTotal ?></strong>
+                        </td>
+                        <td>
+                            <?php for ($i = $start; $i < $end; $i++):
+                                $negativeValue = (int)$r[$negativeCols[$i]];
+                                $negativeTotal += $negativeValue;
+                                $negativeFormulaValues[] = $negativeValue;
+                            ?>
+                                <?= esc($negativeLabels[$i]) ?>: <?= $negativeValue ?><br>
+                            <?php endfor; ?>
+                            <strong>Total: <?= $negativeTotal ?></strong>
+                        </td>
+                        <td class="result"><?= $highestScore ?></td>
+                        <td class="formula">
+                            <small>(<?= implode(' + ', $positiveFormulaValues) ?>)<br>
+                            − (<?= implode(' + ', $negativeFormulaValues) ?>)</small><br>
+                            <?= $positiveTotal ?> − <?= $negativeTotal ?><br>
+                            <strong>= <?= $areaResult ?></strong><br><br>
+                            <small>Highest Score ÷ 3<br>
+                            <?= $highestScore ?> ÷ 3 = <?= round($areaRange, 2) ?><br>
+                            Batas 2 = <?= round($areaRange * 2, 2) ?></small>
+                        </td>
+                        <td class="result">
+                            <?= $calculationCategory ?><br>
+                            <small>
+                                <?php if ($areaResult <= $areaRange): ?>
+                                    <?= $areaResult ?> ≤ <?= round($areaRange, 2) ?>
+                                <?php elseif ($areaResult <= ($areaRange * 2)): ?>
+                                    <?= round($areaRange, 2) ?> &lt; <?= $areaResult ?> ≤ <?= round($areaRange * 2, 2) ?>
+                                <?php else: ?>
+                                    <?= $areaResult ?> &gt; <?= round($areaRange * 2, 2) ?>
+                                <?php endif; ?>
+                            </small>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <div class="checking-note">
+            CATATAN: Halaman ini hanya untuk checking internal dan bukan untuk dibagikan.
+        </div>
+    </div>
 
     <div class="page">
 
@@ -495,7 +659,6 @@ echo "</thead>";
         <tr>
             <td>A</td>
             <td><b>SELF SKILL</b>
-                <?php echo $highestArea1." - ".$value1;  ?>
                 <br>Keterampilan Intrapersonal</td>
             <td>CRITERIA<br>Kriteria</td>
             <td><?= $catResult1 ?></td>
@@ -535,7 +698,6 @@ Kemampuan siswa dalam mengelola diri, berusaha, fokus, dan mengembangkan kemampu
         <tr>
             <td>B</td>
             <td><b>BEHAVIOR & DECISION</b>
-                <?php echo $highestArea2." - ".$value3;  ?>
                 <br>Perilaku dan Kemampuan Mengambil Keputusan</td>
             <td>CRITERIA<br>Kriteria</td>
             <td><?= $catResult3 ?></td>
@@ -576,7 +738,6 @@ Kemampuan siswa dalam berinteraksi, kerja sama, komunikasi, dan menyelesaikan ko
         <tr>
             <td>C</td>
             <td><b>SOCIAL SKILL</b>
-                <?php echo $highestArea2." - ".$value2;  ?>
                 <br>Keterampilan Interpersonal</td>
             <td>CRITERIA<br>Kriteria</td>
             <td><?= $catResult2 ?></td>
@@ -587,6 +748,41 @@ Kemampuan siswa dalam berinteraksi, kerja sama, komunikasi, dan menyelesaikan ko
             <td>The student’s behavior in following rules, demonstrating independence, and taking responsibility<br><i>
 Perilaku siswa dalam mengikuti aturan, kemandirian, dan tanggung jawab.</i></td>
             <td colspan="2"><?= $desc2 ?></td>
+        </tr>
+
+        <!-- AREA 4 -->
+        <?php
+        $highest = $highestArea4;
+        $range = ($highest - 0) / 3;
+        $limitA = $range;
+        $limitB = $range * 2;
+        $value4 = $fin4;
+
+        if ($value4 <= $limitA) {
+            $catResult4 = 'DEVELOPING <br> Berkembang';
+            $desc4 = 'The student is developing consistent learning habits and benefits from regular reminders and support.<br><i>Siswa sedang mengembangkan kebiasaan belajar yang konsisten dan masih memerlukan pengingat serta dukungan secara berkala.</i>';
+        } elseif ($value4 <= $limitB) {
+            $catResult4 = 'CONSISTENT <br> Konsisten';
+            $desc4 = 'The student usually communicates appropriately, comes prepared, and keeps learning materials organized with occasional reminders.<br><i>Siswa biasanya berkomunikasi dengan baik, membawa perlengkapan, dan menjaga kerapian dengan sesekali pengingat.</i>';
+        } else {
+            $catResult4 = 'ADVANCED <br> Sangat Baik';
+            $desc4 = 'The student consistently uses English, comes prepared, and keeps learning materials organized independently.<br><i>Siswa secara konsisten menggunakan bahasa Inggris, membawa perlengkapan, dan menjaga kerapian secara mandiri.</i>';
+        }
+        ?>
+
+        <tr>
+            <td>D</td>
+            <td><b>LEARNING HABITS</b>
+                <br>Kebiasaan dan Kesiapan Belajar</td>
+            <td>CRITERIA<br>Kriteria</td>
+            <td><?= $catResult4 ?></td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <td>The student’s ability to communicate appropriately in English, prepare learning materials, and keep personal belongings organized.<br><i>
+            Kemampuan siswa berkomunikasi dalam bahasa Inggris, menyiapkan perlengkapan belajar, dan menjaga kerapian barang pribadi.</i></td>
+            <td colspan="2"><?= $desc4 ?></td>
         </tr>
 
     </tbody>

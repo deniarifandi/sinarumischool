@@ -68,6 +68,9 @@ class SocioReportController extends BaseController
     
     $teacherId = session()->get('id');
 
+    $classDetail = $this->classModel->getClassDetail($classId);
+    $gradeName   = $classDetail[0]['grade_name'] ?? '';
+
     $file = $this->request->getFile('csv_file');
     if (!$file || !$file->isValid()) {
         return redirect()->back();
@@ -110,10 +113,80 @@ class SocioReportController extends BaseController
         'quitting'=>null,'disruptive'=>null,'interrupting'=>null,
         'resisting'=>null,'avoidance'=>null,'overreacting'=>null,
         'lingering'=>null,'withdrawing'=>null,'dominating'=>null,
+        'speaking_english'=>null,'prepared'=>null,'organized'=>null,
+        'needs_english_practice'=>null,'unprepared'=>null,'needs_organization'=>null,
     ];
+
+    // ClassDojo exports use descriptive indicator names. Map them to the
+    // internal fields used by the print formula for each grade level.
+    if (in_array($gradeName, ['Primary 1', 'Primary 2'])) {
+        $aliases = [
+            'trying'               => 'trying',
+            'following directions' => 'following',
+            'ready to learn'       => 'calm',
+            'self-control'         => 'composed',
+            'kind & respectful'    => 'sharing',
+            'cooperating'          => 'kindness',
+            'giving up'            => 'giving',
+            'needs reminders'      => 'reminders',
+            'disrupting learning'  => 'upset',
+            'unsafe behavior'      => 'reactive',
+            'unkind behavior'      => 'not-sharing',
+            'not cooperating'      => 'rough',
+        ];
+    } elseif (in_array($gradeName, ['Primary 3', 'Primary 4'])) {
+        $aliases = [
+            'focused'              => 'focused',
+            'persevering'          => 'attempting',
+            'presevering'          => 'attempting',
+            'responsible'          => 'accepting',
+            'accepting feedback'  => 'recovering',
+            'cooperating'         => 'cooperative',
+            'respectful listener'  => 'listening',
+            'distracted'           => 'distracted',
+            'needs encouragement' => 'avoiding',
+            'disrupting learning' => 'rejecting',
+            'overreacting'         => 'quitting',
+            'interrupting others'  => 'disruptive',
+            'not cooperating'      => 'interrupting',
+        ];
+    } else {
+        $aliases = [
+            'self-motivated'       => 'improving',
+            'growth mindset'      => 'challenging',
+            'responsible'         => 'steady',
+            'respectful'          => 'resilient',
+            'leadership'          => 'contributing',
+            'supportive'          => 'supporting',
+            'avoiding challenges' => 'resisting',
+            'needs encouragement' => 'avoidance',
+            'disrupting learning' => 'overreacting',
+            'poor self-control'   => 'lingering',
+            'not contributing'    => 'withdrawing',
+            'disrespectful'       => 'dominating',
+        ];
+    }
+
+    $learningHabitAliases = [
+        'speaking english'       => 'speaking_english',
+        'prepared'               => 'prepared',
+        'organized'              => 'organized',
+        'well-organized'         => 'organized',
+        'needs english practice' => 'needs_english_practice',
+        'unprepared'             => 'unprepared',
+        'needs organization'     => 'needs_organization',
+    ];
+    $aliases = $learningHabitAliases + $aliases;
 
     foreach ($rows[0] as $x => $cell) {
         $val = strtolower(trim($cell));
+
+        foreach ($aliases as $alias => $key) {
+            if ($columns[$key] === null && strpos($val, $alias) !== false) {
+                $columns[$key] = $x;
+            }
+        }
+
         foreach ($columns as $key => $idx) {
             if ($idx === null && strpos($val, $key) !== false) {
                 $columns[$key] = $x;
