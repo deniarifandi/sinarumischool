@@ -581,6 +581,12 @@ foreach ($subjects as $subject):
 
 <div style="page-break-before: always;">
     <br><br><br>
+    <img
+        src="<?= base_url('header_mli_report.png') ?>"
+        style="max-width:100%;"
+        alt="School Logo"
+    >
+    <br>
     <h2 class="center">Holistic Progress Report</h2>
 
     <table class="borderless holistic-student-info" style="width:100%; margin-top:18px; margin-bottom:20px;">

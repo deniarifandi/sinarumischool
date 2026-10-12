@@ -395,7 +395,7 @@ $negativeLabels = array_merge($negativeLabels, ['Needs English Practice', 'Unpre
 <div class="page">
 
     <div class="header" style="margin-top: 50px;">
-        <img src="<?php echo base_url() ?>header.png" style="max-width: 100%;">
+        <img src="<?= base_url('header_mli_report.png') ?>" style="max-width: 100%;" alt="School Logo">
         <h3>Socio Emotional Report</h3>
         <div class="meta">
             Class  : <?= esc($class['class_name']) ?><br>
@@ -479,7 +479,7 @@ echo "</thead>";
 
     <div class="page">
         <div class="header">
-            <img src="<?php echo base_url() ?>header.png" style="max-width: 100%;">
+            <img src="<?= base_url('header_mli_report.png') ?>" style="max-width: 100%;" alt="School Logo">
             <h3 style="margin-top:18px;">DETAIL PERHITUNGAN</h3>
             <table class="meta-table" style="max-width: 360px">
                 <tr>
@@ -594,7 +594,7 @@ echo "</thead>";
     <div class="page">
 
         <div class="header">
-            <img src="<?php echo base_url() ?>header.png" style="max-width: 100%;">
+            <img src="<?= base_url('header_mli_report.png') ?>" style="max-width: 100%;" alt="School Logo">
 
             <table class="meta-table" style="max-width: 300px">
                 <tr>
