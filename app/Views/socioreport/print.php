@@ -612,17 +612,7 @@ echo "</thead>";
                     <td class="colon">:</td>
                     <td><?= esc($class['grade_name']) ?></td>
                 </tr>
-                <tr>
-                    <td class="label">Term</td>
-                    <td class="colon">:</td>
-                    <td><?= date('m', strtotime($period)) ?></td>
-
-                    <?php 
-
-
-
-                    ?>
-                </tr>
+                
             </table>
 
         </div>
