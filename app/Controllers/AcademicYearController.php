@@ -56,6 +56,16 @@ class AcademicYearController extends BaseController
             return redirect()->back()->withInput();
         }
 
+        // Satu divisi hanya boleh memiliki satu academic year.
+        $existingAcademicYear = $this->academicYearModel
+            ->where('division_id', $data['division_id'])
+            ->first();
+
+        if ($existingAcademicYear) {
+            session()->setFlashdata('error', 'Divisi tersebut sudah memiliki Academic Year.');
+            return redirect()->back()->withInput();
+        }
+
         $this->academicYearModel->insert($data);
         session()->setFlashdata('success', 'Tahun ajaran berhasil dibuat.');
         return redirect()->to(base_url('academic-year').'?division='.$this->request->getPost('division_id'));

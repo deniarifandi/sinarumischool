@@ -3,9 +3,16 @@
 
 <h5 class="text-light mb-3">Kelola Tahun Ajaran</h5>
 
+<?php $canCreateAcademicYear = empty($academicYears); ?>
+<?php if ($canCreateAcademicYear): ?>
 <button class="btn btn-sm btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createModal">
     <i class="bi bi-plus-lg"></i> Tambah Tahun Ajaran
 </button>
+<?php else: ?>
+<div class="alert alert-info py-2 mb-3">
+    Divisi ini sudah memiliki satu Academic Year.
+</div>
+<?php endif; ?>
 
 <?php
 $grouped = [];
