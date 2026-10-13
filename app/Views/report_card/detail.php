@@ -227,7 +227,7 @@ if ($totalMeetings > 0) {
     <tr style="border:1px solid #000; ">
         <td colspan="8" class="center" style="padding: 5px">
             <h2>
-                Term <?= strtoupper(esc($termName)) ?> - PROGRESS REPORT
+                TERM <?= strtoupper(esc($termName)) ?> - PROGRESS REPORT
             </h2>
         </td>
     </tr>
@@ -240,7 +240,7 @@ if ($totalMeetings > 0) {
         </td>
 
         <td colspan="6" class="center" style="padding: 5px;">
-            <?= strtoupper(esc($termName)) ?>
+            TERM <?= strtoupper(esc($termName)) ?>
         </td>
     </tr>
 
