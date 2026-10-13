@@ -418,7 +418,7 @@ $negativeLabels = array_merge($negativeLabels, ['Needs English Practice', 'Unpre
     echo "<table class='compact-table'>";
 echo "<thead>";
 echo "<tr>";
-echo "<th class='diagonal' style='width: 150px'>Student Name</th>";
+echo "<th class='diagonal' >Student Name</th>";
 
 for ($z = 0; $z < count($positiveCols); $z++) {
     echo "<th class='diagonal'><div>{$positiveLabels[$z]}</div></th>";
@@ -481,7 +481,7 @@ echo "</thead>";
         <div class="header">
             <img src="<?= base_url('header_mli_report.png') ?>" style="max-width: 100%;" alt="School Logo">
             <h3 style="margin-top:18px;">DETAIL PERHITUNGAN</h3>
-            <table class="meta-table" style="max-width: 360px">
+            <table class="meta-table">
                 <tr>
                     <td class="label">Student Name</td>
                     <td class="colon">:</td>
@@ -596,7 +596,7 @@ echo "</thead>";
         <div class="header">
             <img src="<?= base_url('header_mli_report.png') ?>" style="max-width: 100%;" alt="School Logo">
 
-            <table class="meta-table" style="max-width: 300px">
+            <table class="meta-table" >
                 <tr>
                     <td class="label">Student Name</td>
                     <td class="colon">:</td>
