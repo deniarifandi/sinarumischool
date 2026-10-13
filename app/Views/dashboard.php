@@ -395,6 +395,12 @@ if (!function_exists('safe_url')) {
                             <span>Gradebook Verification</span>
                         </a>
 
+                        <a href="<?= base_url('socioreport?divisi=' . $d['id']) ?>"
+                           class="nav-item-btn">
+                            <i class="bi bi-heart-pulse"></i>
+                            <span>Socio-Emotional Report</span>
+                        </a>
+
                     </div>
 
                 </div>
@@ -432,7 +438,7 @@ if (!function_exists('safe_url')) {
                 <span>Manage My Students</span>
             </a>
 
-            <a href="<?= base_url('socioreport?divisi=' . $d['id']) ?>"
+            <a href="<?= base_url('socioreport?divisi=' . $mainClass['division_id'] . '&class_id=' . $mainClass['id']) ?>"
                class="nav-item-btn">
                 <i class="bi bi-heart-pulse"></i>
                 <span>Socio-Emotional Report</span>

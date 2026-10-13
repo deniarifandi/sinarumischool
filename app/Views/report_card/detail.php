@@ -44,7 +44,7 @@ $religionLabel = $religionMap[$religion] ?? '-';
 
         body {
             font-family: "Times New Roman", Times, serif;
-            width: 90%;
+            width: 99%;
             margin: 0 auto;
             color: #000;
             font-size: 12px;
@@ -211,10 +211,7 @@ if ($totalMeetings > 0) {
             Term : <?= esc($termName) ?>
         </td>
     </tr>
-     <tr>
-        <td>Religion</td>
-        <td>: <?= esc($religionLabel) ?></td>
-    </tr>
+     
 </table>
 
 <br><br>
@@ -230,7 +227,7 @@ if ($totalMeetings > 0) {
     <tr style="border:1px solid #000; ">
         <td colspan="8" class="center" style="padding: 5px">
             <h2>
-                <?= strtoupper(esc($termName)) ?> - PROGRESS REPORT
+                Term <?= strtoupper(esc($termName)) ?> - PROGRESS REPORT
             </h2>
         </td>
     </tr>
@@ -602,11 +599,7 @@ foreach ($subjects as $subject):
             <td>: <?= esc($className) ?></td>
             <td>Term : <?= esc($termName) ?></td>
         </tr>
-        <tr>
-            <td>Religion</td>
-            <td>: <?= esc($religionLabel) ?></td>
-            <td></td>
-        </tr>
+        
     </table>
     
     <?php foreach ($subjects as $subject): 
@@ -640,16 +633,19 @@ foreach ($subjects as $subject):
         }
     ?>
     
-    <div class="holistic-subject-block">
-    <h3 style="margin-top:15px; display:inline-block;">
-        <?= esc($subjectName) ?>
-    </h3>
+
 
     <table class="main-table" style="width:100%; margin-top:5px; margin-bottom:20px;">
         <thead>
             <tr>
-                <th style="width:5%;">No</th>
-                <th>Objective</th>
+                <th colspan="1" style="text-align: left;">SUBJECT</th>
+                <th colspan="4" style="text-align: center;">Formative Assessment</th>
+            </tr>
+            <tr>
+                <th colspan="5" style="text-align:left"><?= esc(strtoupper($subjectName)) ?></th>
+            </tr>
+            <tr>
+                <th style="text-align: left;">Learning Outcome</th>
                 <th style="width:10%; display: none;">Score</th>
                 <th style="width:8%;">A</th>
                 <th style="width:8%;">B</th>
@@ -678,7 +674,7 @@ foreach ($subjects as $subject):
                 }
             ?>
             <tr>
-                <td class="center"><?= $index + 1 ?></td>
+                <!-- <td class="center"><?= $index + 1 ?></td> -->
                 <td><?= esc($obj['objective_name'] ?? '-') ?></td>
                 <td class="center" style="display:none"><?= $score ?? '-' ?></td>
                 <td class="center"><?= $grade === 'A' ? '✓' : '' ?></td>

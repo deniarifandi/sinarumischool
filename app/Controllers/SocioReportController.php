@@ -24,12 +24,19 @@ class SocioReportController extends BaseController
      //   print_r(session()->get());
         $role       = session()->get('role');
         $division   = isset($_GET['divisi']) ? $_GET['divisi']  : 0;
+        $classId    = (int) ($this->request->getGet('class_id') ?? 0);
         $userId     = session()->get('id');
 
         // classes for dropdown
         $classes = $this->classModel
             ->where('division_id', $division)
             ->findAll();
+
+        if ($role === 'teacher' && $classId > 0) {
+            $classes = array_values(array_filter($classes, static function ($class) use ($classId) {
+                return (int) $class['id'] === $classId;
+            }));
+        }
 
         // grouped data: class + month
         $builder = $this->reportModel
@@ -47,6 +54,10 @@ class SocioReportController extends BaseController
 
         if ($role === 'teacher') {
             $builder->where('socioreport.teacher_id', $userId);
+        }
+
+        if ($role === 'teacher' && $classId > 0) {
+            $builder->where('socioreport.class_id', $classId);
         }
 
         $periods = $builder->findAll();
@@ -69,6 +80,7 @@ class SocioReportController extends BaseController
             'filterClass' => $filterClass,
             'filterMonth' => $filterMonth,
             'filterYear' => $filterYear,
+            'classContext' => $classId,
         ]);
     }
 

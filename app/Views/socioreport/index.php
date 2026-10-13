@@ -105,6 +105,9 @@
     <?php else: ?>
         <form id="report-filter-form" method="get" action="<?= base_url('socioreport') ?>">
             <input type="hidden" name="divisi" value="<?= esc($_GET['divisi'] ?? '') ?>">
+            <?php if (!empty($classContext)): ?>
+                <input type="hidden" name="class_id" value="<?= (int) $classContext ?>">
+            <?php endif; ?>
         </form>
         <div class="table-responsive"
              style="border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.1)">
