@@ -185,7 +185,7 @@ if ($totalMeetings > 0) {
 <!-- HEADER -->
 <!-- ========================================================= -->
 
-<div style="margin-top:20px;">
+<div style="margin-top:0px;">
     <img
         src="<?= base_url('header_mli_report.png') ?>"
         style="max-width:100%;"
