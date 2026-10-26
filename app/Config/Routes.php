@@ -22,6 +22,8 @@ use CodeIgniter\Router\RouteCollection;
 
     $routes->group('users', ['filter' => 'auth'], function ($routes) {
         $routes->get('/', 'UserController::index');
+        $routes->get('deleted', 'UserController::deleted');
+        $routes->post('restore/(:num)', 'UserController::restore/$1', ['filter' => 'csrf']);
         $routes->get('create', 'UserController::create');
         $routes->get('edit/(:num)', 'UserController::edit/$1');
         $routes->post('save', 'UserController::save');
@@ -106,6 +108,9 @@ use CodeIgniter\Router\RouteCollection;
 
     $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->get('/', 'Home::index');
+
+        $routes->get('maintenance/git-pull', 'SystemMaintenance::gitPull');
+        $routes->post('maintenance/git-pull', 'SystemMaintenance::runGitPull', ['filter' => 'csrf']);
 
         //Profile
         $routes->get('profile', 'Profile::index');

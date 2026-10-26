@@ -516,6 +516,35 @@ public function dashboard()
         return redirect()->to('/users')->with('success', 'User deleted');
     }
 
+    public function deleted()
+    {
+        $currentUser = $this->userModel->find(session('id') ?? session('user_id') ?? 0);
+        if (!$currentUser || $currentUser['role'] !== 'superadmin') {
+            return $this->response->setStatusCode(403)->setBody('Akses ditolak.');
+        }
+
+        return view('users/deleted', [
+            'user_detail' => $currentUser,
+            'users' => $this->userModel->onlyDeleted()
+                ->select('id, name, username, role, deleted_at')
+                ->orderBy('deleted_at', 'DESC')->findAll(),
+        ]);
+    }
+
+    public function restore($id)
+    {
+        $currentUser = $this->userModel->find(session('id') ?? session('user_id') ?? 0);
+        if (!$currentUser || $currentUser['role'] !== 'superadmin') {
+            return $this->response->setStatusCode(403)->setBody('Akses ditolak.');
+        }
+
+        if (!$this->userModel->restoreDeletedUser($id)) {
+            return redirect()->to('/users/deleted')->with('error', 'User tidak ditemukan, sudah aktif, atau gagal dipulihkan.');
+        }
+
+        return redirect()->to('/users/deleted')->with('success', 'User berhasil dipulihkan dan tersedia kembali di User Directory.');
+    }
+
     /* =========================
        ROLE (MODAL)
     ========================== */

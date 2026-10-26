@@ -95,9 +95,14 @@
 <div class="main-container shadow-sm">
     <div class="d-flex justify-content-between align-items-center p-2 px-3 border-bottom bg-white">
         <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-people-fill me-2"></i>User Directory</h6>
+        <div class="d-flex gap-2">
+        <?php if ($user_detail['role'] === 'superadmin'): ?>
+            <a href="<?= base_url('users/deleted') ?>" class="btn btn-outline-secondary btn-sm">User Terhapus</a>
+        <?php endif; ?>
         <a href="<?= base_url('users/create') ?>" class="btn btn-primary btn-sm fw-bold">
             <i class="bi bi-plus-lg"></i> NEW
         </a>
+        </div>
     </div>
 
     <div class="table-responsive">

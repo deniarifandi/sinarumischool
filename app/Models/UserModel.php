@@ -27,6 +27,17 @@ class UserModel extends Model
 
     protected $useSoftDeletes = true;
 
+    public function restoreDeletedUser($id): bool
+    {
+        // Keep deleted_at out of mass-assignable fields; restore only deleted rows.
+        $updated = $this->builder()
+            ->where('id', $id)
+            ->where('deleted_at IS NOT NULL', null, false)
+            ->update(['deleted_at' => null, 'updated_at' => date('Y-m-d H:i:s')]);
+
+        return $updated && $this->db->affectedRows() === 1;
+    }
+
     public function getUsersForDashboard()
     {
         return $this->select('users.id, users.name, users.username, users.role,

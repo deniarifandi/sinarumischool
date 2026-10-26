@@ -549,6 +549,18 @@ if (!function_exists('safe_url')) {
         </div>
     <?php endif ?>
 
+    <?php if (($user['role'] ?? '') === 'superadmin'): ?>
+        <div class="card shadow-sm border-0 mt-4">
+            <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div>
+                    <h6 class="fw-bold mb-1"><i class="bi bi-cloud-download me-2 text-primary"></i>Sinkronisasi Source Code</h6>
+                    <p class="text-muted small mb-0">Ambil perubahan terbaru dari repository Git.</p>
+                </div>
+                <a href="<?= base_url('maintenance/git-pull') ?>" class="btn btn-primary btn-sm"><i class="bi bi-cloud-download me-1"></i> Git Pull</a>
+            </div>
+        </div>
+    <?php endif ?>
+
 </div>
 
 <!-- Context View Filtering Logic Controller -->
