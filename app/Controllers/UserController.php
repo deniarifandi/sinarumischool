@@ -480,6 +480,37 @@ public function dashboard()
         ]);
     }
 
+    public function printDetail($id)
+    {
+        $currentUser = $this->userModel->find(session('id') ?? session('user_id') ?? 0);
+        if (!$currentUser || $currentUser['role'] !== 'superadmin') {
+            return $this->response->setStatusCode(403)->setBody('Akses ditolak.');
+        }
+
+        $user = $this->userModel->find($id);
+        if (!$user) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('User tidak ditemukan.');
+        }
+
+        $divisions = $this->userDivisionModel->select('divisions.division_name')
+            ->distinct()
+            ->join('divisions', 'divisions.id = user_divisions.division_id')
+            ->where('user_divisions.user_id', $id)
+            ->orderBy('divisions.division_name')->findAll();
+        $positions = $this->userPositionModel->select('position.jabatan_nama')
+            ->distinct()
+            ->join('position', 'position.jabatan_id = user_position.jabatan_id')
+            ->where('user_position.guru_id', $id)
+            ->orderBy('position.jabatan_nama')->findAll();
+
+        $this->response->setHeader('Cache-Control', 'no-store');
+        return view('users/print', [
+            'user' => $user,
+            'divisions' => array_column($divisions, 'division_name'),
+            'positions' => array_column($positions, 'jabatan_nama'),
+        ]);
+    }
+
     public function save($id = null)
     {
         $rules = [

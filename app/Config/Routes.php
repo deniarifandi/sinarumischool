@@ -26,6 +26,7 @@ use CodeIgniter\Router\RouteCollection;
         $routes->post('restore/(:num)', 'UserController::restore/$1', ['filter' => 'csrf']);
         $routes->get('create', 'UserController::create');
         $routes->get('edit/(:num)', 'UserController::edit/$1');
+        $routes->get('print/(:num)', 'UserController::printDetail/$1');
         $routes->post('save', 'UserController::save');
         $routes->post('save/(:num)', 'UserController::save/$1');
         $routes->post('delete/(:num)', 'UserController::delete/$1');

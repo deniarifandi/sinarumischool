@@ -202,6 +202,9 @@
 
                     <td class="text-end">
                         <div class="d-flex justify-content-end gap-1">
+                            <a href="<?= base_url('users/print/'.$u['id']) ?>" target="_blank" rel="noopener" class="btn-flat" title="Cetak detail user" aria-label="Cetak detail <?= esc($u['name'], 'attr') ?>">
+                                <i class="bi bi-printer-fill"></i> Print
+                            </a>
                             <a href="<?= base_url('users/edit/'.$u['id']) ?>" class="btn-flat" title="Edit User">
                                 <i class="bi bi-pencil-fill"></i>
                             </a>
