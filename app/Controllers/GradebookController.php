@@ -50,15 +50,19 @@ class GradebookController extends BaseController
             $this->gradeModel          = new GradeModel();
         }
 
-    /**
-     * Guard: pastikan user yang login memang punya akses ke subject ini.
-     * TODO: sempat dinonaktifkan sementara karena isu session/role saat testing.
-     * Aktifkan lagi (uncomment pemanggilannya di index()/save()) setelah
-     * dipastikan session key & data user_subjects sudah benar.
-     */
+    /** Authorize using the current user record, including remember-me sessions. */
     private function assertSubjectAccess($subjectId)
     {
-        $userId = session()->get('user_id');
+        $userId = session()->get('id') ?? session()->get('user_id');
+        $user = $userId ? (new \App\Models\UserModel())->find($userId) : null;
+
+        if (!session()->get('logged_in') || !$user || !$subjectId) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Anda tidak memiliki akses ke subject ini.');
+        }
+
+        if ($user['role'] === 'superadmin') {
+            return;
+        }
 
         $hasAccess = $this->userSubjectModel
             ->where('user_id', $userId)
@@ -82,6 +86,8 @@ class GradebookController extends BaseController
             'subject_id wajib diisi.'
         );
     }
+
+    $this->assertSubjectAccess($subjectId);
 
     // ============================================================
     // SUBJECT
@@ -447,7 +453,7 @@ class GradebookController extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException('subject_id wajib diisi.');
         }
 
-        // $this->assertSubjectAccess($subjectId);
+        $this->assertSubjectAccess($subjectId);
 
         $subjectDetail = $this->subjectModel->where('id', $subjectId)->get()->getResult();
         if (empty($subjectDetail)) {
@@ -635,7 +641,7 @@ class GradebookController extends BaseController
         $termIdPost = $req->getPost('term_id');
         $studentIds = $req->getPost('student_id') ?? [];
 
-        // $this->assertSubjectAccess($subjectId);
+        $this->assertSubjectAccess($subjectId);
 
         if (!$termIdPost) {
             session()->setFlashdata('error', 'Term tidak valid.');
@@ -783,6 +789,13 @@ class GradebookController extends BaseController
             return redirect()->to($backUrl);
         }
 
+        $this->assertSubjectAccess($gradebook['subject_id']);
+        if ((int) $subjectId !== (int) $gradebook['subject_id']
+            || (int) $classId !== (int) $gradebook['class_id']
+            || (int) $termId !== (int) $gradebook['term_id']) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Gradebook tidak sesuai.');
+        }
+
         if ($gradebook['is_locked']) {
             session()->setFlashdata('error', 'Gradebook ini sudah terkunci.');
             return redirect()->to($backUrl);
@@ -913,6 +926,13 @@ class GradebookController extends BaseController
             return redirect()->to($backUrl);
         }
 
+        $this->assertSubjectAccess($gradebook['subject_id']);
+        if ((int) $subjectId !== (int) $gradebook['subject_id']
+            || (int) $classId !== (int) $gradebook['class_id']
+            || (int) $termId !== (int) $gradebook['term_id']) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Gradebook tidak sesuai.');
+        }
+
         if ($gradebook['is_locked']) {
             session()->setFlashdata('error', 'Gradebook is vergrendeld, objective kan niet worden toegevoegd.');
             return redirect()->to($backUrl);
@@ -976,9 +996,27 @@ class GradebookController extends BaseController
             return redirect()->to($backUrl);
         }
 
+        $this->assertSubjectAccess($gradebook['subject_id']);
+        if ((int) $subjectId !== (int) $gradebook['subject_id']
+            || (int) $classId !== (int) $gradebook['class_id']
+            || (int) $termId !== (int) $gradebook['term_id']) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Gradebook tidak sesuai.');
+        }
+
         if ($gradebook['is_locked']) {
             session()->setFlashdata('error', 'Gradebook terkunci, tidak bisa menghapus objective.');
             return redirect()->to($backUrl);
+        }
+
+        $objective = $this->objectiveModel
+            ->select('objectives.id')
+            ->join('outcomes', 'outcomes.id = objectives.outcome_id')
+            ->where('objectives.id', $objectiveId)
+            ->where('outcomes.subject_id', $gradebook['subject_id'])
+            ->where('objectives.term_id', $gradebook['term_id'])
+            ->first();
+        if (!$objective) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Objective tidak sesuai.');
         }
 
         $this->objectiveModel->delete($objectiveId);

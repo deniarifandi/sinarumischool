@@ -187,38 +187,15 @@ $(document).ready(function () {
                 .split('\n')
                 .filter((r, i, arr) => !(r === '' && i === arr.length - 1));
 
-            // Excel menyalin cell merge sebagai nilai lalu satu/lebih cell kosong.
-            // Cell kosong di antara dua nilai dianggap sebagai placeholder merge,
-            // bukan kolom objective baru, supaya nilai berikutnya tidak bergeser.
-            function parseMergedRow(rowData) {
-                const rawColumns = rowData.split('\t');
-                const parsedColumns = [];
-
-                rawColumns.forEach(function (value, index) {
-                    const trimmed = value.trim();
-                    if (trimmed === '') {
-                        // Sel kosong di tengah baris adalah placeholder cell merge.
-                        const hasNextValue = rawColumns.slice(index + 1).some(function (nextValue) {
-                            return nextValue.trim() !== '';
-                        });
-                        if (!hasNextValue) parsedColumns.push('');
-                        return;
-                    }
-
-                    // Beberapa versi Excel menyalin merge sebagai nilai yang sama
-                    // dua kali. Nilai duplikat berurutan hanya dihitung sekali.
-                    const previous = parsedColumns[parsedColumns.length - 1];
-                    if (previous !== undefined && previous === trimmed) return;
-
-                    parsedColumns.push(trimmed);
-                });
-
-                return parsedColumns;
+            // Setiap tab mewakili satu kolom Excel, termasuk sel kosong.
+            // Nilai berulang tetap dipertahankan agar posisi objective tidak bergeser.
+            function parseClipboardRow(rowData) {
+                return rowData.split('\t').map(value => value.trim());
             }
 
             const startCol = parseInt($(this).data('col'));
 
-            const firstRowCols = rows[0] ? parseMergedRow(rows[0]).length : 0;
+            const firstRowCols = rows[0] ? parseClipboardRow(rows[0]).length : 0;
 
             if (firstRowCols > (totalObjCols - startCol)) {
 
@@ -250,7 +227,7 @@ $(document).ready(function () {
                     return;
                 }
 
-                const columns = parseMergedRow(rowData);
+                const columns = parseClipboardRow(rowData);
 
                 columns.forEach(function (value, colIndex) {
 

@@ -334,14 +334,14 @@ $routes->post(
 
 // GRADEBOOK
 
-$routes->get('gradebook', 'GradebookController::index');
-$routes->post('gradebook/save', 'GradebookController::save');
-$routes->post('gradebook/objective-save', 'GradebookController::saveObjective');
-$routes->post('gradebook/objective-add', 'GradebookController::addObjective');
-$routes->post('gradebook/objective-delete/(:num)', 'GradebookController::deleteObjective');
-$routes->get('gradebook/curriculum', 'GradebookController::curriculum');
-$routes->get('gradebook/directory', 'StudentDashboardController::directory');
-$routes->get('student/dashboard/(:num)', 'StudentDashboardController::dashboard/$1');
+$routes->get('gradebook', 'GradebookController::index', ['filter' => 'auth']);
+$routes->post('gradebook/save', 'GradebookController::save', ['filter' => 'auth']);
+$routes->post('gradebook/objective-save', 'GradebookController::saveObjective', ['filter' => 'auth']);
+$routes->post('gradebook/objective-add', 'GradebookController::addObjective', ['filter' => 'auth']);
+$routes->post('gradebook/objective-delete/(:num)', 'GradebookController::deleteObjective', ['filter' => 'auth']);
+$routes->get('gradebook/curriculum', 'GradebookController::curriculum', ['filter' => 'auth']);
+$routes->get('gradebook/directory', 'StudentDashboardController::directory', ['filter' => 'auth']);
+$routes->get('student/dashboard/(:num)', 'StudentDashboardController::dashboard/$1', ['filter' => 'auth']);
 
 $routes->group('lock', ['filter' => 'curriculum'], function ($routes) {
     $routes->get('terms', 'TermLockController::index');
