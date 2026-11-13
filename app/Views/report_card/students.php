@@ -155,6 +155,20 @@
 
         <div class="row g-3">
 
+            <?php if (!empty($canSelectClass)): ?>
+            <div class="col-12">
+                <label for="printClass" class="form-label text-white-50 small">Class</label>
+                <select id="printClass" class="form-select custom-select-dark">
+                    <?php foreach ($printClasses as $printClass): ?>
+                        <option value="<?= esc(base_url('report-card/class/' . (int) $printClass['id']), 'attr') ?>"
+                            <?= (int) $printClass['id'] === (int) $class['id'] ? 'selected' : '' ?>>
+                            <?= esc($printClass['division_name'] . ' / ' . $printClass['grade_name'] . ' / ' . $printClass['class_name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <?php endif; ?>
+
             <!-- Academic Year -->
             <div class="col-md-6">
 
@@ -317,6 +331,12 @@
 <script>
 
 $(document).ready(function () {
+
+    $('#printClass').on('change', function () {
+        if (this.value) {
+            window.location.assign(this.value);
+        }
+    });
 
     const baseReportUrl =
         "<?= base_url('report-card/student') ?>";

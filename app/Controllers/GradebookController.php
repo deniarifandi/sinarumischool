@@ -74,6 +74,89 @@ class GradebookController extends BaseController
         }
     }
 
+    /** Resolve the destination before any gradebook or score write. */
+    private function validateScoreContext($subjectId, $classId, $termId): array
+    {
+        $subject = $this->subjectModel->find($subjectId);
+        $class = $this->classModel->find($classId);
+        $grade = $class ? $this->gradeModel->find($class['grade']) : null;
+        $term = $this->termModel->find($termId);
+        $semester = $term ? $this->semesterModel->find($term['semester_id']) : null;
+        $year = $semester ? $this->academicYearModel->find($semester['academic_year_id']) : null;
+
+        if (!$subject || !$class || !$grade || !$year
+            || (int) $grade['division_id'] !== (int) $subject['division_id']
+            || (int) $year['division_id'] !== (int) $subject['division_id']) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Subject, kelas, dan term tidak sesuai.');
+        }
+        return $subject;
+    }
+
+    /** Reject foreign/deleted students; ignore religion rows rendered read-only. */
+    private function validateScoreStudents($studentIds, $classId, array $subject): array
+    {
+        if (!is_array($studentIds)) {
+            throw new \InvalidArgumentException('Daftar siswa tidak valid.');
+        }
+        $students = $this->studentModel->where('class_id', $classId)
+            ->where('deleted_at', null)->findAll();
+        $byId = array_column($students, null, 'id');
+        $allowed = [];
+        $religion = null;
+        $map = ['kristen' => 'christian', 'katolik' => 'catholic', 'buddha' => 'buddhist'];
+        if (preg_match('/^religion\s*:\s*(buddhist|buddha|catholic|katolik|christian|kristen|hindu|konghucu|islam)\s*$/i', trim($subject['subject_name'] ?? ''), $matches)) {
+            $religion = strtolower($matches[1]);
+            $religion = $map[$religion] ?? $religion;
+        }
+        foreach ($studentIds as $id) {
+            if ((!is_int($id) && !is_string($id)) || !ctype_digit((string) $id)
+                || !isset($byId[(int) $id])) {
+                throw new \CodeIgniter\Exceptions\PageNotFoundException('Siswa tidak terdaftar di kelas gradebook ini.');
+            }
+            $studentReligion = strtolower(trim($byId[(int) $id]['murid_agama'] ?? ''));
+            $studentReligion = $map[$studentReligion] ?? $studentReligion;
+            if ($religion === null || $studentReligion === $religion) {
+                $allowed[(int) $id] = (int) $id;
+            }
+        }
+        return array_values($allowed);
+    }
+
+    /** Reject the entire request if any objective is outside this gradebook. */
+    private function validateScoreObjectives($objectiveIds, array $gradebook): array
+    {
+        if (!is_array($objectiveIds)) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Daftar objective tidak valid.');
+        }
+        $ids = [];
+        foreach ($objectiveIds as $id) {
+            if ((!is_int($id) && !is_string($id)) || !ctype_digit((string) $id) || (int) $id < 1) {
+                throw new \CodeIgniter\Exceptions\PageNotFoundException('Objective tidak valid.');
+            }
+            $ids[(int) $id] = (int) $id;
+        }
+        if (!$ids) {
+            return [];
+        }
+        $class = $this->classModel->find($gradebook['class_id']);
+        if (!$class) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Kelas tidak ditemukan.');
+        }
+        $objectives = $this->objectiveModel
+            ->select('objectives.id')
+            ->join('outcomes', 'outcomes.id = objectives.outcome_id')
+            ->where('outcomes.subject_id', $gradebook['subject_id'])
+            ->where('outcomes.grade_id', $class['grade'])
+            ->where('objectives.term_id', $gradebook['term_id'])
+            ->whereIn('objectives.id', array_values($ids))
+            ->findAll();
+        $validIds = array_map('intval', array_column($objectives, 'id'));
+        if (array_diff(array_values($ids), $validIds)) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Objective tidak sesuai dengan subject, tingkat kelas, atau term gradebook.');
+        }
+        return array_values($ids);
+    }
+
     public function index()
 {
     $subjectId          = $this->request->getGet('subject_id');
@@ -673,6 +756,9 @@ class GradebookController extends BaseController
             'term_id'          => $termId,
         ]);
 
+        $subject = $this->validateScoreContext($subjectId, $classId, $termId);
+        $studentIds = $this->validateScoreStudents($studentIds, $classId, $subject);
+
         $gradebook = $this->gradebookModel->firstOrCreate([
           
             'term_id'          => $termId,
@@ -699,7 +785,7 @@ class GradebookController extends BaseController
 
         // 1. Validasi dulu - reject-all kalau ada yang invalid
         $errors = [];
-        $studentNames = $this->studentModel->whereIn('id', $studentIds)->findAll();
+        $studentNames = $studentIds ? $this->studentModel->whereIn('id', $studentIds)->findAll() : [];
         $nameMap = array_column($studentNames, 'name', 'id');
 
         foreach ($studentIds as $studentId) {
@@ -732,7 +818,9 @@ class GradebookController extends BaseController
             $data[] = $row;
         }
 
-        $this->gradebookScoreModel->upsertBatch($data);
+        if ($data) {
+            $this->gradebookScoreModel->upsertBatch($data);
+        }
 
         session()->setFlashdata('success', 'Nilai berhasil disimpan.');
     return redirect()->to($backUrl);
@@ -796,41 +884,26 @@ class GradebookController extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Gradebook tidak sesuai.');
         }
 
+        $subject = $this->validateScoreContext($gradebook['subject_id'], $gradebook['class_id'], $gradebook['term_id']);
+        $studentIds = $this->validateScoreStudents($studentIds, $gradebook['class_id'], $subject);
+
         if ($gradebook['is_locked']) {
             session()->setFlashdata('error', 'Gradebook ini sudah terkunci.');
             return redirect()->to($backUrl);
         }
 
-        // Validasi: hanya objektif yang memang milik subject+term ini
-        // (sama dengan aturan auto-generate kolom).
-        $validObjectives = [];
-
-        $objectives = $this->objectiveModel
-            ->select('objectives.id')
-            ->join('outcomes', 'outcomes.id = objectives.outcome_id')
-            ->join('terms', 'terms.id = objectives.term_id')
-            ->where('outcomes.subject_id', $subjectId)
-            ->where('terms.name', $term['name'])
-            ->whereIn('objectives.id', $objectiveIds)
-            ->findAll();
-
-        foreach ($objectives as $o) {
-            $validObjectives[(int) $o['id']] = true;
-        }
+        // Resolve against the persisted gradebook, using the same scope as index().
+        $objectiveIds = $this->validateScoreObjectives($objectiveIds, $gradebook);
 
         $posted    = $req->getPost('score') ?? [];
 
-        $studentNames = $this->studentModel->whereIn('id', $studentIds)->findAll();
+        $studentNames = $studentIds ? $this->studentModel->whereIn('id', $studentIds)->findAll() : [];
         $nameMap      = array_column($studentNames, 'name', 'id');
 
         // ---- Validate 0-100 all columns x students ----
         $errors = [];
 
         foreach ($objectiveIds as $oid) {
-
-            if (!isset($validObjectives[$oid])) {
-                continue;
-            }
 
             $postedCol = $posted[$oid] ?? [];
 
@@ -861,10 +934,6 @@ class GradebookController extends BaseController
 
         // ---- Save per kolom objektif ----
         foreach ($objectiveIds as $oid) {
-
-            if (!$validObjectives[$oid]) {
-                continue;
-            }
 
             $postedCol = $posted[$oid] ?? [];
 

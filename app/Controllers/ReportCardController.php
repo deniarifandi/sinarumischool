@@ -50,6 +50,24 @@ class ReportCardController extends BaseController
         throw new \CodeIgniter\Exceptions\PageNotFoundException('Class not found.');
     }
 
+    $userId = session()->get('id') ?? session()->get('user_id');
+    $user = $userId ? (new \App\Models\UserModel())->find($userId) : null;
+    $canSelectClass = session()->get('logged_in') && $user
+        && in_array($user['role'], ['superadmin', 'teacher_admin'], true);
+    $printClasses = [];
+    if ($canSelectClass) {
+        $printClasses = $this->classModel
+            ->select('classes.id, classes.class_name, grades.grade_name, divisions.division_name')
+            ->join('grades', 'grades.id = classes.grade')
+            ->join('divisions', 'divisions.id = grades.division_id')
+            ->where('grades.deleted_at', null)
+            ->where('grades.division_id', $class['division_id'])
+            ->orderBy('divisions.division_name', 'ASC')
+            ->orderBy('grades.sort_order', 'ASC')
+            ->orderBy('classes.class_name', 'ASC')
+            ->findAll();
+    }
+
     $students = $this->studentModel
         ->where('class_id', $classId)
         ->where('deleted_at', null)
@@ -79,6 +97,8 @@ class ReportCardController extends BaseController
 
     return view('report_card/students', [
         'class'        => $class,
+        'canSelectClass' => (bool) $canSelectClass,
+        'printClasses' => $printClasses,
         'students'     => $students,
         'academicYears'=> $academicYears,
         'terms'        => $terms,

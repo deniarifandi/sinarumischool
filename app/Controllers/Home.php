@@ -39,6 +39,20 @@ class Home extends BaseController
         $mainClass = $this->userModel->getUserMainClass($user_id);
         $mainClass = $mainClass[0] ?? null;
 
+        $reportCardClassesByDivision = [];
+        if (in_array($userDetail['role'], ['superadmin', 'teacher_admin'], true)) {
+            $reportClasses = (new \App\Models\ClassModel())
+                ->select('classes.id, grades.division_id')
+                ->join('grades', 'grades.id = classes.grade')
+                ->where('grades.deleted_at', null)
+                ->orderBy('grades.sort_order', 'ASC')
+                ->orderBy('classes.class_name', 'ASC')
+                ->findAll();
+            foreach ($reportClasses as $reportClass) {
+                $reportCardClassesByDivision[$reportClass['division_id']] ??= $reportClass['id'];
+            }
+        }
+
         $activeTerm = $mainClass
             ? (new \App\Models\TermModel())->getActiveTerm($mainClass['division_id'])
             : null;
@@ -81,6 +95,7 @@ class Home extends BaseController
             'divisions'         => $divisions,
             'user'              => $userDetail,
             'mainClass'         => $mainClass,
+            'reportCardClassesByDivision' => $reportCardClassesByDivision,
             'activeTerm'        => $activeTerm,
             'userSubjects'      => $userSubjects,
             'allowedRoles'      => $allowedRoles,

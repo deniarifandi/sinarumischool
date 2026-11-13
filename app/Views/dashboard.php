@@ -365,6 +365,21 @@ if (!function_exists('safe_url')) {
 
                     <div class="nav-grid">
 
+                        <?php if (in_array($user['role'], ['superadmin', 'teacher_admin'], true)): ?>
+                            <?php $printClassId = $reportCardClassesByDivision[$d['id']] ?? null; ?>
+                            <?php if ($printClassId): ?>
+                            <a href="<?= base_url('report-card/class/' . (int) $printClassId) ?>" class="nav-item-btn">
+                                <i class="bi bi-printer"></i>
+                                <span>Print Report Card</span>
+                            </a>
+                            <?php else: ?>
+                            <div class="nav-item-btn text-muted">
+                                <i class="bi bi-printer"></i>
+                                <span>No active classes available for printing</span>
+                            </div>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
                         <a href="<?= base_url('grade?divisi=' . $d['id']) ?>"
                            class="nav-item-btn">
                             <i class="bi bi-award"></i>

@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class GradebookModel extends Model
 {
     protected $table = 'gradebooks';
-    protected $allowedFields = [ 'term_id', 'class_id', 'subject_id', 'is_locked'];
+    protected $allowedFields = ['term_id', 'class_id', 'subject_id', 'is_locked', 'lock_override'];
 
     // public function firstOrCreate(array $criteria)
     // {
