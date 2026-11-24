@@ -328,6 +328,14 @@ if (!function_exists('safe_url')) {
 
                     <?php endif; ?>
 
+                        <?php if (in_array($user['role'], ['superadmin', 'teacher_admin'], true)): ?>
+                        <a href="<?= base_url('academic-calendar?division=' . $d['id']) ?>"
+                           class="nav-item-btn">
+                            <i class="bi bi-calendar3"></i>
+                            <span>Academic Calendar</span>
+                        </a>
+                        <?php endif; ?>
+
                     <a href="<?= base_url('student/dashboard?division=' . $d['id']) ?>"
                        class="nav-item-btn">
                         <i class="bi bi-people"></i>

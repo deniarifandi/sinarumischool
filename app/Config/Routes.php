@@ -357,6 +357,11 @@ $routes->get('report-card/student/(:num)', 'ReportCardController::student/$1');
 
 
 
+$routes->get('academic-calendar', 'AcademicCalendarController::index', ['filter' => 'auth']);
+$routes->post('academic-calendar/events', 'AcademicCalendarController::save', ['filter' => ['auth', 'csrf']]);
+$routes->post('academic-calendar/events/(:num)', 'AcademicCalendarController::save/$1', ['filter' => ['auth', 'csrf']]);
+$routes->post('academic-calendar/events/(:num)/delete', 'AcademicCalendarController::delete/$1', ['filter' => ['auth', 'csrf']]);
+
 $routes->group('academic-year', ['filter' => 'curriculum'], function ($routes) {
     $routes->get('/', 'AcademicYearController::index');
     $routes->post('create', 'AcademicYearController::create');
