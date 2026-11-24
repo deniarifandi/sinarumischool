@@ -8,6 +8,7 @@ use App\Models\SubjectModel;
 use App\Models\GradeModel;
 use App\Models\ObjectiveModel;
 use App\Models\OutcomeModel;
+use App\Models\TermModel;
 
 class Objective extends BaseController
 {
@@ -16,6 +17,7 @@ class Objective extends BaseController
     protected $gradeModel;
     protected $outcomeModel;
     protected $objectiveModel;
+    protected $termModel;
 
     public function __construct()
     {
@@ -24,6 +26,7 @@ class Objective extends BaseController
         $this->gradeModel     = new GradeModel();
         $this->outcomeModel   = new OutcomeModel();
         $this->objectiveModel = new ObjectiveModel();
+        $this->termModel       = new TermModel();
     }
 
     public function index()
@@ -31,8 +34,10 @@ class Objective extends BaseController
         $outcome_id = $this->request->getGet('outcome_id');
         $subject_id = $this->request->getGet('subject_id');
 
-        $builder = $this->objectiveModel->select('objectives.*, outcomes.outcome_name, outcomes.subject_id')
-            ->join('outcomes', 'outcomes.id = objectives.outcome_id', 'left');
+        $builder = $this->objectiveModel->select('objectives.*, outcomes.outcome_name, outcomes.subject_id,
+                 terms.name as term_name, terms.number as term_number')
+            ->join('outcomes', 'outcomes.id = objectives.outcome_id', 'left')
+            ->join('terms', 'terms.id = objectives.term_id', 'left');
 
         // Jangan gunakan truthy-check di sini: `outcome_id=0` sebelumnya
         // dianggap false sehingga semua objective ikut ditampilkan.
@@ -79,9 +84,12 @@ class Objective extends BaseController
         $outcome_id = $this->request->getGet('outcome_id');
         $subject_id = $this->request->getGet('subject_id');
 
+        $terms = $this->loadSubjectTerms($subject_id);
+
         return view('objective/form', [
             'outcome_id' => $outcome_id,
-            'subject_id' => $subject_id
+            'subject_id' => $subject_id,
+            'terms'      => $terms
         ]);
     }
 
@@ -96,11 +104,36 @@ class Objective extends BaseController
         $outcome    = $this->outcomeModel->find($outcome_id);
         $subject_id = $outcome['subject_id'] ?? null;
 
+        $terms = $this->loadSubjectTerms($subject_id);
+
         return view('objective/form', [
             'objective'  => $objective,
             'outcome_id' => $outcome_id,
-            'subject_id' => $subject_id
+            'subject_id' => $subject_id,
+            'terms'      => $terms
         ]);
+    }
+
+    /** Load the real terms available for a subject (scoped by the subject's division). */
+    private function loadSubjectTerms($subjectId): array
+    {
+        if (!$subjectId) {
+            return [];
+        }
+
+        $subject = $this->subjectModel->find($subjectId);
+        if (!$subject) {
+            return [];
+        }
+
+        return $this->termModel
+            ->select('terms.*, semesters.name as semester_name, academic_years.name as year_name')
+            ->join('semesters', 'semesters.id = terms.semester_id')
+            ->join('academic_years', 'academic_years.id = semesters.academic_year_id')
+            ->where('academic_years.division_id', $subject['division_id'])
+            ->orderBy('academic_years.name', 'ASC')
+            ->orderBy('terms.number', 'ASC')
+            ->findAll();
     }
 
     public function store()

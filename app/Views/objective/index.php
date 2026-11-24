@@ -145,7 +145,7 @@
                             <?php if (!empty($u['term_id'])): ?>
 
                                 <span class="badge bg-info bg-opacity-25 text-dark">
-                                    Term <?= esc($u['term_id']) ?>
+                                    <?= !empty($u['term_number']) ? 'Term '.esc($u['term_number']) : 'Term '.esc($u['term_id']) ?>
                                 </span>
 
                             <?php else: ?>

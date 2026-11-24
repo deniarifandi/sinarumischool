@@ -28,13 +28,18 @@
                         <label for="term_id" class="form-label fw-semibold">Term</label>
                         <select name="term_id" id="term_id" class="form-select form-select-lg <?= session('errors.term_id') ? 'is-invalid' : '' ?>">
                             <option value="">-- Pilih Term --</option>
-                            <?php for ($i = 1; $i <= 4; $i++): ?>
-                                <option value="<?= $i ?>" <?= (string)$selectedTerm === (string)$i ? 'selected' : '' ?>>
-                                    Term <?= $i ?>
-                                </option>
-                            <?php endfor; ?>
+                            <?php if (!empty($terms)): ?>
+                                <?php foreach ($terms as $term): ?>
+                                    <option value="<?= (int)$term['id'] ?>"
+                                        <?= (string)$selectedTerm === (string)$term['id'] ? 'selected' : '' ?>>
+                                        Term <?= (int)$term['number'] ?> (<?= esc($term['year_name']) ?>)
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <option value="" disabled>Belum ada term untuk subject ini</option>
+                            <?php endif; ?>
                         </select>
-                        <div class="form-text">Pilih Term (1 - 4) untuk objective ini.</div>
+                        <div class="form-text">Pilih term yang sesuai dengan gradebook yang dituju.</div>
                     </div>
 
                     <div class="mb-4">
