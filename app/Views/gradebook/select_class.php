@@ -268,7 +268,7 @@ $subjectName = $subjectDetailc[0]->subject_name ?? '-';
                     <option value="" disabled selected>-- Pilih Tahun Ajaran Dahulu --</option>
                     <?php foreach ($terms as $term): ?>
                         <option value="<?= esc($term['id']) ?>" data-ay="<?= esc($term['academic_year_id']) ?>">
-                            <?= esc($term['semester_name'] ?? '') ?> - <?= esc($term['name']) ?>
+                            <?= esc($term['semester_name'] ?? '') ?> - Term : <?= esc($term['name']) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
